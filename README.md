@@ -1,2 +1,1 @@
 # msoceo.github.io
-msoceo
