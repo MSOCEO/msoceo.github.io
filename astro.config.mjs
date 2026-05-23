@@ -6,7 +6,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://msoceo.pages.dev',
+	site: 'https://msocgeo-github-io.pages.dev',
 	integrations: [mdx(), sitemap()],
 	fonts: [
 		{

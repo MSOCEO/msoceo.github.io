@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>{SITE_TITLE}</h1>
+			<p>{SITE_DESCRIPTION}</p>
+			<hr />
+			<ul class="posts">
+				{posts.map((post) => (
+					<li>
+						<a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`}>
+							<h2>{post.data.title}</h2>
+						</a>
+						<FormattedDate date={post.data.pubDate} />
+						<p>{post.data.description}</p>
+					</li>
+				))}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>
+<style>
+	main {
+		margin: auto;
+		padding: 1.5rem;
+		max-width: 65ch;
+	}
+	h1 {
+		font-size: 2.5em;
+		margin-bottom: 0.25em;
+	}
+	hr {
+		margin: 2em 0;
+		border: none;
+		border-top: 1px solid rgba(var(--black), 10%);
+	}
+	.posts {
+		list-style: none;
+		padding: 0;
+	}
+	.posts li {
+		margin-bottom: 2em;
+	}
+	.posts h2 {
+		margin: 0 0 0.25em;
+	}
+	.posts a {
+		text-decoration: none;
+	}
+	.posts p {
+		margin: 0.25em 0 0;
+		color: rgb(var(--gray));
+	}
+</style>
