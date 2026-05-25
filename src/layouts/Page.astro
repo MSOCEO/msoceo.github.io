@@ -21,8 +21,14 @@ const { title, description } = Astro.props;
 </html>
 <style>
 	main {
-		margin: auto;
-		padding: 1.5rem;
-		max-width: 65ch;
+		margin: 0 auto;
+		padding: var(--space-2xl) var(--space-lg);
+		max-width: 760px;
+	}
+
+	@media (max-width: 640px) {
+		main {
+			padding: var(--space-xl) var(--space-md);
+		}
 	}
 </style>

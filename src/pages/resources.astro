@@ -1,0 +1,201 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+
+const resources = [
+  {
+    category: 'Languages & Runtimes',
+    items: [
+      { name: 'Rust', url: 'https://www.rust-lang.org', desc: 'Systems programming without fear.' },
+      { name: 'Zig', url: 'https://ziglang.org', desc: 'General-purpose language and toolchain.' },
+      { name: 'Bun', url: 'https://bun.sh', desc: 'Fast all-in-one JavaScript runtime.' },
+    ],
+  },
+  {
+    category: 'Infrastructure & DevOps',
+    items: [
+      { name: 'Nix', url: 'https://nixos.org', desc: 'Reproducible builds and deployments.' },
+      { name: 'Terraform', url: 'https://www.terraform.io', desc: 'Infrastructure as code.' },
+      { name: 'Fly.io', url: 'https://fly.io', desc: 'Deploy app servers close to users.' },
+    ],
+  },
+  {
+    category: 'Databases & Storage',
+    items: [
+      { name: 'SQLite', url: 'https://www.sqlite.org', desc: 'The most deployed database engine.' },
+      { name: 'DuckDB', url: 'https://duckdb.org', desc: 'In-process analytical SQL database.' },
+      { name: 'SurrealDB', url: 'https://surrealdb.com', desc: 'Multi-model database for modern apps.' },
+    ],
+  },
+  {
+    category: 'Frontend & Design',
+    items: [
+      { name: 'Astro', url: 'https://astro.build', desc: 'Content-first web framework.' },
+      { name: 'HTMX', url: 'https://htmx.org', desc: 'High power tools for HTML.' },
+      { name: 'Tailwind CSS', url: 'https://tailwindcss.com', desc: 'Utility-first CSS framework.' },
+    ],
+  },
+  {
+    category: 'AI & ML',
+    items: [
+      { name: 'Ollama', url: 'https://ollama.com', desc: 'Run LLMs locally.' },
+      { name: 'LangChain', url: 'https://www.langchain.com', desc: 'Build LLM-powered applications.' },
+      { name: 'Hugging Face', url: 'https://huggingface.co', desc: 'The AI community platform.' },
+    ],
+  },
+  {
+    category: 'Books & References',
+    items: [
+      { name: 'Crafting Interpreters', url: 'https://craftinginterpreters.com', desc: 'Build your own programming language.' },
+      { name: 'The Architecture of Open Source Applications', url: 'https://aosabook.org', desc: 'How real systems are built.' },
+      { name: 'Beej\'s Guide to Network Programming', url: 'https://beej.us/guide/bgnet/', desc: 'Socket programming from scratch.' },
+    ],
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Resources — ${SITE_TITLE}`} description="Curated tools, libraries, and references for builders." />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="section">
+        <h1 class="page-title">
+          <span class="page-hash">#</span> Data Vault
+        </h1>
+        <p class="page-sub">Curated tools, libraries, and references. A living collection for builders.</p>
+
+        <div class="resource-grid">
+          {resources.map((group) => (
+            <div class="resource-group">
+              <h2 class="group-title">{group.category}</h2>
+              <ul class="group-list">
+                {group.items.map((item) => (
+                  <li class="group-item">
+                    <a href={item.url} target="_blank" rel="noopener noreferrer" class="item-link">
+                      <span class="item-name">{item.name}</span>
+                      <span class="item-desc">{item.desc}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .page-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .page-hash {
+    color: var(--accent);
+  }
+
+  .page-sub {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+  }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .resource-group {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    padding: var(--space-lg);
+  }
+
+  .group-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .group-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .group-item {
+    margin: 0;
+  }
+
+  .item-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .item-link:hover {
+    background: var(--bg-hover);
+    text-shadow: none;
+  }
+
+  .item-name {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .item-link:hover .item-name {
+    color: var(--electric);
+  }
+
+  .item-desc {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    line-height: var(--leading-normal);
+  }
+
+  @media (max-width: 640px) {
+    .section {
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .resource-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

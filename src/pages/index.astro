@@ -7,65 +7,418 @@ import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 const posts = (await getCollection('blog'))
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>{SITE_TITLE}</h1>
-			<p>{SITE_DESCRIPTION}</p>
-			<hr />
-			<ul class="posts">
-				{posts.map((post) => (
-					<li>
-						<a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`}>
-							<h2>{post.data.title}</h2>
-						</a>
-						<FormattedDate date={post.data.pubDate} />
-						<p>{post.data.description}</p>
-					</li>
-				))}
-			</ul>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-noise"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow">EST. 2025 &mdash; ENGINEERING LOG</p>
+        <h1 class="hero-title">
+          <span class="hero-line">Systems, Signals,</span>
+          <span class="hero-line">
+            <span class="hero-accent">Code</span> &amp; Chaos.
+          </span>
+        </h1>
+        <p class="hero-desc">{SITE_DESCRIPTION}</p>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-value">{posts.length}</span>
+            <span class="stat-label">Articles</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">∞</span>
+            <span class="stat-label">Experiments</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">24/7</span>
+            <span class="stat-label">Building</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Posts -->
+    <main>
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-hash">#</span> Latest Articles
+        </h2>
+        <div class="post-grid">
+          {posts.slice(0, 4).map((post) => (
+            <article class="post-card">
+              <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`} class="post-card-link">
+                <div class="post-card-top">
+                  <span class="post-card-date">
+                    <FormattedDate date={post.data.pubDate} />
+                  </span>
+                  <span class="post-card-arrow">&rarr;</span>
+                </div>
+                <h3 class="post-card-title">{post.data.title}</h3>
+                <p class="post-card-desc">{post.data.description}</p>
+              </a>
+            </article>
+          ))}
+        </div>
+        {posts.length > 4 && (
+          <div class="section-more">
+            <a href="/blog" class="btn-ghost">View all {posts.length} articles &rarr;</a>
+          </div>
+        )}
+      </section>
+
+      <!-- Resources Teaser -->
+      <section class="section section-alt">
+        <h2 class="section-title">
+          <span class="section-hash">#</span> Data Vault
+        </h2>
+        <div class="vault-grid">
+          <a href="/resources" class="vault-card vault-primary">
+            <div class="vault-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke-linecap="round"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="vault-label">Resources</span>
+            <p class="vault-desc">Curated tools, libraries, and references for builders.</p>
+          </a>
+          <a href="/blog" class="vault-card">
+            <div class="vault-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+            <span class="vault-label">Articles</span>
+            <p class="vault-desc">Deep dives into distributed systems, compilers, and more.</p>
+          </a>
+          <a href="/about" class="vault-card">
+            <div class="vault-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span class="vault-label">About</span>
+            <p class="vault-desc">Who's behind the terminal. Background, stack, and contact.</p>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
 </html>
+
 <style>
-	main {
-		margin: auto;
-		padding: 1.5rem;
-		max-width: 65ch;
-	}
-	h1 {
-		font-size: 2.5em;
-		margin-bottom: 0.25em;
-	}
-	hr {
-		margin: 2em 0;
-		border: none;
-		border-top: 1px solid rgba(var(--black), 10%);
-	}
-	.posts {
-		list-style: none;
-		padding: 0;
-	}
-	.posts li {
-		margin-bottom: 2em;
-	}
-	.posts h2 {
-		margin: 0 0 0.25em;
-	}
-	.posts a {
-		text-decoration: none;
-	}
-	.posts p {
-		margin: 0.25em 0 0;
-		color: rgb(var(--gray));
-	}
+  /* === Hero === */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-3xl) var(--space-lg) var(--space-2xl);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 60% 60% at 30% 50%, black 30%, transparent 70%);
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-line {
+    display: block;
+  }
+
+  .hero-accent {
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    max-width: 540px;
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: var(--space-xl);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* === Sections === */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .section-alt {
+    border-top: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .section-hash {
+    color: var(--accent);
+  }
+
+  .section-more {
+    margin-top: var(--space-lg);
+    text-align: center;
+  }
+
+  /* === Post Grid === */
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .post-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .post-card:hover {
+    border-color: var(--border-glow);
+    background: var(--bg-elevated);
+  }
+
+  .post-card-link {
+    display: block;
+    padding: var(--space-lg);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-card-link:hover {
+    text-shadow: none;
+  }
+
+  .post-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+  }
+
+  .post-card-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .post-card-arrow {
+    color: var(--text-muted);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .post-card:hover .post-card-arrow {
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .post-card-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    line-height: var(--leading-tight);
+  }
+
+  .post-card-desc {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: var(--leading-normal);
+    margin-bottom: 0;
+  }
+
+  /* === Vault === */
+  .vault-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .vault-card {
+    display: block;
+    padding: var(--space-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .vault-card:hover {
+    border-color: var(--border-glow);
+    background: var(--bg-elevated);
+    text-shadow: none;
+  }
+
+  .vault-primary {
+    border-color: oklch(35% 0.06 62);
+  }
+
+  .vault-primary:hover {
+    border-color: var(--accent);
+  }
+
+  .vault-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    margin-bottom: var(--space-sm);
+    background: oklch(18% 0.05 62 / 0.15);
+    border-radius: var(--radius-sm);
+  }
+
+  .vault-label {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: var(--space-xs);
+  }
+
+  .vault-desc {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    line-height: var(--leading-normal);
+    margin-bottom: 0;
+  }
+
+  /* === Ghost Button === */
+  .btn-ghost {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    letter-spacing: 0.04em;
+    display: inline-block;
+  }
+
+  .btn-ghost:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    text-shadow: none;
+  }
+
+  /* === Responsive === */
+  @media (max-width: 768px) {
+    .post-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .vault-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-stats {
+      gap: var(--space-lg);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: var(--space-2xl) var(--space-md) var(--space-xl);
+    }
+
+    .section {
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .hero-title {
+      font-size: clamp(1.8rem, 1.4rem + 3vw, 2.8rem);
+    }
+  }
 </style>

@@ -6,11 +6,11 @@ import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
-		params: { slug: post.id.replace(/\.mdx?$/, '') },
-		props: post,
-	}));
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    props: post,
+  }));
 }
 
 type Props = CollectionEntry<'blog'>;
@@ -20,35 +20,139 @@ const { Content } = await render(post);
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={post.data.title} description={post.data.description} image={post.data.heroImage} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<article>
-				<h1>{post.data.title}</h1>
-				<FormattedDate date={post.data.pubDate} />
-				<hr />
-				<Content />
-			</article>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={post.data.title} description={post.data.description} image={post.data.heroImage} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <article class="article">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="article-date">
+              <FormattedDate date={post.data.pubDate} />
+            </span>
+            {post.data.updatedDate && (
+              <span class="article-updated">
+                Updated <FormattedDate date={post.data.updatedDate} />
+              </span>
+            )}
+          </div>
+          <h1 class="article-title">{post.data.title}</h1>
+          <p class="article-desc">{post.data.description}</p>
+        </header>
+        <hr />
+        <div class="article-body">
+          <Content />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>
+
 <style>
-	main {
-		margin: auto;
-		padding: 1.5rem;
-		max-width: 65ch;
-	}
-	article h1 {
-		font-size: 2.5em;
-		margin-bottom: 0.25em;
-	}
-	article hr {
-		margin: 1.5em 0;
-		border: none;
-		border-top: 1px solid rgba(var(--black), 10%);
-	}
+  .article {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .article-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+
+  .article-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+    padding: 2px 8px;
+    border: 1px solid oklch(30% 0.04 62);
+    border-radius: var(--radius-sm);
+    background: oklch(16% 0.04 62 / 0.12);
+  }
+
+  .article-updated {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .article-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-desc {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .article hr {
+    margin: var(--space-xl) 0;
+  }
+
+  /* Content styling */
+  .article-body :global(h2) {
+    font-size: var(--text-2xl);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .article-body :global(h3) {
+    font-size: var(--text-xl);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+  }
+
+  .article-body :global(p) {
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-md);
+  }
+
+  .article-body :global(ul),
+  .article-body :global(ol) {
+    padding-left: var(--space-xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .article-body :global(li) {
+    margin-bottom: var(--space-xs);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .article-body :global(a) {
+    color: var(--electric);
+  }
+
+  .article-body :global(a:hover) {
+    color: var(--electric-glow);
+  }
+
+  .article-body :global(strong) {
+    color: var(--text-primary);
+  }
+
+  .article-body :global(img) {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .article-title {
+      font-size: clamp(1.6rem, 1.2rem + 3vw, 2.4rem);
+    }
+  }
 </style>

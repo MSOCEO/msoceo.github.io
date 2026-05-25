@@ -1,0 +1,158 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Articles — ${SITE_TITLE}`} description="All engineering articles and deep dives." />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="section">
+        <h1 class="page-title">
+          <span class="page-hash">#</span> Articles
+        </h1>
+        <p class="page-sub">Deep dives, notes, and experiments. {posts.length} entries and counting.</p>
+
+        <div class="article-list">
+          {posts.map((post) => (
+            <article class="list-item">
+              <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`} class="list-link">
+                <div class="list-left">
+                  <span class="list-date">
+                    <FormattedDate date={post.data.pubDate} />
+                  </span>
+                </div>
+                <div class="list-right">
+                  <h2 class="list-title">{post.data.title}</h2>
+                  <p class="list-desc">{post.data.description}</p>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .page-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .page-hash {
+    color: var(--accent);
+  }
+
+  .page-sub {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+  }
+
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border-top: 1px solid var(--border);
+  }
+
+  .list-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .list-link {
+    display: flex;
+    gap: var(--space-xl);
+    padding: var(--space-lg) 0;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease;
+  }
+
+  .list-link:hover {
+    text-shadow: none;
+    background: var(--bg-hover);
+    margin: 0 calc(-1 * var(--space-md));
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+    border-radius: var(--radius-sm);
+  }
+
+  .list-left {
+    flex-shrink: 0;
+    width: 100px;
+    padding-top: 2px;
+  }
+
+  .list-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .list-right {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .list-title {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: var(--leading-tight);
+  }
+
+  .list-link:hover .list-title {
+    color: var(--accent);
+  }
+
+  .list-desc {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    line-height: var(--leading-normal);
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .section {
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .list-link {
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .list-left {
+      width: auto;
+    }
+  }
+</style>
