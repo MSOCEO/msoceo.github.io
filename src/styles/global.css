@@ -133,7 +133,7 @@ a {
 
 a:hover {
   color: var(--accent-glow);
-  text-shadow: 0 0 12px rgba(from var(--accent-glow) r g b / 0.4);
+  text-shadow: 0 0 12px oklch(80% 0.22 58 / 0.4);
 }
 
 /* === Inline Code === */
