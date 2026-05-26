@@ -1,2 +1,3 @@
-export const SITE_TITLE = 'MSOCEO';
-export const SITE_DESCRIPTION = '探索 · 发现 · 热爱 — 在代码的星空中寻找光，在生活的烟火里记录温度。';
+// 站点常量
+export const SITE_TITLE = '拾光';
+export const SITE_DESCRIPTION = '不写教程，不贩卖焦虑。一个普通人在代码与日常的缝隙里，打捞那些舍不得删掉的东西。';
