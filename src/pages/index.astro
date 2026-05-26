@@ -1,33 +1,21 @@
 ---
 // src/pages/index.astro — 黑曜石星光入口页
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Page from '../layouts/Page.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-  </head>
-  <body>
-    <Header />
-
-    <main class="entrance-main">
-      <div class="entrance-card">
-        <h1 class="entrance-title">探索 · 发现 · 热爱</h1>
-        <p class="entrance-subtitle">
-          在代码的星空中寻找光，在生活的烟火里记录温度。<br/>
-          这里是一个探索者的小站，分享科技、生活与一切值得被看见的事物。
-        </p>
-        <p class="entrance-hint">请通过导航栏探索</p>
-      </div>
-    </main>
-
-    <Footer />
-  </body>
-</html>
+<Page title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <main class="entrance-main">
+    <div class="entrance-card">
+      <h1 class="entrance-title">探索 · 发现 · 热爱</h1>
+      <p class="entrance-subtitle">
+        在代码的星空中寻找光，在生活的烟火里记录温度。<br/>
+        这里是一个探索者的小站，分享科技、生活与一切值得被看见的事物。
+      </p>
+      <p class="entrance-hint">请通过导航栏探索</p>
+    </div>
+  </main>
+</Page>
 
 <style>
 .entrance-main {

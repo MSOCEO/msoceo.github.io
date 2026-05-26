@@ -1,0 +1,57 @@
+---
+// src/pages/guestbook.astro — 留言板
+import Page from '../layouts/Page.astro';
+import Comments from '../components/Comments.astro';
+---
+
+<Page title="留言板 | 拾光" description="留下你的足迹，分享你的声音">
+  <main class="guestbook-main">
+    <section class="guestbook-hero">
+      <h1 class="guestbook-title">留言板</h1>
+      <p class="guestbook-desc">每一条留言，都是夜空中一颗独一无二的星</p>
+    </section>
+    <Comments />
+  </main>
+</Page>
+
+<style>
+.guestbook-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.guestbook-hero {
+  text-align: center;
+  padding: var(--space-2xl) 0 var(--space-xl);
+}
+
+.guestbook-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-sm);
+  background: linear-gradient(135deg, var(--star-warm), var(--lantern-warm), var(--tech-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.guestbook-desc {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  font-weight: 300;
+  line-height: var(--leading-relaxed);
+}
+
+@media (max-width: 640px) {
+  .guestbook-main {
+    padding: var(--space-md);
+  }
+
+  .guestbook-title {
+    font-size: var(--text-xl);
+  }
+}
+</style>

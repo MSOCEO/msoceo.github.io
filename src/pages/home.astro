@@ -1,159 +1,145 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Page from '../layouts/Page.astro';
 import VisitorInfo from '../components/VisitorInfo.astro';
-import Comments from '../components/Comments.astro';
+
+const { title = '首页 | 拾光', description = '探索、发现、热爱 — 技术笔记与生活手帐' } = Astro.props;
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <BaseHead title="首页 | MSOCEO" description="探索、发现、热爱 — 技术笔记与生活手帐" />
-  </head>
-  <body>
-    <Header />
-    <main class="home-main">
-      <div class="home-container">
-        <!-- 左侧主内容区 -->
-        <div class="home-content">
-          <section class="hero">
-            <h1 class="hero-title">黑曜石里的星光</h1>
-            <p class="hero-desc">探索、发现、热爱 — 记录技术思考与生活诗意</p>
-            <div class="stats-row">
-              <div class="stat-card">
-                <span class="stat-number">3+</span>
-                <span class="stat-label">文章</span>
-              </div>
-              <div class="stat-card">
-                <span class="stat-number">&middot;</span>
-                <span class="stat-label">探索</span>
-              </div>
-              <div class="stat-card">
-                <span class="stat-number">&middot;</span>
-                <span class="stat-label">发现</span>
-              </div>
-              <div class="stat-card">
-                <span class="stat-number">&middot;</span>
-                <span class="stat-label">热爱</span>
-              </div>
+<Page {title} {description}>
+  <main class="home-main">
+    <div class="home-container">
+      <!-- 左侧主内容区 -->
+      <div class="home-content">
+        <section class="hero">
+          <h1 class="hero-title">黑曜石里的星光</h1>
+          <p class="hero-desc">探索、发现、热爱 — 记录技术思考与生活诗意</p>
+          <div class="stats-row">
+            <div class="stat-card">
+              <span class="stat-number">3+</span>
+              <span class="stat-label">文章</span>
             </div>
-          </section>
-
-
-
-          <!-- 文章预览区 -->
-          <section class="articles-section">
-            <div class="section-header">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <line x1="8" y1="8" x2="16" y2="8"/>
-                <line x1="8" y1="12" x2="16" y2="12"/>
-                <path d="M8,16 L12,16 L16,16"/>
-              </svg>
-              <h2>近期文章</h2>
+            <div class="stat-card">
+              <span class="stat-number">&middot;</span>
+              <span class="stat-label">探索</span>
             </div>
-            <div class="articles-grid">
-              <article class="article-card">
-                <div class="article-meta">
-                  <span class="article-date">2025-12-15</span>
-                  <span class="article-category">技术</span>
-                </div>
-                <h3 class="article-title">黑曜石星光主题设计实践</h3>
-                <p class="article-excerpt">探索如何将深邃的黑曜石与温暖的星光结合，创造独特的视觉体验...</p>
-                <a href="/blog/obsidian-starlight" class="article-link">阅读全文 →</a>
-              </article>
-              <article class="article-card">
-                <div class="article-meta">
-                  <span class="article-date">2025-12-10</span>
-                  <span class="article-category">生活</span>
-                </div>
-                <h3 class="article-title">在深夜寻找星光的时刻</h3>
-                <p class="article-excerpt">记录那些在黑暗中依然保持探索与热爱的瞬间...</p>
-                <a href="/blog/midnight-starlight" class="article-link">阅读全文 →</a>
-              </article>
-              <article class="article-card">
-                <div class="article-meta">
-                  <span class="article-date">2025-12-05</span>
-                  <span class="article-category">资源</span>
-                </div>
-                <h3 class="article-title">前端设计资源精选</h3>
-                <p class="article-excerpt">收集整理的黑曜石星光主题相关设计资源...</p>
-                <a href="/blog/frontend-resources" class="article-link">阅读全文 →</a>
-              </article>
+            <div class="stat-card">
+              <span class="stat-number">&middot;</span>
+              <span class="stat-label">发现</span>
             </div>
-          </section>
+            <div class="stat-card">
+              <span class="stat-number">&middot;</span>
+              <span class="stat-label">热爱</span>
+            </div>
+          </div>
+        </section>
 
-          <!-- 留言区 -->
-          <Comments />
+        <!-- 文章预览区 -->
+        <section class="articles-section">
+          <div class="section-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <line x1="8" y1="8" x2="16" y2="8"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+              <path d="M8,16 L12,16 L16,16"/>
+            </svg>
+            <h2>近期文章</h2>
+          </div>
+          <div class="articles-grid">
+            <article class="article-card">
+              <div class="article-meta">
+                <span class="article-date">2025-12-15</span>
+                <span class="article-category">技术</span>
+              </div>
+              <h3 class="article-title">黑曜石星光主题设计实践</h3>
+              <p class="article-excerpt">探索如何将深邃的黑曜石与温暖的星光结合，创造独特的视觉体验...</p>
+              <a href="/blog/obsidian-starlight" class="article-link">阅读全文 →</a>
+            </article>
+            <article class="article-card">
+              <div class="article-meta">
+                <span class="article-date">2025-12-10</span>
+                <span class="article-category">生活</span>
+              </div>
+              <h3 class="article-title">在深夜寻找星光的时刻</h3>
+              <p class="article-excerpt">记录那些在黑暗中依然保持探索与热爱的瞬间...</p>
+              <a href="/blog/midnight-starlight" class="article-link">阅读全文 →</a>
+            </article>
+            <article class="article-card">
+              <div class="article-meta">
+                <span class="article-date">2025-12-05</span>
+                <span class="article-category">资源</span>
+              </div>
+              <h3 class="article-title">前端设计资源精选</h3>
+              <p class="article-excerpt">收集整理的黑曜石星光主题相关设计资源...</p>
+              <a href="/blog/frontend-resources" class="article-link">阅读全文 →</a>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <!-- 右侧侧边栏 -->
+      <aside class="home-sidebar">
+        <VisitorInfo />
+        
+        <!-- 访问统计 -->
+        <div class="stats-card">
+          <div class="stats-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <line x1="12" y1="20" x2="12" y2="10"/>
+              <line x1="18" y1="20" x2="18" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="16"/>
+            </svg>
+            <h3>访问统计</h3>
+          </div>
+          <div class="stats-chart">
+            <div class="chart-bar" style="height: 80%;" data-day="周一"></div>
+            <div class="chart-bar" style="height: 65%;" data-day="周二"></div>
+            <div class="chart-bar" style="height: 90%;" data-day="周三"></div>
+            <div class="chart-bar" style="height: 75%;" data-day="周四"></div>
+            <div class="chart-bar" style="height: 95%;" data-day="周五"></div>
+            <div class="chart-bar" style="height: 70%;" data-day="周六"></div>
+            <div class="chart-bar" style="height: 60%;" data-day="周日"></div>
+          </div>
+          <div class="stats-summary">
+            <div class="summary-item">
+              <span class="summary-value">1,248</span>
+              <span class="summary-label">本周访问</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-value">42.3%</span>
+              <span class="summary-label">移动端</span>
+            </div>
+          </div>
         </div>
 
-        <!-- 右侧侧边栏 -->
-        <aside class="home-sidebar">
-          <VisitorInfo />
-          
-          <!-- 访问统计 -->
-          <div class="stats-card">
-            <div class="stats-header">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                <line x1="12" y1="20" x2="12" y2="10"/>
-                <line x1="18" y1="20" x2="18" y2="4"/>
-                <line x1="6" y1="20" x2="6" y2="16"/>
-              </svg>
-              <h3>访问统计</h3>
+        <!-- 设备分布 -->
+        <div class="device-card">
+          <div class="device-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="2" y="6" width="20" height="12" rx="2"/>
+              <line x1="6" y1="2" x2="6" y2="6"/>
+              <line x1="18" y1="2" x2="18" y2="6"/>
+            </svg>
+            <h3>设备分布</h3>
+          </div>
+          <div class="device-list">
+            <div class="device-item">
+              <span class="device-name">💻 电脑端</span>
+              <span class="device-percent">57.7%</span>
             </div>
-            <div class="stats-chart">
-              <div class="chart-bar" style="height: 80%;" data-day="周一"></div>
-              <div class="chart-bar" style="height: 65%;" data-day="周二"></div>
-              <div class="chart-bar" style="height: 90%;" data-day="周三"></div>
-              <div class="chart-bar" style="height: 75%;" data-day="周四"></div>
-              <div class="chart-bar" style="height: 95%;" data-day="周五"></div>
-              <div class="chart-bar" style="height: 70%;" data-day="周六"></div>
-              <div class="chart-bar" style="height: 60%;" data-day="周日"></div>
+            <div class="device-item">
+              <span class="device-name">📱 iPhone</span>
+              <span class="device-percent">28.4%</span>
             </div>
-            <div class="stats-summary">
-              <div class="summary-item">
-                <span class="summary-value">1,248</span>
-                <span class="summary-label">本周访问</span>
-              </div>
-              <div class="summary-item">
-                <span class="summary-value">42.3%</span>
-                <span class="summary-label">移动端</span>
-              </div>
+            <div class="device-item">
+              <span class="device-name">📱 Android</span>
+              <span class="device-percent">13.9%</span>
             </div>
           </div>
-
-          <!-- 设备分布 -->
-          <div class="device-card">
-            <div class="device-header">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                <rect x="2" y="6" width="20" height="12" rx="2"/>
-                <line x1="6" y1="2" x2="6" y2="6"/>
-                <line x1="18" y1="2" x2="18" y2="6"/>
-              </svg>
-              <h3>设备分布</h3>
-            </div>
-            <div class="device-list">
-              <div class="device-item">
-                <span class="device-name">💻 电脑端</span>
-                <span class="device-percent">57.7%</span>
-              </div>
-              <div class="device-item">
-                <span class="device-name">📱 iPhone</span>
-                <span class="device-percent">28.4%</span>
-              </div>
-              <div class="device-item">
-                <span class="device-name">📱 Android</span>
-                <span class="device-percent">13.9%</span>
-              </div>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </main>
-    <Footer />
-  </body>
-</html>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Page>
 
 <style>
 .home-main { max-width: 1400px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }

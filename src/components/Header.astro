@@ -1,5 +1,5 @@
 ---
-// src/components/Header.astro — 极简专业导航栏
+// src/components/Header.astro — 黑曜石星光导航栏 · 创意图标版
 import { SITE_TITLE } from '../consts';
 ---
 
@@ -12,22 +12,153 @@ import { SITE_TITLE } from '../consts';
             <stop offset="0%" stop-color="#f0b545"/>
             <stop offset="100%" stop-color="#e88a2b"/>
           </linearGradient>
+          <filter id="logoGlow">
+            <feGaussianBlur stdDeviation="1.5" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
         </defs>
-        <!-- 简化几何星光 Logo -->
         <circle cx="18" cy="18" r="16" fill="none" stroke="url(#logoGrad)" stroke-width="1.2" opacity="0.4"/>
         <circle cx="18" cy="18" r="12" fill="none" stroke="url(#logoGrad)" stroke-width="0.6" opacity="0.25"/>
         <polygon points="18,4 22,14 18,32 14,14" fill="url(#logoGrad)" opacity="0.9"/>
         <circle cx="18" cy="18" r="2.5" fill="#f5e6c8"/>
         <circle cx="18" cy="18" r="5" fill="none" stroke="rgba(240,181,69,0.2)" stroke-width="0.5"/>
+        <!-- 星光闪烁点 -->
+        <circle cx="26" cy="10" r="0.8" fill="#f0b545" opacity="0.7"/>
+        <circle cx="10" cy="24" r="0.6" fill="#f0b545" opacity="0.5"/>
+        <circle cx="6" cy="8" r="0.7" fill="#f0b545" opacity="0.6"/>
       </svg>
       <span class="brand-text">{SITE_TITLE}</span>
     </a>
 
     <nav class="nav-links" aria-label="主导航">
-      <a href="/home" class="nav-item">首页</a>
-      <a href="/blog" class="nav-item">文章</a>
-      <a href="/resources" class="nav-item">资源</a>
-      <a href="/about" class="nav-item">关于</a>
+      <!-- 首页 — 拾光小屋：有烟囱、窗户透光的温暖小屋 -->
+      <a href="/home" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="iconGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f0b545"/>
+              <stop offset="100%" stop-color="#d4903c"/>
+            </linearGradient>
+          </defs>
+          <!-- 屋顶 -->
+          <polygon points="4,14 12,5 20,14" fill="none" stroke="url(#iconGrad1)" stroke-width="1.3" stroke-linejoin="round"/>
+          <!-- 屋顶纹理线 -->
+          <line x1="8" y1="12" x2="16" y2="12" stroke="url(#iconGrad1)" stroke-width="0.5" opacity="0.5"/>
+          <!-- 烟囱 -->
+          <rect x="15" y="6" width="3" height="6" rx="0.5" fill="none" stroke="url(#iconGrad1)" stroke-width="1" opacity="0.7"/>
+          <!-- 烟囱烟 -->
+          <path d="M16.5,5 Q17,3 16,1" fill="none" stroke="url(#iconGrad1)" stroke-width="0.8" opacity="0.4"/>
+          <path d="M16.5,5 Q18,2 17,0.5" fill="none" stroke="url(#iconGrad1)" stroke-width="0.6" opacity="0.25"/>
+          <!-- 墙体 -->
+          <rect x="6" y="14" width="12" height="8" fill="none" stroke="url(#iconGrad1)" stroke-width="1.3"/>
+          <!-- 窗户 -->
+          <rect x="10" y="16" width="4" height="4" rx="0.3" fill="rgba(240,181,69,0.15)" stroke="url(#iconGrad1)" stroke-width="0.8"/>
+          <line x1="12" y1="16" x2="12" y2="20" stroke="url(#iconGrad1)" stroke-width="0.5" opacity="0.6"/>
+          <line x1="10" y1="18" x2="14" y2="18" stroke="url(#iconGrad1)" stroke-width="0.5" opacity="0.6"/>
+          <!-- 星光点缀 -->
+          <circle cx="3" cy="8" r="0.7" fill="#f0b545" opacity="0.5"/>
+          <circle cx="21" cy="10" r="0.6" fill="#f0b545" opacity="0.4"/>
+        </svg>
+        <span>首页</span>
+      </a>
+
+      <!-- 文章 — 星轨书卷：展开的卷轴 + 轨道星光 -->
+      <a href="/blog" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="iconGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f0b545"/>
+              <stop offset="100%" stop-color="#d4903c"/>
+            </linearGradient>
+          </defs>
+          <!-- 卷轴杆 -->
+          <line x1="5" y1="3" x2="5" y2="21" stroke="url(#iconGrad2)" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="19" y1="3" x2="19" y2="21" stroke="url(#iconGrad2)" stroke-width="1.8" stroke-linecap="round"/>
+          <!-- 卷轴纸面 -->
+          <rect x="6" y="5" width="12" height="14" rx="1" fill="none" stroke="url(#iconGrad2)" stroke-width="0.9" opacity="0.7"/>
+          <!-- 星轨文字线 -->
+          <line x1="8" y1="8" x2="16" y2="8" stroke="url(#iconGrad2)" stroke-width="0.7" opacity="0.5" stroke-linecap="round"/>
+          <line x1="8" y1="11" x2="14" y2="11" stroke="url(#iconGrad2)" stroke-width="0.7" opacity="0.4" stroke-linecap="round"/>
+          <line x1="8" y1="14" x2="15" y2="14" stroke="url(#iconGrad2)" stroke-width="0.7" opacity="0.35" stroke-linecap="round"/>
+          <line x1="8" y1="17" x2="12" y2="17" stroke="url(#iconGrad2)" stroke-width="0.7" opacity="0.3" stroke-linecap="round"/>
+          <!-- 星轨环绕 -->
+          <ellipse cx="12" cy="12" rx="10" ry="3" fill="none" stroke="url(#iconGrad2)" stroke-width="0.5" opacity="0.2" transform="rotate(-15,12,12)"/>
+        </svg>
+        <span>文章</span>
+      </a>
+
+      <!-- 资源 — 星云宝箱：几何晶体宝箱 -->
+      <a href="/resources" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="iconGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f0b545"/>
+              <stop offset="100%" stop-color="#d4903c"/>
+            </linearGradient>
+          </defs>
+          <!-- 宝箱底座 -->
+          <rect x="5" y="13" width="14" height="8" rx="1.5" fill="none" stroke="url(#iconGrad3)" stroke-width="1.2"/>
+          <!-- 宝箱盖 -->
+          <path d="M5,13 Q5,8 12,6 Q19,8 19,13" fill="none" stroke="url(#iconGrad3)" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- 锁扣 -->
+          <circle cx="12" cy="13" r="1.8" fill="rgba(240,181,69,0.15)" stroke="url(#iconGrad3)" stroke-width="0.9"/>
+          <circle cx="12" cy="13" r="0.6" fill="#f0b545"/>
+          <!-- 晶体装饰 -->
+          <polygon points="7,15 9,11 11,15" fill="rgba(240,181,69,0.1)" stroke="url(#iconGrad3)" stroke-width="0.6"/>
+          <polygon points="17,15 15,10.5 13,15" fill="rgba(240,181,69,0.1)" stroke="url(#iconGrad3)" stroke-width="0.6"/>
+          <!-- 星尘粒子 -->
+          <circle cx="20" cy="8" r="0.6" fill="#f0b545" opacity="0.5"/>
+          <circle cx="3" cy="10" r="0.5" fill="#f0b545" opacity="0.4"/>
+        </svg>
+        <span>资源</span>
+      </a>
+
+      <!-- 关于 — 星尘人像：几何人形剪影 -->
+      <a href="/about" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="iconGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f0b545"/>
+              <stop offset="100%" stop-color="#d4903c"/>
+            </linearGradient>
+          </defs>
+          <!-- 头部 -->
+          <circle cx="12" cy="5.5" r="3.5" fill="none" stroke="url(#iconGrad4)" stroke-width="1.2"/>
+          <!-- 身体 -->
+          <path d="M7,14 Q7,10 12,10 Q17,10 17,14 L17,20" fill="none" stroke="url(#iconGrad4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- 肩部星光 -->
+          <circle cx="6" cy="13" r="0.6" fill="#f0b545" opacity="0.5"/>
+          <circle cx="18" cy="13" r="0.6" fill="#f0b545" opacity="0.5"/>
+          <!-- 头部光环 -->
+          <ellipse cx="12" cy="4" rx="4" ry="1" fill="none" stroke="url(#iconGrad4)" stroke-width="0.5" opacity="0.25"/>
+        </svg>
+        <span>关于</span>
+      </a>
+
+      <!-- 留言 — 星语气泡：对话气泡 + 星光笔迹 -->
+      <a href="/guestbook" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="iconGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f0b545"/>
+              <stop offset="100%" stop-color="#d4903c"/>
+            </linearGradient>
+          </defs>
+          <!-- 主气泡 -->
+          <rect x="4" y="3" width="14" height="12" rx="3" fill="none" stroke="url(#iconGrad5)" stroke-width="1.2"/>
+          <!-- 气泡尾巴 -->
+          <path d="M8,15 L6,21 L10,17" fill="none" stroke="url(#iconGrad5)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+          <!-- 消息线 -->
+          <line x1="7" y1="7" x2="15" y2="7" stroke="url(#iconGrad5)" stroke-width="0.7" stroke-linecap="round" opacity="0.4"/>
+          <line x1="7" y1="10" x2="13" y2="10" stroke="url(#iconGrad5)" stroke-width="0.7" stroke-linecap="round" opacity="0.3"/>
+          <!-- 星光笔 -->
+          <line x1="16" y1="16" x2="20" y2="20" stroke="url(#iconGrad5)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+          <circle cx="20" cy="20" r="0.8" fill="#f0b545" opacity="0.7"/>
+          <!-- 气泡外星光 -->
+          <circle cx="21" cy="4" r="0.7" fill="#f0b545" opacity="0.4"/>
+        </svg>
+        <span>留言</span>
+      </a>
     </nav>
   </div>
 </header>
@@ -66,7 +197,7 @@ import { SITE_TITLE } from '../consts';
 }
 
 .brand:hover .logo-icon {
-  filter: drop-shadow(0 0 8px rgba(240, 181, 69, 0.4));
+  filter: drop-shadow(0 0 10px rgba(240, 181, 69, 0.45));
 }
 
 .brand-text {
@@ -80,11 +211,14 @@ import { SITE_TITLE } from '../consts';
 .nav-links {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-2xs);
 }
 
 .nav-item {
-  padding: var(--space-xs) var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-sm);
   color: var(--text-muted);
   font-family: var(--font-body);
   font-size: var(--text-sm);
@@ -95,9 +229,23 @@ import { SITE_TITLE } from '../consts';
   transition: all var(--duration-fast) ease;
 }
 
+.nav-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: all var(--duration-fast) ease;
+}
+
 .nav-item:hover {
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-item:hover .nav-icon {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(240, 181, 69, 0.3));
+  transform: scale(1.1);
 }
 
 @media (max-width: 640px) {
@@ -106,8 +254,14 @@ import { SITE_TITLE } from '../consts';
   }
 
   .nav-item {
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-2xs) var(--space-xs);
     font-size: var(--text-xs);
+    gap: var(--space-3xs);
+  }
+
+  .nav-icon {
+    width: 16px;
+    height: 16px;
   }
 }
 </style>
