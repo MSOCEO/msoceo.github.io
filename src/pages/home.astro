@@ -15,6 +15,51 @@ import Footer from '../components/Footer.astro';
       <section class="hero">
         <h1 class="hero-title">黑曜石里的星光</h1>
         <p class="hero-desc">探索、发现、热爱 — 记录技术思考与生活诗意</p>
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-number">3+</span>
+            <span class="stat-label">文章</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">&middot;</span>
+            <span class="stat-label">探索</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">&middot;</span>
+            <span class="stat-label">发现</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">&middot;</span>
+            <span class="stat-label">热爱</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-links">
+        <a href="/blog" class="quick-card">
+          <div class="quick-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <polyline points="4,7 20,7"/>
+              <polyline points="4,12 20,12"/>
+              <polyline points="4,17 16,17"/>
+            </svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-title">最新文章</span>
+            <span class="quick-desc">查看近期发布的笔记</span>
+          </div>
+        </a>
+        <a href="/resources" class="quick-card">
+          <div class="quick-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-title">资源库</span>
+            <span class="quick-desc">工具、资源与参考</span>
+          </div>
+        </a>
       </section>
     </main>
     <Footer />
@@ -23,12 +68,31 @@ import Footer from '../components/Footer.astro';
 
 <style>
 .home-main { max-width: 1200px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
-.hero { text-align: center; padding: var(--space-3xl) 0; }
+.hero { text-align: center; padding: var(--space-3xl) 0 var(--space-2xl); }
 .hero-title {
-  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600;
+  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; letter-spacing: 0.04em;
   background: linear-gradient(135deg, var(--star-warm), var(--lantern-warm), var(--tech-cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: var(--space-sm);
 }
 .hero-desc { color: var(--text-secondary); font-size: var(--text-lg); font-weight: 300; }
+.stats-row { display: flex; justify-content: center; gap: var(--space-xl); margin-top: var(--space-xl); flex-wrap: wrap; }
+.stat-card { text-align: center; padding: var(--space-sm) var(--space-lg); background: var(--surface-card); border: 1px solid var(--border-ghost); border-radius: var(--radius-lg); backdrop-filter: blur(12px); }
+.stat-card:hover { border-color: var(--border-glow); box-shadow: var(--shadow-glow-sm); }
+.stat-number { display: block; font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--star-warm); }
+.stat-label { display: block; font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-3xs); text-transform: uppercase; letter-spacing: 0.1em; }
+.quick-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-md); margin: var(--space-2xl) 0; }
+.quick-card { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg); background: var(--surface-card); border: 1px solid var(--border-ghost); border-radius: var(--radius-xl); text-decoration: none; backdrop-filter: blur(12px); transition: all var(--duration-normal) var(--ease-out-expo); }
+.quick-card:hover { border-color: var(--border-glow); box-shadow: var(--shadow-glow-sm); transform: translateY(-2px); }
+.quick-icon { color: var(--star-warm); opacity: 0.8; flex-shrink: 0; }
+.quick-info { flex: 1; }
+.quick-title { display: block; color: var(--text-primary); font-weight: 600; font-size: var(--text-base); margin-bottom: var(--space-3xs); }
+.quick-desc { display: block; color: var(--text-muted); font-size: var(--text-sm); }
+
+@media (max-width: 640px) {
+  .stats-row { gap: var(--space-sm); }
+  .stat-card { padding: var(--space-xs) var(--space-md); }
+  .quick-links { grid-template-columns: 1fr; }
+  .hero-title { font-size: var(--text-2xl); }
+}
 </style>
