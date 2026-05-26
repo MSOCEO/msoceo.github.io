@@ -6,29 +6,14 @@ const currentPath = Astro.url.pathname;
 <header>
   <div class="header-inner">
     <a href="/" class="logo">
-      <span class="logo-bracket">[</span>
       <span class="logo-text">{SITE_TITLE}</span>
-      <span class="logo-bracket">]</span>
-      <span class="logo-cursor"></span>
     </a>
     <nav>
-      <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>
-        <span class="nav-index">00</span>首页
-      </a>
-      <a href="/blog" class:list={['nav-link', { active: currentPath.startsWith('/blog') }]}>
-        <span class="nav-index">01</span>文章
-      </a>
-      <a href="/resources" class:list={['nav-link', { active: currentPath === '/resources' }]}>
-        <span class="nav-index">02</span>资源
-      </a>
-      <a href="/about" class:list={['nav-link', { active: currentPath === '/about' }]}>
-        <span class="nav-index">03</span>关于
-      </a>
+      <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>首页</a>
+      <a href="/blog" class:list={['nav-link', { active: currentPath.startsWith('/blog') }]}>文章</a>
+      <a href="/resources" class:list={['nav-link', { active: currentPath === '/resources' }]}>资源</a>
+      <a href="/about" class:list={['nav-link', { active: currentPath === '/about' }]}>关于</a>
     </nav>
-    <div class="header-status">
-      <span class="status-dot"></span>
-      <span class="status-text">在线</span>
-    </div>
   </div>
 </header>
 
@@ -37,148 +22,71 @@ const currentPath = Astro.url.pathname;
     position: sticky;
     top: 0;
     z-index: 100;
-    background: oklch(10% 0.025 265 / 0.92);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
+    background: oklch(10% 0.025 265 / 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid oklch(28% 0.025 265 / 0.5);
   }
 
   .header-inner {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--space-lg);
+    padding: 0 1.5rem;
     height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-xl);
   }
 
   .logo {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text-primary);
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: oklch(92% 0.01 265);
     text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0;
-    white-space: nowrap;
+    letter-spacing: -0.02em;
+    transition: color 0.3s ease;
   }
 
   .logo:hover {
-    color: var(--accent-glow);
-    text-shadow: none;
-  }
-
-  .logo-bracket {
-    color: var(--text-muted);
-  }
-
-  .logo-text {
-    color: var(--accent);
-  }
-
-  .logo-cursor {
-    display: inline-block;
-    width: 1ch;
-    height: 1.2em;
-    background: var(--accent);
-    margin-left: 2px;
-    animation: cursor-blink 1s step-end infinite;
-  }
-
-  @keyframes cursor-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    color: oklch(72% 0.18 62);
   }
 
   nav {
     display: flex;
-    gap: var(--space-xs);
+    gap: 0.25rem;
   }
 
   .nav-link {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: oklch(68% 0.015 265);
     text-decoration: none;
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
-    letter-spacing: 0.03em;
-    position: relative;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.02em;
   }
 
   .nav-link:hover {
-    color: var(--text-primary);
-    background: var(--bg-hover);
-    text-shadow: none;
+    color: oklch(92% 0.01 265);
+    background: oklch(22% 0.018 265);
   }
 
   .nav-link.active {
-    color: var(--accent);
-    background: oklch(18% 0.04 62 / 0.12);
-  }
-
-  .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 2px;
-    background: var(--accent);
-    border-radius: 1px;
-  }
-
-  .nav-index {
-    color: var(--text-muted);
-    margin-right: 4px;
-    font-size: 0.8em;
-  }
-
-  .nav-link.active .nav-index {
-    color: var(--accent-dim);
-  }
-
-  .header-status {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-  }
-
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--success);
-    box-shadow: 0 0 8px var(--success);
-    animation: status-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes status-pulse {
-    0%, 100% { box-shadow: 0 0 4px var(--success); }
-    50% { box-shadow: 0 0 12px var(--success), 0 0 24px var(--success); }
-  }
-
-  .status-text {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
+    color: oklch(72% 0.18 62);
+    background: oklch(72% 0.18 62 / 0.08);
   }
 
   @media (max-width: 640px) {
     .header-inner {
-      padding: 0 var(--space-md);
-      gap: var(--space-sm);
+      padding: 0 1rem;
     }
-    .header-status {
-      display: none;
-    }
+
     .nav-link {
-      padding: var(--space-xs) 4px;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.8rem;
     }
   }
 </style>

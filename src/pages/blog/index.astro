@@ -11,7 +11,7 @@ const posts = (await getCollection('blog'))
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <BaseHead title={`文章 — ${SITE_TITLE}`} description="工程技术与深度探索。" />
   </head>
@@ -19,24 +19,23 @@ const posts = (await getCollection('blog'))
     <Header />
     <main>
       <section class="section">
-        <h1 class="page-title">
-          <span class="page-hash">#</span> 文章
-        </h1>
+        <h1 class="page-title">文章</h1>
         <p class="page-sub">深度探索、笔记与实验。共 {posts.length} 篇。</p>
 
         <div class="article-list">
           {posts.map((post) => (
             <article class="list-item">
               <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`} class="list-link">
-                <div class="list-left">
+                <div class="list-meta">
                   <span class="list-date">
                     <FormattedDate date={post.data.pubDate} />
                   </span>
                 </div>
-                <div class="list-right">
+                <div class="list-body">
                   <h2 class="list-title">{post.data.title}</h2>
                   <p class="list-desc">{post.data.description}</p>
                 </div>
+                <span class="list-arrow">→</span>
               </a>
             </article>
           ))}
@@ -49,110 +48,142 @@ const posts = (await getCollection('blog'))
 
 <style>
   .section {
-    max-width: 800px;
+    max-width: 760px;
     margin: 0 auto;
-    padding: var(--space-2xl) var(--space-lg);
+    padding: 3rem 1.5rem;
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
   }
 
   .page-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--text-primary);
-    letter-spacing: 0.06em;
-    margin-bottom: var(--space-sm);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-  }
-
-  .page-hash {
-    color: var(--accent);
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: oklch(92% 0.01 265);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
   }
 
   .page-sub {
-    font-size: var(--text-base);
-    color: var(--text-secondary);
-    margin-bottom: var(--space-xl);
+    font-size: 0.95rem;
+    color: oklch(58% 0.015 265);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
   }
 
   .article-list {
     display: flex;
     flex-direction: column;
-    gap: 1px;
-    border-top: 1px solid var(--border);
+    gap: 0;
   }
 
   .list-item {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid oklch(28% 0.025 265 / 0.4);
+    transition: border-color 0.3s ease;
+  }
+
+  .list-item:hover {
+    border-color: oklch(72% 0.18 62 / 0.3);
   }
 
   .list-link {
     display: flex;
-    gap: var(--space-xl);
-    padding: var(--space-lg) 0;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
     text-decoration: none;
     color: inherit;
-    transition: background 0.15s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 6px;
   }
 
   .list-link:hover {
+    color: inherit;
     text-shadow: none;
-    background: var(--bg-hover);
-    margin: 0 calc(-1 * var(--space-md));
-    padding-left: var(--space-md);
-    padding-right: var(--space-md);
-    border-radius: var(--radius-sm);
   }
 
-  .list-left {
+  .list-meta {
     flex-shrink: 0;
-    width: 100px;
+    width: 90px;
     padding-top: 2px;
   }
 
   .list-date {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--text-muted);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 0.78rem;
+    color: oklch(48% 0.015 265);
+    font-weight: 400;
+    letter-spacing: 0.02em;
   }
 
-  .list-right {
+  .list-body {
     flex: 1;
     min-width: 0;
   }
 
   .list-title {
-    font-family: var(--font-display);
-    font-size: var(--text-base);
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: oklch(92% 0.01 265);
     margin-bottom: 4px;
-    line-height: var(--leading-tight);
+    line-height: 1.25;
+    transition: color 0.3s ease;
   }
 
   .list-link:hover .list-title {
-    color: var(--accent);
+    color: oklch(72% 0.18 62);
   }
 
   .list-desc {
-    font-size: var(--text-sm);
-    color: var(--text-muted);
-    line-height: var(--leading-normal);
+    font-size: 0.85rem;
+    color: oklch(58% 0.015 265);
+    line-height: 1.55;
     margin-bottom: 0;
+    font-weight: 300;
+  }
+
+  .list-arrow {
+    flex-shrink: 0;
+    color: oklch(38% 0.025 265);
+    font-size: 1rem;
+    padding-top: 1px;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .list-item:hover .list-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: oklch(72% 0.18 62);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (max-width: 640px) {
     .section {
-      padding: var(--space-xl) var(--space-md);
+      padding: 2rem 1rem;
     }
 
     .list-link {
-      flex-direction: column;
-      gap: var(--space-xs);
+      gap: 0.75rem;
     }
 
-    .list-left {
+    .list-meta {
       width: auto;
+    }
+
+    .list-arrow {
+      display: none;
     }
   }
 </style>

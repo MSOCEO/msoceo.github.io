@@ -4,11 +4,9 @@ const today = new Date();
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-line"></div>
     <div class="footer-content">
-      <span class="footer-prompt">root@msoceo:~$</span>
       <span>&copy; {today.getFullYear()} MSOCEO</span>
-      <span class="footer-sep">|</span>
+      <span class="footer-sep">&middot;</span>
       <span>Powered by Astro</span>
     </div>
   </div>
@@ -16,7 +14,7 @@ const today = new Date();
 
 <style>
   footer {
-    padding: var(--space-2xl) var(--space-lg);
+    padding: 2.5rem 1.5rem;
   }
 
   .footer-inner {
@@ -24,41 +22,25 @@ const today = new Date();
     margin: 0 auto;
   }
 
-  .footer-line {
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--border) 30%,
-      var(--border-glow) 50%,
-      var(--border) 70%,
-      transparent
-    );
-    margin-bottom: var(--space-lg);
-  }
-
   .footer-content {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--text-muted);
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 0.8rem;
+    color: oklch(48% 0.015 265);
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
+    gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: center;
-  }
-
-  .footer-prompt {
-    color: var(--accent-dim);
+    letter-spacing: 0.02em;
   }
 
   .footer-sep {
-    color: var(--border);
+    color: oklch(28% 0.025 265);
   }
 
   @media (max-width: 640px) {
     footer {
-      padding: var(--space-xl) var(--space-md);
+      padding: 2rem 1rem;
     }
   }
 </style>
