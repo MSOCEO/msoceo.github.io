@@ -19,13 +19,13 @@ const { Content } = await render(post);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <BaseHead title={post.data.title} description={post.data.description} image={post.data.heroImage} />
   </head>
   <body>
     <Header />
-    <main>
+    <main class="article-main">
       <article class="article">
         <header class="article-header">
           <div class="article-meta">
@@ -34,7 +34,7 @@ const { Content } = await render(post);
             </span>
             {post.data.updatedDate && (
               <span class="article-updated">
-                Updated <FormattedDate date={post.data.updatedDate} />
+                更新于 <FormattedDate date={post.data.updatedDate} />
               </span>
             )}
           </div>
@@ -52,107 +52,39 @@ const { Content } = await render(post);
 </html>
 
 <style>
-  .article {
-    max-width: 720px;
-    margin: 0 auto;
-  }
+.article-main { max-width: 1200px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
+.article { max-width: 720px; margin: 0 auto; }
+.article-header { margin-bottom: var(--space-xl); }
+.article-meta { display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md); }
+.article-date {
+  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--star-warm);
+  padding: 2px 8px; border: 1px solid oklch(78% 0.18 65 / 0.2);
+  border-radius: var(--radius-sm); background: oklch(78% 0.18 65 / 0.06);
+}
+.article-updated { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
+.article-title {
+  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.1; margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.article-desc { font-size: var(--text-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+.article hr {
+  margin: var(--space-xl) 0;
+  border: none; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glow) 50%, transparent);
+}
 
-  .article-header {
-    margin-bottom: var(--space-xl);
-  }
+.article-body :global(h2) { font-size: var(--text-2xl); margin-top: var(--space-2xl); margin-bottom: var(--space-md); color: var(--text-primary); }
+.article-body :global(h3) { font-size: var(--text-xl); margin-top: var(--space-xl); margin-bottom: var(--space-sm); color: var(--text-primary); }
+.article-body :global(p) { line-height: var(--leading-relaxed); margin-bottom: var(--space-md); }
+.article-body :global(ul), .article-body :global(ol) { padding-left: var(--space-xl); margin-bottom: var(--space-md); }
+.article-body :global(li) { margin-bottom: var(--space-xs); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+.article-body :global(a) { color: var(--star-warm); }
+.article-body :global(a:hover) { color: var(--lantern-warm); }
+.article-body :global(strong) { color: var(--text-primary); }
+.article-body :global(img) { border-radius: var(--radius-sm); border: 1px solid var(--border-ghost); }
 
-  .article-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-  }
-
-  .article-date {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--accent);
-    padding: 2px 8px;
-    border: 1px solid oklch(30% 0.04 62);
-    border-radius: var(--radius-sm);
-    background: oklch(16% 0.04 62 / 0.12);
-  }
-
-  .article-updated {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-  }
-
-  .article-title {
-    font-family: var(--font-display);
-    font-size: var(--text-3xl);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    margin-bottom: var(--space-md);
-  }
-
-  .article-desc {
-    font-size: var(--text-lg);
-    color: var(--text-secondary);
-    line-height: var(--leading-relaxed);
-  }
-
-  .article hr {
-    margin: var(--space-xl) 0;
-  }
-
-  /* Content styling */
-  .article-body :global(h2) {
-    font-size: var(--text-2xl);
-    margin-top: var(--space-2xl);
-    margin-bottom: var(--space-md);
-  }
-
-  .article-body :global(h3) {
-    font-size: var(--text-xl);
-    margin-top: var(--space-xl);
-    margin-bottom: var(--space-sm);
-  }
-
-  .article-body :global(p) {
-    line-height: var(--leading-relaxed);
-    margin-bottom: var(--space-md);
-  }
-
-  .article-body :global(ul),
-  .article-body :global(ol) {
-    padding-left: var(--space-xl);
-    margin-bottom: var(--space-md);
-  }
-
-  .article-body :global(li) {
-    margin-bottom: var(--space-xs);
-    color: var(--text-secondary);
-    line-height: var(--leading-relaxed);
-  }
-
-  .article-body :global(a) {
-    color: var(--electric);
-  }
-
-  .article-body :global(a:hover) {
-    color: var(--electric-glow);
-  }
-
-  .article-body :global(strong) {
-    color: var(--text-primary);
-  }
-
-  .article-body :global(img) {
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-  }
-
-  @media (max-width: 640px) {
-    .article-title {
-      font-size: clamp(1.6rem, 1.2rem + 3vw, 2.4rem);
-    }
-  }
+@media (max-width: 640px) {
+  .article-title { font-size: clamp(1.6rem, 1.2rem + 3vw, 2.4rem); }
+}
 </style>
