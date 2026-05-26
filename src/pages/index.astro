@@ -23,26 +23,26 @@ const posts = (await getCollection('blog'))
       <div class="hero-noise"></div>
       <div class="hero-grid"></div>
       <div class="hero-content">
-        <p class="hero-eyebrow">EST. 2025 &mdash; ENGINEERING LOG</p>
+        <p class="hero-eyebrow">始于 2025 &mdash; 工程日志</p>
         <h1 class="hero-title">
-          <span class="hero-line">Systems, Signals,</span>
+          <span class="hero-line">系统、信号、</span>
           <span class="hero-line">
-            <span class="hero-accent">Code</span> &amp; Chaos.
+            <span class="hero-accent">代码</span> 与混沌。
           </span>
         </h1>
         <p class="hero-desc">{SITE_DESCRIPTION}</p>
         <div class="hero-stats">
           <div class="stat">
             <span class="stat-value">{posts.length}</span>
-            <span class="stat-label">Articles</span>
+            <span class="stat-label">文章</span>
           </div>
           <div class="stat">
             <span class="stat-value">∞</span>
-            <span class="stat-label">Experiments</span>
+            <span class="stat-label">实验</span>
           </div>
           <div class="stat">
             <span class="stat-value">24/7</span>
-            <span class="stat-label">Building</span>
+            <span class="stat-label">建造中</span>
           </div>
         </div>
       </div>
@@ -52,7 +52,7 @@ const posts = (await getCollection('blog'))
     <main>
       <section class="section">
         <h2 class="section-title">
-          <span class="section-hash">#</span> Latest Articles
+          <span class="section-hash">#</span> 最新文章
         </h2>
         <div class="post-grid">
           {posts.slice(0, 4).map((post) => (
@@ -72,7 +72,7 @@ const posts = (await getCollection('blog'))
         </div>
         {posts.length > 4 && (
           <div class="section-more">
-            <a href="/blog" class="btn-ghost">View all {posts.length} articles &rarr;</a>
+            <a href="/blog" class="btn-ghost">查看全部 {posts.length} 篇文章 &rarr;</a>
           </div>
         )}
       </section>
@@ -80,7 +80,7 @@ const posts = (await getCollection('blog'))
       <!-- Resources Teaser -->
       <section class="section section-alt">
         <h2 class="section-title">
-          <span class="section-hash">#</span> Data Vault
+          <span class="section-hash">#</span> 数据仓库
         </h2>
         <div class="vault-grid">
           <a href="/resources" class="vault-card vault-primary">
@@ -90,8 +90,8 @@ const posts = (await getCollection('blog'))
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke-linecap="round"/>
               </svg>
             </div>
-            <span class="vault-label">Resources</span>
-            <p class="vault-desc">Curated tools, libraries, and references for builders.</p>
+            <span class="vault-label">资源</span>
+            <p class="vault-desc">精选工具、库与参考，为建造者准备。</p>
           </a>
           <a href="/blog" class="vault-card">
             <div class="vault-icon">
@@ -103,8 +103,8 @@ const posts = (await getCollection('blog'))
                 <polyline points="10 9 9 9 8 9"/>
               </svg>
             </div>
-            <span class="vault-label">Articles</span>
-            <p class="vault-desc">Deep dives into distributed systems, compilers, and more.</p>
+            <span class="vault-label">文章</span>
+            <p class="vault-desc">深入分布式系统、编译器等领域的技术文章。</p>
           </a>
           <a href="/about" class="vault-card">
             <div class="vault-icon">
@@ -113,8 +113,8 @@ const posts = (await getCollection('blog'))
                 <circle cx="12" cy="7" r="4"/>
               </svg>
             </div>
-            <span class="vault-label">About</span>
-            <p class="vault-desc">Who's behind the terminal. Background, stack, and contact.</p>
+            <span class="vault-label">关于</span>
+            <p class="vault-desc">终端背后的人。背景、技术栈与联系方式。</p>
           </a>
         </div>
       </section>

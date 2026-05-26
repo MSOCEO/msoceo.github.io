@@ -13,21 +13,21 @@ const currentPath = Astro.url.pathname;
     </a>
     <nav>
       <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>
-        <span class="nav-index">00</span>Home
+        <span class="nav-index">00</span>首页
       </a>
       <a href="/blog" class:list={['nav-link', { active: currentPath.startsWith('/blog') }]}>
-        <span class="nav-index">01</span>Articles
+        <span class="nav-index">01</span>文章
       </a>
       <a href="/resources" class:list={['nav-link', { active: currentPath === '/resources' }]}>
-        <span class="nav-index">02</span>Resources
+        <span class="nav-index">02</span>资源
       </a>
       <a href="/about" class:list={['nav-link', { active: currentPath === '/about' }]}>
-        <span class="nav-index">03</span>About
+        <span class="nav-index">03</span>关于
       </a>
     </nav>
     <div class="header-status">
       <span class="status-dot"></span>
-      <span class="status-text">ONLINE</span>
+      <span class="status-text">在线</span>
     </div>
   </div>
 </header>

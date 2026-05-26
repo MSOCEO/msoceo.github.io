@@ -13,16 +13,16 @@ const posts = (await getCollection('blog'))
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={`Articles — ${SITE_TITLE}`} description="All engineering articles and deep dives." />
+    <BaseHead title={`文章 — ${SITE_TITLE}`} description="工程技术与深度探索。" />
   </head>
   <body>
     <Header />
     <main>
       <section class="section">
         <h1 class="page-title">
-          <span class="page-hash">#</span> Articles
+          <span class="page-hash">#</span> 文章
         </h1>
-        <p class="page-sub">Deep dives, notes, and experiments. {posts.length} entries and counting.</p>
+        <p class="page-sub">深度探索、笔记与实验。共 {posts.length} 篇。</p>
 
         <div class="article-list">
           {posts.map((post) => (
