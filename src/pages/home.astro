@@ -1,0 +1,527 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  <style>
+    /* Homepage specific styles */
+    .home {
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 0%, 
+        oklch(16% 0.03 265) 0%,
+        oklch(10% 0.025 265) 50%,
+        oklch(8% 0.02 265) 100%);
+    }
+
+    .home-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .home-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, oklch(28% 0.025 265 / 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, oklch(28% 0.025 265 / 0.1) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .home-noise {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+    }
+
+    .home-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      margin-bottom: 4rem;
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .hero-title-wrapper {
+      margin-bottom: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.85rem;
+      color: oklch(72% 0.18 62);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: oklch(92% 0.01 265);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: oklch(68% 0.015 265);
+      font-weight: 300;
+      line-height: 1.5;
+      max-width: 600px;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+    }
+
+    .stat-card {
+      background: oklch(14% 0.02 265 / 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid oklch(28% 0.025 265 / 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stat-card:hover {
+      border-color: oklch(72% 0.18 62 / 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px oklch(72% 0.18 62 / 0.1);
+    }
+
+    .stat-value {
+      display: block;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: oklch(92% 0.01 265);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: oklch(58% 0.015 265);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    /* Quick Links */
+    .links-section {
+      margin-bottom: 4rem;
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: oklch(92% 0.01 265);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+    }
+
+    .link-card {
+      background: oklch(14% 0.02 265 / 0.4);
+      border: 1px solid oklch(28% 0.025 265 / 0.2);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .link-card:hover {
+      background: oklch(14% 0.02 265 / 0.8);
+      border-color: oklch(72% 0.18 62 / 0.5);
+      transform: translateY(-2px);
+    }
+
+    .link-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, oklch(72% 0.18 62), oklch(65% 0.16 255));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: oklch(10% 0.025 265);
+      font-weight: 600;
+    }
+
+    .link-label {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: oklch(92% 0.01 265);
+      letter-spacing: 0.02em;
+    }
+
+    /* Recent Posts */
+    .posts-section {
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .post-card {
+      background: oklch(14% 0.02 265 / 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid oklch(28% 0.025 265 / 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .post-card:hover {
+      border-color: oklch(72% 0.18 62 / 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px oklch(72% 0.18 62 / 0.1);
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .post-date {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.75rem;
+      color: oklch(58% 0.015 265);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .post-category {
+      font-size: 0.75rem;
+      color: oklch(72% 0.18 62);
+      font-weight: 500;
+      padding: 0.15rem 0.5rem;
+      background: oklch(72% 0.18 62 / 0.1);
+      border-radius: 4px;
+    }
+
+    .post-title {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: oklch(92% 0.01 265);
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+
+    .post-excerpt {
+      font-size: 0.85rem;
+      color: oklch(68% 0.015 265);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes countUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .home-content {
+        padding: 2rem 1rem;
+      }
+
+      .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .links-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .posts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-section {
+        grid-template-columns: 1fr;
+      }
+
+      .links-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="home">
+    <div class="home-bg">
+      <div class="home-grid"></div>
+      <div class="home-noise"></div>
+    </div>
+
+    <div class="home-content">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-title-wrapper">
+          <div class="hero-eyebrow">始于 2025 &mdash; 工程日志</div>
+          <h1 class="hero-title">
+            <span class="hero-line">系统、信号、</span>
+            <span class="hero-line">
+              <span class="hero-accent">代码</span> 与混沌。
+            </span>
+          </h1>
+          <p class="hero-subtitle">{SITE_DESCRIPTION}</p>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="stats-section">
+        <div class="stat-card">
+          <span class="stat-value" data-count="258">0</span>
+          <span class="stat-label">项目提交</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" data-count="24">0</span>
+          <span class="stat-label">文章发布</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">∞</span>
+          <span class="stat-label">实验进行中</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" data-count="404">0</span>
+          <span class="stat-label">代码行数</span>
+        </div>
+      </section>
+
+      <!-- Quick Links -->
+      <section class="links-section">
+        <h2 class="section-title">快速入口</h2>
+        <div class="links-grid">
+          <a href="/blog" class="link-card">
+            <div class="link-icon">📝</div>
+            <span class="link-label">文章</span>
+          </a>
+          <a href="/resources" class="link-card">
+            <div class="link-icon">📚</div>
+            <span class="link-label">资源</span>
+          </a>
+          <a href="/about" class="link-card">
+            <div class="link-icon">👤</div>
+            <span class="link-label">关于</span>
+          </a>
+          <a href="https://github.com/MSOCEO" class="link-card" target="_blank">
+            <div class="link-icon">🐙</div>
+            <span class="link-label">GitHub</span>
+          </a>
+          <a href="#" class="link-card">
+            <div class="link-icon">🔧</div>
+            <span class="link-label">项目</span>
+          </a>
+          <a href="#" class="link-card">
+            <div class="link-icon">📊</div>
+            <span class="link-label">统计</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Recent Posts -->
+      <section class="posts-section">
+        <h2 class="section-title">最近更新</h2>
+        <div class="posts-grid">
+          <a href="/blog/astro-theme" class="post-card">
+            <div class="post-meta">
+              <span class="post-date">2025-05-26</span>
+              <span class="post-category">设计</span>
+            </div>
+            <h3 class="post-title">Astro 主题设计与实现</h3>
+            <p class="post-excerpt">探索现代博客主题的设计语言与实现细节，包括响应式布局、动画效果和性能优化。</p>
+          </a>
+          <a href="/blog/cyberpunk-style" class="post-card">
+            <div class="post-meta">
+              <span class="post-date">2025-05-25</span>
+              <span class="post-category">前端</span>
+            </div>
+            <h3 class="post-title">赛博朋克风格界面设计</h3>
+            <p class="post-excerpt">从色彩系统到交互细节，构建具有未来感的数字界面体验。</p>
+          </a>
+          <a href="/blog/performance-optimization" class="post-card">
+            <div class="post-meta">
+              <span class="post-date">2025-05-24</span>
+              <span class="post-category">工程</span>
+            </div>
+            <h3 class="post-title">现代 Web 性能优化实践</h3>
+            <p class="post-excerpt">从核心指标到实际优化策略，提升网站加载速度与用户体验。</p>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Count up animation for stats
+    function animateCountUp() {
+      const counters = document.querySelectorAll('[data-count]');
+      
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-count'));
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        
+        const updateCounter = () => {
+          current += step;
+          if (current < target) {
+            counter.textContent = Math.floor(current);
+            requestAnimationFrame(updateCounter);
+          } else {
+            counter.textContent = target;
+          }
+        };
+        
+        // Start animation when element is in viewport
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              updateCounter();
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.5 });
+        
+        observer.observe(counter);
+      });
+    }
+
+    // Particle effect
+    function createParticles() {
+      const container = document.querySelector('.home-bg');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.width = Math.random() * 2 + 1 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.background = `oklch(${70 + Math.random() * 20}% 0.15 62 / ${0.1 + Math.random() * 0.1})`;
+        particle.style.borderRadius = '50%';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.pointerEvents = 'none';
+        
+        // Animation
+        const duration = 3000 + Math.random() * 4000;
+        const delay = Math.random() * 2000;
+        
+        particle.style.animation = `
+          particleFloat ${duration}ms ease-in-out ${delay}ms infinite alternate
+        `;
+        
+        container.appendChild(particle);
+      }
+      
+      // Add animation keyframes
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes particleFloat {
+          0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.3;
+          }
+          50% {
+            transform: translate(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px) scale(${0.8 + Math.random() * 0.4});
+            opacity: 0.1;
+          }
+          100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.3;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Initialize effects when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      animateCountUp();
+      createParticles();
+      
+      // Add smooth scroll behavior
+      document.documentElement.style.scrollBehavior = 'smooth';
+      
+      // Add hover effects for cards
+      const cards = document.querySelectorAll('.stat-card, .link-card, .post-card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.zIndex = '10';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          card.style.zIndex = '1';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
