@@ -1,198 +1,195 @@
 ---
+// src/components/Header.astro — 黑曜石星光导航栏
 import { SITE_TITLE } from '../consts';
-const currentPath = Astro.url.pathname;
 ---
 
 <header class="glass-nav">
-  <div class="header-inner">
-    <a href="/home" class="logo">
-      <svg class="logo-mark" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <!-- Logo: 日落山景几何标志 -->
-        <circle cx="22" cy="8" r="3" fill="url(#sun-grad)"/>
-        <path d="M2 18 L8 10 L12 14 L18 6 L24 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
-        <path d="M16 18 L18 15 L20 18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5"/>
-        <path d="M0 22 L4 16 L8 19 L12 12 L18 20 L22 17 L28 20" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
+  <div class="nav-inner">
+    <a href="/" class="brand" aria-label="MSOCEO — 返回入口">
+      <svg class="logo-icon" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
         <defs>
-          <radialGradient id="sun-grad" cx="30%" cy="30%">
-            <stop stop-color="oklch(85% 0.12 60)"/>
-            <stop offset="100%" stop-color="oklch(68% 0.15 50)"/>
-          </radialGradient>
+          <linearGradient id="obsidianGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1a1e2e"/>
+            <stop offset="40%" stop-color="#0d111a"/>
+            <stop offset="100%" stop-color="#1e2438"/>
+          </linearGradient>
+          <linearGradient id="starInner" x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="#f5e6c8"/>
+            <stop offset="100%" stop-color="#e88a2b"/>
+          </linearGradient>
         </defs>
+        <polygon points="20,3 35,13 35,29 20,37 5,29 5,13" fill="url(#obsidianGrad)" stroke="#3a4060" stroke-width="0.8"/>
+        <line x1="20" y1="3" x2="20" y2="37" stroke="rgba(80,90,130,0.3)" stroke-width="0.5"/>
+        <line x1="5" y1="21" x2="35" y2="21" stroke="rgba(80,90,130,0.2)" stroke-width="0.5"/>
+        <circle cx="20" cy="20" r="3.5" fill="url(#starInner)" opacity="0.9"/>
+        <circle cx="20" cy="20" r="7" fill="rgba(232,138,43,0.08)"/>
       </svg>
-      <span class="logo-text">{SITE_TITLE}</span>
+      <span class="brand-text">{SITE_TITLE}</span>
     </a>
-    <nav>
-      <a href="/home" class:list={['nav-item', { active: currentPath === '/home' }]}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        首页
+
+    <nav class="nav-links" aria-label="主导航">
+      <a href="/" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <polygon points="12,2 22,9 22,22 2,22 2,9"/>
+          <polyline points="8,22 8,12 16,12 16,22"/>
+        </svg>
+        <span>入口</span>
       </a>
-      <a href="/blog" class:list={['nav-item', { active: currentPath.startsWith('/blog') }]}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        文章
+      <a href="/home" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <line x1="12" y1="2" x2="12" y2="6"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+          <line x1="2" y1="12" x2="6" y2="12"/>
+          <line x1="18" y1="12" x2="22" y2="12"/>
+          <circle cx="12" cy="12" r="4"/>
+        </svg>
+        <span>首页</span>
       </a>
-      <a href="/resources" class:list={['nav-item', { active: currentPath === '/resources' }]}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-        资源
+      <a href="/blog" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <polyline points="4,7 20,7"/>
+          <polyline points="4,12 20,12"/>
+          <polyline points="4,17 16,17"/>
+        </svg>
+        <span>文章</span>
       </a>
-      <a href="/about" class:list={['nav-item', { active: currentPath === '/about' }]}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        关于
+      <a href="/resources" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>资源</span>
       </a>
-      <div class="nav-actions">
-        <button class="nav-icon-btn" aria-label="搜索" title="搜索">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
-        <button class="nav-icon-btn" aria-label="用户" title="用户">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </button>
-      </div>
+      <a href="/about" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4,20c0-4,3.6-8,8-8s8,4,8,8"/>
+        </svg>
+        <span>关于</span>
+      </a>
     </nav>
   </div>
 </header>
 
 <style>
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: oklch(100% 0 0 / 0.75);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border-bottom: 0.5px solid oklch(0% 0 0 / 0.06);
-    transition: background 0.3s ease;
-  }
+.glass-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: oklch(6% 0.008 260 / 0.88);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid oklch(100% 0 0 / 0.06);
+  transition: border-color var(--duration-normal) var(--ease-out-expo);
+}
 
-  .header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.glass-nav::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(78% 0.18 65 / 0.15) 20%,
+    oklch(72% 0.14 195 / 0.1) 50%,
+    oklch(78% 0.18 65 / 0.15) 80%,
+    transparent 100%
+  );
+}
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    text-decoration: none;
-    letter-spacing: -0.01em;
-    transition: opacity 0.3s ease;
-  }
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .logo:hover {
-    opacity: 0.8;
-  }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  text-decoration: none;
+  color: var(--text-primary);
+}
 
-  .logo-mark {
-    color: var(--accent-primary);
-  }
+.logo-icon {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px oklch(78% 0.18 65 / 0.3));
+  transition: filter var(--duration-normal) var(--ease-out-expo);
+}
 
-  nav {
-    display: flex;
-    align-items: center;
-    gap: 0.15rem;
+.brand:hover .logo-icon {
+  filter: drop-shadow(0 0 12px oklch(78% 0.18 65 / 0.5));
+}
+
+.brand-text {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-lg);
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--star-warm), var(--tech-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xs);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  padding: var(--space-2xs) var(--space-sm);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  position: relative;
+}
+
+.nav-item svg {
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  opacity: 0.6;
+}
+
+.nav-item:hover {
+  color: var(--star-warm);
+  background: oklch(78% 0.18 65 / 0.06);
+}
+
+.nav-item:hover svg {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px oklch(78% 0.18 65 / 0.4));
+}
+
+.nav-item:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 640px) {
+  .nav-item span {
+    display: none;
   }
 
   .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-decoration: none;
-    padding: 0.35rem 0.65rem;
-    border-radius: var(--radius-lg);
-    transition: all var(--duration-normal) var(--ease-out-expo);
-    letter-spacing: 0.01em;
+    padding: var(--space-2xs) var(--space-xs);
   }
 
-  .nav-item svg {
-    opacity: 0.55;
-    transition: all var(--duration-normal) var(--ease-out-expo);
+  .brand-text {
+    font-size: var(--text-base);
   }
-
-  .nav-item:hover {
-    color: var(--text-primary);
-    background: oklch(97% 0.01 60);
-  }
-
-  .nav-item:hover svg {
-    opacity: 1;
-  }
-
-  .nav-item.active {
-    color: var(--accent-primary);
-    background: oklch(68% 0.15 50 / 0.06);
-    font-weight: 600;
-  }
-
-  .nav-item.active svg {
-    opacity: 1;
-    color: var(--accent-primary);
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    margin-left: 0.5rem;
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--border-light);
-  }
-
-  .nav-icon-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: var(--radius-full);
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all var(--duration-normal) var(--ease-out-expo);
-  }
-
-  .nav-icon-btn:hover {
-    color: var(--text-primary);
-    background: oklch(97% 0.01 60);
-  }
-
-  @media (max-width: 640px) {
-    .header-inner {
-      padding: 0 1rem;
-    }
-
-    .nav-item {
-      padding: 0.3rem 0.4rem;
-      font-size: 0.75rem;
-    }
-
-    .nav-item svg {
-      display: none;
-    }
-
-    .nav-actions {
-      padding-left: 0.5rem;
-      margin-left: 0.25rem;
-    }
-
-    .logo {
-      font-size: 0.95rem;
-    }
-
-    .logo-mark {
-      width: 24px;
-      height: 24px;
-    }
-  }
+}
 </style>

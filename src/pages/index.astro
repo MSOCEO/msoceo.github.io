@@ -1,278 +1,129 @@
 ---
+// src/pages/index.astro — 黑曜石星光入口页
 import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-  <style>
-    .sunset-entrance {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(
-        180deg,
-        oklch(85% 0.12 60) 0%,
-        oklch(75% 0.08 70) 20%,
-        oklch(65% 0.05 250) 50%,
-        oklch(20% 0.01 250) 100%
-      );
-    }
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
 
-    .sunset-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .sunset-mountains {
-      position: absolute;
-      inset: 0;
-      background-image: 
-        /* 远景雪峰 */
-        radial-gradient(ellipse at 70% 20%, oklch(95% 0.01 60) 0%, transparent 20%),
-        radial-gradient(ellipse at 30% 25%, oklch(95% 0.01 60) 0%, transparent 15%),
-        
-        /* 日落山体 */
-        radial-gradient(ellipse at 50% 40%, oklch(70% 0.1 50) 0%, transparent 30%),
-        
-        /* 森林剪影 */
-        radial-gradient(ellipse at 40% 60%, oklch(30% 0.05 140) 0%, transparent 25%),
-        radial-gradient(ellipse at 60% 65%, oklch(40% 0.06 140) 0%, transparent 20%),
-        
-        /* 水面倒影 */
-        radial-gradient(ellipse at 50% 90%, oklch(25% 0.02 250) 0%, transparent 40%),
-        radial-gradient(ellipse at 50% 95%, oklch(35% 0.03 60) 0%, transparent 30%);
-      
-      opacity: 0.6;
-      mix-blend-mode: multiply;
-    }
-
-    .sunset-noise {
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
-    }
-
-    .sunset-content {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      max-width: 640px;
-      padding: 2rem;
-      background: oklch(100% 0 0 / 0.7);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      border-radius: 24px;
-      border: 0.5px solid oklch(0% 0 0 / 0.08);
-      box-shadow: 
-        0 20px 25px -5px oklch(0% 0 0 / 0.1),
-        0 8px 10px -6px oklch(0% 0 0 / 0.06),
-        inset 0 1px 0 oklch(100% 0 0 / 0.1);
-    }
-
-    .sunset-logo {
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
-    }
-
-    .logo-svg {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto;
-      color: oklch(68% 0.15 50);
-    }
-
-    .sunset-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2.8rem, 5vw, 4.2rem);
-      font-weight: 500;
-      letter-spacing: -0.03em;
-      line-height: 1.05;
-      color: oklch(15% 0.01 60);
-      margin-bottom: 0.5rem;
-      opacity: 0;
-      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-    }
-
-    .sunset-title-line {
-      display: block;
-      letter-spacing: 0.06em;
-    }
-
-    .sunset-title-line + .sunset-title-line {
-      margin-top: -0.15em;
-    }
-
-    .sunset-motto {
-      font-family: 'Onest', system-ui, sans-serif;
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: oklch(40% 0.01 60);
-      font-weight: 300;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.5rem;
-      opacity: 0;
-      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
-    }
-
-    .sunset-desc {
-      font-family: 'Onest', system-ui, sans-serif;
-      font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-      color: oklch(60% 0.01 60);
-      margin-bottom: 2rem;
-      font-weight: 300;
-      line-height: 1.6;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-      opacity: 0;
-      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
-    }
-
-    .sunset-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.9rem 2.5rem;
-      background: transparent;
-      border: 1px solid oklch(68% 0.15 50);
-      color: oklch(68% 0.15 50);
-      font-family: 'Onest', system-ui, sans-serif;
-      font-size: 0.95rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border-radius: 9999px;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      opacity: 0;
-      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
-    }
-
-    .sunset-button::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: oklch(68% 0.15 50);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: -1;
-    }
-
-    .sunset-button:hover {
-      color: white;
-      border-color: oklch(60% 0.15 50);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px oklch(68% 0.15 50 / 0.2);
-    }
-
-    .sunset-button:hover::before {
-      width: 300px;
-      height: 300px;
-    }
-
-    .sunset-button:active {
-      transform: translateY(0);
-    }
-
-    .sunset-arrow {
-      display: inline-block;
-      transition: transform 0.3s ease;
-    }
-
-    .sunset-button:hover .sunset-arrow {
-      transform: translateX(4px);
-    }
-
-    .sunset-footer {
-      position: absolute;
-      bottom: 2rem;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
-      font-size: 0.72rem;
-      color: oklch(60% 0.01 60);
-      letter-spacing: 0.05em;
-      opacity: 0;
-      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
-    }
-
-    @keyframes sunsetFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 640px) {
-      .sunset-content {
-        padding: 1.5rem;
-        margin: 1rem;
-      }
-
-      .sunset-button {
-        padding: 0.8rem 2rem;
-        font-size: 0.88rem;
-      }
-
-      .logo-svg {
-        width: 40px;
-        height: 40px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="sunset-entrance">
-    <div class="sunset-bg">
-      <div class="sunset-mountains"></div>
-      <div class="sunset-noise"></div>
-    </div>
-
-    <div class="sunset-content">
-      <div class="sunset-logo">
-        <svg class="logo-svg" viewBox="0 0 28 28" fill="none">
-          <circle cx="22" cy="8" r="3" fill="oklch(85% 0.12 60)"/>
-          <path d="M2 18 L8 10 L12 14 L18 6 L24 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
-          <path d="M16 18 L18 15 L20 18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5"/>
-          <path d="M0 22 L4 16 L8 19 L12 12 L18 20 L22 17 L28 20" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
-        </svg>
+    <main class="entrance-main">
+      <div class="entrance-card">
+        <h1 class="entrance-title">探索 · 发现 · 热爱</h1>
+        <p class="entrance-subtitle">
+          在代码的星空中寻找光，在生活的烟火里记录温度。<br/>
+          这里是一个探索者的小站，分享科技、生活与一切值得被看见的事物。
+        </p>
+        <a href="/home" class="entrance-btn">
+          <span>开始探索</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12,5 19,12 12,19"/>
+          </svg>
+        </a>
       </div>
-      <h1 class="sunset-title">
-        <span class="sunset-title-line">离 群 索 居</span>
-        <span class="sunset-title-line">不 是 野 兽</span>
-        <span class="sunset-title-line">便 是 神 灵</span>
-      </h1>
-      <p class="sunset-motto">当极简主义遇上工程之美</p>
-      <p class="sunset-desc">{SITE_DESCRIPTION}</p>
+    </main>
 
-      <a href="/home" class="sunset-button">
-        <span>探索</span>
-        <span class="sunset-arrow">→</span>
-      </a>
-    </div>
-
-    <div class="sunset-footer">
-      <span>MSOCEO &copy; {new Date().getFullYear()} &mdash; Powered by Astro</span>
-    </div>
-  </div>
-</body>
+    <Footer />
+  </body>
 </html>
+
+<style>
+.entrance-main {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  position: relative;
+}
+
+.entrance-card {
+  position: relative;
+  max-width: 580px;
+  width: 100%;
+  padding: var(--space-3xl) var(--space-2xl);
+  background: var(--surface-void);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  text-align: center;
+  box-shadow:
+    0 0 60px oklch(78% 0.18 65 / 0.04),
+    0 0 120px oklch(72% 0.14 195 / 0.02);
+  animation: fadeInUp var(--duration-very-slow) var(--ease-out-expo) forwards;
+}
+
+.entrance-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-md);
+  background: linear-gradient(
+    135deg,
+    var(--star-warm) 0%,
+    var(--lantern-warm) 40%,
+    var(--tech-cyan) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.entrance-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-xl);
+  font-weight: 300;
+}
+
+.entrance-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--space-xl);
+  background: transparent;
+  border: 1px solid oklch(78% 0.18 65 / 0.3);
+  color: var(--star-warm);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all var(--duration-slow) var(--ease-out-expo);
+}
+
+.entrance-btn:hover {
+  border-color: var(--star-warm);
+  color: var(--obsidian-deep);
+  background: var(--star-warm);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 24px oklch(78% 0.18 65 / 0.2),
+    0 0 48px oklch(78% 0.18 65 / 0.08);
+}
+
+.entrance-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .entrance-card {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .entrance-title {
+    font-size: var(--text-2xl);
+  }
+}
+</style>
