@@ -8,153 +8,196 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 <head>
   <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   <style>
-    .gate {
+    .sunset-entrance {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-      background: radial-gradient(ellipse at 50% 50%, oklch(14% 0.02 265) 0%, oklch(8% 0.015 265) 100%);
+      background: linear-gradient(
+        180deg,
+        oklch(85% 0.12 60) 0%,
+        oklch(75% 0.08 70) 20%,
+        oklch(65% 0.05 250) 50%,
+        oklch(20% 0.01 250) 100%
+      );
     }
 
-    .gate-bg {
+    .sunset-bg {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
     }
 
-    .gate-grid {
+    .sunset-mountains {
       position: absolute;
       inset: 0;
       background-image: 
-        linear-gradient(to right, oklch(28% 0.025 265 / 0.08) 1px, transparent 1px),
-        linear-gradient(to bottom, oklch(28% 0.025 265 / 0.08) 1px, transparent 1px);
-      background-size: 60px 60px;
+        /* 远景雪峰 */
+        radial-gradient(ellipse at 70% 20%, oklch(95% 0.01 60) 0%, transparent 20%),
+        radial-gradient(ellipse at 30% 25%, oklch(95% 0.01 60) 0%, transparent 15%),
+        
+        /* 日落山体 */
+        radial-gradient(ellipse at 50% 40%, oklch(70% 0.1 50) 0%, transparent 30%),
+        
+        /* 森林剪影 */
+        radial-gradient(ellipse at 40% 60%, oklch(30% 0.05 140) 0%, transparent 25%),
+        radial-gradient(ellipse at 60% 65%, oklch(40% 0.06 140) 0%, transparent 20%),
+        
+        /* 水面倒影 */
+        radial-gradient(ellipse at 50% 90%, oklch(25% 0.02 250) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 95%, oklch(35% 0.03 60) 0%, transparent 30%);
+      
+      opacity: 0.6;
+      mix-blend-mode: multiply;
     }
 
-    .gate-scanline {
+    .sunset-noise {
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 0, 0, 0.025) 2px,
-        rgba(0, 0, 0, 0.025) 4px
-      );
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
     }
 
-    .gate-noise {
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
-    }
-
-    .gate-main {
+    .sunset-content {
       position: relative;
       z-index: 1;
       text-align: center;
-      padding: 2rem;
       max-width: 640px;
+      padding: 2rem;
+      background: oklch(100% 0 0 / 0.7);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-radius: 24px;
+      border: 0.5px solid oklch(0% 0 0 / 0.08);
+      box-shadow: 
+        0 20px 25px -5px oklch(0% 0 0 / 0.1),
+        0 8px 10px -6px oklch(0% 0 0 / 0.06),
+        inset 0 1px 0 oklch(100% 0 0 / 0.1);
     }
 
-    .gate-title {
-      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-      font-size: clamp(2.8rem, 5vw, 4.2rem);
-      font-weight: 300;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      color: oklch(92% 0.01 265);
+    .sunset-logo {
+      margin-bottom: 1.5rem;
       opacity: 0;
-      animation: gateIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
     }
 
-    .gate-title-line {
+    .logo-svg {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto;
+      color: oklch(68% 0.15 50);
+    }
+
+    .sunset-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: oklch(15% 0.01 60);
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+    }
+
+    .sunset-title-line {
       display: block;
       letter-spacing: 0.06em;
     }
 
-    .gate-title-line + .gate-title-line {
+    .sunset-title-line + .sunset-title-line {
       margin-top: -0.15em;
     }
 
-    .gate-motto {
+    .sunset-motto {
+      font-family: 'Onest', system-ui, sans-serif;
       font-size: clamp(1rem, 2vw, 1.25rem);
-      color: oklch(68% 0.015 265);
+      color: oklch(40% 0.01 60);
       font-weight: 300;
       letter-spacing: 0.04em;
-      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
       opacity: 0;
-      animation: gateIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
     }
 
-    .gate-desc {
+    .sunset-desc {
+      font-family: 'Onest', system-ui, sans-serif;
       font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-      color: oklch(48% 0.015 265);
-      margin-top: 0.5rem;
+      color: oklch(60% 0.01 60);
+      margin-bottom: 2rem;
       font-weight: 300;
       line-height: 1.6;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
       opacity: 0;
-      animation: gateIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.7s forwards;
+      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
     }
 
-    .gate-enter {
+    .sunset-button {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      margin-top: 3rem;
       padding: 0.9rem 2.5rem;
       background: transparent;
-      border: 1px solid oklch(28% 0.025 265);
-      color: oklch(68% 0.015 265);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
+      border: 1px solid oklch(68% 0.15 50);
+      color: oklch(68% 0.15 50);
+      font-family: 'Onest', system-ui, sans-serif;
       font-size: 0.95rem;
       font-weight: 500;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       text-decoration: none;
-      border-radius: 4px;
+      border-radius: 9999px;
       position: relative;
       overflow: hidden;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       opacity: 0;
-      animation: gateIn 1s cubic-bezier(0.4, 0, 0.2, 1) 1s forwards;
+      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
     }
 
-    .gate-enter::before {
+    .sunset-button::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: oklch(72% 0.18 62);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: oklch(68% 0.15 50);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: -1;
     }
 
-    .gate-enter:hover {
-      color: oklch(10% 0.025 265);
-      border-color: oklch(72% 0.18 62);
+    .sunset-button:hover {
+      color: white;
+      border-color: oklch(60% 0.15 50);
       transform: translateY(-2px);
-      box-shadow: 0 4px 24px oklch(72% 0.18 62 / 0.15);
+      box-shadow: 0 8px 32px oklch(68% 0.15 50 / 0.2);
     }
 
-    .gate-enter:hover::before {
-      transform: scaleX(1);
+    .sunset-button:hover::before {
+      width: 300px;
+      height: 300px;
     }
 
-    .gate-arrow {
+    .sunset-button:active {
+      transform: translateY(0);
+    }
+
+    .sunset-arrow {
       display: inline-block;
       transition: transform 0.3s ease;
     }
 
-    .gate-enter:hover .gate-arrow {
+    .sunset-button:hover .sunset-arrow {
       transform: translateX(4px);
     }
 
-    .gate-footer {
+    .sunset-footer {
       position: absolute;
       bottom: 2rem;
       left: 0;
@@ -162,13 +205,13 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
       text-align: center;
       font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
       font-size: 0.72rem;
-      color: oklch(48% 0.015 265);
+      color: oklch(60% 0.01 60);
       letter-spacing: 0.05em;
       opacity: 0;
-      animation: gateIn 1s cubic-bezier(0.4, 0, 0.2, 1) 1.3s forwards;
+      animation: sunsetFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
     }
 
-    @keyframes gateIn {
+    @keyframes sunsetFadeIn {
       from {
         opacity: 0;
         transform: translateY(30px);
@@ -180,41 +223,54 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
     }
 
     @media (max-width: 640px) {
-      .gate-main {
+      .sunset-content {
         padding: 1.5rem;
+        margin: 1rem;
       }
 
-      .gate-enter {
+      .sunset-button {
         padding: 0.8rem 2rem;
         font-size: 0.88rem;
+      }
+
+      .logo-svg {
+        width: 40px;
+        height: 40px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="gate">
-    <div class="gate-bg">
-      <div class="gate-grid"></div>
-      <div class="gate-scanline"></div>
-      <div class="gate-noise"></div>
+  <div class="sunset-entrance">
+    <div class="sunset-bg">
+      <div class="sunset-mountains"></div>
+      <div class="sunset-noise"></div>
     </div>
 
-    <div class="gate-main">
-      <h1 class="gate-title">
-        <span class="gate-title-line">离 群 索 居</span>
-        <span class="gate-title-line">不 是 野 兽</span>
-        <span class="gate-title-line">便 是 神 灵</span>
+    <div class="sunset-content">
+      <div class="sunset-logo">
+        <svg class="logo-svg" viewBox="0 0 28 28" fill="none">
+          <circle cx="22" cy="8" r="3" fill="oklch(85% 0.12 60)"/>
+          <path d="M2 18 L8 10 L12 14 L18 6 L24 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
+          <path d="M16 18 L18 15 L20 18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5"/>
+          <path d="M0 22 L4 16 L8 19 L12 12 L18 20 L22 17 L28 20" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
+        </svg>
+      </div>
+      <h1 class="sunset-title">
+        <span class="sunset-title-line">离 群 索 居</span>
+        <span class="sunset-title-line">不 是 野 兽</span>
+        <span class="sunset-title-line">便 是 神 灵</span>
       </h1>
-      <p class="gate-motto">当极简主义遇上工程之美</p>
-      <p class="gate-desc">{SITE_DESCRIPTION}</p>
+      <p class="sunset-motto">当极简主义遇上工程之美</p>
+      <p class="sunset-desc">{SITE_DESCRIPTION}</p>
 
-      <a href="/home" class="gate-enter">
+      <a href="/home" class="sunset-button">
         <span>探索</span>
-        <span class="gate-arrow">→</span>
+        <span class="sunset-arrow">→</span>
       </a>
     </div>
 
-    <div class="gate-footer">
+    <div class="sunset-footer">
       <span>MSOCEO &copy; {new Date().getFullYear()} &mdash; Powered by Astro</span>
     </div>
   </div>

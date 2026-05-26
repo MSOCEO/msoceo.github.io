@@ -1,39 +1,73 @@
 /*
-  Cyberpunk Industrial Theme — Global Styles
-  Tone: Retro-futuristic, terminal-inspired, high-contrast
+  日落山景主题 — 诗意极简设计系统
+  Tone: 温暖黄昏、自然意境、透明毛玻璃、极简诗意
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&display=swap');
 
 :root {
-  /* === Color System (OKLCH) === */
-  --bg-deep: oklch(10% 0.025 265);
-  --bg-surface: oklch(14% 0.018 265);
-  --bg-elevated: oklch(18% 0.015 265);
-  --bg-hover: oklch(22% 0.018 265);
+  /* === 日落山景色彩系统 (OKLCH) === */
+  /* 天空渐变：橙粉 → 淡黄 → 灰蓝 */
+  --sky-sunset: oklch(85% 0.12 60);      /* 日落橙粉 */
+  --sky-twilight: oklch(75% 0.08 70);    /* 暮光淡黄 */
+  --sky-dusk: oklch(65% 0.05 250);       /* 黄昏灰蓝 */
+  --sky-night: oklch(20% 0.01 250);      /* 夜空深蓝 */
+  
+  /* 山脉与森林 */
+  --mountain-peak: oklch(95% 0.01 60);   /* 雪峰白 */
+  --mountain-sunset: oklch(70% 0.1 50);  /* 日落山体 */
+  --forest-dark: oklch(30% 0.05 140);    /* 深绿森林 */
+  --forest-light: oklch(40% 0.06 140);   /* 浅绿森林 */
+  
+  /* 水面与倒影 */
+  --water-surface: oklch(25% 0.02 250);  /* 深蓝水面 */
+  --water-reflection: oklch(35% 0.03 60); /* 暖色倒影 */
+  
+  /* 功能色彩 */
+  --accent-primary: oklch(68% 0.15 50);   /* 琥珀日落色 */
+  --accent-secondary: oklch(60% 0.12 140); /* 森林绿 */
+  --accent-tertiary: oklch(65% 0.1 250);  /* 暮光蓝 */
+  
+  /* 中性色（暖色调） */
+  --neutral-50: oklch(98% 0.01 60);
+  --neutral-100: oklch(95% 0.01 60);
+  --neutral-200: oklch(90% 0.01 60);
+  --neutral-300: oklch(80% 0.01 60);
+  --neutral-400: oklch(70% 0.01 60);
+  --neutral-500: oklch(60% 0.01 60);
+  --neutral-600: oklch(50% 0.01 60);
+  --neutral-700: oklch(40% 0.01 60);
+  --neutral-800: oklch(30% 0.01 60);
+  --neutral-900: oklch(20% 0.01 60);
+  
+  /* 文本色彩 */
+  --text-primary: oklch(15% 0.01 60);     /* 深暖黑 */
+  --text-secondary: oklch(40% 0.01 60);   /* 中灰 */
+  --text-muted: oklch(60% 0.01 60);       /* 浅灰 */
+  --text-on-dark: oklch(95% 0.01 60);     /* 浅色文字 */
+  
+  /* 表面色彩 */
+  --surface-bg: oklch(98% 0.01 60);       /* 主背景 */
+  --surface-card: oklch(100% 0 0 / 0.7);  /* 卡片背景 */
+  --surface-overlay: oklch(100% 0 0 / 0.85); /* 叠加层 */
+  
+  /* 边框与分隔 */
+  --border-light: oklch(90% 0.01 60 / 0.3);
+  --border-medium: oklch(80% 0.01 60 / 0.4);
+  --border-strong: oklch(60% 0.01 60 / 0.5);
+  
+  /* 语义色彩 */
+  --success: oklch(65% 0.15 140);
+  --warning: oklch(70% 0.18 50);
+  --error: oklch(60% 0.2 20);
+  --info: oklch(65% 0.12 250);
 
-  --accent: oklch(72% 0.18 62);
-  --accent-glow: oklch(80% 0.22 58);
-  --accent-dim: oklch(50% 0.12 62);
-
-  --electric: oklch(65% 0.16 255);
-  --electric-glow: oklch(72% 0.18 250);
-
-  --text-primary: oklch(92% 0.01 265);
-  --text-secondary: oklch(68% 0.015 265);
-  --text-muted: oklch(48% 0.015 265);
-
-  --border: oklch(28% 0.025 265);
-  --border-glow: oklch(45% 0.08 62);
-
-  --danger: oklch(60% 0.2 20);
-  --success: oklch(60% 0.18 145);
-
-  /* === Typography === */
-  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* === 字体系统 === */
+  --font-display: 'Fraunces', serif;      /* 标题字体，诗意优雅 */
+  --font-body: 'Onest', system-ui, -apple-system, sans-serif; /* 正文字体 */
   --font-mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', monospace;
-
+  
+  /* 字体大小（流体排版） */
   --text-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.8rem);
   --text-sm: clamp(0.82rem, 0.78rem + 0.15vw, 0.88rem);
   --text-base: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
@@ -41,30 +75,56 @@
   --text-xl: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem);
   --text-2xl: clamp(1.8rem, 1.4rem + 1.6vw, 2.6rem);
   --text-3xl: clamp(2.2rem, 1.6rem + 2.4vw, 3.8rem);
-
+  --text-4xl: clamp(2.8rem, 2rem + 3.2vw, 5rem);
+  
+  /* 行高 */
   --leading-tight: 1.15;
   --leading-normal: 1.6;
-  --leading-relaxed: 1.75;
+  --leading-relaxed: 1.8;
+  --leading-loose: 2;
 
-  /* === Spacing === */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2.5rem;
-  --space-2xl: 4rem;
-  --space-3xl: 6rem;
+  /* === 间距系统 (4pt基准) === */
+  --space-3xs: 0.25rem;   /* 4px */
+  --space-2xs: 0.5rem;    /* 8px */
+  --space-xs: 0.75rem;    /* 12px */
+  --space-sm: 1rem;       /* 16px */
+  --space-md: 1.5rem;     /* 24px */
+  --space-lg: 2rem;       /* 32px */
+  --space-xl: 3rem;       /* 48px */
+  --space-2xl: 4rem;      /* 64px */
+  --space-3xl: 6rem;      /* 96px */
+  --space-4xl: 8rem;      /* 128px */
 
-  /* === Borders & Effects === */
+  /* === 圆角与边框 === */
   --radius-sm: 2px;
   --radius-md: 4px;
-  --radius-lg: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
 
-  --scanline-opacity: 0.03;
-  --glow-spread: 0 0 20px;
+  /* === 阴影与效果 === */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.07), 0 2px 4px -2px oklch(0% 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.08), 0 4px 6px -4px oklch(0% 0 0 / 0.04);
+  --shadow-xl: 0 20px 25px -5px oklch(0% 0 0 / 0.1), 0 8px 10px -6px oklch(0% 0 0 / 0.06);
+  
+  /* 毛玻璃效果 */
+  --backdrop-blur: blur(16px) saturate(180%);
+  
+  /* 动画时间 */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-very-slow: 800ms;
+  
+  /* 缓动函数 */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* === Reset & Base === */
+/* === 重置与基础 === */
 *,
 *::before,
 *::after {
@@ -84,197 +144,216 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--text-primary);
-  background: var(--bg-deep);
+  background: linear-gradient(
+    180deg,
+    var(--sky-sunset) 0%,
+    var(--sky-twilight) 20%,
+    var(--sky-dusk) 50%,
+    var(--sky-night) 100%
+  );
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Scanline overlay */
+/* 山景背景层 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image: 
+    /* 远景雪峰 */
+    radial-gradient(ellipse at 70% 20%, var(--mountain-peak) 0%, transparent 20%),
+    radial-gradient(ellipse at 30% 25%, var(--mountain-peak) 0%, transparent 15%),
+    
+    /* 日落山体 */
+    radial-gradient(ellipse at 50% 40%, var(--mountain-sunset) 0%, transparent 30%),
+    
+    /* 森林剪影 */
+    radial-gradient(ellipse at 40% 60%, var(--forest-dark) 0%, transparent 25%),
+    radial-gradient(ellipse at 60% 65%, var(--forest-light) 0%, transparent 20%),
+    
+    /* 水面倒影 */
+    radial-gradient(ellipse at 50% 90%, var(--water-surface) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 95%, var(--water-reflection) 0%, transparent 30%);
+  
+  opacity: 0.7;
+  mix-blend-mode: multiply;
+}
+
+/* 噪点纹理 */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9999;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, var(--scanline-opacity)) 2px,
-    rgba(0, 0, 0, var(--scanline-opacity)) 4px
-  );
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
 }
 
-/* === Typography === */
+/* === 排版 === */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 500;
   line-height: var(--leading-tight);
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-h1 { font-size: var(--text-3xl); font-weight: 700; }
+h1 { font-size: var(--text-3xl); font-weight: 600; }
 h2 { font-size: var(--text-2xl); }
 h3 { font-size: var(--text-xl); }
 h4 { font-size: var(--text-lg); }
 
 p {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
   color: var(--text-secondary);
+  max-width: 65ch;
 }
 
 a {
-  color: var(--accent);
+  color: var(--accent-primary);
   text-decoration: none;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-  position: relative;
+  transition: color var(--duration-fast) var(--ease-out-expo);
 }
 
 a:hover {
-  color: var(--accent-glow);
-  text-shadow: 0 0 12px oklch(80% 0.22 58 / 0.4);
+  color: oklch(60% 0.15 50);
 }
 
-/* === Inline Code === */
+/* === 内联代码 === */
 code {
   font-family: var(--font-mono);
   font-size: 0.88em;
   padding: 0.15em 0.4em;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  background: oklch(95% 0.01 60);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
-  color: var(--electric);
+  color: var(--accent-primary);
 }
 
-/* === Code Blocks === */
+/* === 代码块 === */
 pre {
-  position: relative;
-  padding: var(--space-lg);
-  margin: var(--space-lg) 0;
-  background: oklch(8% 0.02 265);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+  background: var(--neutral-900);
+  border-radius: var(--radius-lg);
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 0.82em;
-  line-height: 1.6;
-}
-
-pre::before {
-  content: '>';
-  position: absolute;
-  top: var(--space-sm);
-  left: var(--space-md);
-  color: var(--accent-dim);
-  font-family: var(--font-mono);
-  font-size: 0.75em;
+  line-height: 1.7;
+  box-shadow: var(--shadow-md);
 }
 
 pre code {
   padding: 0;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--neutral-200);
 }
 
-/* === Blockquote === */
+/* === 引用块 === */
 blockquote {
-  border-left: 2px solid var(--accent);
-  margin: var(--space-lg) 0;
-  padding: var(--space-md) var(--space-lg);
-  background: var(--bg-surface);
+  border-left: 3px solid var(--accent-primary);
+  margin: var(--space-md) 0;
+  padding: var(--space-sm) var(--space-md);
+  background: oklch(97% 0.01 60);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   color: var(--text-secondary);
+  font-family: var(--font-display);
   font-style: italic;
 }
 
-/* === Tables === */
+/* === 表格 === */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: var(--space-lg) 0;
+  margin: var(--space-md) 0;
   font-size: var(--text-sm);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 th {
   text-align: left;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--bg-elevated);
-  color: var(--accent);
-  font-family: var(--font-display);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--neutral-800);
+  color: var(--text-on-dark);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border-bottom: 2px solid var(--border);
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--accent-primary);
 }
 
 td {
-  padding: var(--space-sm) var(--space-md);
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--border-light);
   color: var(--text-secondary);
 }
 
 tr:hover td {
-  background: var(--bg-hover);
+  background: oklch(97% 0.01 60);
 }
 
-/* === Images === */
+/* === 图片 === */
 img {
   max-width: 100%;
   height: auto;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
-/* === HR === */
+/* === 水平线 === */
 hr {
   border: none;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    var(--border) 20%,
-    var(--border-glow) 50%,
-    var(--border) 80%,
+    var(--accent-primary) 50%,
     transparent
   );
   margin: var(--space-2xl) 0;
+  opacity: 0.3;
 }
 
-/* === Selection === */
+/* === 选中 === */
 ::selection {
-  background: var(--accent-dim);
-  color: var(--bg-deep);
+  background: var(--accent-primary);
+  color: white;
 }
 
-/* === Scrollbar === */
+/* === 滚动条 === */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-deep);
+  background: var(--neutral-100);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--neutral-300);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: var(--neutral-500);
 }
 
-/* === Focus === */
+/* === 焦点 === */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-/* === Utility === */
+/* === 工具类 === */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -287,7 +366,7 @@ hr {
   border: 0;
 }
 
-/* === Reduced Motion === */
+/* === 减少动效 === */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -295,8 +374,8 @@ hr {
   }
 }
 
-/* === vhAstro-Theme Inspired Styles === */
-/* Smooth scrolling and transitions */
+/* === 设计系统组件 === */
+/* 平滑滚动与过渡 */
 html.has-scroll-smooth {
   overflow: hidden;
 }
@@ -305,25 +384,19 @@ html.has-scroll-dragging {
   user-select: none;
 }
 
-/* Damping scroll effect */
-.scroll-container {
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* Smooth page transitions */
+/* 页面过渡动画 */
 .page-transition {
   opacity: 0;
   transform: translateY(20px);
-  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fadeInUp var(--duration-slow) var(--ease-out-expo) forwards;
 }
 
 .page-transition-delay-1 {
-  animation-delay: 0.1s;
+  animation-delay: var(--duration-fast);
 }
 
 .page-transition-delay-2 {
-  animation-delay: 0.2s;
+  animation-delay: var(--duration-normal);
 }
 
 @keyframes fadeInUp {
@@ -333,35 +406,59 @@ html.has-scroll-dragging {
   }
 }
 
-/* Elegant hover effects */
+/* 优雅悬停效果 */
 .elegant-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--duration-normal) var(--ease-out-expo);
 }
 
 .elegant-hover:hover {
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-/* Minimal button styling */
-.btn-minimal {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-family: var(--font-display);
+/* 按钮样式 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
   font-weight: 500;
+  font-size: var(--text-sm);
   letter-spacing: 0.02em;
-  transition: all 0.3s ease;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  cursor: pointer;
 }
 
-.btn-minimal:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  box-shadow: var(--glow-spread) oklch(72% 0.18 62 / 0.1);
+.btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
-/* Typography refinements */
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: oklch(60% 0.15 50);
+  border-color: oklch(60% 0.15 50);
+  color: white;
+}
+
+/* 排版优化 */
 .text-balance {
   text-wrap: balance;
 }
@@ -370,29 +467,38 @@ html.has-scroll-dragging {
   text-wrap: pretty;
 }
 
-/* Grid layout helpers */
+/* 网格布局 */
 .grid-layout {
   display: grid;
-  gap: var(--space-lg);
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-/* Card styling */
+/* 卡片设计 */
 .card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-lg);
-  transition: all 0.3s ease;
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  transition: all var(--duration-normal) var(--ease-out-expo);
 }
 
 .card:hover {
-  border-color: var(--accent);
-  box-shadow: var(--glow-spread) oklch(72% 0.18 62 / 0.15);
+  border-color: var(--accent-primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
-/* 4ce.cn inspired minimal entrance */
-.entrance-container {
+/* 毛玻璃导航栏 */
+.glass-nav {
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* 日落山景入口页 */
+.sunset-entrance {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -401,58 +507,56 @@ html.has-scroll-dragging {
   overflow: hidden;
 }
 
-.entrance-background {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, 
-    oklch(12% 0.02 265) 0%,
-    oklch(8% 0.015 265) 100%);
-  z-index: -1;
-}
-
-.entrance-content {
+.sunset-content {
   text-align: center;
   max-width: 600px;
   padding: var(--space-2xl);
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-xl);
 }
 
-.entrance-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 300;
-  letter-spacing: -0.03em;
+.sunset-title {
+  font-size: var(--text-4xl);
+  font-weight: 500;
+  letter-spacing: -0.02em;
   line-height: 1.1;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
   color: var(--text-primary);
   font-family: var(--font-display);
 }
 
-.entrance-subtitle {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  color: var(--text-muted);
-  margin-bottom: var(--space-2xl);
-  line-height: 1.6;
+.sunset-subtitle {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+  line-height: var(--leading-relaxed);
   font-weight: 300;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
-.entrance-button {
-  display: inline-block;
-  padding: 1rem 2.5rem;
+.sunset-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--space-xl);
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-family: var(--font-display);
-  font-size: 1rem;
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  border-radius: var(--radius-sm);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-full);
+  transition: all var(--duration-slow) var(--ease-out-expo);
   position: relative;
   overflow: hidden;
 }
 
-.entrance-button::before {
+.sunset-button::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -460,29 +564,29 @@ html.has-scroll-dragging {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-primary);
   transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
+  transition: width 0.6s var(--ease-out-expo), height 0.6s var(--ease-out-expo);
   z-index: -1;
 }
 
-.entrance-button:hover {
-  color: var(--bg-deep);
-  border-color: var(--accent);
+.sunset-button:hover {
+  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 8px 32px oklch(68% 0.15 50 / 0.2);
 }
 
-.entrance-button:hover::before {
+.sunset-button:hover::before {
   width: 300px;
   height: 300px;
 }
 
-.entrance-button:active {
+.sunset-button:active {
   transform: translateY(0);
 }
 
-/* Fade in animation for entrance */
-@keyframes fadeInEntrance {
+/* 淡入动画 */
+@keyframes sunsetFadeIn {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -493,33 +597,34 @@ html.has-scroll-dragging {
   }
 }
 
-.entrance-content > * {
-  animation: fadeInEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.sunset-content > * {
+  animation: sunsetFadeIn var(--duration-very-slow) var(--ease-out-expo) forwards;
 }
 
-.entrance-title {
+.sunset-title {
   animation-delay: 0.1s;
 }
 
-.entrance-subtitle {
+.sunset-subtitle {
   animation-delay: 0.3s;
 }
 
-.entrance-button {
+.sunset-button {
   animation-delay: 0.5s;
 }
 
-/* Responsive adjustments */
+/* 响应式调整 */
 @media (max-width: 768px) {
-  .entrance-content {
+  .sunset-content {
     padding: var(--space-xl);
+    margin: var(--space-md);
   }
   
-  .entrance-title {
-    font-size: clamp(2rem, 8vw, 3rem);
+  .sunset-title {
+    font-size: var(--text-3xl);
   }
   
-  .entrance-button {
-    padding: 0.875rem 2rem;
+  .sunset-button {
+    padding: var(--space-xs) var(--space-lg);
   }
 }

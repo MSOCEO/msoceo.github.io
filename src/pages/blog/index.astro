@@ -14,176 +14,237 @@ const posts = (await getCollection('blog'))
 <html lang="zh-CN">
   <head>
     <BaseHead title={`文章 — ${SITE_TITLE}`} description="工程技术与深度探索。" />
+    <style>
+      .blog-page {
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+          180deg,
+          oklch(85% 0.12 60) 0%,
+          oklch(75% 0.08 70) 20%,
+          oklch(65% 0.05 250) 50%,
+          oklch(20% 0.01 250) 100%
+        );
+      }
+
+      .blog-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .blog-mountains {
+        position: absolute;
+        inset: 0;
+        background-image: 
+          radial-gradient(ellipse at 70% 20%, oklch(95% 0.01 60) 0%, transparent 20%),
+          radial-gradient(ellipse at 30% 25%, oklch(95% 0.01 60) 0%, transparent 15%),
+          radial-gradient(ellipse at 50% 40%, oklch(70% 0.1 50) 0%, transparent 30%),
+          radial-gradient(ellipse at 40% 60%, oklch(30% 0.05 140) 0%, transparent 25%),
+          radial-gradient(ellipse at 60% 65%, oklch(40% 0.06 140) 0%, transparent 20%),
+          radial-gradient(ellipse at 50% 90%, oklch(25% 0.02 250) 0%, transparent 40%),
+          radial-gradient(ellipse at 50% 95%, oklch(35% 0.03 60) 0%, transparent 30%);
+        
+        opacity: 0.6;
+        mix-blend-mode: multiply;
+      }
+
+      .blog-noise {
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+      }
+
+      main {
+        position: relative;
+        z-index: 1;
+      }
+
+      .section {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .page-header {
+        margin-bottom: 2.5rem;
+      }
+
+      .page-title {
+        font-family: 'Fraunces', serif;
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: oklch(15% 0.01 60);
+        letter-spacing: -0.02em;
+        margin-bottom: 0.5rem;
+      }
+
+      .page-sub {
+        font-family: 'Onest', system-ui, sans-serif;
+        font-size: 0.95rem;
+        color: oklch(60% 0.01 60);
+        margin-bottom: 0;
+        font-weight: 300;
+      }
+
+      .article-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .list-item {
+        border-bottom: 1px solid oklch(90% 0.01 60 / 0.3);
+        transition: border-color 0.3s ease;
+      }
+
+      .list-item:hover {
+        border-color: oklch(68% 0.15 50 / 0.3);
+      }
+
+      .list-link {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 1.25rem 0;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 6px;
+      }
+
+      .list-link:hover {
+        color: inherit;
+        text-shadow: none;
+      }
+
+      .list-meta {
+        flex-shrink: 0;
+        width: 90px;
+        padding-top: 2px;
+      }
+
+      .list-date {
+        font-family: 'Onest', system-ui, sans-serif;
+        font-size: 0.78rem;
+        color: oklch(60% 0.01 60);
+        font-weight: 400;
+        letter-spacing: 0.02em;
+      }
+
+      .list-body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .list-title {
+        font-family: 'Fraunces', serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: oklch(15% 0.01 60);
+        margin-bottom: 4px;
+        line-height: 1.25;
+        transition: color 0.3s ease;
+      }
+
+      .list-link:hover .list-title {
+        color: oklch(68% 0.15 50);
+      }
+
+      .list-desc {
+        font-family: 'Onest', system-ui, sans-serif;
+        font-size: 0.85rem;
+        color: oklch(40% 0.01 60);
+        line-height: 1.55;
+        margin-bottom: 0;
+        font-weight: 300;
+      }
+
+      .list-arrow {
+        flex-shrink: 0;
+        color: oklch(80% 0.01 60);
+        font-size: 1rem;
+        padding-top: 1px;
+        opacity: 0;
+        transform: translateX(-8px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .list-item:hover .list-arrow {
+        opacity: 1;
+        transform: translateX(0);
+        color: oklch(68% 0.15 50);
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .section {
+          padding: 2rem 1rem;
+        }
+
+        .list-link {
+          gap: 0.75rem;
+        }
+
+        .list-meta {
+          width: auto;
+        }
+
+        .list-arrow {
+          display: none;
+        }
+      }
+    </style>
   </head>
   <body>
     <Header />
-    <main>
-      <section class="section">
-        <h1 class="page-title">文章</h1>
-        <p class="page-sub">深度探索、笔记与实验。共 {posts.length} 篇。</p>
+    <div class="blog-page">
+      <div class="blog-bg">
+        <div class="blog-mountains"></div>
+        <div class="blog-noise"></div>
+      </div>
+      
+      <main>
+        <section class="section">
+          <div class="page-header">
+            <h1 class="page-title">文章</h1>
+            <p class="page-sub">深度探索、笔记与实验。共 {posts.length} 篇。</p>
+          </div>
 
-        <div class="article-list">
-          {posts.map((post) => (
-            <article class="list-item">
-              <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`} class="list-link">
-                <div class="list-meta">
-                  <span class="list-date">
-                    <FormattedDate date={post.data.pubDate} />
-                  </span>
-                </div>
-                <div class="list-body">
-                  <h2 class="list-title">{post.data.title}</h2>
-                  <p class="list-desc">{post.data.description}</p>
-                </div>
-                <span class="list-arrow">→</span>
-              </a>
-            </article>
-          ))}
-        </div>
-      </section>
-    </main>
+          <div class="article-list">
+            {posts.map((post) => (
+              <article class="list-item">
+                <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`} class="list-link">
+                  <div class="list-meta">
+                    <span class="list-date">
+                      <FormattedDate date={post.data.pubDate} />
+                    </span>
+                  </div>
+                  <div class="list-body">
+                    <h2 class="list-title">{post.data.title}</h2>
+                    <p class="list-desc">{post.data.description}</p>
+                  </div>
+                  <span class="list-arrow">→</span>
+                </a>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
     <Footer />
   </body>
 </html>
-
-<style>
-  .section {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem;
-    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
-  }
-
-  .page-title {
-    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: oklch(92% 0.01 265);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-  }
-
-  .page-sub {
-    font-size: 0.95rem;
-    color: oklch(58% 0.015 265);
-    margin-bottom: 2.5rem;
-    font-weight: 300;
-  }
-
-  .article-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .list-item {
-    border-bottom: 1px solid oklch(28% 0.025 265 / 0.4);
-    transition: border-color 0.3s ease;
-  }
-
-  .list-item:hover {
-    border-color: oklch(72% 0.18 62 / 0.3);
-  }
-
-  .list-link {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1.25rem 0;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 6px;
-  }
-
-  .list-link:hover {
-    color: inherit;
-    text-shadow: none;
-  }
-
-  .list-meta {
-    flex-shrink: 0;
-    width: 90px;
-    padding-top: 2px;
-  }
-
-  .list-date {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
-    font-size: 0.78rem;
-    color: oklch(48% 0.015 265);
-    font-weight: 400;
-    letter-spacing: 0.02em;
-  }
-
-  .list-body {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .list-title {
-    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: oklch(92% 0.01 265);
-    margin-bottom: 4px;
-    line-height: 1.25;
-    transition: color 0.3s ease;
-  }
-
-  .list-link:hover .list-title {
-    color: oklch(72% 0.18 62);
-  }
-
-  .list-desc {
-    font-size: 0.85rem;
-    color: oklch(58% 0.015 265);
-    line-height: 1.55;
-    margin-bottom: 0;
-    font-weight: 300;
-  }
-
-  .list-arrow {
-    flex-shrink: 0;
-    color: oklch(38% 0.025 265);
-    font-size: 1rem;
-    padding-top: 1px;
-    opacity: 0;
-    transform: translateX(-8px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .list-item:hover .list-arrow {
-    opacity: 1;
-    transform: translateX(0);
-    color: oklch(72% 0.18 62);
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .section {
-      padding: 2rem 1rem;
-    }
-
-    .list-link {
-      gap: 0.75rem;
-    }
-
-    .list-meta {
-      width: auto;
-    }
-
-    .list-arrow {
-      display: none;
-    }
-  }
-</style>
