@@ -1,5 +1,5 @@
 ---
-// src/components/Comments.astro — 留言区域组件
+// src/components/Comments.astro — 留言区域组件（含表情选择）
 ---
 
 <section id="comments" class="comments-section">
@@ -14,6 +14,7 @@
   </div>
 
   <div class="comments-list">
+    <!-- 留言 1 -->
     <div class="comment-item">
       <div class="comment-avatar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
@@ -35,9 +36,18 @@
           <span class="dot">·</span>
           <span>106.38.xx.xx</span>
         </div>
+        <!-- 表情回应 -->
+        <div class="comment-reactions">
+          <button class="reaction-btn active" title="喜欢">❤️ <span>5</span></button>
+          <button class="reaction-btn" title="赞">👍 <span>3</span></button>
+          <button class="reaction-btn" title="大笑">😂 <span>1</span></button>
+          <button class="reaction-btn" title="惊叹">😮 <span>2</span></button>
+          <button class="reaction-btn add-reaction" title="添加回应">+</button>
+        </div>
       </div>
     </div>
 
+    <!-- 留言 2 -->
     <div class="comment-item">
       <div class="comment-avatar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
@@ -58,9 +68,16 @@
           <span class="dot">·</span>
           <span>114.246.xx.xx</span>
         </div>
+        <div class="comment-reactions">
+          <button class="reaction-btn active" title="赞">👍 <span>7</span></button>
+          <button class="reaction-btn" title="喜欢">❤️ <span>4</span></button>
+          <button class="reaction-btn" title="鼓掌">👏 <span>3</span></button>
+          <button class="reaction-btn add-reaction" title="添加回应">+</button>
+        </div>
       </div>
     </div>
 
+    <!-- 留言 3 -->
     <div class="comment-item">
       <div class="comment-avatar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
@@ -81,6 +98,11 @@
           <span class="dot">·</span>
           <span>121.35.xx.xx</span>
         </div>
+        <div class="comment-reactions">
+          <button class="reaction-btn active" title="赞">👍 <span>2</span></button>
+          <button class="reaction-btn" title="加油">💪 <span>1</span></button>
+          <button class="reaction-btn add-reaction" title="添加回应">+</button>
+        </div>
       </div>
     </div>
   </div>
@@ -92,17 +114,285 @@
         <input type="text" name="nickname" placeholder="你的昵称" class="form-input" maxlength="20" required />
         <input type="text" name="location" placeholder="所在城市" class="form-input" maxlength="10" />
       </div>
-      <textarea name="content" placeholder="说点什么吧..." class="form-textarea" rows="3" maxlength="500" required></textarea>
-      <button type="submit" class="form-submit">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-          <line x1="22" y1="2" x2="11" y2="13"/>
-          <polygon points="22,2 15,22 11,13 2,9"/>
-        </svg>
-        发送留言
-      </button>
+      <div class="textarea-wrapper">
+        <textarea name="content" id="commentTextarea" placeholder="说点什么吧..." class="form-textarea" rows="3" maxlength="500" required></textarea>
+        <!-- 选中的表情预览 -->
+        <div class="selected-emoji-preview" id="selectedEmojiPreview"></div>
+      </div>
+      <div class="form-actions">
+        <!-- 表情选择器 -->
+        <div class="emoji-picker-container">
+          <button type="button" class="emoji-toggle" id="emojiToggle" title="选择表情">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8,14c0,0,1.5,2,4,2s4-2,4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+            <span>表情</span>
+          </button>
+          <!-- 表情面板 -->
+          <div class="emoji-panel" id="emojiPanel">
+            <div class="emoji-categories">
+              <button type="button" class="emoji-cat active" data-cat="smileys">😊</button>
+              <button type="button" class="emoji-cat" data-cat="gestures">👋</button>
+              <button type="button" class="emoji-cat" data-cat="hearts">❤️</button>
+              <button type="button" class="emoji-cat" data-cat="nature">🌟</button>
+              <button type="button" class="emoji-cat" data-cat="objects">💡</button>
+              <button type="button" class="emoji-cat" data-cat="symbols">✨</button>
+            </div>
+            <div class="emoji-grid active" data-cat="smileys">
+              <button type="button" class="emoji-item">😀</button><button type="button" class="emoji-item">😃</button>
+              <button type="button" class="emoji-item">😄</button><button type="button" class="emoji-item">😁</button>
+              <button type="button" class="emoji-item">😅</button><button type="button" class="emoji-item">😂</button>
+              <button type="button" class="emoji-item">🤣</button><button type="button" class="emoji-item">😊</button>
+              <button type="button" class="emoji-item">😇</button><button type="button" class="emoji-item">🙂</button>
+              <button type="button" class="emoji-item">😉</button><button type="button" class="emoji-item">😌</button>
+              <button type="button" class="emoji-item">😍</button><button type="button" class="emoji-item">🥰</button>
+              <button type="button" class="emoji-item">😘</button><button type="button" class="emoji-item">😗</button>
+              <button type="button" class="emoji-item">😋</button><button type="button" class="emoji-item">😛</button>
+              <button type="button" class="emoji-item">😜</button><button type="button" class="emoji-item">🤪</button>
+              <button type="button" class="emoji-item">😝</button><button type="button" class="emoji-item">🤗</button>
+              <button type="button" class="emoji-item">🤭</button><button type="button" class="emoji-item">🤫</button>
+              <button type="button" class="emoji-item">🤔</button><button type="button" class="emoji-item">🤐</button>
+              <button type="button" class="emoji-item">😐</button><button type="button" class="emoji-item">😑</button>
+              <button type="button" class="emoji-item">😶</button><button type="button" class="emoji-item">😏</button>
+              <button type="button" class="emoji-item">😒</button><button type="button" class="emoji-item">😬</button>
+              <button type="button" class="emoji-item">😮‍💨</button><button type="button" class="emoji-item">😴</button>
+              <button type="button" class="emoji-item">😪</button><button type="button" class="emoji-item">🤤</button>
+              <button type="button" class="emoji-item">😷</button><button type="button" class="emoji-item">🤒</button>
+              <button type="button" class="emoji-item">🤕</button><button type="button" class="emoji-item">🥴</button>
+              <button type="button" class="emoji-item">😵</button><button type="button" class="emoji-item">🤯</button>
+            </div>
+            <div class="emoji-grid" data-cat="gestures">
+              <button type="button" class="emoji-item">👋</button><button type="button" class="emoji-item">🤚</button>
+              <button type="button" class="emoji-item">✋</button><button type="button" class="emoji-item">🖐</button>
+              <button type="button" class="emoji-item">👌</button><button type="button" class="emoji-item">🤌</button>
+              <button type="button" class="emoji-item">🤏</button><button type="button" class="emoji-item">✌️</button>
+              <button type="button" class="emoji-item">🤞</button><button type="button" class="emoji-item">🤟</button>
+              <button type="button" class="emoji-item">🤘</button><button type="button" class="emoji-item">🤙</button>
+              <button type="button" class="emoji-item">👈</button><button type="button" class="emoji-item">👉</button>
+              <button type="button" class="emoji-item">👆</button><button type="button" class="emoji-item">👇</button>
+              <button type="button" class="emoji-item">👍</button><button type="button" class="emoji-item">👎</button>
+              <button type="button" class="emoji-item">👊</button><button type="button" class="emoji-item">✊</button>
+              <button type="button" class="emoji-item">🤛</button><button type="button" class="emoji-item">🤜</button>
+              <button type="button" class="emoji-item">👏</button><button type="button" class="emoji-item">🙌</button>
+              <button type="button" class="emoji-item">🤝</button><button type="button" class="emoji-item">🙏</button>
+              <button type="button" class="emoji-item">✍️</button><button type="button" class="emoji-item">💅</button>
+              <button type="button" class="emoji-item">🤳</button><button type="button" class="emoji-item">💪</button>
+              <button type="button" class="emoji-item">🦵</button><button type="button" class="emoji-item">🦶</button>
+              <button type="button" class="emoji-item">👂</button><button type="button" class="emoji-item">👃</button>
+              <button type="button" class="emoji-item">🧠</button><button type="button" class="emoji-item">👀</button>
+              <button type="button" class="emoji-item">👁</button><button type="button" class="emoji-item">👅</button>
+              <button type="button" class="emoji-item">👄</button><button type="button" class="emoji-item">💋</button>
+            </div>
+            <div class="emoji-grid" data-cat="hearts">
+              <button type="button" class="emoji-item">❤️</button><button type="button" class="emoji-item">🧡</button>
+              <button type="button" class="emoji-item">💛</button><button type="button" class="emoji-item">💚</button>
+              <button type="button" class="emoji-item">💙</button><button type="button" class="emoji-item">💜</button>
+              <button type="button" class="emoji-item">🖤</button><button type="button" class="emoji-item">🤍</button>
+              <button type="button" class="emoji-item">🤎</button><button type="button" class="emoji-item">💔</button>
+              <button type="button" class="emoji-item">❤️‍🔥</button><button type="button" class="emoji-item">❤️‍🩹</button>
+              <button type="button" class="emoji-item">💕</button><button type="button" class="emoji-item">💞</button>
+              <button type="button" class="emoji-item">💓</button><button type="button" class="emoji-item">💗</button>
+              <button type="button" class="emoji-item">💖</button><button type="button" class="emoji-item">💘</button>
+              <button type="button" class="emoji-item">💝</button><button type="button" class="emoji-item">💟</button>
+              <button type="button" class="emoji-item">☮️</button><button type="button" class="emoji-item">✝️</button>
+              <button type="button" class="emoji-item">☪️</button><button type="button" class="emoji-item">🕉</button>
+              <button type="button" class="emoji-item">☸️</button><button type="button" class="emoji-item">✡️</button>
+              <button type="button" class="emoji-item">🔯</button><button type="button" class="emoji-item">🕎</button>
+              <button type="button" class="emoji-item">☯️</button><button type="button" class="emoji-item">☦️</button>
+              <button type="button" class="emoji-item">🛐</button><button type="button" class="emoji-item">⛎</button>
+              <button type="button" class="emoji-item">♈</button><button type="button" class="emoji-item">♉</button>
+              <button type="button" class="emoji-item">♊</button><button type="button" class="emoji-item">♋</button>
+              <button type="button" class="emoji-item">♌</button><button type="button" class="emoji-item">♍</button>
+              <button type="button" class="emoji-item">♎</button><button type="button" class="emoji-item">♏</button>
+              <button type="button" class="emoji-item">♐</button><button type="button" class="emoji-item">♑</button>
+              <button type="button" class="emoji-item">♒</button><button type="button" class="emoji-item">♓</button>
+            </div>
+            <div class="emoji-grid" data-cat="nature">
+              <button type="button" class="emoji-item">🌟</button><button type="button" class="emoji-item">⭐</button>
+              <button type="button" class="emoji-item">✨</button><button type="button" class="emoji-item">💫</button>
+              <button type="button" class="emoji-item">☀️</button><button type="button" class="emoji-item">🌙</button>
+              <button type="button" class="emoji-item">🌍</button><button type="button" class="emoji-item">🌈</button>
+              <button type="button" class="emoji-item">🔥</button><button type="button" class="emoji-item">💧</button>
+              <button type="button" class="emoji-item">🌊</button><button type="button" class="emoji-item">🌸</button>
+              <button type="button" class="emoji-item">🌺</button><button type="button" class="emoji-item">🌻</button>
+              <button type="button" class="emoji-item">🌹</button><button type="button" class="emoji-item">🍀</button>
+              <button type="button" class="emoji-item">🌿</button><button type="button" class="emoji-item">🌲</button>
+              <button type="button" class="emoji-item">🎄</button><button type="button" class="emoji-item">🐶</button>
+              <button type="button" class="emoji-item">🐱</button><button type="button" class="emoji-item">🐼</button>
+              <button type="button" class="emoji-item">🐨</button><button type="button" class="emoji-item">🦊</button>
+              <button type="button" class="emoji-item">🐰</button><button type="button" class="emoji-item">🐻</button>
+              <button type="button" class="emoji-item">🐮</button><button type="button" class="emoji-item">🐷</button>
+              <button type="button" class="emoji-item">🐸</button><button type="button" class="emoji-item">🐵</button>
+              <button type="button" class="emoji-item">🐔</button><button type="button" class="emoji-item">🐧</button>
+              <button type="button" class="emoji-item">🐦</button><button type="button" class="emoji-item">🦋</button>
+              <button type="button" class="emoji-item">🐝</button><button type="button" class="emoji-item">🐢</button>
+              <button type="button" class="emoji-item">🐍</button><button type="button" class="emoji-item">🦎</button>
+              <button type="button" class="emoji-item">🐳</button><button type="button" class="emoji-item">🐬</button>
+              <button type="button" class="emoji-item">🐟</button><button type="button" class="emoji-item">🦈</button>
+              <button type="button" class="emoji-item">🐙</button><button type="button" class="emoji-item">🦀</button>
+            </div>
+            <div class="emoji-grid" data-cat="objects">
+              <button type="button" class="emoji-item">💡</button><button type="button" class="emoji-item">💻</button>
+              <button type="button" class="emoji-item">📱</button><button type="button" class="emoji-item">⌨️</button>
+              <button type="button" class="emoji-item">🖥</button><button type="button" class="emoji-item">🖨</button>
+              <button type="button" class="emoji-item">📷</button><button type="button" class="emoji-item">🎥</button>
+              <button type="button" class="emoji-item">🎧</button><button type="button" class="emoji-item">🎮</button>
+              <button type="button" class="emoji-item">📚</button><button type="button" class="emoji-item">📖</button>
+              <button type="button" class="emoji-item">✏️</button><button type="button" class="emoji-item">📝</button>
+              <button type="button" class="emoji-item">📌</button><button type="button" class="emoji-item">📎</button>
+              <button type="button" class="emoji-item">✂️</button><button type="button" class="emoji-item">🔍</button>
+              <button type="button" class="emoji-item">🔑</button><button type="button" class="emoji-item">🔒</button>
+              <button type="button" class="emoji-item">🎵</button><button type="button" class="emoji-item">🎶</button>
+              <button type="button" class="emoji-item">🎸</button><button type="button" class="emoji-item">🎹</button>
+              <button type="button" class="emoji-item">🎨</button><button type="button" class="emoji-item">🎭</button>
+              <button type="button" class="emoji-item">🏆</button><button type="button" class="emoji-item">🥇</button>
+              <button type="button" class="emoji-item">🎯</button><button type="button" class="emoji-item">🎲</button>
+              <button type="button" class="emoji-item">☕</button><button type="button" class="emoji-item">🍵</button>
+              <button type="button" class="emoji-item">🍺</button><button type="button" class="emoji-item">🍷</button>
+              <button type="button" class="emoji-item">🎂</button><button type="button" class="emoji-item">🍕</button>
+              <button type="button" class="emoji-item">🚀</button><button type="button" class="emoji-item">✈️</button>
+              <button type="button" class="emoji-item">🚗</button><button type="button" class="emoji-item">⛵</button>
+              <button type="button" class="emoji-item">🗺</button><button type="button" class="emoji-item">🏠</button>
+              <button type="button" class="emoji-item">🎁</button><button type="button" class="emoji-item">💎</button>
+            </div>
+            <div class="emoji-grid" data-cat="symbols">
+              <button type="button" class="emoji-item">✨</button><button type="button" class="emoji-item">💥</button>
+              <button type="button" class="emoji-item">💯</button><button type="button" class="emoji-item">💢</button>
+              <button type="button" class="emoji-item">💬</button><button type="button" class="emoji-item">💭</button>
+              <button type="button" class="emoji-item">🗯</button><button type="button" class="emoji-item">💤</button>
+              <button type="button" class="emoji-item">🕳</button><button type="button" class="emoji-item">💮</button>
+              <button type="button" class="emoji-item">♨️</button><button type="button" class="emoji-item">💲</button>
+              <button type="button" class="emoji-item">❌</button><button type="button" class="emoji-item">⭕</button>
+              <button type="button" class="emoji-item">🛑</button><button type="button" class="emoji-item">✅</button>
+              <button type="button" class="emoji-item">❓</button><button type="button" class="emoji-item">❗</button>
+              <button type="button" class="emoji-item">➕</button><button type="button" class="emoji-item">➖</button>
+              <button type="button" class="emoji-item">➗</button><button type="button" class="emoji-item">♾</button>
+              <button type="button" class="emoji-item">‼️</button><button type="button" class="emoji-item">⁉️</button>
+              <button type="button" class="emoji-item">〰️</button><button type="button" class="emoji-item">💱</button>
+              <button type="button" class="emoji-item">©️</button><button type="button" class="emoji-item">®️</button>
+              <button type="button" class="emoji-item">™️</button><button type="button" class="emoji-item">🔰</button>
+              <button type="button" class="emoji-item">🔱</button><button type="button" class="emoji-item">⚜️</button>
+              <button type="button" class="emoji-item">〽️</button><button type="button" class="emoji-item">✳️</button>
+              <button type="button" class="emoji-item">✴️</button><button type="button" class="emoji-item">❇️</button>
+              <button type="button" class="emoji-item">🉑</button><button type="button" class="emoji-item">㊙️</button>
+              <button type="button" class="emoji-item">㊗️</button><button type="button" class="emoji-item">🈴</button>
+              <button type="button" class="emoji-item">🈵</button><button type="button" class="emoji-item">🈲</button>
+              <button type="button" class="emoji-item">🅰</button><button type="button" class="emoji-item">🅱</button>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="form-submit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22,2 15,22 11,13 2,9"/>
+          </svg>
+          发送留言
+        </button>
+      </div>
     </form>
   </div>
 </section>
+
+<script>
+  // 表情面板切换
+  const emojiToggle = document.getElementById('emojiToggle');
+  const emojiPanel = document.getElementById('emojiPanel');
+  const commentTextarea = document.getElementById('commentTextarea');
+  const selectedEmojiPreview = document.getElementById('selectedEmojiPreview');
+  let selectedEmoji = '';
+
+  // 打开/关闭表情面板
+  emojiToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    emojiPanel.classList.toggle('open');
+    emojiToggle.classList.toggle('active');
+  });
+
+  // 点击面板外部关闭
+  document.addEventListener('click', (e) => {
+    if (!emojiPanel.contains(e.target) && e.target !== emojiToggle && !emojiToggle.contains(e.target)) {
+      emojiPanel.classList.remove('open');
+      emojiToggle.classList.remove('active');
+    }
+  });
+
+  // 分类切换
+  document.querySelectorAll('.emoji-cat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.emoji-cat').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      document.querySelectorAll('.emoji-grid').forEach(g => g.classList.remove('active'));
+      document.querySelector(`.emoji-grid[data-cat="${cat}"]`).classList.add('active');
+    });
+  });
+
+  // 表情选择
+  document.querySelectorAll('.emoji-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedEmoji = btn.textContent;
+      selectedEmojiPreview.textContent = selectedEmoji;
+      selectedEmojiPreview.classList.add('visible');
+    });
+  });
+
+  // 表单提交处理
+  document.getElementById('commentForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nickname = e.target.nickname.value.trim();
+    const content = e.target.content.value.trim();
+    const prefix = selectedEmoji ? selectedEmoji + ' ' : '';
+    const fullContent = prefix + content;
+    console.log('留言:', { nickname, content: fullContent });
+    // 清空
+    e.target.content.value = '';
+    selectedEmoji = '';
+    selectedEmojiPreview.textContent = '';
+    selectedEmojiPreview.classList.remove('visible');
+    emojiPanel.classList.remove('open');
+    emojiToggle.classList.remove('active');
+  });
+
+  // 表情回应按钮交互
+  document.querySelectorAll('.reaction-btn').forEach(btn => {
+    if (!btn.classList.contains('add-reaction')) {
+      btn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        const span = this.querySelector('span');
+        const currentCount = parseInt(span.textContent);
+        if (this.classList.contains('active')) {
+          span.textContent = currentCount + 1;
+        } else {
+          span.textContent = Math.max(0, currentCount - 1);
+        }
+      });
+    }
+  });
+
+  // 添加回应按钮
+  document.querySelectorAll('.add-reaction').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const reactions = this.parentElement;
+      const quickEmojis = ['❤️', '👍', '😂', '😮', '👏', '💪', '🔥', '😍'];
+      const emoji = quickEmojis[Math.floor(Math.random() * quickEmojis.length)];
+      const newBtn = document.createElement('button');
+      newBtn.className = 'reaction-btn active';
+      newBtn.title = '新回应';
+      newBtn.innerHTML = `${emoji} <span>1</span>`;
+      newBtn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        const span = this.querySelector('span');
+        const count = parseInt(span.textContent);
+        span.textContent = this.classList.contains('active') ? count + 1 : Math.max(0, count - 1);
+      });
+      reactions.insertBefore(newBtn, this);
+    });
+  });
+</script>
 
 <style>
 .comments-section {
@@ -224,6 +514,61 @@
   opacity: 0.4;
 }
 
+/* ===== 表情回应 ===== */
+.comment-reactions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-expo);
+  user-select: none;
+}
+
+.reaction-btn:hover {
+  border-color: var(--border-subtle);
+  background: rgba(240, 181, 69, 0.06);
+}
+
+.reaction-btn.active {
+  background: rgba(240, 181, 69, 0.1);
+  border-color: rgba(240, 181, 69, 0.3);
+  color: var(--star-warm);
+}
+
+.reaction-btn.active span {
+  color: var(--star-warm);
+  font-weight: 600;
+}
+
+.add-reaction {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  min-width: 28px;
+  justify-content: center;
+}
+
+.add-reaction:hover {
+  color: var(--star-warm);
+  border-color: var(--star-warm);
+}
+
+/* ===== 留言表单 ===== */
 .comment-form-wrapper {
   background: var(--surface-card);
   border: 1px solid var(--border-ghost);
@@ -264,6 +609,10 @@
   box-shadow: 0 0 0 2px rgba(240, 181, 69, 0.1);
 }
 
+.textarea-wrapper {
+  position: relative;
+}
+
 .form-textarea {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
@@ -275,7 +624,6 @@
   font-size: var(--text-sm);
   outline: none;
   resize: vertical;
-  margin-bottom: var(--space-md);
   box-sizing: border-box;
   transition: all var(--duration-fast) var(--ease-out-expo);
 }
@@ -283,6 +631,170 @@
 .form-textarea:focus {
   border-color: var(--border-glow);
   box-shadow: 0 0 0 2px rgba(240, 181, 69, 0.1);
+}
+
+/* 选中表情预览 */
+.selected-emoji-preview {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-md);
+  font-size: 1.4rem;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.selected-emoji-preview.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+/* ===== 表情选择器 ===== */
+.emoji-picker-container {
+  position: relative;
+}
+
+.emoji-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-expo);
+}
+
+.emoji-toggle:hover,
+.emoji-toggle.active {
+  color: var(--star-warm);
+  border-color: var(--border-glow);
+  background: rgba(240, 181, 69, 0.08);
+}
+
+.emoji-toggle svg {
+  transition: transform var(--duration-normal) var(--ease-out-expo);
+}
+
+.emoji-toggle.active svg {
+  transform: rotate(180deg);
+}
+
+.emoji-panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  width: 360px;
+  max-height: 380px;
+  background: rgba(13, 17, 26, 0.98);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(240, 181, 69, 0.06);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  display: none;
+  z-index: 200;
+  animation: emojiSlideUp var(--duration-normal) var(--ease-out-expo);
+}
+
+.emoji-panel.open {
+  display: block;
+}
+
+@keyframes emojiSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.emoji-categories {
+  display: flex;
+  gap: 2px;
+  padding: var(--space-sm);
+  border-bottom: 1px solid var(--border-ghost);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.emoji-cat {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-expo);
+  opacity: 0.5;
+}
+
+.emoji-cat:hover {
+  opacity: 0.8;
+  background: rgba(240, 181, 69, 0.08);
+}
+
+.emoji-cat.active {
+  opacity: 1;
+  background: rgba(240, 181, 69, 0.12);
+}
+
+.emoji-grid {
+  display: none;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  padding: var(--space-sm);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.emoji-grid.active {
+  display: grid;
+}
+
+.emoji-grid::-webkit-scrollbar {
+  width: 4px;
+}
+
+.emoji-grid::-webkit-scrollbar-thumb {
+  background: rgba(240, 181, 69, 0.15);
+  border-radius: 2px;
+}
+
+.emoji-item {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-expo);
+}
+
+.emoji-item:hover {
+  background: rgba(240, 181, 69, 0.12);
+  transform: scale(1.2);
+}
+
+.emoji-item:active {
+  transform: scale(0.95);
 }
 
 .form-submit {
@@ -299,6 +811,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out-expo);
+  white-space: nowrap;
 }
 
 .form-submit:hover {
@@ -314,6 +827,30 @@
 @media (max-width: 640px) {
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .emoji-panel {
+    width: 300px;
+    left: -60px;
+  }
+
+  .emoji-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .form-actions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 400px) {
+  .emoji-panel {
+    width: 260px;
+    left: -80px;
+  }
+
+  .emoji-grid {
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 </style>
