@@ -1,411 +1,357 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+
+const posts = await Astro.glob('../content/blog/*.md');
+const sortedPosts = posts
+  .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
+  .slice(0, 4);
 ---
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-  <style>
-    .home {
-      min-height: 100vh;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(
-        180deg,
-        oklch(85% 0.12 60) 0%,
-        oklch(75% 0.08 70) 20%,
-        oklch(65% 0.05 250) 50%,
-        oklch(20% 0.01 250) 100%
-      );
-    }
+  <head>
+    <BaseHead title="首页 | MSOCEO" description="探索、发现、热爱 — 技术笔记与生活手帐" />
+  </head>
+  <body>
+    <Header />
 
-    .home-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
+    <main class="home-main">
+      <section class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">黑曜石里的星光</h1>
+          <p class="hero-desc">探索、发现、热爱 — 记录技术思考与生活诗意</p>
+        </div>
 
-    .home-mountains {
-      position: absolute;
-      inset: 0;
-      background-image: 
-        radial-gradient(ellipse at 70% 20%, oklch(95% 0.01 60) 0%, transparent 20%),
-        radial-gradient(ellipse at 30% 25%, oklch(95% 0.01 60) 0%, transparent 15%),
-        radial-gradient(ellipse at 50% 40%, oklch(70% 0.1 50) 0%, transparent 30%),
-        radial-gradient(ellipse at 40% 60%, oklch(30% 0.05 140) 0%, transparent 25%),
-        radial-gradient(ellipse at 60% 65%, oklch(40% 0.06 140) 0%, transparent 20%),
-        radial-gradient(ellipse at 50% 90%, oklch(25% 0.02 250) 0%, transparent 40%),
-        radial-gradient(ellipse at 50% 95%, oklch(35% 0.03 60) 0%, transparent 30%);
-      
-      opacity: 0.6;
-      mix-blend-mode: multiply;
-    }
-
-    .home-noise {
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
-    }
-
-    .home-content {
-      position: relative;
-      z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-    }
-
-    /* Hero Section */
-    .hero-section {
-      margin-bottom: 4rem;
-      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .hero-title-wrapper {
-      margin-bottom: 2rem;
-    }
-
-    .hero-eyebrow {
-      font-family: 'Onest', system-ui, sans-serif;
-      font-size: 0.85rem;
-      color: oklch(68% 0.15 50);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    .hero-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2.5rem, 4vw, 3.5rem);
-      font-weight: 500;
-      line-height: 1.1;
-      color: oklch(15% 0.01 60);
-      letter-spacing: -0.02em;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero-subtitle {
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: oklch(40% 0.01 60);
-      font-weight: 300;
-      line-height: 1.5;
-      max-width: 600px;
-    }
-
-    /* Stats Section */
-    .stats-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 4rem;
-      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
-    }
-
-    .stat-card {
-      background: oklch(100% 0 0 / 0.7);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      border: 0.5px solid oklch(0% 0 0 / 0.08);
-      border-radius: 16px;
-      padding: 1.5rem;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 
-        0 4px 6px -1px oklch(0% 0 0 / 0.07),
-        0 2px 4px -2px oklch(0% 0 0 / 0.05),
-        inset 0 1px 0 oklch(100% 0 0 / 0.1);
-    }
-
-    .stat-card:hover {
-      border-color: oklch(68% 0.15 50 / 0.4);
-      transform: translateY(-4px);
-      box-shadow: 
-        0 8px 32px oklch(68% 0.15 50 / 0.1),
-        0 4px 6px -1px oklch(0% 0 0 / 0.07),
-        inset 0 1px 0 oklch(100% 0 0 / 0.1);
-    }
-
-    .stat-value {
-      display: block;
-      font-family: 'Fraunces', serif;
-      font-size: 2rem;
-      font-weight: 600;
-      color: oklch(15% 0.01 60);
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: oklch(60% 0.01 60);
-      font-weight: 400;
-      letter-spacing: 0.02em;
-    }
-
-    /* Recent Posts */
-    .posts-section {
-      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
-    }
-
-    .section-title {
-      font-family: 'Fraunces', serif;
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: oklch(15% 0.01 60);
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.01em;
-    }
-
-    .posts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .post-card {
-      background: oklch(100% 0 0 / 0.7);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      border: 0.5px solid oklch(0% 0 0 / 0.08);
-      border-radius: 16px;
-      padding: 1.5rem;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none;
-      color: inherit;
-      box-shadow: 
-        0 4px 6px -1px oklch(0% 0 0 / 0.07),
-        0 2px 4px -2px oklch(0% 0 0 / 0.05),
-        inset 0 1px 0 oklch(100% 0 0 / 0.1);
-    }
-
-    .post-card:hover {
-      border-color: oklch(68% 0.15 50 / 0.4);
-      transform: translateY(-4px);
-      box-shadow: 
-        0 8px 32px oklch(68% 0.15 50 / 0.1),
-        0 4px 6px -1px oklch(0% 0 0 / 0.07),
-        inset 0 1px 0 oklch(100% 0 0 / 0.1);
-    }
-
-    .post-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .post-date {
-      font-family: 'Onest', system-ui, sans-serif;
-      font-size: 0.75rem;
-      color: oklch(60% 0.01 60);
-      font-weight: 400;
-      letter-spacing: 0.02em;
-    }
-
-    .post-category {
-      font-size: 0.75rem;
-      color: oklch(68% 0.15 50);
-      font-weight: 500;
-      padding: 0.15rem 0.5rem;
-      background: oklch(68% 0.15 50 / 0.1);
-      border-radius: 4px;
-    }
-
-    .post-title {
-      font-family: 'Fraunces', serif;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: oklch(15% 0.01 60);
-      line-height: 1.3;
-      margin-bottom: 0.5rem;
-    }
-
-    .post-excerpt {
-      font-size: 0.85rem;
-      color: oklch(40% 0.01 60);
-      line-height: 1.5;
-      font-weight: 300;
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes countUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .home-content {
-        padding: 2rem 1rem;
-      }
-
-      .stats-section {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .posts-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .stats-section {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
-  <Header />
-  <div class="home">
-    <div class="home-bg">
-      <div class="home-mountains"></div>
-      <div class="home-noise"></div>
-    </div>
-
-    <div class="home-content">
-      <!-- Hero Section -->
-      <section class="hero-section">
-        <div class="hero-title-wrapper">
-          <div class="hero-eyebrow">始于 2025 &mdash; 工程日志</div>
-          <h1 class="hero-title">
-            <span class="hero-line">系统、信号、</span>
-            <span class="hero-line">
-              <span class="hero-accent">代码</span> 与混沌。
-            </span>
-          </h1>
-          <p class="hero-subtitle">{SITE_DESCRIPTION}</p>
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-number">{sortedPosts.length}+</span>
+            <span class="stat-label">文章</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">&middot;</span>
+            <span class="stat-label">探索</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">&middot;</span>
+            <span class="stat-label">发现</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">&middot;</span>
+            <span class="stat-label">热爱</span>
+          </div>
         </div>
       </section>
 
-      <!-- Stats Section -->
-      <section class="stats-section">
-        <div class="stat-card">
-          <span class="stat-value" data-count="258">0</span>
-          <span class="stat-label">项目提交</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" data-count="24">0</span>
-          <span class="stat-label">文章发布</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">∞</span>
-          <span class="stat-label">实验进行中</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" data-count="404">0</span>
-          <span class="stat-label">代码行数</span>
-        </div>
+      <section class="quick-links">
+        <a href="/blog" class="quick-card">
+          <div class="quick-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <polyline points="4,7 20,7"/>
+              <polyline points="4,12 20,12"/>
+              <polyline points="4,17 16,17"/>
+            </svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-title">最新文章</span>
+            <span class="quick-desc">查看近期发布的笔记</span>
+          </div>
+        </a>
+        <a href="/resources" class="quick-card">
+          <div class="quick-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="quick-info">
+            <span class="quick-title">资源库</span>
+            <span class="quick-desc">工具、资源与参考</span>
+          </div>
+        </a>
       </section>
 
-      <!-- Recent Posts -->
       <section class="posts-section">
         <h2 class="section-title">最近更新</h2>
         <div class="posts-grid">
-          <a href="/blog/astro-theme" class="post-card">
-            <div class="post-meta">
-              <span class="post-date">2025-05-26</span>
-              <span class="post-category">设计</span>
-            </div>
-            <h3 class="post-title">Astro 主题设计与实现</h3>
-            <p class="post-excerpt">探索现代博客主题的设计语言与实现细节，包括响应式布局、动画效果和性能优化。</p>
-          </a>
-          <a href="/blog/cyberpunk-style" class="post-card">
-            <div class="post-meta">
-              <span class="post-date">2025-05-25</span>
-              <span class="post-category">前端</span>
-            </div>
-            <h3 class="post-title">赛博朋克风格界面设计</h3>
-            <p class="post-excerpt">从色彩系统到交互细节，构建具有未来感的数字界面体验。</p>
-          </a>
-          <a href="/blog/performance-optimization" class="post-card">
-            <div class="post-meta">
-              <span class="post-date">2025-05-24</span>
-              <span class="post-category">工程</span>
-            </div>
-            <h3 class="post-title">现代 Web 性能优化实践</h3>
-            <p class="post-excerpt">从核心指标到实际优化策略，提升网站加载速度与用户体验。</p>
-          </a>
+          {sortedPosts.map((post) => (
+            <article class="post-card">
+              <a href={post.url} class="post-link">
+                <time class="post-date" datetime={post.frontmatter.date.toISOString()}>
+                  {new Date(post.frontmatter.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </time>
+                <h3 class="post-title">{post.frontmatter.title}</h3>
+                <p class="post-excerpt">{post.frontmatter.description || '阅读全文 →'}</p>
+                {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
+                  <div class="post-tags">
+                    {post.frontmatter.tags.slice(0, 3).map((tag: string) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </a>
+            </article>
+          ))}
         </div>
+        <a href="/blog" class="view-all">
+          查看全部文章 →
+        </a>
       </section>
-    </div>
-  </div>
+    </main>
 
-  <script>
-    // Count up animation for stats
-    function animateCountUp() {
-      const counters = document.querySelectorAll('[data-count]');
-      
-      counters.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-count'));
-        const duration = 2000;
-        const step = target / (duration / 16);
-        let current = 0;
-        
-        const updateCounter = () => {
-          current += step;
-          if (current < target) {
-            counter.textContent = Math.floor(current);
-            requestAnimationFrame(updateCounter);
-          } else {
-            counter.textContent = target;
-          }
-        };
-        
-        // Start animation when element is in viewport
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              updateCounter();
-              observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.5 });
-        
-        observer.observe(counter);
-      });
-    }
-
-    // Initialize effects when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      animateCountUp();
-      
-      // Add smooth scroll behavior
-      document.documentElement.style.scrollBehavior = 'smooth';
-      
-      // Add hover effects for cards
-      const cards = document.querySelectorAll('.stat-card, .post-card');
-      cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-          card.style.zIndex = '10';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-          card.style.zIndex = '1';
-        });
-      });
-    });
-  </script>
-</body>
+    <Footer />
+  </body>
 </html>
+
+<style>
+.home-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md);
+}
+
+.hero {
+  text-align: center;
+  padding: var(--space-3xl) 0 var(--space-2xl);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-sm);
+  background: linear-gradient(135deg, var(--star-warm), var(--lantern-warm), var(--tech-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-desc {
+  color: var(--text-secondary);
+  font-size: var(--text-lg);
+  font-weight: 300;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  text-align: center;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--surface-card);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  transition: all var(--duration-normal) var(--ease-out-expo);
+}
+
+.stat-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-glow-sm);
+}
+
+.stat-number {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--star-warm);
+}
+
+.stat-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-3xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-2xl) 0;
+}
+
+.quick-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--surface-card);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  transition: all var(--duration-normal) var(--ease-out-expo);
+}
+
+.quick-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-glow-sm);
+  transform: translateY(-2px);
+}
+
+.quick-icon {
+  color: var(--star-warm);
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.quick-info {
+  flex: 1;
+}
+
+.quick-title {
+  display: block;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: var(--text-base);
+  margin-bottom: var(--space-3xs);
+}
+
+.quick-desc {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.posts-section {
+  margin-top: var(--space-2xl);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-lg);
+  position: relative;
+  padding-bottom: var(--space-sm);
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--star-warm), var(--tech-cyan));
+  border-radius: 1px;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.post-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(12px);
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  overflow: hidden;
+}
+
+.post-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-glow-sm);
+  transform: translateY(-3px);
+}
+
+.post-link {
+  display: block;
+  padding: var(--space-lg);
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.post-date {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.post-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+}
+
+.post-excerpt {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-sm);
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+}
+
+.tag {
+  padding: 2px 8px;
+  background: oklch(78% 0.18 65 / 0.06);
+  border: 1px solid oklch(78% 0.18 65 / 0.12);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  color: var(--star-warm);
+  letter-spacing: 0.02em;
+}
+
+.view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-top: var(--space-xl);
+  padding: var(--space-xs) var(--space-lg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+}
+
+.view-all:hover {
+  border-color: var(--star-warm);
+  color: var(--star-warm);
+}
+
+@media (max-width: 640px) {
+  .stats-row {
+    gap: var(--space-sm);
+  }
+
+  .stat-card {
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  .quick-links {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-title {
+    font-size: var(--text-2xl);
+  }
+}
+</style>
