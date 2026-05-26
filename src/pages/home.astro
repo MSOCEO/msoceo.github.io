@@ -1,5 +1,6 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
@@ -129,71 +130,9 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
       letter-spacing: 0.02em;
     }
 
-    /* Quick Links */
-    .links-section {
-      margin-bottom: 4rem;
-      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
-    }
-
-    .section-title {
-      font-family: 'Space Grotesk', system-ui, sans-serif;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: oklch(92% 0.01 265);
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.01em;
-    }
-
-    .links-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1rem;
-    }
-
-    .link-card {
-      background: oklch(14% 0.02 265 / 0.4);
-      border: 1px solid oklch(28% 0.025 265 / 0.2);
-      border-radius: 10px;
-      padding: 1.25rem;
-      text-align: center;
-      text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .link-card:hover {
-      background: oklch(14% 0.02 265 / 0.8);
-      border-color: oklch(72% 0.18 62 / 0.5);
-      transform: translateY(-2px);
-    }
-
-    .link-icon {
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: 50%;
-      background: linear-gradient(135deg, oklch(72% 0.18 62), oklch(65% 0.16 255));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      color: oklch(10% 0.025 265);
-      font-weight: 600;
-    }
-
-    .link-label {
-      font-family: 'Space Grotesk', system-ui, sans-serif;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: oklch(92% 0.01 265);
-      letter-spacing: 0.02em;
-    }
-
     /* Recent Posts */
     .posts-section {
-      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
     }
 
     .posts-grid {
@@ -293,10 +232,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .links-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
       .posts-grid {
         grid-template-columns: 1fr;
       }
@@ -306,14 +241,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
       .stats-section {
         grid-template-columns: 1fr;
       }
-
-      .links-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
     }
   </style>
 </head>
 <body>
+  <Header />
   <div class="home">
     <div class="home-bg">
       <div class="home-grid"></div>
@@ -352,37 +284,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
         <div class="stat-card">
           <span class="stat-value" data-count="404">0</span>
           <span class="stat-label">代码行数</span>
-        </div>
-      </section>
-
-      <!-- Quick Links -->
-      <section class="links-section">
-        <h2 class="section-title">快速入口</h2>
-        <div class="links-grid">
-          <a href="/blog" class="link-card">
-            <div class="link-icon">📝</div>
-            <span class="link-label">文章</span>
-          </a>
-          <a href="/resources" class="link-card">
-            <div class="link-icon">📚</div>
-            <span class="link-label">资源</span>
-          </a>
-          <a href="/about" class="link-card">
-            <div class="link-icon">👤</div>
-            <span class="link-label">关于</span>
-          </a>
-          <a href="https://github.com/MSOCEO" class="link-card" target="_blank">
-            <div class="link-icon">🐙</div>
-            <span class="link-label">GitHub</span>
-          </a>
-          <a href="#" class="link-card">
-            <div class="link-icon">🔧</div>
-            <span class="link-label">项目</span>
-          </a>
-          <a href="#" class="link-card">
-            <div class="link-icon">📊</div>
-            <span class="link-label">统计</span>
-          </a>
         </div>
       </section>
 
@@ -511,7 +412,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
       document.documentElement.style.scrollBehavior = 'smooth';
       
       // Add hover effects for cards
-      const cards = document.querySelectorAll('.stat-card, .link-card, .post-card');
+      const cards = document.querySelectorAll('.stat-card, .post-card');
       cards.forEach(card => {
         card.addEventListener('mouseenter', () => {
           card.style.zIndex = '10';
