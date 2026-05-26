@@ -1,0 +1,319 @@
+---
+// src/components/Comments.astro — 留言区域组件
+---
+
+<section id="comments" class="comments-section">
+  <div class="comments-header">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <path d="M21,15a2,2,0,0,1-2,2H7l-4,4V5a2,2,0,0,1,2-2H19a2,2,0,0,1,2,2Z"/>
+      <line x1="8" y1="10" x2="16" y2="10"/>
+      <line x1="8" y1="14" x2="12" y2="14"/>
+    </svg>
+    <h3>留言</h3>
+    <span class="comment-count">12 条留言</span>
+  </div>
+
+  <div class="comments-list">
+    <div class="comment-item">
+      <div class="comment-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4,20c0-4,3.6-8,8-8s8,4,8,8"/>
+        </svg>
+      </div>
+      <div class="comment-body">
+        <div class="comment-meta">
+          <span class="comment-author">星辰旅人</span>
+          <span class="comment-badge">来访者</span>
+          <span class="comment-time">3 分钟前</span>
+        </div>
+        <p class="comment-text">在黑夜中寻找星光，这个主题太美了。来自上海的朋友路过~</p>
+        <div class="comment-visitor-info">
+          <span>上海</span>
+          <span class="dot">·</span>
+          <span>iPhone 15 Pro</span>
+          <span class="dot">·</span>
+          <span>106.38.xx.xx</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comment-item">
+      <div class="comment-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4,20c0-4,3.6-8,8-8s8,4,8,8"/>
+        </svg>
+      </div>
+      <div class="comment-body">
+        <div class="comment-meta">
+          <span class="comment-author">探索者</span>
+          <span class="comment-time">1 小时前</span>
+        </div>
+        <p class="comment-text">终于找到一个有品位的博客了，黑曜石的设计确实独特。</p>
+        <div class="comment-visitor-info">
+          <span>北京</span>
+          <span class="dot">·</span>
+          <span>Windows PC</span>
+          <span class="dot">·</span>
+          <span>114.246.xx.xx</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comment-item">
+      <div class="comment-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4,20c0-4,3.6-8,8-8s8,4,8,8"/>
+        </svg>
+      </div>
+      <div class="comment-body">
+        <div class="comment-meta">
+          <span class="comment-author">星河漫步者</span>
+          <span class="comment-time">3 小时前</span>
+        </div>
+        <p class="comment-text">从 GitHub 找过来的，代码风格很干净，期待更多技术文章。</p>
+        <div class="comment-visitor-info">
+          <span>深圳</span>
+          <span class="dot">·</span>
+          <span>Android</span>
+          <span class="dot">·</span>
+          <span>121.35.xx.xx</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comment-form-wrapper">
+    <h4>留下足迹</h4>
+    <form class="comment-form" id="commentForm">
+      <div class="form-row">
+        <input type="text" name="nickname" placeholder="你的昵称" class="form-input" maxlength="20" required />
+        <input type="text" name="location" placeholder="所在城市" class="form-input" maxlength="10" />
+      </div>
+      <textarea name="content" placeholder="说点什么吧..." class="form-textarea" rows="3" maxlength="500" required></textarea>
+      <button type="submit" class="form-submit">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22,2 15,22 11,13 2,9"/>
+        </svg>
+        发送留言
+      </button>
+    </form>
+  </div>
+</section>
+
+<style>
+.comments-section {
+  margin-top: var(--space-2xl);
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xl);
+  color: var(--star-warm);
+  flex-wrap: wrap;
+}
+
+.comments-header h3 {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  margin: 0;
+  background: linear-gradient(135deg, var(--star-warm), var(--tech-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.comment-count {
+  margin-left: auto;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.comment-item {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  background: var(--surface-card);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(12px);
+  transition: border-color var(--duration-normal) var(--ease-out-expo);
+}
+
+.comment-item:hover {
+  border-color: var(--border-glow);
+}
+
+.comment-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(240, 181, 69, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--star-warm);
+  flex-shrink: 0;
+}
+
+.comment-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-2xs);
+  flex-wrap: wrap;
+}
+
+.comment-author {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.comment-badge {
+  font-size: var(--text-xs);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(72, 187, 240, 0.1);
+  color: var(--tech-cyan);
+  font-weight: 500;
+}
+
+.comment-time {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.comment-text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0 0 var(--space-2xs) 0;
+}
+
+.comment-visitor-info {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  flex-wrap: wrap;
+}
+
+.comment-visitor-info .dot {
+  opacity: 0.4;
+}
+
+.comment-form-wrapper {
+  background: var(--surface-card);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  backdrop-filter: blur(12px);
+}
+
+.comment-form-wrapper h4 {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-md) 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.form-input {
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  outline: none;
+  transition: all var(--duration-fast) var(--ease-out-expo);
+}
+
+.form-input:focus {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 0 2px rgba(240, 181, 69, 0.1);
+}
+
+.form-textarea {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  outline: none;
+  resize: vertical;
+  margin-bottom: var(--space-md);
+  box-sizing: border-box;
+  transition: all var(--duration-fast) var(--ease-out-expo);
+}
+
+.form-textarea:focus {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 0 2px rgba(240, 181, 69, 0.1);
+}
+
+.form-submit {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-xl);
+  background: linear-gradient(135deg, rgba(240, 181, 69, 0.15), rgba(72, 187, 240, 0.1));
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-md);
+  color: var(--star-warm);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+}
+
+.form-submit:hover {
+  background: linear-gradient(135deg, rgba(240, 181, 69, 0.25), rgba(72, 187, 240, 0.15));
+  border-color: var(--star-warm);
+  box-shadow: var(--shadow-glow-sm);
+}
+
+.form-submit:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

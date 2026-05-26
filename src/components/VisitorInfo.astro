@@ -1,0 +1,226 @@
+---
+// src/components/VisitorInfo.astro — 访问者信息卡片组件
+import { SITE_TITLE } from '../consts';
+---
+
+<div class="visitor-card">
+  <div class="visitor-header">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="2" x2="12" y2="6"/>
+      <line x1="12" y1="18" x2="12" y2="22"/>
+      <line x1="2" y1="12" x2="6" y2="12"/>
+      <line x1="18" y1="12" x2="22" y2="12"/>
+    </svg>
+    <h3>实时访客</h3>
+  </div>
+  
+  <div class="visitor-list">
+    <div class="visitor-item">
+      <div class="visitor-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4,20c0-4,3.6-8,8-8s8,4,8,8"/>
+        </svg>
+      </div>
+      <div class="visitor-info">
+        <span class="visitor-name">探索者</span>
+        <span class="visitor-detail">
+          <span class="visitor-location">北京</span>
+          <span class="visitor-device" data-device="desktop">💻</span>
+        </span>
+      </div>
+    </div>
+    
+    <div class="visitor-item">
+      <div class="visitor-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4,20c0-4,3.6-8,8-8s8,4,8,8"/>
+        </svg>
+      </div>
+      <div class="visitor-info">
+        <span class="visitor-name">发现者</span>
+        <span class="visitor-detail">
+          <span class="visitor-location">上海</span>
+          <span class="visitor-device" data-device="iphone">📱</span>
+        </span>
+      </div>
+    </div>
+    
+    <div class="visitor-item">
+      <div class="visitor-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4,20c0-4,3.6-8,8-8s8,4,8,8"/>
+        </svg>
+      </div>
+      <div class="visitor-info">
+        <span class="visitor-name">热爱者</span>
+        <span class="visitor-detail">
+          <span class="visitor-location">深圳</span>
+          <span class="visitor-device" data-device="android">📱</span>
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="visitor-stats">
+    <div class="stat-item">
+      <span class="stat-value">3</span>
+      <span class="stat-label">在线访客</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">42</span>
+      <span class="stat-label">今日访问</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">128</span>
+      <span class="stat-label">累计访问</span>
+    </div>
+  </div>
+  
+  <div class="visitor-footer">
+    <small>IP: 192.168.1.1 | 设备: macOS Chrome</small>
+  </div>
+</div>
+
+<style>
+.visitor-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-ghost);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-glow-sm);
+  transition: border-color var(--duration-normal) var(--ease-out-expo);
+}
+
+.visitor-card:hover {
+  border-color: var(--border-glow);
+}
+
+.visitor-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+  color: var(--star-warm);
+}
+
+.visitor-header h3 {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  margin: 0;
+  background: linear-gradient(135deg, var(--star-warm), var(--tech-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.visitor-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.visitor-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+  transition: background var(--duration-fast) var(--ease-out-expo);
+}
+
+.visitor-item:hover {
+  background: rgba(240, 181, 69, 0.05);
+}
+
+.visitor-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(var(--star-warm-rgb), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--star-warm);
+  flex-shrink: 0;
+}
+
+.visitor-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.visitor-name {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.visitor-detail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.visitor-location {
+  color: var(--tech-cyan);
+}
+
+.visitor-device {
+  font-size: 0.9em;
+}
+
+.visitor-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.stat-item {
+  text-align: center;
+  padding: var(--space-xs);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-md);
+}
+
+.stat-value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--star-warm);
+}
+
+.stat-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-3xs);
+}
+
+.visitor-footer {
+  text-align: center;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-ghost);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 768px) {
+  .visitor-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</style>

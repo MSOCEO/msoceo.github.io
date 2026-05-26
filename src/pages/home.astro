@@ -2,6 +2,8 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import VisitorInfo from '../components/VisitorInfo.astro';
+import Comments from '../components/Comments.astro';
 ---
 
 <!doctype html>
@@ -12,62 +14,154 @@ import Footer from '../components/Footer.astro';
   <body>
     <Header />
     <main class="home-main">
-      <section class="hero">
-        <h1 class="hero-title">黑曜石里的星光</h1>
-        <p class="hero-desc">探索、发现、热爱 — 记录技术思考与生活诗意</p>
-        <div class="stats-row">
-          <div class="stat-card">
-            <span class="stat-number">3+</span>
-            <span class="stat-label">文章</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-number">&middot;</span>
-            <span class="stat-label">探索</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-number">&middot;</span>
-            <span class="stat-label">发现</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-number">&middot;</span>
-            <span class="stat-label">热爱</span>
-          </div>
-        </div>
-      </section>
+      <div class="home-container">
+        <!-- 左侧主内容区 -->
+        <div class="home-content">
+          <section class="hero">
+            <h1 class="hero-title">黑曜石里的星光</h1>
+            <p class="hero-desc">探索、发现、热爱 — 记录技术思考与生活诗意</p>
+            <div class="stats-row">
+              <div class="stat-card">
+                <span class="stat-number">3+</span>
+                <span class="stat-label">文章</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number">&middot;</span>
+                <span class="stat-label">探索</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number">&middot;</span>
+                <span class="stat-label">发现</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number">&middot;</span>
+                <span class="stat-label">热爱</span>
+              </div>
+            </div>
+          </section>
 
-      <section class="quick-links">
-        <a href="/blog" class="quick-card">
-          <div class="quick-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-              <polyline points="4,7 20,7"/>
-              <polyline points="4,12 20,12"/>
-              <polyline points="4,17 16,17"/>
-            </svg>
+
+
+          <!-- 文章预览区 -->
+          <section class="articles-section">
+            <div class="section-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <line x1="8" y1="8" x2="16" y2="8"/>
+                <line x1="8" y1="12" x2="16" y2="12"/>
+                <path d="M8,16 L12,16 L16,16"/>
+              </svg>
+              <h2>近期文章</h2>
+            </div>
+            <div class="articles-grid">
+              <article class="article-card">
+                <div class="article-meta">
+                  <span class="article-date">2025-12-15</span>
+                  <span class="article-category">技术</span>
+                </div>
+                <h3 class="article-title">黑曜石星光主题设计实践</h3>
+                <p class="article-excerpt">探索如何将深邃的黑曜石与温暖的星光结合，创造独特的视觉体验...</p>
+                <a href="/blog/obsidian-starlight" class="article-link">阅读全文 →</a>
+              </article>
+              <article class="article-card">
+                <div class="article-meta">
+                  <span class="article-date">2025-12-10</span>
+                  <span class="article-category">生活</span>
+                </div>
+                <h3 class="article-title">在深夜寻找星光的时刻</h3>
+                <p class="article-excerpt">记录那些在黑暗中依然保持探索与热爱的瞬间...</p>
+                <a href="/blog/midnight-starlight" class="article-link">阅读全文 →</a>
+              </article>
+              <article class="article-card">
+                <div class="article-meta">
+                  <span class="article-date">2025-12-05</span>
+                  <span class="article-category">资源</span>
+                </div>
+                <h3 class="article-title">前端设计资源精选</h3>
+                <p class="article-excerpt">收集整理的黑曜石星光主题相关设计资源...</p>
+                <a href="/blog/frontend-resources" class="article-link">阅读全文 →</a>
+              </article>
+            </div>
+          </section>
+
+          <!-- 留言区 -->
+          <Comments />
+        </div>
+
+        <!-- 右侧侧边栏 -->
+        <aside class="home-sidebar">
+          <VisitorInfo />
+          
+          <!-- 访问统计 -->
+          <div class="stats-card">
+            <div class="stats-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <line x1="12" y1="20" x2="12" y2="10"/>
+                <line x1="18" y1="20" x2="18" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="16"/>
+              </svg>
+              <h3>访问统计</h3>
+            </div>
+            <div class="stats-chart">
+              <div class="chart-bar" style="height: 80%;" data-day="周一"></div>
+              <div class="chart-bar" style="height: 65%;" data-day="周二"></div>
+              <div class="chart-bar" style="height: 90%;" data-day="周三"></div>
+              <div class="chart-bar" style="height: 75%;" data-day="周四"></div>
+              <div class="chart-bar" style="height: 95%;" data-day="周五"></div>
+              <div class="chart-bar" style="height: 70%;" data-day="周六"></div>
+              <div class="chart-bar" style="height: 60%;" data-day="周日"></div>
+            </div>
+            <div class="stats-summary">
+              <div class="summary-item">
+                <span class="summary-value">1,248</span>
+                <span class="summary-label">本周访问</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-value">42.3%</span>
+                <span class="summary-label">移动端</span>
+              </div>
+            </div>
           </div>
-          <div class="quick-info">
-            <span class="quick-title">最新文章</span>
-            <span class="quick-desc">查看近期发布的笔记</span>
+
+          <!-- 设备分布 -->
+          <div class="device-card">
+            <div class="device-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <rect x="2" y="6" width="20" height="12" rx="2"/>
+                <line x1="6" y1="2" x2="6" y2="6"/>
+                <line x1="18" y1="2" x2="18" y2="6"/>
+              </svg>
+              <h3>设备分布</h3>
+            </div>
+            <div class="device-list">
+              <div class="device-item">
+                <span class="device-name">💻 电脑端</span>
+                <span class="device-percent">57.7%</span>
+              </div>
+              <div class="device-item">
+                <span class="device-name">📱 iPhone</span>
+                <span class="device-percent">28.4%</span>
+              </div>
+              <div class="device-item">
+                <span class="device-name">📱 Android</span>
+                <span class="device-percent">13.9%</span>
+              </div>
+            </div>
           </div>
-        </a>
-        <a href="/resources" class="quick-card">
-          <div class="quick-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-            </svg>
-          </div>
-          <div class="quick-info">
-            <span class="quick-title">资源库</span>
-            <span class="quick-desc">工具、资源与参考</span>
-          </div>
-        </a>
-      </section>
+        </aside>
+      </div>
     </main>
     <Footer />
   </body>
 </html>
 
 <style>
-.home-main { max-width: 1200px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
+.home-main { max-width: 1400px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
+.home-container { display: grid; grid-template-columns: 1fr 320px; gap: var(--space-xl); }
+
+/* 左侧主内容区 */
+.home-content { display: flex; flex-direction: column; gap: var(--space-2xl); }
+
 .hero { text-align: center; padding: var(--space-3xl) 0 var(--space-2xl); }
 .hero-title {
   font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; letter-spacing: 0.04em;
@@ -81,18 +175,57 @@ import Footer from '../components/Footer.astro';
 .stat-card:hover { border-color: var(--border-glow); box-shadow: var(--shadow-glow-sm); }
 .stat-number { display: block; font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--star-warm); }
 .stat-label { display: block; font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-3xs); text-transform: uppercase; letter-spacing: 0.1em; }
-.quick-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-md); margin: var(--space-2xl) 0; }
-.quick-card { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg); background: var(--surface-card); border: 1px solid var(--border-ghost); border-radius: var(--radius-xl); text-decoration: none; backdrop-filter: blur(12px); transition: all var(--duration-normal) var(--ease-out-expo); }
-.quick-card:hover { border-color: var(--border-glow); box-shadow: var(--shadow-glow-sm); transform: translateY(-2px); }
-.quick-icon { color: var(--star-warm); opacity: 0.8; flex-shrink: 0; }
-.quick-info { flex: 1; }
-.quick-title { display: block; color: var(--text-primary); font-weight: 600; font-size: var(--text-base); margin-bottom: var(--space-3xs); }
-.quick-desc { display: block; color: var(--text-muted); font-size: var(--text-sm); }
+
+/* 文章预览区 */
+.articles-section { margin-top: var(--space-xl); }
+.section-header { display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-lg); color: var(--star-warm); }
+.section-header h2 { font-family: var(--font-body); font-size: var(--text-xl); font-weight: 600; margin: 0; background: linear-gradient(135deg, var(--star-warm), var(--tech-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-lg); }
+.article-card { background: var(--surface-card); border: 1px solid var(--border-ghost); border-radius: var(--radius-xl); padding: var(--space-lg); backdrop-filter: blur(12px); transition: all var(--duration-normal) var(--ease-out-expo); }
+.article-card:hover { border-color: var(--border-glow); box-shadow: var(--shadow-glow-sm); transform: translateY(-2px); }
+.article-meta { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm); font-size: var(--text-xs); color: var(--text-muted); }
+.article-category { padding: 2px 8px; background: rgba(var(--tech-cyan-rgb), 0.1); color: var(--tech-cyan); border-radius: var(--radius-sm); font-weight: 500; }
+.article-title { font-family: var(--font-body); font-size: var(--text-base); font-weight: 600; color: var(--text-primary); margin: 0 0 var(--space-xs) 0; }
+.article-excerpt { font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6; margin: 0 0 var(--space-sm) 0; }
+.article-link { display: inline-flex; align-items: center; gap: var(--space-2xs); font-size: var(--text-sm); color: var(--star-warm); text-decoration: none; font-weight: 500; }
+.article-link:hover { text-decoration: underline; }
+
+/* 右侧侧边栏 */
+.home-sidebar { display: flex; flex-direction: column; gap: var(--space-xl); }
+
+/* 统计卡片 */
+.stats-card { background: var(--surface-card); border: 1px solid var(--border-ghost); border-radius: var(--radius-xl); padding: var(--space-lg); backdrop-filter: blur(12px); }
+.stats-header { display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-lg); color: var(--star-warm); }
+.stats-header h3 { font-family: var(--font-body); font-size: var(--text-base); font-weight: 600; margin: 0; background: linear-gradient(135deg, var(--star-warm), var(--tech-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.stats-chart { display: flex; align-items: flex-end; gap: var(--space-2xs); height: 120px; margin-bottom: var(--space-lg); }
+.chart-bar { flex: 1; background: linear-gradient(to top, rgba(240, 181, 69, 0.2), rgba(72, 187, 240, 0.1)); border-radius: var(--radius-sm) var(--radius-sm) 0 0; min-height: 4px; position: relative; }
+.chart-bar::after { content: attr(data-day); position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: var(--text-xs); color: var(--text-muted); }
+.stats-summary { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+.summary-item { text-align: center; }
+.summary-value { display: block; font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--star-warm); }
+.summary-label { display: block; font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-3xs); }
+
+/* 设备卡片 */
+.device-card { background: var(--surface-card); border: 1px solid var(--border-ghost); border-radius: var(--radius-xl); padding: var(--space-lg); backdrop-filter: blur(12px); }
+.device-header { display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-lg); color: var(--star-warm); }
+.device-header h3 { font-family: var(--font-body); font-size: var(--text-base); font-weight: 600; margin: 0; background: linear-gradient(135deg, var(--star-warm), var(--tech-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.device-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+.device-item { display: flex; justify-content: space-between; align-items: center; padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.02); transition: background var(--duration-fast) var(--ease-out-expo); }
+.device-item:hover { background: rgba(240, 181, 69, 0.05); }
+.device-name { font-size: var(--text-sm); color: var(--text-primary); }
+.device-percent { font-size: var(--text-sm); font-weight: 600; color: var(--star-warm); }
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .home-container { grid-template-columns: 1fr; }
+  .home-sidebar { order: -1; }
+}
 
 @media (max-width: 640px) {
   .stats-row { gap: var(--space-sm); }
   .stat-card { padding: var(--space-xs) var(--space-md); }
-  .quick-links { grid-template-columns: 1fr; }
   .hero-title { font-size: var(--text-2xl); }
+  .articles-grid { grid-template-columns: 1fr; }
+  .stats-summary { grid-template-columns: 1fr; }
 }
 </style>
