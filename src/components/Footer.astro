@@ -1,81 +1,48 @@
 ---
-const today = new Date();
+// src/components/Footer.astro — 黑曜石星光页脚
 ---
 
-<footer>
+<footer class="obsidian-footer">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <circle cx="22" cy="8" r="3" fill="oklch(85% 0.12 60)"/>
-        <path d="M2 18 L8 10 L12 14 L18 6 L24 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
-        <path d="M16 18 L18 15 L20 18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5"/>
-        <path d="M0 22 L4 16 L8 19 L12 12 L18 20 L22 17 L28 20" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
-      </svg>
-      <span>MSOCEO</span>
-    </div>
-    <div class="footer-links">
-      <span>&copy; {today.getFullYear()}</span>
-      <span class="footer-sep">&middot;</span>
-      <span>Powered by Astro</span>
-    </div>
+    <p class="footer-text">在黑暗中寻找光，在代码里写下温度。</p>
+    <p class="footer-copy">&copy; {new Date().getFullYear()} MSOCEO &middot; Built with Astro</p>
   </div>
 </footer>
 
 <style>
-  footer {
-    padding: 2.5rem 1.5rem;
-    position: relative;
-    z-index: 1;
-  }
+.obsidian-footer {
+  border-top: 1px solid var(--border-ghost);
+  padding: var(--space-xl) var(--space-md);
+  margin-top: var(--space-3xl);
+  position: relative;
+}
 
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+.obsidian-footer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, oklch(78% 0.18 65 / 0.1) 30%, oklch(78% 0.18 65 / 0.1) 70%, transparent);
+}
 
-  .footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'Fraunces', serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: oklch(60% 0.01 60);
-    letter-spacing: -0.01em;
-  }
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
 
-  .footer-brand svg {
-    color: oklch(68% 0.15 50);
-  }
+.footer-text {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2xs);
+  font-style: italic;
+}
 
-  .footer-links {
-    font-family: 'Onest', system-ui, sans-serif;
-    font-size: 0.8rem;
-    color: oklch(60% 0.01 60);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    letter-spacing: 0.02em;
-  }
-
-  .footer-sep {
-    color: oklch(80% 0.01 60);
-  }
-
-  @media (max-width: 640px) {
-    footer {
-      padding: 2rem 1rem;
-    }
-
-    .footer-inner {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-  }
+.footer-copy {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
 </style>
