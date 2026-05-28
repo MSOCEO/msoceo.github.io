@@ -48,8 +48,8 @@
   --border-glow:    oklch(78% 0.18 65 / 0.25);
 
   /* === 字体系统 === */
-  --font-display: 'Fraunces', serif;
-  --font-body: 'Onest', system-ui, -apple-system, sans-serif;
+  --font-display: 'Noto Sans SC', 'Noto Sans', sans-serif;
+  --font-body: 'Noto Sans', 'Noto Sans SC', sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', 'Cascadia Code', monospace;
 
   --text-xs:   clamp(0.72rem, 0.68rem + 0.15vw, 0.78rem);

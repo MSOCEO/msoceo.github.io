@@ -31,7 +31,7 @@
   --yun-c-cloud: white;
   
   /* 字体 */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Noto Sans SC', 'Noto Sans', sans-serif;
   --font-serif: 'Noto Serif SC', serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', monospace;
   
