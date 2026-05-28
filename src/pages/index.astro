@@ -1,87 +1,359 @@
 ---
-// src/pages/index.astro — 黑曜石星光入口页
 import Page from '../layouts/Page.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import VisitorInfo from '../components/VisitorInfo.astro';
+
+const title = '首页 | 溯光';
+const description = '探索、发现、热爱 — 技术笔记与生活手帐';
 ---
 
-<Page title={SITE_TITLE} description={SITE_DESCRIPTION}>
-  <main class="entrance-main">
-    <div class="entrance-card">
-      <h1 class="entrance-title">探索 · 发现 · 热爱</h1>
-      <p class="entrance-subtitle">
-        在代码的星空中寻找光，在生活的烟火里记录温度。<br/>
-        这里是一个探索者的小站，分享科技、生活与一切值得被看见的事物。
-      </p>
-      <p class="entrance-hint">请通过导航栏探索</p>
+<Page {title} {description} hero>
+  <div class="yun-home">
+    <div class="yun-home-intro">
+      <h2>最近更新</h2>
+      <p>这里记录着代码与日常的缝隙之间，那些值得打捞的碎片。</p>
     </div>
-  </main>
+
+    <div class="yun-card-grid">
+      <!-- 文章卡片 1 -->
+      <article class="yun-card">
+        <div class="yun-card-header">
+          <h3 class="yun-card-title">在 TypeScript 中实现类型安全的 EventEmitter</h3>
+          <div class="yun-card-meta">
+            <span class="yun-card-date">2025-05-20</span>
+            <span class="yun-card-category">技术</span>
+          </div>
+        </div>
+        <div class="yun-card-content">
+          <p>如何利用 TypeScript 4.1+ 的模板字面量类型和条件类型，构建一个完全类型安全的 EventEmitter，让事件名和载荷类型在编译期就能被捕获。</p>
+        </div>
+        <div class="yun-card-actions">
+          <a href="#" class="yun-card-action">阅读全文</a>
+          <div class="yun-card-tags">
+            <span class="yun-tag">TypeScript</span>
+            <span class="yun-tag">事件系统</span>
+            <span class="yun-tag">类型安全</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 文章卡片 2 -->
+      <article class="yun-card">
+        <div class="yun-card-header">
+          <h3 class="yun-card-title">深夜咖啡馆与代码的对话</h3>
+          <div class="yun-card-meta">
+            <span class="yun-card-date">2025-05-18</span>
+            <span class="yun-card-category">随笔</span>
+          </div>
+        </div>
+        <div class="yun-card-content">
+          <p>凌晨两点，咖啡馆的暖光打在键盘上。屏幕上的代码像一首未完成的诗，而窗外的城市已经沉睡。</p>
+        </div>
+        <div class="yun-card-actions">
+          <a href="#" class="yun-card-action">阅读全文</a>
+          <div class="yun-card-tags">
+            <span class="yun-tag">生活</span>
+            <span class="yun-tag">随笔</span>
+            <span class="yun-tag">深夜</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 文章卡片 3 -->
+      <article class="yun-card">
+        <div class="yun-card-header">
+          <h3 class="yun-card-title">Astro 3.0 新特性实战</h3>
+          <div class="yun-card-meta">
+            <span class="yun-card-date">2025-05-15</span>
+            <span class="yun-card-category">前端</span>
+          </div>
+        </div>
+        <div class="yun-card-content">
+          <p>View Transitions API、Image 组件优化、Content Collections 增强…… 用实际项目体验 Astro 3.0 带来的开发效率提升。</p>
+        </div>
+        <div class="yun-card-actions">
+          <a href="#" class="yun-card-action">阅读全文</a>
+          <div class="yun-card-tags">
+            <span class="yun-tag">Astro</span>
+            <span class="yun-tag">前端</span>
+            <span class="yun-tag">SSG</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 文章卡片 4 -->
+      <article class="yun-card">
+        <div class="yun-card-header">
+          <h3 class="yun-card-title">黑曜石星光主题设计系统解析</h3>
+          <div class="yun-card-meta">
+            <span class="yun-card-date">2025-05-12</span>
+            <span class="yun-card-category">设计</span>
+          </div>
+        </div>
+        <div class="yun-card-content">
+          <p>如何将黑曜石的深邃、星光的温暖、科技的冷感融合成一套完整的设计系统，并在实际项目中落地。</p>
+        </div>
+        <div class="yun-card-actions">
+          <a href="#" class="yun-card-action">阅读全文</a>
+          <div class="yun-card-tags">
+            <span class="yun-tag">设计系统</span>
+            <span class="yun-tag">UI/UX</span>
+            <span class="yun-tag">主题</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- 侧边栏 -->
+    <aside class="yun-sidebar">
+      <VisitorInfo />
+      <div class="yun-widget">
+        <h4>分类</h4>
+        <ul class="yun-category-list">
+          <li><a href="#">技术 (12)</a></li>
+          <li><a href="#">随笔 (8)</a></li>
+          <li><a href="#">前端 (15)</a></li>
+          <li><a href="#">设计 (5)</a></li>
+          <li><a href="#">生活 (10)</a></li>
+        </ul>
+      </div>
+      <div class="yun-widget">
+        <h4>标签云</h4>
+        <div class="yun-tag-cloud">
+          <a href="#" class="yun-tag-cloud-item">TypeScript</a>
+          <a href="#" class="yun-tag-cloud-item">Astro</a>
+          <a href="#" class="yun-tag-cloud-item">设计系统</a>
+          <a href="#" class="yun-tag-cloud-item">前端</a>
+          <a href="#" class="yun-tag-cloud-item">生活</a>
+          <a href="#" class="yun-tag-cloud-item">深夜</a>
+          <a href="#" class="yun-tag-cloud-item">代码</a>
+          <a href="#" class="yun-tag-cloud-item">随笔</a>
+        </div>
+      </div>
+    </aside>
+  </div>
 </Page>
 
 <style>
-.entrance-main {
-  min-height: calc(100vh - 60px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-xl);
-  position: relative;
-}
-
-.entrance-card {
-  position: relative;
-  max-width: 580px;
-  width: 100%;
-  padding: var(--space-3xl) var(--space-2xl);
-  background: var(--surface-void);
-  backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-2xl);
-  text-align: center;
-  box-shadow:
-    0 0 60px oklch(78% 0.18 65 / 0.04),
-    0 0 120px oklch(72% 0.14 195 / 0.02);
-  animation: fadeInUp var(--duration-very-slow) var(--ease-out-expo) forwards;
-}
-
-.entrance-title {
-  font-family: var(--font-display);
-  font-size: var(--text-3xl);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  margin-bottom: var(--space-md);
-  background: linear-gradient(
-    135deg,
-    var(--star-warm) 0%,
-    var(--lantern-warm) 40%,
-    var(--tech-cyan) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.entrance-subtitle {
-  font-size: var(--text-base);
-  color: var(--text-secondary);
-  line-height: var(--leading-relaxed);
-  margin-bottom: var(--space-xl);
-  font-weight: 300;
-}
-
-.entrance-hint {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  font-weight: 300;
-  letter-spacing: 0.04em;
-}
-
-@media (max-width: 640px) {
-  .entrance-card {
-    padding: var(--space-xl) var(--space-md);
+  .yun-home {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: var(--space-xl);
+    align-items: start;
   }
 
-  .entrance-title {
-    font-size: var(--text-2xl);
+  .yun-home-intro {
+    grid-column: 1 / -1;
+    margin-bottom: var(--space-lg);
   }
-}
+
+  .yun-home-intro h2 {
+    font-size: 1.75rem;
+    margin-bottom: var(--space-xs);
+  }
+
+  .yun-home-intro p {
+    color: var(--va-c-text-light);
+    font-size: 1rem;
+  }
+
+  /* ===== 卡片网格 ===== */
+  .yun-card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .yun-card {
+    background: var(--va-c-bg-light);
+    border-radius: var(--yun-card-radius);
+    padding: var(--yun-card-padding);
+    border: 1px solid var(--va-c-divider);
+    transition: all var(--duration-normal) var(--ease-out);
+    position: relative;
+  }
+
+  .yun-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--va-c-primary);
+  }
+
+  .yun-card-header {
+    margin-bottom: var(--space-md);
+  }
+
+  .yun-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    color: var(--va-c-text);
+    line-height: 1.3;
+  }
+
+  .yun-card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.875rem;
+    color: var(--va-c-text-lighter);
+  }
+
+  .yun-card-date::before {
+    content: '📅';
+    margin-right: 4px;
+    opacity: 0.6;
+  }
+
+  .yun-card-category {
+    background: var(--va-c-bg-soft);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+  }
+
+  .yun-card-content p {
+    color: var(--va-c-text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+  }
+
+  .yun-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--va-c-divider);
+    padding-top: var(--space-sm);
+  }
+
+  .yun-card-action {
+    color: var(--va-c-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .yun-card-action:hover {
+    color: color-mix(in srgb, var(--va-c-primary) 80%, black);
+  }
+
+  .yun-card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .yun-tag {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    background: var(--va-c-bg-soft);
+    border-radius: var(--radius-full);
+    color: var(--va-c-text-light);
+    border: 1px solid var(--va-c-divider);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .yun-tag:hover {
+    background: var(--va-c-primary);
+    color: white;
+    border-color: var(--va-c-primary);
+  }
+
+  /* ===== 侧边栏 ===== */
+  .yun-sidebar {
+    position: sticky;
+    top: calc(var(--yun-nav-height) + var(--space-lg));
+  }
+
+  .yun-widget {
+    background: var(--va-c-bg-light);
+    border-radius: var(--yun-card-radius);
+    padding: var(--space-md);
+    border: 1px solid var(--va-c-divider);
+    margin-bottom: var(--space-lg);
+  }
+
+  .yun-widget h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    color: var(--va-c-text);
+  }
+
+  .yun-category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .yun-category-list li {
+    margin-bottom: 6px;
+  }
+
+  .yun-category-list a {
+    display: block;
+    padding: 6px 0;
+    color: var(--va-c-text-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--va-c-divider);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .yun-category-list a:hover {
+    color: var(--va-c-primary);
+    border-color: var(--va-c-primary);
+  }
+
+  .yun-tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .yun-tag-cloud-item {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    background: var(--va-c-bg-soft);
+    border-radius: var(--radius-full);
+    color: var(--va-c-text-light);
+    text-decoration: none;
+    border: 1px solid var(--va-c-divider);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .yun-tag-cloud-item:hover {
+    background: var(--va-c-primary);
+    color: white;
+    border-color: var(--va-c-primary);
+    transform: translateY(-2px);
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 1024px) {
+    .yun-home {
+      grid-template-columns: 1fr;
+    }
+
+    .yun-sidebar {
+      position: static;
+      margin-top: var(--space-xl);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .yun-card {
+      padding: var(--space-md);
+    }
+
+    .yun-card-actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+
+    .yun-card-tags {
+      width: 100%;
+    }
+  }
 </style>

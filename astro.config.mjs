@@ -6,6 +6,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://msoceo-github-io.pages.dev',
+	site: 'https://msoceo.github.io',
 	integrations: [mdx(), sitemap()],
 });
