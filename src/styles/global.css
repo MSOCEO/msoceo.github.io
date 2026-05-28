@@ -3,7 +3,7 @@
   Tone: 黑曜石深邃 × 星光闪烁 × 人间烟火 × 科技质感
 */
 
-@import url('https://cdn-font.hyperos.mi.com/font/css?family=MiSans:0:Chinese_Simplify,Latin&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap');
 
 :root {
   /* === 黑曜石星光色彩系统 (OKLCH) === */
@@ -48,8 +48,8 @@
   --border-glow:    oklch(78% 0.18 65 / 0.25);
 
   /* === 字体系统 === */
-  --font-display: 'MiSans', system-ui, -apple-system, sans-serif;
-  --font-body: 'MiSans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', serif;
+  --font-body: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', 'Cascadia Code', monospace;
 
   --text-xs:   clamp(0.72rem, 0.68rem + 0.15vw, 0.78rem);
