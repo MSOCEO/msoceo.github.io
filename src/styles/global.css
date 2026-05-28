@@ -3,7 +3,7 @@
   Tone: 黑曜石深邃 × 星光闪烁 × 人间烟火 × 科技质感
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans:wght@300;400;500;700&display=swap');
+@import url('https://cdn-font.hyperos.mi.com/font/css?family=MiSans:0:Chinese_Simplify,Latin&display=swap');
 
 :root {
   /* === 黑曜石星光色彩系统 (OKLCH) === */
@@ -48,8 +48,8 @@
   --border-glow:    oklch(78% 0.18 65 / 0.25);
 
   /* === 字体系统 === */
-  --font-display: 'Noto Sans SC', 'Noto Sans', sans-serif;
-  --font-body: 'Noto Sans', 'Noto Sans SC', sans-serif;
+  --font-display: 'MiSans', system-ui, -apple-system, sans-serif;
+  --font-body: 'MiSans', system-ui, -apple-system, sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', 'Cascadia Code', monospace;
 
   --text-xs:   clamp(0.72rem, 0.68rem + 0.15vw, 0.78rem);
@@ -173,11 +173,11 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   line-height: var(--leading-tight);
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.04em;
 }
 
-h1 { font-size: var(--text-3xl); font-weight: 600; }
-h2 { font-size: var(--text-2xl); }
+h1 { font-size: var(--text-3xl); font-weight: 700; letter-spacing: 0.06em; }
+h2 { font-size: var(--text-2xl); font-weight: 600; }
 h3 { font-size: var(--text-xl); }
 h4 { font-size: var(--text-lg); }
 
