@@ -163,6 +163,7 @@ const catsJson = JSON.stringify(CATS);
   <!-- 顶栏 -->
   <header class="nav-topbar">
     <div class="nav-topbar-inner">
+      <span class="nav-topbar-title">枕星</span>
       <button class="nav-theme-btn" id="themeToggle" aria-label="切换主题" title="切换深色/浅色主题">
         <svg class="nav-theme-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         <svg class="nav-theme-moon" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -229,7 +230,8 @@ const catsJson = JSON.stringify(CATS);
   </main>
 
   <footer class="nav-footer">
-    <p>手工筛选，定期剔除失效 / 投毒站点 · 仅收录活跃可靠网站</p>
+    <p class="nav-footer-slogan">手工筛选，定期剔除失效 / 投毒站点 · 仅收录活跃可靠网站</p>
+    <p class="nav-footer-copy">&copy; 2026 枕星</p>
   </footer>
 </body>
 </html>
@@ -259,11 +261,25 @@ const catsJson = JSON.stringify(CATS);
   const navCats = document.getElementById('navCats');
   document.getElementById('catCount').textContent = cats.length - 1;
 
+  // ===== 分类图标映射 =====
+  const catEmoji = {
+    'AI 工具':    '\u{1F916} ',
+    '开发技术':   '\u{1F4BB} ',
+    '设计创意':   '\u{1F3A8} ',
+    '常用工具':   '\u{1F527} ',
+    '学习资源':   '\u{1F4DA} ',
+    '阅读资讯':   '\u{1F4F0} ',
+    '开源项目':   '\u{1F419} ',
+    '影音娱乐':   '\u{1F3AC} ',
+    '效率办公':   '\u{26A1} ',
+    '生活服务':   '\u{1F3E0} ',
+  };
+
   cats.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'nav-cat' + (cat === '全部' ? ' active' : '');
     btn.dataset.cat = cat;
-    btn.textContent = cat;
+    btn.textContent = (cat !== '全部' ? (catEmoji[cat] || '') : '\u{1F52D} ') + cat;
     btn.addEventListener('click', () => filterCats(cat, btn));
     navCats.appendChild(btn);
   });
@@ -492,13 +508,21 @@ const catsJson = JSON.stringify(CATS);
     background: rgba(11,14,20,0.78);
   }
   .nav-topbar-inner {
-    max-width: 1280px;
+    max-width: 1480px;
     margin: 0 auto;
     padding: 0 24px;
     height: 52px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
+  }
+
+  .nav-topbar-title {
+    font-size: 17px;
+    font-weight: 750;
+    color: var(--nav-text);
+    letter-spacing: 0.06em;
+    font-family: var(--font-mono);
   }
 
   .nav-theme-btn {
@@ -528,7 +552,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-main {
     position: relative;
     z-index: 1;
-    max-width: 1280px;
+    max-width: 1480px;
     margin: 0 auto;
     padding: 0 24px 80px;
   }
@@ -767,12 +791,17 @@ const catsJson = JSON.stringify(CATS);
     white-space: nowrap;
     font-family: inherit;
   }
-  .nav-cat:hover { color: var(--nav-text); border-color: var(--nav-border-hover); }
+  .nav-cat:hover { color: var(--nav-text); border-color: var(--nav-border-hover); background: var(--nav-surface); }
   .nav-cat.active {
     background: var(--nav-accent-pale);
     border-color: var(--nav-accent);
     color: var(--nav-accent);
     box-shadow: 0 0 16px var(--nav-accent-glow);
+  }
+
+  [data-theme="dark"] .nav-cat {
+    border-color: rgba(255,255,255,0.14);
+    color: rgba(255,255,255,0.72);
   }
 
   /* ===== 星图网格 ===== */
@@ -898,12 +927,22 @@ const catsJson = JSON.stringify(CATS);
     position: relative;
     z-index: 1;
     text-align: center;
-    padding: 20px;
+    padding: 24px 20px 28px;
     border-top: 1px solid var(--nav-border);
     font-size: 12px;
     color: #94a3b8;
     font-family: var(--font-mono);
     letter-spacing: 0.03em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-footer-slogan { margin: 0; }
+  .nav-footer-copy {
+    margin: 0;
+    font-size: 11px;
+    opacity: 0.65;
   }
 
   @media (max-width: 768px) {
