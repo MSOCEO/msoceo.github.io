@@ -271,13 +271,22 @@ const catsJson = JSON.stringify(CATS);
       return;
     }
 
-    navGrid.innerHTML = filtered.map((l, i) => `
+    navGrid.innerHTML = filtered.map((l, i) => {
+      let hostname;
+      try { hostname = new URL(l.url).hostname; } catch { hostname = ''; }
+      const faviconHtml = hostname
+        ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=32" class="nav-card-icon" alt="" loading="lazy" width="20" height="20" onerror="this.style.display='none'">`
+        : '';
+      return `
       <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms">
-        <span class="nav-card-cat">${esc(l.cat)}</span>
+        <div class="nav-card-top">
+          ${faviconHtml}
+          <span class="nav-card-cat">${esc(l.cat)}</span>
+        </div>
         <h3 class="nav-card-name">${esc(l.name)}</h3>
         <p class="nav-card-desc">${esc(l.desc)}</p>
       </a>
-    `).join('');
+    `}).join('');
   }
 
   // 当搜索引擎不是"站内"时，回车触发外部搜索
@@ -312,6 +321,17 @@ const catsJson = JSON.stringify(CATS);
   });
 
   renderLinks();
+
+  // ===== 点击涟漪效果 =====
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.nav-card');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty('--ripple-x', x + '%');
+    card.style.setProperty('--ripple-y', y + '%');
+  });
 </script>
 
 <style is:global>
@@ -554,6 +574,8 @@ const catsJson = JSON.stringify(CATS);
     animation: card-fade-in 0.5s ease-out both;
     animation-delay: var(--card-delay, 0ms);
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
   .nav-card::before {
     content: '';
@@ -564,6 +586,23 @@ const catsJson = JSON.stringify(CATS);
     opacity: 0;
     transition: opacity 0.3s;
     z-index: -1;
+  }
+  .nav-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(167,139,250,0.4) 0%, transparent 60%);
+    opacity: 0;
+    transform: scale(0);
+    transition: none;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .nav-card:active::after {
+    opacity: 1;
+    transform: scale(2.5);
+    transition: transform 0.45s cubic-bezier(0, 0, 0.2, 1), opacity 0.45s ease-out;
   }
   .nav-card:hover {
     background: var(--nav-surface-hover);
@@ -578,6 +617,22 @@ const catsJson = JSON.stringify(CATS);
     to { opacity: 1; transform: translateY(0); }
   }
 
+  .nav-card-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .nav-card-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    transition: transform 0.25s ease;
+  }
+  .nav-card:hover .nav-card-icon {
+    transform: scale(1.15);
+  }
   .nav-card-cat {
     font-size: 10px;
     color: var(--nav-accent);
@@ -644,14 +699,26 @@ const catsJson = JSON.stringify(CATS);
 </style>
 
 <script>
-  // ===== 星际背景动画 =====
+  // ===== 星际背景动画（多彩星辰 + 极光） =====
   (function() {
     const canvas = document.getElementById('starCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let w, h;
     const stars = [];
-    const STAR_COUNT = 120;
+    const STAR_COUNT = 150;
+
+    // 宇宙调色盘：紫 / 蓝 / 青 / 粉 / 暖白
+    const palette = [
+      [167, 139, 250], // 紫 a78bfa
+      [99,  179, 237], // 蓝 #63b3ed
+      [129, 230, 217], // 青 #81e6d9
+      [244, 171, 252], // 粉 #f0abfc
+      [250, 240, 230], // 暖白
+      [196, 181, 253], // 浅紫
+      [147, 197, 253], // 天蓝
+      [248, 180, 180], // 柔粉
+    ];
 
     function resize() {
       w = canvas.width = window.innerWidth;
@@ -659,30 +726,57 @@ const catsJson = JSON.stringify(CATS);
     }
 
     for (let i = 0; i < STAR_COUNT; i++) {
+      const color = palette[Math.floor(Math.random() * palette.length)];
       stars.push({
         x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1920),
         y: Math.random() * (typeof window !== 'undefined' ? document.body.scrollHeight || 3000 : 3000),
-        r: Math.random() * 1.5 + 0.3,
-        opacity: Math.random() * 0.6 + 0.1,
-        twinkleSpeed: Math.random() * 0.008 + 0.003,
+        r: Math.random() * 1.8 + 0.2,
+        color,
+        opacity: Math.random() * 0.5 + 0.15,
+        twinkleSpeed: Math.random() * 0.01 + 0.002,
         twinkleOffset: Math.random() * Math.PI * 2,
       });
     }
 
     function draw(time) {
       ctx.clearRect(0, 0, w, h);
+
+      // 极光光晕 — 上中下三层柔光
+      const auroraGradTop = ctx.createRadialGradient(w * 0.35, h * 0.08, 0, w * 0.35, h * 0.08, w * 0.6);
+      auroraGradTop.addColorStop(0, 'rgba(129, 230, 217, 0.04)');
+      auroraGradTop.addColorStop(0.5, 'rgba(99, 179, 237, 0.02)');
+      auroraGradTop.addColorStop(1, 'transparent');
+      ctx.fillStyle = auroraGradTop;
+      ctx.fillRect(0, 0, w, h);
+
+      const auroraGradMid = ctx.createRadialGradient(w * 0.6, h * 0.35, 0, w * 0.6, h * 0.35, w * 0.5);
+      auroraGradMid.addColorStop(0, 'rgba(244, 171, 252, 0.035)');
+      auroraGradMid.addColorStop(0.5, 'rgba(167, 139, 250, 0.015)');
+      auroraGradMid.addColorStop(1, 'transparent');
+      ctx.fillStyle = auroraGradMid;
+      ctx.fillRect(0, 0, w, h);
+
+      const auroraGradBot = ctx.createRadialGradient(w * 0.45, h * 0.85, 0, w * 0.45, h * 0.85, w * 0.55);
+      auroraGradBot.addColorStop(0, 'rgba(147, 197, 253, 0.03)');
+      auroraGradBot.addColorStop(0.5, 'rgba(167, 139, 250, 0.015)');
+      auroraGradBot.addColorStop(1, 'transparent');
+      ctx.fillStyle = auroraGradBot;
+      ctx.fillRect(0, 0, w, h);
+
+      // 星辰绘制
       stars.forEach(s => {
-        const twinkle = Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.3 + 0.7;
+        const twinkle = Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.35 + 0.65;
         const alpha = s.opacity * twinkle;
+        const [cr, cg, cb] = s.color;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(167,139,250,${alpha})`;
+        ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha})`;
         ctx.fill();
         // glow
-        if (s.r > 0.8 && twinkle > 0.8) {
+        if (s.r > 0.6 && twinkle > 0.82) {
           ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(167,139,250,${alpha * 0.08})`;
+          ctx.arc(s.x, s.y, s.r * 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha * 0.06})`;
           ctx.fill();
         }
       });
