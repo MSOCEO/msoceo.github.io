@@ -148,32 +148,24 @@ const catsJson = JSON.stringify(CATS);
   </header>
 
   <main class="nav-main">
-    <!-- 星图标题区：左侧品牌 + 右侧搜索 -->
+    <!-- 星图标题区 -->
     <section class="nav-hero">
-      <div class="nav-hero-brand">
-        <div class="nav-constellation" aria-hidden="true">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.5" opacity="0.12"/>
-            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.3" opacity="0.2" stroke-dasharray="3 8" stroke-dashoffset="1"/>
-            <line x1="8" y1="20" x2="40" y2="20" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-            <line x1="8" y1="28" x2="40" y2="28" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-            <line x1="20" y1="8" x2="20" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-            <line x1="28" y1="8" x2="28" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-            <circle cx="14" cy="16" r="1.5" fill="currentColor" opacity="0.5"/>
-            <circle cx="34" cy="16" r="1.2" fill="currentColor" opacity="0.4"/>
-            <circle cx="18" cy="34" r="1.4" fill="currentColor" opacity="0.45"/>
-            <circle cx="32" cy="32" r="1" fill="currentColor" opacity="0.35"/>
-          </svg>
-        </div>
-        <h1 class="nav-hero-title">枕星 · 星图</h1>
-        <p class="nav-hero-desc">星辰为引 · 链接为舟 · 手工甄别 · 持续更新</p>
-
-        <div class="nav-stats" id="navStats">
-          <span>已收录 <strong id="linkCount">0</strong> 颗星</span>
-          <span class="nav-stats-dot">·</span>
-          <span>共 <strong id="catCount">0</strong> 个星座</span>
-        </div>
+      <div class="nav-constellation" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.5" opacity="0.12"/>
+          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.3" opacity="0.2" stroke-dasharray="3 8" stroke-dashoffset="1"/>
+          <line x1="8" y1="20" x2="40" y2="20" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+          <line x1="8" y1="28" x2="40" y2="28" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+          <line x1="20" y1="8" x2="20" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+          <line x1="28" y1="8" x2="28" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+          <circle cx="14" cy="16" r="1.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="34" cy="16" r="1.2" fill="currentColor" opacity="0.4"/>
+          <circle cx="18" cy="34" r="1.4" fill="currentColor" opacity="0.45"/>
+          <circle cx="32" cy="32" r="1" fill="currentColor" opacity="0.35"/>
+        </svg>
       </div>
+      <h1 class="nav-hero-title">枕星 · 星图</h1>
+      <p class="nav-hero-desc">星辰为引 · 链接为舟 · 手工甄别 · 持续更新</p>
 
       <!-- 搜索 -->
       <div class="nav-search-wrap" id="searchWrap">
@@ -194,7 +186,18 @@ const catsJson = JSON.stringify(CATS);
           <kbd class="nav-search-kbd">/</kbd>
         </div>
       </div>
+
+      <div class="nav-stats" id="navStats">
+        <span>已收录 <strong id="linkCount">0</strong> 颗星</span>
+        <span class="nav-stats-dot">·</span>
+        <span>共 <strong id="catCount">0</strong> 个星座</span>
+        <span class="nav-stats-dot">·</span>
+        <span id="navToday"></span>
+      </div>
     </section>
+
+    <!-- 精选推荐 -->
+    <section class="nav-featured" id="navFeatured"></section>
 
     <!-- 分类星座 -->
     <nav class="nav-cats" id="navCats"></nav>
@@ -250,6 +253,25 @@ const catsJson = JSON.stringify(CATS);
     renderLinks();
   }
 
+  // ===== 卡片发光色 =====
+  const catGlowMap = {
+    'AI 工具':    ['#a78bfa', '#f0abfc'],
+    '开发技术':   ['#7dd3fc', '#38bdf8'],
+    '设计创意':   ['#f0abfc', '#f9a8d4'],
+    '常用工具':   ['#34d399', '#6ee7b7'],
+    '学习资源':   ['#fbbf24', '#fcd34d'],
+    '阅读资讯':   ['#fb923c', '#fdba74'],
+    '开源项目':   ['#22d3ee', '#67e8f9'],
+    '影音娱乐':   ['#a78bfa', '#c084fc'],
+    '效率办公':   ['#818cf8', '#a5b4fc'],
+    '生活服务':   ['#f472b6', '#f9a8d4'],
+  };
+
+  function getGlow(cat) {
+    const g = catGlowMap[cat] || ['#a78bfa', '#7dd3fc'];
+    return `--card-glow1:${g[0]};--card-glow2:${g[1]}`;
+  }
+
   // ===== 渲染 =====
   const navGrid = document.getElementById('navGrid');
   const linkCount = document.getElementById('linkCount');
@@ -283,7 +305,7 @@ const catsJson = JSON.stringify(CATS);
         ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=32" class="nav-card-icon" alt="" loading="lazy" width="20" height="20" onerror="this.style.display='none'">`
         : '';
       return `
-      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms">
+      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;${getGlow(l.cat)}">
         <div class="nav-card-top">
           ${faviconHtml}
           <span class="nav-card-cat">${esc(l.cat)}</span>
@@ -324,6 +346,46 @@ const catsJson = JSON.stringify(CATS);
     }
     if (e.key === 'Escape') navSearch.blur();
   });
+
+  // ===== 精选推荐 =====
+  const featuredLinks = [
+    { name: 'ChatGPT', url: 'https://chatgpt.com', desc: '最强 AI 对话', icon: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64', grad: ['#10a37f', '#34d399'], badge: '趋势' },
+    { name: 'GitHub', url: 'https://github.com', desc: '代码托管圣地', icon: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', grad: ['#f0f6fc', '#8b949e'], badge: '必备' },
+    { name: 'Figma', url: 'https://www.figma.com', desc: '设计协作工具', icon: 'https://www.google.com/s2/favicons?domain=figma.com&sz=64', grad: ['#a259ff', '#ff7262'], badge: '推荐' },
+    { name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: 'https://www.google.com/s2/favicons?domain=v2ex.com&sz=64', grad: ['#6366f1', '#a78bfa'], badge: '热门' },
+  ];
+
+  const navFeatured = document.getElementById('navFeatured');
+  navFeatured.innerHTML = featuredLinks.map((f, i) => `
+    <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer" class="nav-featured-card"
+       style="--feat-grad1:${f.grad[0]};--feat-grad2:${f.grad[1]};animation-delay:${i * 100 + 100}ms"
+       onmousemove="this.style.setProperty('--mx', ((event.clientX-this.getBoundingClientRect().left)/this.offsetWidth*100)+'%');this.style.setProperty('--my', ((event.clientY-this.getBoundingClientRect().top)/this.offsetHeight*100)+'%')">
+      <img src="${f.icon}" class="nav-featured-icon" alt="" loading="lazy" width="36" height="36" onerror="this.style.display='none'">
+      <div class="nav-featured-info">
+        <span class="nav-featured-name">${esc(f.name)}</span>
+        <span class="nav-featured-desc">${esc(f.desc)}</span>
+      </div>
+      <span class="nav-featured-badge">${f.badge}</span>
+    </a>
+  `).join('');
+
+  // ===== 每日问候 =====
+  (function() {
+    const today = new Date();
+    const h = today.getHours();
+    const w = today.getDay();
+    const weekNames = ['日', '一', '二', '三', '四', '五', '六'];
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    let greeting;
+    if (h < 7) greeting = '夜深了，注意休息';
+    else if (h < 12) greeting = '早上好，能量满满';
+    else if (h < 14) greeting = '午后时光，稍作停留';
+    else if (h < 18) greeting = '下午好，效率拉满';
+    else if (h < 22) greeting = '晚上好，松弛有度';
+    else greeting = '夜深人静，灵感涌现';
+    document.getElementById('navToday').textContent = `${greeting}  ${month}月${day}日 星期${weekNames[w]}`;
+  })();
 
   renderLinks();
 
@@ -415,19 +477,12 @@ const catsJson = JSON.stringify(CATS);
 
   /* ===== 标题区 ===== */
   .nav-hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 48px;
+    text-align: center;
     padding: 60px 0 44px;
-  }
-  .nav-hero-brand {
-    flex-shrink: 0;
-    max-width: 520px;
   }
   .nav-constellation {
     display: inline-block;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     color: var(--nav-accent);
     opacity: 0.65;
     animation: constellation-pulse 4s ease-in-out infinite;
@@ -454,9 +509,8 @@ const catsJson = JSON.stringify(CATS);
     50% { background-position: 100% 50%; }
   }
   .nav-hero-desc {
-    color: var(--nav-text-secondary);
     font-size: 15px;
-    margin: 0 0 20px;
+    margin: 0 0 36px;
     letter-spacing: 0.04em;
     font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", serif;
     background: linear-gradient(90deg, rgba(167,139,250,0.9), rgba(129,230,217,0.7));
@@ -469,19 +523,128 @@ const catsJson = JSON.stringify(CATS);
     color: var(--nav-text-secondary);
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
+    margin-bottom: 36px;
   }
   .nav-stats strong { color: var(--nav-accent); font-weight: 600; }
-  .nav-stats-dot { margin: 0 8px; }
+  .nav-stats-dot { margin: 0 10px; opacity: 0.4; }
+
+  /* ===== 精选推荐 ===== */
+  .nav-featured {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .nav-featured-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    border-radius: var(--radius);
+    background: var(--nav-surface);
+    border: 1px solid transparent;
+    text-decoration: none;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: feat-in 0.6s ease-out both;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-featured-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--feat-grad1), var(--feat-grad2), var(--feat-grad1));
+    background-size: 300% 300%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: feat-border 3s linear infinite;
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  .nav-featured-card:hover::before { opacity: 1; }
+  .nav-featured-card::after {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(167,139,250,0.12) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.35s;
+    pointer-events: none;
+  }
+  .nav-featured-card:hover::after { opacity: 1; }
+  .nav-featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(100,80,200,0.2);
+  }
+  @keyframes feat-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes feat-border {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .nav-featured-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .nav-featured-card:hover .nav-featured-icon { transform: scale(1.08) rotate(-2deg); }
+  .nav-featured-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .nav-featured-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--nav-text);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-featured-desc {
+    font-size: 11.5px;
+    color: var(--nav-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-featured-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 9px;
+    padding: 3px 10px 3px 12px;
+    border-radius: 0 9px 0 9px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.25), rgba(129,230,217,0.15));
+    color: var(--nav-accent);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
 
   /* ===== 搜索 ===== */
   .nav-search-wrap {
-    flex-shrink: 0;
-    width: 420px;
-    margin-top: 8px;
+    max-width: 520px;
+    margin: 0 auto 36px;
     background: var(--nav-surface);
     border: 1px solid var(--nav-border);
     border-radius: var(--radius);
     overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .nav-search-wrap:focus-within {
+    border-color: var(--nav-accent);
+    box-shadow: 0 0 28px var(--nav-accent-glow);
   }
   .nav-search-engine {
     display: flex;
@@ -588,9 +751,9 @@ const catsJson = JSON.stringify(CATS);
     background: var(--nav-surface);
     border: 1px solid var(--nav-border);
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: card-fade-in 0.5s ease-out both;
-    animation-delay: var(--card-delay, 0ms);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: card-fade-in 0.5s ease-out both, card-float 6s ease-in-out infinite;
+    animation-delay: var(--card-delay, 0ms), calc(var(--card-delay, 0ms) + 0.3s);
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
@@ -598,13 +761,19 @@ const catsJson = JSON.stringify(CATS);
   .nav-card::before {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: 0;
     border-radius: inherit;
-    background: linear-gradient(135deg, var(--nav-accent), transparent 60%);
+    padding: 1px;
+    background: linear-gradient(135deg, var(--card-glow1, #a78bfa), var(--card-glow2, #7dd3fc), var(--card-glow1, #a78bfa));
+    background-size: 300% 300%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: card-border-sweep 4s linear infinite;
     opacity: 0;
-    transition: opacity 0.3s;
-    z-index: -1;
+    transition: opacity 0.4s;
   }
+  .nav-card:hover::before { opacity: 1; }
   .nav-card::after {
     content: '';
     position: absolute;
@@ -624,15 +793,26 @@ const catsJson = JSON.stringify(CATS);
   }
   .nav-card:hover {
     background: var(--nav-surface-hover);
-    border-color: var(--nav-border-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-color: transparent;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 44px rgba(100,80,200,0.18), 0 0 0 1px rgba(167,139,250,0.15) inset;
   }
-  .nav-card:hover::before { opacity: 0.08; }
+  .nav-card:hover .nav-card-name {
+    color: var(--nav-accent);
+  }
 
   @keyframes card-fade-in {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes card-border-sweep {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
   }
 
   .nav-card-top {
@@ -703,10 +883,13 @@ const catsJson = JSON.stringify(CATS);
 
   @media (max-width: 768px) {
     .nav-main { padding: 0 16px 60px; }
-    .nav-hero { flex-direction: column; gap: 28px; padding: 44px 0 32px; }
-    .nav-hero-brand { max-width: 100%; }
+    .nav-hero { padding: 44px 0 28px; }
     .nav-hero-title { font-size: 30px; }
-    .nav-search-wrap { width: 100%; }
+    .nav-search-wrap { max-width: 100%; }
+    .nav-featured { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .nav-featured-card { padding: 14px 16px; gap: 10px; }
+    .nav-featured-icon { width: 28px; height: 28px; border-radius: 8px; }
+    .nav-featured-name { font-size: 14px; }
     .nav-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     .nav-card { padding: 14px 16px; }
     .nav-card-name { font-size: 13.5px; }
