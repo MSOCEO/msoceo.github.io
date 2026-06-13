@@ -164,6 +164,7 @@ const catsJson = JSON.stringify(CATS);
   <header class="nav-topbar">
     <div class="nav-topbar-inner">
       <span class="nav-topbar-title">枕星</span>
+      <span class="nav-topbar-date" id="navTopbarDate"></span>
       <button class="nav-theme-btn" id="themeToggle" aria-label="切换主题" title="切换深色/浅色主题">
         <svg class="nav-theme-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         <svg class="nav-theme-moon" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -192,21 +193,29 @@ const catsJson = JSON.stringify(CATS);
       <p class="nav-hero-desc">星辰为引 · 链接为舟 · 手工甄别 · 持续更新</p>
 
       <!-- 搜索 -->
-      <div class="nav-search-wrap" id="searchWrap">
-        <div class="nav-search-engine" id="searchEngine">
-          <span class="nav-engine-label" data-engine="web">站内</span>
-          <span class="nav-engine-divider"></span>
-          <span class="nav-engine-label active" data-engine="google">Google</span>
-          <span class="nav-engine-divider"></span>
-          <span class="nav-engine-label" data-engine="baidu">百度</span>
-          <span class="nav-engine-divider"></span>
-          <span class="nav-engine-label" data-engine="bing">Bing</span>
-          <span class="nav-engine-divider"></span>
-          <span class="nav-engine-label" data-engine="github">GitHub</span>
-        </div>
-        <div class="nav-search-bar">
-          <svg class="nav-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <input type="text" class="nav-search-input" id="navSearch" placeholder="搜索星图..." autocomplete="off" />
+      <div class="nav-search-stage">
+        <span class="star-particle" style="--x:-18px;--y:-14px;--s:6px;--d:3.2s;--delay:0s"></span>
+        <span class="star-particle" style="--x:calc(100% + 10px);--y:-20px;--s:4px;--d:3.8s;--delay:0.6s"></span>
+        <span class="star-particle" style="--x:-24px;--y:50%;--s:5px;--d:4.4s;--delay:1.2s"></span>
+        <span class="star-particle" style="--x:calc(100% + 16px);--y:55%;--s:7px;--d:3.5s;--delay:0.3s"></span>
+        <span class="star-particle" style="--x:10%;--y:calc(100% + 8px);--s:4.5px;--d:4.1s;--delay:1.5s"></span>
+        <span class="star-particle" style="--x:85%;--y:calc(100% + 14px);--s:5.5px;--d:3.6s;--delay:0.9s"></span>
+        <div class="nav-search-wrap" id="searchWrap">
+          <div class="nav-search-engine" id="searchEngine">
+            <span class="nav-engine-label" data-engine="web"><span class="nav-engine-dot" style="background:#6366f1"></span>站内</span>
+            <span class="nav-engine-divider"></span>
+            <span class="nav-engine-label active" data-engine="google"><span class="nav-engine-dot" style="background:#4285F4"></span>Google</span>
+            <span class="nav-engine-divider"></span>
+            <span class="nav-engine-label" data-engine="baidu"><span class="nav-engine-dot" style="background:#DE2910"></span>百度</span>
+            <span class="nav-engine-divider"></span>
+            <span class="nav-engine-label" data-engine="bing"><span class="nav-engine-dot" style="background:#00809D"></span>Bing</span>
+            <span class="nav-engine-divider"></span>
+            <span class="nav-engine-label" data-engine="github"><span class="nav-engine-dot" style="background:#6366f1"></span>GitHub</span>
+          </div>
+          <div class="nav-search-bar">
+            <svg class="nav-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" class="nav-search-input" id="navSearch" placeholder="搜索星图..." autocomplete="off" />
+          </div>
         </div>
       </div>
 
@@ -420,6 +429,7 @@ const catsJson = JSON.stringify(CATS);
     else if (h < 22) greeting = '晚上好，松弛有度';
     else greeting = '夜深人静，灵感涌现';
     document.getElementById('navToday').textContent = `${greeting}  ${month}月${day}日 星期${weekNames[w]}`;
+    document.getElementById('navTopbarDate').textContent = `${month}月${day}日 星期${weekNames[w]}`;
   })();
 
   renderLinks();
@@ -491,7 +501,7 @@ const catsJson = JSON.stringify(CATS);
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0;
+    opacity: 1;
   }
 
   /* ===== 顶栏 ===== */
@@ -523,6 +533,15 @@ const catsJson = JSON.stringify(CATS);
     color: var(--nav-text);
     letter-spacing: 0.06em;
     font-family: var(--font-mono);
+  }
+
+  .nav-topbar-date {
+    font-size: 12.5px;
+    color: var(--nav-text-secondary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    margin-left: auto;
+    margin-right: 16px;
   }
 
   .nav-theme-btn {
@@ -707,18 +726,56 @@ const catsJson = JSON.stringify(CATS);
   }
 
   /* ===== 搜索 ===== */
-  .nav-search-wrap {
+  .nav-search-stage {
+    position: relative;
     max-width: 520px;
     margin: 0 auto 36px;
+  }
+  /* 浮游星芒粒子 */
+  .star-particle {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    background: var(--nav-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: star-float var(--d) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+  .star-particle::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 0 10px 2px var(--nav-accent-glow);
+    opacity: 0.6;
+  }
+  @keyframes star-float {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.25; }
+    25% { transform: translate(6px, -8px) scale(1.4); opacity: 0.7; }
+    50% { transform: translate(-4px, -4px) scale(0.8); opacity: 0.35; }
+    75% { transform: translate(-8px, 6px) scale(1.5); opacity: 0.65; }
+  }
+  .nav-search-stage:focus-within .star-particle {
+    animation-duration: calc(var(--d) * 0.45);
+    opacity: 1 !important;
+  }
+  .nav-search-wrap {
+    position: relative;
+    z-index: 1;
     background: var(--nav-surface);
     border: 1px solid var(--nav-border);
-    border-radius: var(--radius);
+    border-radius: 14px;
     overflow: hidden;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s, box-shadow 0.4s;
   }
   .nav-search-wrap:focus-within {
     border-color: var(--nav-accent);
-    box-shadow: 0 0 28px var(--nav-accent-glow);
+    box-shadow: 0 0 0 4px var(--nav-accent-pale), 0 8px 32px var(--nav-accent-glow);
   }
   .nav-search-engine {
     display: flex;
@@ -726,19 +783,41 @@ const catsJson = JSON.stringify(CATS);
     justify-content: center;
     gap: 0;
     padding: 8px 16px;
-    border-bottom: 1px solid var(--nav-border);
+    position: relative;
     background: var(--nav-engine-bg);
+  }
+  .nav-search-engine::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--nav-accent), var(--nav-accent-glow, var(--nav-accent)), transparent);
+    opacity: 0.3;
   }
   .nav-engine-label {
     font-size: 13px;
     color: var(--nav-text-secondary);
     cursor: pointer;
-    padding: 3px 10px;
+    padding: 4px 10px 4px 6px;
     border-radius: 6px;
     transition: all 0.2s;
     font-family: var(--font-mono);
     letter-spacing: 0.03em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
+  .nav-engine-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .nav-engine-label:hover .nav-engine-dot { transform: scale(1.4); }
+  .nav-engine-label.active .nav-engine-dot { transform: scale(1.6); box-shadow: 0 0 8px inherit; }
   .nav-engine-label:hover { color: var(--nav-text); background: var(--nav-surface); }
   .nav-engine-label.active {
     color: var(--nav-accent);
@@ -746,20 +825,22 @@ const catsJson = JSON.stringify(CATS);
   }
   .nav-engine-divider {
     width: 1px;
-    height: 12px;
-    background: var(--nav-border);
+    height: 14px;
+    background: linear-gradient(to bottom, transparent, var(--nav-border), transparent);
+    border-radius: 1px;
   }
   .nav-search-bar {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    padding: 13px 18px;
     gap: 10px;
-    transition: border-color 0.2s;
   }
-  .nav-search-bar:focus-within {
-    background: var(--nav-search-bg-hover);
+  .nav-search-icon {
+    color: var(--nav-accent);
+    flex-shrink: 0;
+    transition: transform 0.25s;
   }
-  .nav-search-icon { color: var(--nav-text-secondary); flex-shrink: 0; }
+  .nav-search-wrap:focus-within .nav-search-icon { transform: scale(1.15); }
   .nav-search-input {
     flex: 1;
     background: none;
@@ -966,149 +1047,81 @@ const catsJson = JSON.stringify(CATS);
 </style>
 
 <script>
-  // ===== 深空星云背景（星云 + 流星 + 星辰） =====
+  // ===== 樱花飘落背景 =====
   (function() {
     const canvas = document.getElementById('starCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let w, h;
 
-    // 宇宙调色盘
-    const palette = [
-      [167, 139, 250], // 紫
-      [99,  179, 237], // 蓝
-      [129, 230, 217], // 青
-      [244, 171, 252], // 粉
-      [250, 240, 230], // 暖白
-      [196, 181, 253], // 浅紫
-      [147, 197, 253], // 天蓝
-      [248, 180, 180], // 柔粉
-    ];
+    const lightColors = ['#e890a8','#f098b0','#f4a8c0','#ec98b0','#f0a0b8','#f8b0c8','#f8bcd4'];
+    const darkColors = ['#d890a8','#e0a8c0','#e8b8d0','#dca0b8','#e8b0c8','#f0c0d8'];
 
-    // 固定星云团（大块柔光）
-    const nebulae = [];
-    for (let i = 0; i < 4; i++) {
-      const c = palette[Math.floor(Math.random() * palette.length)];
-      nebulae.push({
-        x: Math.random() * 0.8 + 0.1,
-        y: Math.random() * 0.8 + 0.1,
-        rx: 0.22 + Math.random() * 0.35,
-        ry: 0.08 + Math.random() * 0.22,
-        color: c,
-        angle: Math.random() * Math.PI,
-        opacity: 0.025 + Math.random() * 0.04,
+    function getColors() {
+      return document.body.getAttribute('data-theme') === 'dark' ? darkColors : lightColors;
+    }
+
+    const petals = [];
+    const MAX = 55;
+
+    function spawnPetal(fromTop) {
+      const colors = getColors();
+      petals.push({
+        x: Math.random() * (w + 60) - 30,
+        y: fromTop ? -20 - Math.random() * 300 : Math.random() * h,
+        size: 10 + Math.random() * 20,
+        speed: 0.3 + Math.random() * 1.0,
+        wobble: 0.3 + Math.random() * 2.0,
+        wobbleSpeed: 0.006 + Math.random() * 0.014,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.025,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        opacity: 0.45 + Math.random() * 0.45,
+        phase: Math.random() * Math.PI * 2,
       });
     }
 
-    // 流星
-    const shootingStars = [];
-    const MAX_SHOOTING = 3;
+    for (let i = 0; i < MAX; i++) spawnPetal(false);
 
-    function spawnShootingStar() {
-      if (shootingStars.length >= MAX_SHOOTING) return;
-      const c = palette[Math.floor(Math.random() * palette.length)];
-      shootingStars.push({
-        x: Math.random() * 0.8 + 0.1,
-        y: Math.random() * 0.3,
-        vx: (Math.random() - 0.3) * 2.5,
-        vy: 1.5 + Math.random() * 3,
-        life: 0,
-        maxLife: 60 + Math.random() * 80,
-        color: c,
-        trail: [],
-      });
-    }
-
-    // 星辰
-    const stars = [];
-    for (let i = 0; i < 180; i++) {
-      const c = palette[Math.floor(Math.random() * palette.length)];
-      stars.push({
-        x: Math.random(),
-        y: Math.random(),
-        r: Math.random() * 1.6 + 0.2,
-        color: c,
-        opacity: Math.random() * 0.45 + 0.12,
-        twinkleSpeed: Math.random() * 0.012 + 0.002,
-        twinkleOffset: Math.random() * Math.PI * 2,
-      });
+    function drawPetal(x, y, size, rotation, color, opacity) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.globalAlpha = opacity;
+      const hw = size * 0.5;
+      const hh = size * 0.32;
+      ctx.beginPath();
+      ctx.moveTo(0, -hh);
+      ctx.bezierCurveTo(-hw * 0.6, -hh * 0.6, -hw, hh * 0.3, 0, hh * 1.4);
+      ctx.bezierCurveTo(hw, hh * 0.3, hw * 0.6, -hh * 0.6, 0, -hh);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(0, -hh * 0.7);
+      ctx.lineTo(0, hh * 1.1);
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+      ctx.restore();
     }
 
     function resize() {
       w = canvas.width = window.innerWidth;
-      h = canvas.height = document.body.scrollHeight;
+      h = canvas.height = Math.max(window.innerHeight, document.body.scrollHeight, document.documentElement.scrollHeight);
     }
 
-    function draw(time) {
+    function draw() {
       ctx.clearRect(0, 0, w, h);
-
-      /* ── 星云光晕 ── */
-      nebulae.forEach(n => {
-        const cx = n.x * w, cy = n.y * h;
-        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * n.rx);
-        const [cr, cg, cb] = n.color;
-        grad.addColorStop(0, `rgba(${cr},${cg},${cb},${n.opacity + 0.015})`);
-        grad.addColorStop(0.4, `rgba(${cr},${cg},${cb},${n.opacity * 0.5})`);
-        grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-      });
-
-      /* ── 星辰 ── */
-      stars.forEach(s => {
-        const twinkle = Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.3 + 0.7;
-        const alpha = s.opacity * twinkle;
-        const sx = s.x * w, sy = s.y * h;
-        const [cr, cg, cb] = s.color;
-        ctx.beginPath();
-        ctx.arc(sx, sy, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha})`;
-        ctx.fill();
-        if (s.r > 0.5 && twinkle > 0.85) {
-          ctx.beginPath();
-          ctx.arc(sx, sy, s.r * 4, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha * 0.05})`;
-          ctx.fill();
-        }
-      });
-
-      /* ── 流星 ── */
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const ss = shootingStars[i];
-        ss.life++;
-        if (ss.life > ss.maxLife) { shootingStars.splice(i, 1); continue; }
-        const progress = ss.life / ss.maxLife;
-        const fade = progress < 0.15 ? progress / 0.15 : progress > 0.75 ? (1 - progress) / 0.25 : 1;
-        const sx = ss.x * w + ss.vx * w * progress * 0.35;
-        const sy = ss.y * h + ss.vy * h * progress * 0.35;
-        const [cr, cg, cb] = ss.color;
-
-        // 流星尾巴
-        if (ss.life > 2) {
-          const px = ss.x * w + ss.vx * w * (progress - 0.02) * 0.35;
-          const py = ss.y * h + ss.vy * h * (progress - 0.02) * 0.35;
-          const grad = ctx.createLinearGradient(px, py, sx, sy);
-          grad.addColorStop(0, 'transparent');
-          grad.addColorStop(0.6, `rgba(${cr},${cg},${cb},${fade * 0.15})`);
-          grad.addColorStop(1, `rgba(${cr},${cg},${cb},${fade * 0.7})`);
-          ctx.beginPath();
-          ctx.moveTo(px, py);
-          ctx.lineTo(sx, sy);
-          ctx.lineWidth = 1.8;
-          ctx.strokeStyle = grad;
-          ctx.stroke();
-        }
-
-        // 流星头部
-        ctx.beginPath();
-        ctx.arc(sx, sy, 1.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${cr},${cg},${cb},${fade})`;
-        ctx.fill();
+      for (let i = petals.length - 1; i >= 0; i--) {
+        const p = petals[i];
+        p.phase += p.wobbleSpeed;
+        const dx = Math.sin(p.phase) * p.wobble;
+        p.y += p.speed;
+        p.rotation += p.rotationSpeed;
+        drawPetal(p.x + dx, p.y, p.size, p.rotation, p.color, p.opacity);
+        if (p.y > h + 30) petals.splice(i, 1);
       }
-
-      // 随机生成流星
-      if (Math.random() < 0.008) spawnShootingStar();
-
+      while (petals.length < MAX) spawnPetal(true);
       requestAnimationFrame(draw);
     }
 
