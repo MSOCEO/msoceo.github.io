@@ -10,6 +10,9 @@ const LINKS = [
   { cat: 'AI 工具', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic 长文本推理与代码助手' },
   { cat: 'AI 工具', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google 多模态 AI，深度整合生态' },
   { cat: 'AI 工具', name: 'DeepSeek', url: 'https://chat.deepseek.com', desc: '国产开源大模型，代码与推理突出' },
+  { cat: 'AI 工具', name: 'Kimi', url: 'https://kimi.moonshot.cn', desc: '月之暗面出品，200 万字长文本' },
+  { cat: 'AI 工具', name: '通义千问', url: 'https://tongyi.aliyun.com', desc: '阿里云大模型，办公多场景覆盖' },
+  { cat: 'AI 工具', name: 'Poe', url: 'https://poe.com', desc: 'Quora 出品的多模型聚合平台' },
   { cat: 'AI 工具', name: 'Hugging Face', url: 'https://huggingface.co', desc: '全球最大模型与数据集开源社区' },
   { cat: 'AI 工具', name: 'Cursor', url: 'https://cursor.com', desc: 'AI 原生代码编辑器，Copilot 替代' },
   { cat: 'AI 工具', name: 'v0', url: 'https://v0.dev', desc: 'Vercel 出品，自然语言生成 UI 界面' },
@@ -26,6 +29,9 @@ const LINKS = [
   { cat: '开发技术', name: 'Stack Overflow', url: 'https://stackoverflow.com', desc: '全球程序员问答社区' },
   { cat: '开发技术', name: 'Can I Use', url: 'https://caniuse.com', desc: '浏览器兼容性速查，前端必备' },
   { cat: '开发技术', name: 'npm', url: 'https://www.npmjs.com', desc: 'Node.js 包注册中心' },
+  { cat: '开发技术', name: 'Bun', url: 'https://bun.sh', desc: '极速 JS 运行时与包管理器' },
+  { cat: '开发技术', name: 'Prisma', url: 'https://www.prisma.io', desc: '下一代 Node.js/TS ORM 框架' },
+  { cat: '开发技术', name: 'Supabase', url: 'https://supabase.com', desc: '开源 Firebase 替代，Postgres 驱动' },
   { cat: '开发技术', name: 'CodeSandbox', url: 'https://codesandbox.io', desc: '在线代码沙盒，秒建原型' },
   { cat: '开发技术', name: 'Vite', url: 'https://vitejs.dev', desc: '下一代前端构建工具，极速 HMR' },
   { cat: '开发技术', name: 'Astro', url: 'https://astro.build', desc: '内容型网站首选框架，零 JS 默认' },
@@ -39,6 +45,8 @@ const LINKS = [
   { cat: '设计创意', name: 'Figma', url: 'https://www.figma.com', desc: '在线 UI 设计协作，行业标准' },
   { cat: '设计创意', name: 'Dribbble', url: 'https://dribbble.com', desc: '全球设计师作品灵感社区' },
   { cat: '设计创意', name: 'Behance', url: 'https://www.behance.net', desc: 'Adobe 旗下创意作品展示平台' },
+  { cat: '设计创意', name: 'Canva', url: 'https://www.canva.cn', desc: '在线平面设计，海量模板一键出图' },
+  { cat: '设计创意', name: 'shadcn/ui', url: 'https://ui.shadcn.com', desc: 'React 组件库，复制即用设计系统' },
   { cat: '设计创意', name: 'Unsplash', url: 'https://unsplash.com', desc: '免费高清摄影图片库，商免' },
   { cat: '设计创意', name: 'Pexels', url: 'https://www.pexels.com', desc: '免费素材图片与视频' },
   { cat: '设计创意', name: 'Coolors', url: 'https://coolors.co', desc: '配色方案生成器，空格换色' },
@@ -53,6 +61,8 @@ const LINKS = [
   { cat: '常用工具', name: 'DeepL', url: 'https://www.deepl.com/translator', desc: '最精准的 AI 翻译引擎' },
   { cat: '常用工具', name: 'TinyPNG', url: 'https://tinypng.com', desc: 'PNG/WebP 智能压缩，画质无损' },
   { cat: '常用工具', name: 'Squoosh', url: 'https://squoosh.app', desc: 'Google 图片压缩与格式转换 PWA' },
+  { cat: '常用工具', name: 'IT-Tools', url: 'https://it-tools.tech', desc: '开发者在线工具箱，加密/转换/生成' },
+  { cat: '常用工具', name: 'CyberChef', url: 'https://gchq.github.io/CyberChef/', desc: 'GCHQ 出品万能数据料理机' },
   { cat: '常用工具', name: 'Excalidraw', url: 'https://excalidraw.com', desc: '手绘风白板，协作流程图神器' },
   { cat: '常用工具', name: 'Photopea', url: 'https://www.photopea.com', desc: '免费在线 Photoshop，PSD 完美兼容' },
   { cat: '常用工具', name: 'Remove.bg', url: 'https://www.remove.bg', desc: 'AI 一键去背景，5 秒出图' },
@@ -68,6 +78,8 @@ const LINKS = [
   { cat: '学习资源', name: 'freeCodeCamp', url: 'https://www.freecodecamp.org', desc: '免费编程课程，含认证证书' },
   { cat: '学习资源', name: 'Roadmap.sh', url: 'https://roadmap.sh', desc: '开发者技能学习路线图' },
   { cat: '学习资源', name: 'CSDIY', url: 'https://csdiy.wiki', desc: '北大同学整理的 CS 自学指南' },
+  { cat: '学习资源', name: 'Kaggle', url: 'https://www.kaggle.com', desc: '数据科学竞赛与学习社区' },
+  { cat: '学习资源', name: 'MIT OCW', url: 'https://ocw.mit.edu', desc: 'MIT 开放课程，全球名校资源' },
   { cat: '学习资源', name: 'Runoob', url: 'https://www.runoob.com', desc: '菜鸟教程，全栈入门文档' },
   { cat: '学习资源', name: 'Coursera', url: 'https://www.coursera.org', desc: '全球顶级大学在线课程平台' },
   { cat: '学习资源', name: 'Wolfram Alpha', url: 'https://www.wolframalpha.com', desc: '计算知识引擎，数学/科学求解' },
@@ -77,6 +89,8 @@ const LINKS = [
   { cat: '阅读资讯', name: 'V2EX', url: 'https://www.v2ex.com', desc: '国内技术创意交流社区' },
   { cat: '阅读资讯', name: '掘金', url: 'https://juejin.cn', desc: '前端/后端/移动开发技术文章' },
   { cat: '阅读资讯', name: '少数派', url: 'https://sspai.com', desc: '数字生活效率指南与深度评测' },
+  { cat: '阅读资讯', name: '36氪', url: 'https://36kr.com', desc: '新商业媒体，科技创投快讯' },
+  { cat: '阅读资讯', name: 'GitHub Trending', url: 'https://github.com/trending', desc: '每日最热门开源项目榜单' },
   { cat: '阅读资讯', name: '阮一峰的网志', url: 'https://www.ruanyifeng.com/blog/', desc: '科技人文周刊，二十年持续更新' },
   { cat: '阅读资讯', name: 'Product Hunt', url: 'https://www.producthunt.com', desc: '每日新产品发现与投票社区' },
   { cat: '阅读资讯', name: 'ReadHub', url: 'https://readhub.cn', desc: '科技新闻聚合，无废话纯干货' },
@@ -86,16 +100,21 @@ const LINKS = [
   { cat: '开源项目', name: 'Oh My Zsh', url: 'https://ohmyz.sh', desc: '终端配置框架，开发者标配' },
   { cat: '开源项目', name: 'Homebrew', url: 'https://brew.sh', desc: 'macOS / Linux 包管理器' },
   { cat: '开源项目', name: 'VS Code', url: 'https://code.visualstudio.com', desc: '微软开源编辑器，插件生态强大' },
+  { cat: '开源项目', name: 'React', url: 'https://react.dev', desc: 'Meta 出品，前端 UI 库行业标杆' },
+  { cat: '开源项目', name: 'Vue.js', url: 'https://vuejs.org', desc: '渐进式 JS 框架，中文社区活跃' },
   { cat: '开源项目', name: 'Linux Kernel', url: 'https://www.kernel.org', desc: 'Linux 内核主线仓库' },
   { cat: '开源项目', name: 'Rust', url: 'https://www.rust-lang.org', desc: '系统级编程语言，零成本抽象' },
   { cat: '开源项目', name: 'Node.js', url: 'https://nodejs.org', desc: 'JavaScript 服务端运行时' },
+  { cat: '开源项目', name: 'Flutter', url: 'https://flutter.dev', desc: 'Google 跨平台 UI 框架，一套代码多端' },
   { cat: '开源项目', name: 'FFmpeg', url: 'https://ffmpeg.org', desc: '音视频处理瑞士军刀' },
   { cat: '开源项目', name: 'LLVM', url: 'https://llvm.org', desc: '编译器基础设施，Clang/Swift 底层' },
 
   // ===== 影音娱乐 =====
   { cat: '影音娱乐', name: 'YouTube', url: 'https://www.youtube.com', desc: '全球视频分享平台' },
   { cat: '影音娱乐', name: 'Spotify', url: 'https://open.spotify.com', desc: '全球音乐流媒体服务' },
+  { cat: '影音娱乐', name: 'QQ音乐', url: 'https://y.qq.com', desc: '腾讯旗下，国内最大曲库' },
   { cat: '影音娱乐', name: 'Apple Music', url: 'https://music.apple.com', desc: 'Apple 无损音乐，空间音频' },
+  { cat: '影音娱乐', name: 'Steam', url: 'https://store.steampowered.com', desc: '全球最大 PC 游戏平台' },
   { cat: '影音娱乐', name: '豆瓣', url: 'https://www.douban.com', desc: '书影音评分社区，老牌文艺' },
   { cat: '影音娱乐', name: 'Bangumi', url: 'https://bgm.tv', desc: '番组计划，ACG 追番数据库' },
   { cat: '影音娱乐', name: 'Netflix', url: 'https://www.netflix.com', desc: '全球流媒体剧集与电影平台' },
@@ -105,6 +124,8 @@ const LINKS = [
   { cat: '效率办公', name: 'Obsidian', url: 'https://obsidian.md', desc: '本地 Markdown 双向链接笔记' },
   { cat: '效率办公', name: 'Craft', url: 'https://www.craft.do', desc: '设计精美原生笔记应用' },
   { cat: '效率办公', name: 'Linear', url: 'https://linear.app', desc: '设计最优雅的项目管理工具' },
+  { cat: '效率办公', name: 'Todoist', url: 'https://todoist.com', desc: '跨平台 GT D 任务管家' },
+  { cat: '效率办公', name: 'Slack', url: 'https://slack.com', desc: '团队即时通讯与协作中枢' },
   { cat: '效率办公', name: 'Raycast', url: 'https://www.raycast.com', desc: 'macOS 效率启动器，Alfred 替代' },
   { cat: '效率办公', name: 'Arc', url: 'https://arc.net', desc: '重新定义浏览器体验' },
   { cat: '效率办公', name: 'Warp', url: 'https://www.warp.dev', desc: 'Rust 重构的现代终端' },
@@ -112,6 +133,8 @@ const LINKS = [
 
   // ===== 生活服务 =====
   { cat: '生活服务', name: '高德地图', url: 'https://www.amap.com', desc: '国内最精准导航与出行服务' },
+  { cat: '生活服务', name: '12306', url: 'https://www.12306.cn', desc: '中国铁路官方购票平台' },
+  { cat: '生活服务', name: '大众点评', url: 'https://www.dianping.com', desc: '本地生活消费指南与评价' },
   { cat: '生活服务', name: '国家天气', url: 'https://weather.cma.cn', desc: '中国气象局官方天气预报' },
   { cat: '生活服务', name: 'DeepL Write', url: 'https://www.deepl.com/write', desc: 'AI 写作优化，语法与风格修正' },
   { cat: '生活服务', name: 'Pexels 视频', url: 'https://www.pexels.com/videos/', desc: '免费高清视频素材，商用可' },
@@ -302,7 +325,7 @@ const catsJson = JSON.stringify(CATS);
       let hostname;
       try { hostname = new URL(l.url).hostname; } catch { hostname = ''; }
       const faviconHtml = hostname
-        ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=32" class="nav-card-icon" alt="" loading="lazy" width="20" height="20" onerror="this.style.display='none'">`
+        ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=48" class="nav-card-icon" alt="" loading="lazy" width="24" height="24" onerror="this.style.display='none'">`
         : '';
       return `
       <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;${getGlow(l.cat)}">
@@ -823,17 +846,17 @@ const catsJson = JSON.stringify(CATS);
     margin-bottom: 2px;
   }
   .nav-card-icon {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
-    border-radius: 3px;
+    border-radius: 4px;
     transition: transform 0.25s ease;
   }
   .nav-card:hover .nav-card-icon {
-    transform: scale(1.15);
+    transform: scale(1.1);
   }
   .nav-card-cat {
-    font-size: 10px;
+    font-size: 10.5px;
     color: var(--nav-accent);
     opacity: 0.6;
     letter-spacing: 0.08em;
@@ -841,15 +864,16 @@ const catsJson = JSON.stringify(CATS);
     font-family: var(--font-mono);
   }
   .nav-card-name {
-    margin: 2px 0 0;
-    font-size: 15px;
-    font-weight: 600;
+    margin: 4px 0 0;
+    font-size: 17px;
+    font-weight: 700;
     color: var(--nav-text);
     letter-spacing: 0.02em;
+    transition: color 0.25s;
   }
   .nav-card-desc {
-    margin: 4px 0 0;
-    font-size: 12.5px;
+    margin: 5px 0 0;
+    font-size: 13px;
     color: var(--nav-text-secondary);
     line-height: 1.55;
     overflow: hidden;
