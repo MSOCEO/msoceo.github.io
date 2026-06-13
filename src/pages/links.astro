@@ -198,10 +198,10 @@ const catsJson = JSON.stringify(CATS);
   <!-- 顶栏 -->
   <header class="nav-topbar">
     <div class="nav-topbar-inner">
-      <a href="/" class="nav-topbar-title" id="navHomeLink" title="拖拽我到浏览器书签栏，设为首页" draggable="true">枕星<svg class="nav-home-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="currentColor" stroke-width="1.5"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="1.5"/></svg></a>
-      <button class="nav-bookmark-btn" id="navBookmarkBtn" title="收藏本站 (Ctrl+D)">
+      <a href="/" class="nav-topbar-title" id="navHomeLink" title="拖拽我到浏览器书签栏，设为首页" draggable="true">枕星</a>
+      <button class="nav-bookmark-btn" id="navBookmarkBtn" title="收藏本站 (Ctrl+D / Cmd+D)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span>收藏</span>
+        <span>收藏本站</span>
       </button>
       <span class="nav-topbar-date" id="navTopbarDate"></span>
       <button class="nav-theme-btn" id="themeToggle" aria-label="切换主题" title="切换深色/浅色主题">
@@ -398,8 +398,8 @@ const catsJson = JSON.stringify(CATS);
       let hostname;
       try { hostname = new URL(l.url).hostname; } catch { hostname = ''; }
       const faviconHtml = hostname
-        ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=64" class="nav-card-icon" alt="" loading="lazy" width="36" height="36" onerror="this.style.display='none'">`
-        : '';
+        ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=64" class="nav-card-icon" alt="" loading="lazy" width="36" height="36" onerror="this.outerHTML='<span class=\'nav-card-icon-fallback\'>${esc(l.name).charAt(0)}</span>'">`
+        : `<span class="nav-card-icon-fallback">${esc(l.name).charAt(0)}</span>`;
       let rankHtml = '';
       const n = i + 1;
       if (n === 1) rankHtml = '<span class="nav-card-rank rank-1" title="北辰·一等星">北辰</span>';
@@ -496,6 +496,65 @@ const catsJson = JSON.stringify(CATS);
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
+    function getLunarDay(y, m, d) {
+      const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+        0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+        0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+        0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+        0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+        0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+        0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+        0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+        0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+        0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+        0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+        0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+        0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+        0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+        0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0];
+      const lunarMonths = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+      const lunarDays = ['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+
+      function lunarYearDays(y) {
+        let sum = 348;
+        for (let i2 = 0x8000; i2 > 0x8; i2 >>= 1) sum += (lunarInfo[y-1900] & i2) ? 1 : 0;
+        return sum + lunarLeapDays(y);
+      }
+      function lunarLeapMonth(y) { return lunarInfo[y-1900] & 0xf; }
+      function lunarLeapDays(y) { return lunarLeapMonth(y) ? ((lunarInfo[y-1900] & 0x10000) ? 30 : 29) : 0; }
+      function lunarMonthDays(y, mn) { return (lunarInfo[y-1900] & (0x10000 >> mn)) ? 30 : 29; }
+
+      let baseDate = new Date(1900, 0, 31);
+      let targetDate = new Date(y, m-1, d);
+      let days = Math.floor((targetDate - baseDate) / 86400000);
+      
+      let year;
+      for (year = 1900; year < 2101 && days > 0; year++) {
+        days -= lunarYearDays(year);
+      }
+      if (days < 0) { days += lunarYearDays(--year); }
+      
+      let leap = false, leapMonth = 0;
+      let month = 0, tmp = 0;
+      for (month = 1; month <= 12 && days > 0; month++) {
+        leapMonth = lunarLeapMonth(year);
+        if (leapMonth > 0 && month === leapMonth + 1 && !leap) {
+          --month;
+          leap = true;
+          tmp = lunarLeapDays(year);
+        } else {
+          tmp = lunarMonthDays(year, month);
+        }
+        if (leap && month === leapMonth + 1) leap = false;
+        days -= tmp;
+      }
+      if (days === 0 && leapMonth > 0 && month === leapMonth + 1) {
+        if (leap) leap = false; else { leap = true; --month; }
+      }
+      if (days < 0) { days += tmp; --month; }
+      return (leap ? '闰' : '') + lunarMonths[month - 1] + '月' + lunarDays[days];
+    }
+
     function updateTopbar() {
       const now = new Date();
       const h = pad(now.getHours());
@@ -506,10 +565,11 @@ const catsJson = JSON.stringify(CATS);
       const w = now.getDay();
 
       let parts = [`${timeStr}`];
-      if (weatherEmoji && weatherTemp) {
-        parts.push(`${weatherEmoji} ${weatherTemp}`);
+      if (weatherTemp) {
+        parts.push(`${weatherTemp} ${weatherEmoji}`);
       }
-      parts.push(`${month}月${day}日 星期${weekNames[w]}`);
+      const lunarText = getLunarDay(now.getFullYear(), month, day);
+      parts.push(`${now.getFullYear()}年${month}月${day}日 星期${weekNames[w]} ${lunarText}`);
       document.getElementById('navTopbarDate').textContent = parts.join(' · ');
     }
 
@@ -815,7 +875,24 @@ const catsJson = JSON.stringify(CATS);
     flex-shrink: 0;
     transition: transform 0.3s ease;
   }
+  .nav-featured-icon-fallback {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--feat-accent, var(--nav-accent));
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    line-height: 1;
+    transition: transform 0.3s ease;
+  }
   .nav-featured-card:hover .nav-featured-icon { transform: scale(1.08) rotate(-2deg); }
+  .nav-featured-card:hover .nav-featured-icon-fallback { transform: scale(1.08) rotate(-2deg); }
   .nav-featured-info {
     display: flex;
     flex-direction: column;
@@ -1229,6 +1306,8 @@ const catsJson = JSON.stringify(CATS);
     .nav-featured-name { font-size: 14px; }
     .nav-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     .nav-card { padding: 14px 16px; }
+    .nav-card-icon { width: 28px; height: 28px; }
+    .nav-card-icon-fallback { width: 28px; height: 28px; border-radius: 6px; font-size: 14px; }
     .nav-card-name { font-size: 13.5px; }
     .nav-card-desc { font-size: 11.5px; }
     .nav-cats { gap: 6px; }
