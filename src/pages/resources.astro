@@ -2,66 +2,130 @@
 import Page from '../layouts/Page.astro';
 ---
 
-<Page title="资源 | 枕星" description="工具、资源与参考 — 探索路上的实用指南">
-  <section class="resources-section">
+<Page title="导航 | 枕星" description="常用网站与工具收藏">
+  <section class="nav-section">
     <div class="content-narrow">
       <header class="section-header animate-in">
-        <h1>资源</h1>
-        <p>探索路上的工具、资源与参考</p>
+        <h1>导航</h1>
+        <p>书签与常用入口</p>
       </header>
 
-      <div class="resource-group">
-        <h2>开发工具</h2>
-        <div class="resource-grid">
-          <a href="#" class="resource-card card">
-            <span class="resource-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/>
-              </svg>
-            </span>
-            <div class="resource-info">
-              <span class="resource-name">代码编辑器</span>
-              <span class="resource-desc">VS Code 配置与插件推荐</span>
-            </div>
+      <div class="nav-group">
+        <h2>开发</h2>
+        <div class="nav-grid">
+          <a href="https://github.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Github</span>
+            <span class="nav-desc">代码托管与协作</span>
           </a>
-          <a href="#" class="resource-card card">
-            <span class="resource-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M12,2L2,7L12,12L22,7L12,2Z"/><path d="M2,17L12,22L22,17"/><path d="M2,12L12,17L22,12"/>
-              </svg>
-            </span>
-            <div class="resource-info">
-              <span class="resource-name">包管理器</span>
-              <span class="resource-desc">pnpm / npm / yarn</span>
-            </div>
+          <a href="https://stackoverflow.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Stack Overflow</span>
+            <span class="nav-desc">技术问答社区</span>
+          </a>
+          <a href="https://devdocs.io" target="_blank" class="nav-card card">
+            <span class="nav-domain">DevDocs</span>
+            <span class="nav-desc">多语言 API 文档聚合</span>
+          </a>
+          <a href="https://caniuse.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Can I Use</span>
+            <span class="nav-desc">浏览器兼容性查询</span>
+          </a>
+          <a href="https://codesandbox.io" target="_blank" class="nav-card card">
+            <span class="nav-domain">CodeSandbox</span>
+            <span class="nav-desc">在线代码沙盒</span>
+          </a>
+          <a href="https://npmjs.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">npm</span>
+            <span class="nav-desc">Node.js 包注册中心</span>
           </a>
         </div>
       </div>
 
-      <div class="resource-group">
-        <h2>设计资源</h2>
-        <div class="resource-grid">
-          <a href="#" class="resource-card card">
-            <span class="resource-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
-              </svg>
-            </span>
-            <div class="resource-info">
-              <span class="resource-name">色彩系统</span>
-              <span class="resource-desc">OKLCH 色彩空间与工具</span>
-            </div>
+      <div class="nav-group">
+        <h2>设计</h2>
+        <div class="nav-grid">
+          <a href="https://www.figma.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Figma</span>
+            <span class="nav-desc">在线 UI 设计协作</span>
           </a>
-          <a href="#" class="resource-card card">
-            <span class="resource-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M12,2L2,7L12,12L22,7L12,2Z"/>
-              </svg>
-            </span>
-            <div class="resource-info">
-              <span class="resource-name">字体库</span>
-              <span class="resource-desc">Google Fonts / 本地字体</span>
-            </div>
+          <a href="https://dribbble.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Dribbble</span>
+            <span class="nav-desc">设计作品灵感</span>
+          </a>
+          <a href="https://uigradients.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">uiGradients</span>
+            <span class="nav-desc">渐变色方案参考</span>
+          </a>
+          <a href="https://fonts.google.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Google Fonts</span>
+            <span class="nav-desc">开源字体库</span>
+          </a>
+          <a href="https://oklch.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">OKLCH Color</span>
+            <span class="nav-desc">感知均匀色彩空间</span>
+          </a>
+          <a href="https://heroicons.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Heroicons</span>
+            <span class="nav-desc">Tailwind 风格 SVG 图标</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <h2>工具</h2>
+        <div class="nav-grid">
+          <a href="https://transform.tools" target="_blank" class="nav-card card">
+            <span class="nav-domain">Transform Tools</span>
+            <span class="nav-desc">多格式代码互转</span>
+          </a>
+          <a href="https://www.photopea.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Photopea</span>
+            <span class="nav-desc">在线 Photoshop 替代</span>
+          </a>
+          <a href="https://squoosh.app" target="_blank" class="nav-card card">
+            <span class="nav-domain">Squoosh</span>
+            <span class="nav-desc">图片压缩与格式转换</span>
+          </a>
+          <a href="https://excalidraw.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Excalidraw</span>
+            <span class="nav-desc">手绘风格白板</span>
+          </a>
+          <a href="https://readme.so" target="_blank" class="nav-card card">
+            <span class="nav-domain">Readme.so</span>
+            <span class="nav-desc">README 快速生成</span>
+          </a>
+          <a href="https://regex101.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Regex101</span>
+            <span class="nav-desc">正则表达式调试</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <h2>AI</h2>
+        <div class="nav-grid">
+          <a href="https://chatgpt.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">ChatGPT</span>
+            <span class="nav-desc">OpenAI 对话模型</span>
+          </a>
+          <a href="https://claude.ai" target="_blank" class="nav-card card">
+            <span class="nav-domain">Claude</span>
+            <span class="nav-desc">Anthropic 对话助手</span>
+          </a>
+          <a href="https://huggingface.co" target="_blank" class="nav-card card">
+            <span class="nav-domain">Hugging Face</span>
+            <span class="nav-desc">模型与数据集社区</span>
+          </a>
+          <a href="https://v0.dev" target="_blank" class="nav-card card">
+            <span class="nav-domain">v0</span>
+            <span class="nav-desc">Vercel AI 界面生成</span>
+          </a>
+          <a href="https://bolt.new" target="_blank" class="nav-card card">
+            <span class="nav-domain">Bolt.new</span>
+            <span class="nav-desc">AI 全栈应用生成</span>
+          </a>
+          <a href="https://cursor.com" target="_blank" class="nav-card card">
+            <span class="nav-domain">Cursor</span>
+            <span class="nav-desc">AI 代码编辑器</span>
           </a>
         </div>
       </div>
@@ -70,7 +134,7 @@ import Page from '../layouts/Page.astro';
 </Page>
 
 <style>
-  .resources-section {
+  .nav-section {
     padding: var(--space-4xl) 0 var(--space-5xl);
   }
 
@@ -85,6 +149,7 @@ import Page from '../layouts/Page.astro';
     font-weight: var(--weight-bold);
     color: var(--ink-100);
     margin-bottom: var(--space-sm);
+    letter-spacing: 0.04em;
   }
 
   .section-header p {
@@ -92,11 +157,11 @@ import Page from '../layouts/Page.astro';
     color: var(--ink-50);
   }
 
-  .resource-group {
-    margin-bottom: var(--space-2xl);
+  .nav-group {
+    margin-bottom: var(--space-3xl);
   }
 
-  .resource-group h2 {
+  .nav-group h2 {
     font-family: var(--font-display);
     font-size: var(--text-xl);
     color: var(--ink-90);
@@ -106,7 +171,7 @@ import Page from '../layouts/Page.astro';
     position: relative;
   }
 
-  .resource-group h2::after {
+  .nav-group h2::after {
     content: '';
     position: absolute;
     bottom: -1px;
@@ -117,42 +182,42 @@ import Page from '../layouts/Page.astro';
     border-radius: 1px;
   }
 
-  .resource-grid {
+  .nav-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--space-md);
   }
 
-  .resource-card {
+  .nav-card {
     display: flex;
-    align-items: center;
-    gap: var(--space-md);
+    flex-direction: column;
+    gap: 4px;
     text-decoration: none;
+    padding: var(--space-lg);
     transition: all var(--duration-normal) var(--ease-out);
   }
 
-  .resource-card:hover {
+  .nav-card:hover {
     border-color: var(--ink-30);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 
-  .resource-icon {
-    color: var(--amber-400);
-    opacity: 0.8;
-    flex-shrink: 0;
-  }
-
-  .resource-name {
-    display: block;
-    color: var(--ink-90);
-    font-weight: var(--weight-semibold);
+  .nav-domain {
     font-size: var(--text-base);
-    margin-bottom: 2px;
+    font-weight: var(--weight-semibold);
+    color: var(--ink-90);
   }
 
-  .resource-desc {
-    display: block;
-    color: var(--ink-50);
+  .nav-desc {
     font-size: var(--text-sm);
+    color: var(--ink-50);
+    line-height: var(--leading-snug);
+  }
+
+  @media (max-width: 480px) {
+    .nav-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
