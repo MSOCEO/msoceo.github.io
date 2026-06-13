@@ -1,11 +1,11 @@
 ---
-// Yun 风格页面布局
+// 墨影 Page Layout
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MusicPlayer from '../components/MusicPlayer.astro';
 
-const { title, description, hero = false } = Astro.props;
+const { title, description } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,119 +15,17 @@ const { title, description, hero = false } = Astro.props;
   </head>
   <body>
     <Header />
-    
-    {hero && (
-      <section class="yun-hero">
-        <div class="yun-hero-content">
-          <h1 class="yun-hero-title">溯光</h1>
-          <p class="yun-hero-subtitle">不写教程，不贩卖焦虑。一个普通人在代码与日常的缝隙里，打捞那些舍不得删掉的东西。</p>
-          <div class="yun-hero-scroll">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-      </section>
-    )}
-
-    <main class="yun-main">
+    <main class="site-main">
       <slot />
     </main>
-
     <MusicPlayer />
     <Footer />
   </body>
 </html>
 
 <style>
-  /* ===== Hero 区域 ===== */
-  .yun-hero {
+  .site-main {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(120deg, var(--va-c-bg-soft) 30%, var(--va-c-bg) 100%);
-  }
-
-  html.dark .yun-hero {
-    background: linear-gradient(120deg, var(--va-c-primary) 30%, #41d1ff);
-  }
-
-  .yun-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse 80% 50% at 50% 40%, rgba(0, 120, 231, 0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 30% 70%, rgba(65, 209, 255, 0.06) 0%, transparent 70%);
-  }
-
-  .yun-hero-content {
-    text-align: center;
-    position: relative;
-    z-index: 1;
-    padding: var(--space-xl);
-    animation: fadeInUp 0.8s var(--ease-out);
-  }
-
-  .yun-hero-title {
-    font-family: var(--font-serif);
-    font-size: clamp(3rem, 6vw, 5rem);
-    font-weight: 700;
-    background: linear-gradient(120deg, var(--va-c-text) 30%, var(--va-c-primary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin: 0 0 var(--space-md);
-    letter-spacing: 0.05em;
-  }
-
-  html.dark .yun-hero-title {
-    background: linear-gradient(120deg, #ffffff 30%, rgba(255, 255, 255, 0.7) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .yun-hero-subtitle {
-    font-size: 1.125rem;
-    color: var(--va-c-text-light);
-    max-width: 500px;
-    margin: 0 auto var(--space-2xl);
-    line-height: 1.8;
-  }
-
-  html.dark .yun-hero-subtitle {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .yun-hero-scroll {
-    animation: float 2s ease-in-out infinite;
-    color: var(--va-c-text-lighter);
-    cursor: pointer;
-  }
-
-  html.dark .yun-hero-scroll {
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  /* ===== 主内容区 ===== */
-  .yun-main {
-    max-width: var(--yun-post-card-max-width);
-    margin: 0 auto;
-    padding: var(--space-2xl) var(--space-md);
-    min-height: 50vh;
-  }
-
-  @media (max-width: 768px) {
-    .yun-main {
-      padding: var(--space-xl) var(--space-sm);
-    }
-
-    .yun-hero-subtitle {
-      font-size: 1rem;
-    }
+    padding-top: var(--header-height);
   }
 </style>

@@ -1,0 +1,107 @@
+---
+import Page from '../layouts/Page.astro';
+
+const title = '登录 | 枕星';
+const description = '登录枕星，继续你的创作之旅';
+---
+
+<Page {title} {description}>
+  <div class="auth-page">
+    <div class="auth-card animate-in">
+      <h1>欢迎回来</h1>
+      <p class="subtitle">登录枕星，继续你的创作</p>
+
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="email">邮箱</label>
+          <input
+            type="email"
+            id="email"
+            class="input"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input
+            type="password"
+            id="password"
+            class="input"
+            placeholder="输入密码"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg">
+          <span class="btn-label">登录</span>
+          <span class="btn-spinner" hidden></span>
+        </button>
+
+        <div id="error-msg" class="form-error" hidden></div>
+      </form>
+
+      <div class="divider-text">或</div>
+
+      <button id="oauth-github" class="btn btn-secondary btn-lg btn-oauth" disabled>
+        通过 GitHub 登录（即将支持）
+      </button>
+
+      <p class="footer-text">
+        还没有账号？<a href="/register">立即注册</a>
+      </p>
+    </div>
+  </div>
+</Page>
+
+<style>
+  .auth-form .btn { margin-top: var(--space-sm); }
+  .btn-spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-top-color: var(--ink-0);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn.loading .btn-label { display: none; }
+  .btn.loading .btn-spinner { display: block; }
+
+  .form-error {
+    margin-top: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(229,72,77,0.1);
+    border: 1px solid rgba(229,72,77,0.2);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--error);
+  }
+
+  .btn-oauth {
+    width: 100%;
+    margin-top: 0;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('login-form');
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const errorMsg = document.getElementById('error-msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.classList.add('loading');
+    errorMsg.hidden = true;
+
+    // TODO: Replace with real Supabase auth
+    // const { data, error } = await supabase.auth.signInWithPassword({...})
+    await new Promise(r => setTimeout(r, 800));
+
+    errorMsg.hidden = false;
+    errorMsg.textContent = '认证服务正在搭建中，请稍后再试。';
+    submitBtn.classList.remove('loading');
+  });
+</script>

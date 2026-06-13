@@ -1,8 +1,6 @@
 ---
+import Page from '../../layouts/Page.astro';
 import { getCollection, type CollectionEntry, render } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 
 export async function getStaticPaths() {
@@ -18,73 +16,136 @@ const post = Astro.props;
 const { Content } = await render(post);
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <BaseHead title={post.data.title} description={post.data.description} image={post.data.heroImage} />
-  </head>
-  <body>
-    <Header />
-    <main class="article-main">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <span class="article-date">
-              <FormattedDate date={post.data.pubDate} />
+<Page title={`${post.data.title} | 枕星`} description={post.data.description}>
+  <article class="article-section">
+    <div class="content-narrow">
+      <header class="article-header animate-in">
+        <div class="article-meta">
+          <span class="article-date">
+            <FormattedDate date={post.data.pubDate} />
+          </span>
+          {post.data.updatedDate && (
+            <span class="article-updated">
+              更新于 <FormattedDate date={post.data.updatedDate} />
             </span>
-            {post.data.updatedDate && (
-              <span class="article-updated">
-                更新于 <FormattedDate date={post.data.updatedDate} />
-              </span>
-            )}
-          </div>
-          <h1 class="article-title">{post.data.title}</h1>
-          <p class="article-desc">{post.data.description}</p>
-        </header>
-        <hr />
-        <div class="article-body">
-          <Content />
+          )}
         </div>
-      </article>
-    </main>
-    <Footer />
-  </body>
-</html>
+        <h1 class="article-title">{post.data.title}</h1>
+        <p class="article-desc">{post.data.description}</p>
+      </header>
+
+      <hr class="article-divider" />
+
+      <div class="article-body">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Page>
 
 <style>
-.article-main { max-width: 1200px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
-.article { max-width: 720px; margin: 0 auto; }
-.article-header { margin-bottom: var(--space-xl); }
-.article-meta { display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md); }
-.article-date {
-  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--star-warm);
-  padding: 2px 8px; border: 1px solid oklch(78% 0.18 65 / 0.2);
-  border-radius: var(--radius-sm); background: oklch(78% 0.18 65 / 0.06);
-}
-.article-updated { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
-.article-title {
-  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 700;
-  letter-spacing: -0.03em; line-height: 1.1; margin-bottom: var(--space-md);
-  color: var(--text-primary);
-}
-.article-desc { font-size: var(--text-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
-.article hr {
-  margin: var(--space-xl) 0;
-  border: none; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-glow) 50%, transparent);
-}
+  .article-section {
+    padding: var(--space-4xl) 0 var(--space-5xl);
+  }
 
-.article-body :global(h2) { font-size: var(--text-2xl); margin-top: var(--space-2xl); margin-bottom: var(--space-md); color: var(--text-primary); }
-.article-body :global(h3) { font-size: var(--text-xl); margin-top: var(--space-xl); margin-bottom: var(--space-sm); color: var(--text-primary); }
-.article-body :global(p) { line-height: var(--leading-relaxed); margin-bottom: var(--space-md); }
-.article-body :global(ul), .article-body :global(ol) { padding-left: var(--space-xl); margin-bottom: var(--space-md); }
-.article-body :global(li) { margin-bottom: var(--space-xs); color: var(--text-secondary); line-height: var(--leading-relaxed); }
-.article-body :global(a) { color: var(--star-warm); }
-.article-body :global(a:hover) { color: var(--lantern-warm); }
-.article-body :global(strong) { color: var(--text-primary); }
-.article-body :global(img) { border-radius: var(--radius-sm); border: 1px solid var(--border-ghost); }
+  .article-header {
+    margin-bottom: var(--space-xl);
+  }
 
-@media (max-width: 640px) {
-  .article-title { font-size: clamp(1.6rem, 1.2rem + 3vw, 2.4rem); }
-}
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .article-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--amber-400);
+    padding: 3px 10px;
+    border: 1px solid rgba(212,165,116,0.2);
+    border-radius: var(--radius-full);
+    background: rgba(212,165,116,0.06);
+  }
+
+  .article-updated {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-40);
+  }
+
+  .article-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, var(--text-4xl));
+    font-weight: var(--weight-bold);
+    color: var(--ink-100);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-desc {
+    font-size: var(--text-lg);
+    color: var(--ink-50);
+    line-height: var(--leading-relaxed);
+  }
+
+  .article-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ink-20) 50%, transparent);
+    margin: var(--space-2xl) 0;
+  }
+
+  .article-body :global(h2) {
+    font-size: var(--text-2xl);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+    color: var(--ink-90);
+  }
+  .article-body :global(h3) {
+    font-size: var(--text-xl);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+    color: var(--ink-90);
+  }
+  .article-body :global(p) {
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-md);
+  }
+  .article-body :global(ul),
+  .article-body :global(ol) {
+    padding-left: var(--space-xl);
+    margin-bottom: var(--space-md);
+  }
+  .article-body :global(li) {
+    margin-bottom: var(--space-xs);
+    color: var(--ink-50);
+    line-height: var(--leading-relaxed);
+  }
+  .article-body :global(a) {
+    color: var(--amber-400);
+  }
+  .article-body :global(strong) {
+    color: var(--ink-90);
+  }
+  .article-body :global(blockquote) {
+    border-left: 3px solid var(--amber-400);
+    padding-left: var(--space-lg);
+    margin: var(--space-lg) 0;
+    color: var(--ink-50);
+    font-style: italic;
+  }
+  .article-body :global(img) {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--ink-20);
+  }
+  .article-body :global(pre) {
+    margin: var(--space-lg) 0;
+  }
+
+  @media (max-width: 768px) {
+    .article-section { padding: var(--space-3xl) 0; }
+  }
 </style>

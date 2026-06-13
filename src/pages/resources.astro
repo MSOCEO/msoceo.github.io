@@ -1,118 +1,158 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Page from '../layouts/Page.astro';
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <BaseHead title="资源 | MSOCEO" description="工具、资源与参考 — 探索路上的实用指南" />
-  </head>
-  <body>
-    <Header />
-    <main class="resources-main">
-      <header class="resources-header">
-        <h1 class="resources-heading">资源</h1>
-        <p class="resources-sub">探索路上的工具、资源与参考</p>
+<Page title="资源 | 枕星" description="工具、资源与参考 — 探索路上的实用指南">
+  <section class="resources-section">
+    <div class="content-narrow">
+      <header class="section-header animate-in">
+        <h1>资源</h1>
+        <p>探索路上的工具、资源与参考</p>
       </header>
-      <div class="resources-grid">
-        <section class="resource-section">
-          <h2 class="section-title">开发工具</h2>
-          <div class="resource-cards">
-            <a href="#" class="resource-card">
-              <div class="resource-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                  <polyline points="16,18 22,12 16,6"/>
-                  <polyline points="8,6 2,12 8,18"/>
-                </svg>
-              </div>
-              <div class="resource-info">
-                <span class="resource-name">代码编辑器</span>
-                <span class="resource-desc">VS Code 配置与插件</span>
-              </div>
-            </a>
-            <a href="#" class="resource-card">
-              <div class="resource-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                  <path d="M12,2L2,7L12,12L22,7L12,2Z"/>
-                  <path d="M2,17L12,22L22,17"/>
-                  <path d="M2,12L12,17L22,12"/>
-                </svg>
-              </div>
-              <div class="resource-info">
-                <span class="resource-name">包管理器</span>
-                <span class="resource-desc">pnpm / npm / yarn</span>
-              </div>
-            </a>
-          </div>
-        </section>
-        <section class="resource-section">
-          <h2 class="section-title">设计资源</h2>
-          <div class="resource-cards">
-            <a href="#" class="resource-card">
-              <div class="resource-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </div>
-              <div class="resource-info">
-                <span class="resource-name">色彩系统</span>
-                <span class="resource-desc">OKLCH 色彩空间</span>
-              </div>
-            </a>
-            <a href="#" class="resource-card">
-              <div class="resource-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                  <path d="M12,2L2,7L12,12L22,7L12,2Z"/>
-                  <path d="M2,17L12,22L22,17"/>
-                  <path d="M2,12L12,17L22,12"/>
-                </svg>
-              </div>
-              <div class="resource-info">
-                <span class="resource-name">字体库</span>
-                <span class="resource-desc">Google Fonts / 本地字体</span>
-              </div>
-            </a>
-          </div>
-        </section>
+
+      <div class="resource-group">
+        <h2>开发工具</h2>
+        <div class="resource-grid">
+          <a href="#" class="resource-card card">
+            <span class="resource-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/>
+              </svg>
+            </span>
+            <div class="resource-info">
+              <span class="resource-name">代码编辑器</span>
+              <span class="resource-desc">VS Code 配置与插件推荐</span>
+            </div>
+          </a>
+          <a href="#" class="resource-card card">
+            <span class="resource-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12,2L2,7L12,12L22,7L12,2Z"/><path d="M2,17L12,22L22,17"/><path d="M2,12L12,17L22,12"/>
+              </svg>
+            </span>
+            <div class="resource-info">
+              <span class="resource-name">包管理器</span>
+              <span class="resource-desc">pnpm / npm / yarn</span>
+            </div>
+          </a>
+        </div>
       </div>
-    </main>
-    <Footer />
-  </body>
-</html>
+
+      <div class="resource-group">
+        <h2>设计资源</h2>
+        <div class="resource-grid">
+          <a href="#" class="resource-card card">
+            <span class="resource-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </span>
+            <div class="resource-info">
+              <span class="resource-name">色彩系统</span>
+              <span class="resource-desc">OKLCH 色彩空间与工具</span>
+            </div>
+          </a>
+          <a href="#" class="resource-card card">
+            <span class="resource-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12,2L2,7L12,12L22,7L12,2Z"/>
+              </svg>
+            </span>
+            <div class="resource-info">
+              <span class="resource-name">字体库</span>
+              <span class="resource-desc">Google Fonts / 本地字体</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Page>
 
 <style>
-.resources-main { max-width: 1000px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
-.resources-header { text-align: center; padding: var(--space-2xl) 0 var(--space-xl); }
-.resources-heading {
-  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; margin-bottom: var(--space-sm);
-  background: linear-gradient(135deg, var(--star-warm), var(--tech-cyan));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.resources-sub { color: var(--text-muted); font-size: var(--text-lg); font-weight: 300; }
-.resources-grid { display: flex; flex-direction: column; gap: var(--space-2xl); }
-.resource-section { border-bottom: 1px solid var(--border-ghost); padding-bottom: var(--space-xl); }
-.resource-section:last-child { border-bottom: none; }
-.section-title {
-  font-family: var(--font-display); font-size: var(--text-xl); color: var(--text-primary); margin-bottom: var(--space-lg);
-  position: relative; padding-bottom: var(--space-sm);
-}
-.section-title::after {
-  content: ''; position: absolute; bottom: 0; left: 0; width: 40px; height: 2px;
-  background: linear-gradient(90deg, var(--star-warm), var(--tech-cyan)); border-radius: 1px;
-}
-.resource-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md); }
-.resource-card {
-  display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg);
-  background: var(--surface-card); border: 1px solid var(--border-ghost); border-radius: var(--radius-xl);
-  text-decoration: none; backdrop-filter: blur(12px); transition: all var(--duration-normal) var(--ease-out-expo);
-}
-.resource-card:hover { border-color: var(--border-glow); box-shadow: var(--shadow-glow-sm); transform: translateY(-2px); }
-.resource-icon { color: var(--star-warm); opacity: 0.8; flex-shrink: 0; }
-.resource-info { flex: 1; }
-.resource-name { display: block; color: var(--text-primary); font-weight: 600; font-size: var(--text-base); margin-bottom: var(--space-3xs); }
-.resource-desc { display: block; color: var(--text-muted); font-size: var(--text-sm); }
-@media (max-width: 640px) { .resources-heading { font-size: var(--text-2xl); } .resource-cards { grid-template-columns: 1fr; } }
+  .resources-section {
+    padding: var(--space-4xl) 0 var(--space-5xl);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+  }
+
+  .section-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, var(--text-4xl));
+    font-weight: var(--weight-bold);
+    color: var(--ink-100);
+    margin-bottom: var(--space-sm);
+  }
+
+  .section-header p {
+    font-size: var(--text-lg);
+    color: var(--ink-50);
+  }
+
+  .resource-group {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .resource-group h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--ink-90);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--ink-20);
+    position: relative;
+  }
+
+  .resource-group h2::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--amber-400);
+    border-radius: 1px;
+  }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .resource-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    text-decoration: none;
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+
+  .resource-card:hover {
+    border-color: var(--ink-30);
+    transform: translateY(-2px);
+  }
+
+  .resource-icon {
+    color: var(--amber-400);
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  .resource-name {
+    display: block;
+    color: var(--ink-90);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-base);
+    margin-bottom: 2px;
+  }
+
+  .resource-desc {
+    display: block;
+    color: var(--ink-50);
+    font-size: var(--text-sm);
+  }
 </style>

@@ -1,0 +1,93 @@
+---
+import Page from '../layouts/Page.astro';
+
+const title = '关于 | 枕星';
+const description = '谁在写、为什么写、以及这个角落背后的那个人';
+---
+
+<Page {title} {description}>
+  <section class="about-section">
+    <div class="content-narrow animate-in">
+      <header class="section-header">
+        <h1>关于</h1>
+      </header>
+
+      <div class="about-content">
+        <h2>我是谁</h2>
+        <p>一名系统工程师，在分布式基础设施、编译器与开发者工具的交汇处构建。目前正在开发高性能后端，探索本地优先软件的前沿领域。</p>
+
+        <h2>技术栈</h2>
+        <p><strong>语言</strong>: Rust、TypeScript、Go、Python、Zig（学习中）。</p>
+        <p><strong>基础设施</strong>: Nix、Fly.io、Cloudflare Workers、PostgreSQL、SQLite、Redis。</p>
+        <p><strong>工具</strong>: Neovim、tmux、Arch、Astro。</p>
+
+        <h2>联系</h2>
+        <p><strong>GitHub</strong>: <a href="https://github.com/MSOCEO">github.com/MSOCEO</a></p>
+        <p><strong>邮箱</strong>: <code>msoceo [at] proton [dot] me</code></p>
+
+        <blockquote>
+          <p>"任何足够先进的技术，都与魔法无异。" — A.C. Clarke</p>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .about-section {
+    padding: var(--space-4xl) 0 var(--space-5xl);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+  }
+
+  .section-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, var(--text-4xl));
+    font-weight: var(--weight-bold);
+    color: var(--ink-100);
+  }
+
+  .about-content h2 {
+    font-size: var(--text-xl);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+    color: var(--ink-90);
+  }
+
+  .about-content p {
+    font-size: var(--text-base);
+    color: var(--ink-50);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-sm);
+  }
+
+  .about-content strong {
+    color: var(--ink-70);
+  }
+
+  .about-content a {
+    color: var(--amber-400);
+  }
+
+  .about-content code {
+    font-size: 0.9em;
+  }
+
+  .about-content blockquote {
+    border-left: 3px solid var(--amber-400);
+    margin: var(--space-2xl) 0;
+    padding: var(--space-md) var(--space-lg);
+    background: rgba(212,165,116,0.05);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .about-content blockquote p {
+    color: var(--ink-40);
+    font-style: italic;
+    margin: 0;
+    font-size: var(--text-lg);
+  }
+</style>
