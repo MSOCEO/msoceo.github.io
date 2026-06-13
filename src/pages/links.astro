@@ -129,6 +129,9 @@ const catsJson = JSON.stringify(CATS);
 <head>
   <BaseHead title={title} description={description} />
   <link rel="preconnect" href="https://www.google.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
 </head>
 <body class="nav-body">
   <!-- 星际画布 -->
@@ -145,24 +148,32 @@ const catsJson = JSON.stringify(CATS);
   </header>
 
   <main class="nav-main">
-    <!-- 星图标题区 -->
+    <!-- 星图标题区：左侧品牌 + 右侧搜索 -->
     <section class="nav-hero">
-      <div class="nav-constellation" aria-hidden="true">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.5" opacity="0.12"/>
-          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.3" opacity="0.2" stroke-dasharray="3 8" stroke-dashoffset="1"/>
-          <line x1="8" y1="20" x2="40" y2="20" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-          <line x1="8" y1="28" x2="40" y2="28" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-          <line x1="20" y1="8" x2="20" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-          <line x1="28" y1="8" x2="28" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
-          <circle cx="14" cy="16" r="1.5" fill="currentColor" opacity="0.5"/>
-          <circle cx="34" cy="16" r="1.2" fill="currentColor" opacity="0.4"/>
-          <circle cx="18" cy="34" r="1.4" fill="currentColor" opacity="0.45"/>
-          <circle cx="32" cy="32" r="1" fill="currentColor" opacity="0.35"/>
-        </svg>
+      <div class="nav-hero-brand">
+        <div class="nav-constellation" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.5" opacity="0.12"/>
+            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.3" opacity="0.2" stroke-dasharray="3 8" stroke-dashoffset="1"/>
+            <line x1="8" y1="20" x2="40" y2="20" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+            <line x1="8" y1="28" x2="40" y2="28" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+            <line x1="20" y1="8" x2="20" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+            <line x1="28" y1="8" x2="28" y2="40" stroke="currentColor" stroke-width="0.4" opacity="0.08"/>
+            <circle cx="14" cy="16" r="1.5" fill="currentColor" opacity="0.5"/>
+            <circle cx="34" cy="16" r="1.2" fill="currentColor" opacity="0.4"/>
+            <circle cx="18" cy="34" r="1.4" fill="currentColor" opacity="0.45"/>
+            <circle cx="32" cy="32" r="1" fill="currentColor" opacity="0.35"/>
+          </svg>
+        </div>
+        <h1 class="nav-hero-title">枕星 · 星图</h1>
+        <p class="nav-hero-desc">星辰为引 · 链接为舟 · 手工甄别 · 持续更新</p>
+
+        <div class="nav-stats" id="navStats">
+          <span>已收录 <strong id="linkCount">0</strong> 颗星</span>
+          <span class="nav-stats-dot">·</span>
+          <span>共 <strong id="catCount">0</strong> 个星座</span>
+        </div>
       </div>
-      <h1 class="nav-hero-title">枕星 · 星图</h1>
-      <p class="nav-hero-desc">星辰为引 · 链接为舟 · 手工甄别 · 持续更新</p>
 
       <!-- 搜索 -->
       <div class="nav-search-wrap" id="searchWrap">
@@ -182,12 +193,6 @@ const catsJson = JSON.stringify(CATS);
           <input type="text" class="nav-search-input" id="navSearch" placeholder="搜索星图..." autocomplete="off" />
           <kbd class="nav-search-kbd">/</kbd>
         </div>
-      </div>
-
-      <div class="nav-stats" id="navStats">
-        <span>已收录 <strong id="linkCount">0</strong> 颗星</span>
-        <span class="nav-stats-dot">·</span>
-        <span>共 <strong id="catCount">0</strong> 个星座</span>
       </div>
     </section>
 
@@ -410,14 +415,21 @@ const catsJson = JSON.stringify(CATS);
 
   /* ===== 标题区 ===== */
   .nav-hero {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 48px;
     padding: 60px 0 44px;
+  }
+  .nav-hero-brand {
+    flex-shrink: 0;
+    max-width: 520px;
   }
   .nav-constellation {
     display: inline-block;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     color: var(--nav-accent);
-    opacity: 0.6;
+    opacity: 0.65;
     animation: constellation-pulse 4s ease-in-out infinite;
   }
   @keyframes constellation-pulse {
@@ -425,16 +437,17 @@ const catsJson = JSON.stringify(CATS);
     50% { opacity: 0.7; transform: scale(1.03); }
   }
   .nav-hero-title {
-    font-size: 40px;
+    font-size: 42px;
     font-weight: 700;
     margin: 0 0 10px;
     letter-spacing: 0.06em;
-    background: linear-gradient(135deg, var(--nav-accent) 0%, #c4b5fd 30%, #f0abfc 60%, var(--nav-accent) 100%);
+    font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", "Songti SC", serif;
+    background: linear-gradient(135deg, #a78bfa 0%, #7dd3fc 25%, #f0abfc 55%, #a78bfa 100%);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: title-shimmer 6s ease-in-out infinite;
+    animation: title-shimmer 5s ease-in-out infinite;
   }
   @keyframes title-shimmer {
     0%, 100% { background-position: 0% 50%; }
@@ -443,12 +456,16 @@ const catsJson = JSON.stringify(CATS);
   .nav-hero-desc {
     color: var(--nav-text-secondary);
     font-size: 15px;
-    margin: 0 0 36px;
-    letter-spacing: 0.03em;
+    margin: 0 0 20px;
+    letter-spacing: 0.04em;
+    font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", serif;
+    background: linear-gradient(90deg, rgba(167,139,250,0.9), rgba(129,230,217,0.7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   .nav-stats {
-    margin-top: 20px;
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--nav-text-secondary);
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
@@ -458,8 +475,9 @@ const catsJson = JSON.stringify(CATS);
 
   /* ===== 搜索 ===== */
   .nav-search-wrap {
-    max-width: 560px;
-    margin: 0 auto;
+    flex-shrink: 0;
+    width: 420px;
+    margin-top: 8px;
     background: var(--nav-surface);
     border: 1px solid var(--nav-border);
     border-radius: var(--radius);
@@ -685,8 +703,10 @@ const catsJson = JSON.stringify(CATS);
 
   @media (max-width: 768px) {
     .nav-main { padding: 0 16px 60px; }
-    .nav-hero { padding: 44px 0 32px; }
+    .nav-hero { flex-direction: column; gap: 28px; padding: 44px 0 32px; }
+    .nav-hero-brand { max-width: 100%; }
     .nav-hero-title { font-size: 30px; }
+    .nav-search-wrap { width: 100%; }
     .nav-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     .nav-card { padding: 14px 16px; }
     .nav-card-name { font-size: 13.5px; }
@@ -699,87 +719,149 @@ const catsJson = JSON.stringify(CATS);
 </style>
 
 <script>
-  // ===== 星际背景动画（多彩星辰 + 极光） =====
+  // ===== 深空星云背景（星云 + 流星 + 星辰） =====
   (function() {
     const canvas = document.getElementById('starCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let w, h;
-    const stars = [];
-    const STAR_COUNT = 150;
 
-    // 宇宙调色盘：紫 / 蓝 / 青 / 粉 / 暖白
+    // 宇宙调色盘
     const palette = [
-      [167, 139, 250], // 紫 a78bfa
-      [99,  179, 237], // 蓝 #63b3ed
-      [129, 230, 217], // 青 #81e6d9
-      [244, 171, 252], // 粉 #f0abfc
+      [167, 139, 250], // 紫
+      [99,  179, 237], // 蓝
+      [129, 230, 217], // 青
+      [244, 171, 252], // 粉
       [250, 240, 230], // 暖白
       [196, 181, 253], // 浅紫
       [147, 197, 253], // 天蓝
       [248, 180, 180], // 柔粉
     ];
 
+    // 固定星云团（大块柔光）
+    const nebulae = [];
+    for (let i = 0; i < 4; i++) {
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      nebulae.push({
+        x: Math.random() * 0.8 + 0.1,
+        y: Math.random() * 0.8 + 0.1,
+        rx: 0.22 + Math.random() * 0.35,
+        ry: 0.08 + Math.random() * 0.22,
+        color: c,
+        angle: Math.random() * Math.PI,
+        opacity: 0.025 + Math.random() * 0.04,
+      });
+    }
+
+    // 流星
+    const shootingStars = [];
+    const MAX_SHOOTING = 3;
+
+    function spawnShootingStar() {
+      if (shootingStars.length >= MAX_SHOOTING) return;
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      shootingStars.push({
+        x: Math.random() * 0.8 + 0.1,
+        y: Math.random() * 0.3,
+        vx: (Math.random() - 0.3) * 2.5,
+        vy: 1.5 + Math.random() * 3,
+        life: 0,
+        maxLife: 60 + Math.random() * 80,
+        color: c,
+        trail: [],
+      });
+    }
+
+    // 星辰
+    const stars = [];
+    for (let i = 0; i < 180; i++) {
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      stars.push({
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random() * 1.6 + 0.2,
+        color: c,
+        opacity: Math.random() * 0.45 + 0.12,
+        twinkleSpeed: Math.random() * 0.012 + 0.002,
+        twinkleOffset: Math.random() * Math.PI * 2,
+      });
+    }
+
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = document.body.scrollHeight;
     }
 
-    for (let i = 0; i < STAR_COUNT; i++) {
-      const color = palette[Math.floor(Math.random() * palette.length)];
-      stars.push({
-        x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1920),
-        y: Math.random() * (typeof window !== 'undefined' ? document.body.scrollHeight || 3000 : 3000),
-        r: Math.random() * 1.8 + 0.2,
-        color,
-        opacity: Math.random() * 0.5 + 0.15,
-        twinkleSpeed: Math.random() * 0.01 + 0.002,
-        twinkleOffset: Math.random() * Math.PI * 2,
-      });
-    }
-
     function draw(time) {
       ctx.clearRect(0, 0, w, h);
 
-      // 极光光晕 — 上中下三层柔光
-      const auroraGradTop = ctx.createRadialGradient(w * 0.35, h * 0.08, 0, w * 0.35, h * 0.08, w * 0.6);
-      auroraGradTop.addColorStop(0, 'rgba(129, 230, 217, 0.04)');
-      auroraGradTop.addColorStop(0.5, 'rgba(99, 179, 237, 0.02)');
-      auroraGradTop.addColorStop(1, 'transparent');
-      ctx.fillStyle = auroraGradTop;
-      ctx.fillRect(0, 0, w, h);
+      /* ── 星云光晕 ── */
+      nebulae.forEach(n => {
+        const cx = n.x * w, cy = n.y * h;
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * n.rx);
+        const [cr, cg, cb] = n.color;
+        grad.addColorStop(0, `rgba(${cr},${cg},${cb},${n.opacity + 0.015})`);
+        grad.addColorStop(0.4, `rgba(${cr},${cg},${cb},${n.opacity * 0.5})`);
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+      });
 
-      const auroraGradMid = ctx.createRadialGradient(w * 0.6, h * 0.35, 0, w * 0.6, h * 0.35, w * 0.5);
-      auroraGradMid.addColorStop(0, 'rgba(244, 171, 252, 0.035)');
-      auroraGradMid.addColorStop(0.5, 'rgba(167, 139, 250, 0.015)');
-      auroraGradMid.addColorStop(1, 'transparent');
-      ctx.fillStyle = auroraGradMid;
-      ctx.fillRect(0, 0, w, h);
-
-      const auroraGradBot = ctx.createRadialGradient(w * 0.45, h * 0.85, 0, w * 0.45, h * 0.85, w * 0.55);
-      auroraGradBot.addColorStop(0, 'rgba(147, 197, 253, 0.03)');
-      auroraGradBot.addColorStop(0.5, 'rgba(167, 139, 250, 0.015)');
-      auroraGradBot.addColorStop(1, 'transparent');
-      ctx.fillStyle = auroraGradBot;
-      ctx.fillRect(0, 0, w, h);
-
-      // 星辰绘制
+      /* ── 星辰 ── */
       stars.forEach(s => {
-        const twinkle = Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.35 + 0.65;
+        const twinkle = Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.3 + 0.7;
         const alpha = s.opacity * twinkle;
+        const sx = s.x * w, sy = s.y * h;
         const [cr, cg, cb] = s.color;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.arc(sx, sy, s.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha})`;
         ctx.fill();
-        // glow
-        if (s.r > 0.6 && twinkle > 0.82) {
+        if (s.r > 0.5 && twinkle > 0.85) {
           ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r * 3.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha * 0.06})`;
+          ctx.arc(sx, sy, s.r * 4, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha * 0.05})`;
           ctx.fill();
         }
       });
+
+      /* ── 流星 ── */
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const ss = shootingStars[i];
+        ss.life++;
+        if (ss.life > ss.maxLife) { shootingStars.splice(i, 1); continue; }
+        const progress = ss.life / ss.maxLife;
+        const fade = progress < 0.15 ? progress / 0.15 : progress > 0.75 ? (1 - progress) / 0.25 : 1;
+        const sx = ss.x * w + ss.vx * w * progress * 0.35;
+        const sy = ss.y * h + ss.vy * h * progress * 0.35;
+        const [cr, cg, cb] = ss.color;
+
+        // 流星尾巴
+        if (ss.life > 2) {
+          const px = ss.x * w + ss.vx * w * (progress - 0.02) * 0.35;
+          const py = ss.y * h + ss.vy * h * (progress - 0.02) * 0.35;
+          const grad = ctx.createLinearGradient(px, py, sx, sy);
+          grad.addColorStop(0, 'transparent');
+          grad.addColorStop(0.6, `rgba(${cr},${cg},${cb},${fade * 0.15})`);
+          grad.addColorStop(1, `rgba(${cr},${cg},${cb},${fade * 0.7})`);
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(sx, sy);
+          ctx.lineWidth = 1.8;
+          ctx.strokeStyle = grad;
+          ctx.stroke();
+        }
+
+        // 流星头部
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${cr},${cg},${cb},${fade})`;
+        ctx.fill();
+      }
+
+      // 随机生成流星
+      if (Math.random() < 0.008) spawnShootingStar();
+
       requestAnimationFrame(draw);
     }
 
