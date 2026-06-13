@@ -1,223 +1,405 @@
 ---
-import Page from '../layouts/Page.astro';
+import BaseHead from '../components/BaseHead.astro';
+
+const title = '导航 | 枕星';
+const description = '精选优质站点 — 无广告、无套路、无投毒，只收录活跃可靠的网站';
+
+const LINKS = [
+  // 常用工具
+  { cat: '常用工具', name: 'GitHub', url: 'https://github.com', desc: '全球最大代码托管平台' },
+  { cat: '常用工具', name: 'Google 翻译', url: 'https://translate.google.com', desc: '网页全文翻译，多语言互译' },
+  { cat: '常用工具', name: 'DeepL', url: 'https://www.deepl.com/translator', desc: '最精准的 AI 翻译引擎' },
+  { cat: '常用工具', name: 'TinyPNG', url: 'https://tinypng.com', desc: 'PNG/WebP 智能压缩，画质几乎无损' },
+  { cat: '常用工具', name: 'Squoosh', url: 'https://squoosh.app', desc: 'Google 出品的图片压缩与格式转换' },
+  { cat: '常用工具', name: 'Excalidraw', url: 'https://excalidraw.com', desc: '手绘风白板，协作流程图' },
+  { cat: '常用工具', name: 'Photopea', url: 'https://www.photopea.com', desc: '免费在线 Photoshop，PSD 完美兼容' },
+  { cat: '常用工具', name: 'Remove.bg', url: 'https://www.remove.bg', desc: 'AI 一键去背景，5秒出图' },
+  { cat: '常用工具', name: 'Carbon', url: 'https://carbon.now.sh', desc: '代码转精美截图，分享用' },
+  { cat: '常用工具', name: 'Readme.so', url: 'https://readme.so', desc: 'README 可视化编辑器' },
+  { cat: '常用工具', name: 'Regex101', url: 'https://regex101.com', desc: '正则表达式在线调试' },
+  { cat: '常用工具', name: 'JSON Formatter', url: 'https://jsonformatter.org', desc: 'JSON 在线格式化/校验/转义' },
+  // 开发技术
+  { cat: '开发技术', name: 'MDN Web Docs', url: 'https://developer.mozilla.org', desc: 'Web 标准权威文档，前端必备' },
+  { cat: '开发技术', name: 'DevDocs', url: 'https://devdocs.io', desc: '多语言 API 文档聚合，离线可用' },
+  { cat: '开发技术', name: 'Can I Use', url: 'https://caniuse.com', desc: '浏览器兼容性速查表' },
+  { cat: '开发技术', name: 'Stack Overflow', url: 'https://stackoverflow.com', desc: '全球程序员问答天花板' },
+  { cat: '开发技术', name: 'npm', url: 'https://www.npmjs.com', desc: 'Node.js 包注册中心' },
+  { cat: '开发技术', name: 'CodeSandbox', url: 'https://codesandbox.io', desc: '在线代码沙盒，秒开项目' },
+  { cat: '开发技术', name: 'Vite', url: 'https://vitejs.dev', desc: '下一代前端构建工具' },
+  { cat: '开发技术', name: 'Astro', url: 'https://astro.build', desc: '内容型网站首选框架' },
+  { cat: '开发技术', name: 'Tailwind CSS', url: 'https://tailwindcss.com', desc: '实用优先的 CSS 框架' },
+  { cat: '开发技术', name: 'Docker Hub', url: 'https://hub.docker.com', desc: '容器镜像仓库' },
+  { cat: '开发技术', name: 'Vercel', url: 'https://vercel.com', desc: '前端部署与 Serverless 平台' },
+  { cat: '开发技术', name: 'Cloudflare', url: 'https://www.cloudflare.com', desc: 'CDN/DNS/Workers 全栈云' },
+  // 设计创意
+  { cat: '设计创意', name: 'Figma', url: 'https://www.figma.com', desc: '在线 UI 设计协作工具' },
+  { cat: '设计创意', name: 'Dribbble', url: 'https://dribbble.com', desc: '全球设计师作品灵感社区' },
+  { cat: '设计创意', name: 'Behance', url: 'https://www.behance.net', desc: 'Adobe 旗下创意作品展示平台' },
+  { cat: '设计创意', name: 'Unsplash', url: 'https://unsplash.com', desc: '免费高清摄影图片库' },
+  { cat: '设计创意', name: 'Pexels', url: 'https://www.pexels.com', desc: '免费素材图片与视频' },
+  { cat: '设计创意', name: 'Coolors', url: 'https://coolors.co', desc: '配色方案生成器，空格键换色' },
+  { cat: '设计创意', name: 'OKLCH Color', url: 'https://oklch.com', desc: '感知均匀色彩空间调色板' },
+  { cat: '设计创意', name: 'Heroicons', url: 'https://heroicons.com', desc: 'Tailwind风格SVG图标集' },
+  { cat: '设计创意', name: 'Lucide', url: 'https://lucide.dev', desc: '开源SVG图标库，持续更新' },
+  { cat: '设计创意', name: 'Google Fonts', url: 'https://fonts.google.com', desc: '开源免费字体库' },
+  // AI 工具
+  { cat: 'AI 工具', name: 'ChatGPT', url: 'https://chatgpt.com', desc: 'OpenAI 通用对话模型' },
+  { cat: 'AI 工具', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic 长文本推理助手' },
+  { cat: 'AI 工具', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google 多模态AI助手' },
+  { cat: 'AI 工具', name: 'DeepSeek', url: 'https://chat.deepseek.com', desc: '国产开源大模型，代码能力突出' },
+  { cat: 'AI 工具', name: 'Hugging Face', url: 'https://huggingface.co', desc: '模型与数据集开源社区' },
+  { cat: 'AI 工具', name: 'v0', url: 'https://v0.dev', desc: 'Vercel AI 界面生成工具' },
+  { cat: 'AI 工具', name: 'Bolt.new', url: 'https://bolt.new', desc: 'AI 全栈应用在线生成' },
+  { cat: 'AI 工具', name: 'Cursor', url: 'https://cursor.com', desc: 'AI 原生代码编辑器' },
+  { cat: 'AI 工具', name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'AI 艺术图像生成' },
+  { cat: 'AI 工具', name: 'Runway', url: 'https://runwayml.com', desc: 'AI 视频生成与编辑平台' },
+  // 学习资源
+  { cat: '学习资源', name: 'Bilibili', url: 'https://www.bilibili.com', desc: '国内最大的学习视频社区' },
+  { cat: '学习资源', name: 'LeetCode', url: 'https://leetcode.cn', desc: '算法刷题平台，面试必备' },
+  { cat: '学习资源', name: 'freeCodeCamp', url: 'https://www.freecodecamp.org', desc: '免费编程课程，含认证证书' },
+  { cat: '学习资源', name: 'Roadmap.sh', url: 'https://roadmap.sh', desc: '开发者技能学习路线图' },
+  { cat: '学习资源', name: 'CSDIY', url: 'https://csdiy.wiki', desc: '北大同学整理的CS自学指南' },
+  { cat: '学习资源', name: 'Runoob', url: 'https://www.runoob.com', desc: '菜鸟教程，全栈入门文档' },
+  // 阅读资讯
+  { cat: '阅读资讯', name: 'Hacker News', url: 'https://news.ycombinator.com', desc: '硅谷技术创投社区' },
+  { cat: '阅读资讯', name: 'V2EX', url: 'https://www.v2ex.com', desc: '国内技术创意交流社区' },
+  { cat: '阅读资讯', name: '掘金', url: 'https://juejin.cn', desc: '前端/后端/移动开发技术分享' },
+  { cat: '阅读资讯', name: '少数派', url: 'https://sspai.com', desc: '数字生活效率指南' },
+  { cat: '阅读资讯', name: '阮一峰的网志', url: 'https://www.ruanyifeng.com/blog/', desc: '科技人文周刊，持续二十年的博客' },
+  { cat: '阅读资讯', name: 'Product Hunt', url: 'https://www.producthunt.com', desc: '每日新产品发现社区' },
+  { cat: '阅读资讯', name: 'ReadHub', url: 'https://readhub.cn', desc: '科技新闻聚合，无废话版' },
+  // 开源项目
+  { cat: '开源项目', name: 'Oh My Zsh', url: 'https://ohmyz.sh', desc: '终端配置框架，开发者标配' },
+  { cat: '开源项目', name: 'Homebrew', url: 'https://brew.sh', desc: 'macOS 包管理器' },
+  { cat: '开源项目', name: 'VS Code', url: 'https://code.visualstudio.com', desc: '微软开源代码编辑器' },
+  { cat: '开源项目', name: 'Linux Kernel', url: 'https://www.kernel.org', desc: 'Linux 内核主线仓库' },
+  { cat: '开源项目', name: 'Rust', url: 'https://www.rust-lang.org', desc: '系统级编程语言，内存安全' },
+  { cat: '开源项目', name: 'Node.js', url: 'https://nodejs.org', desc: 'JavaScript 服务端运行时' },
+  // 影音娱乐
+  { cat: '影音娱乐', name: 'YouTube', url: 'https://www.youtube.com', desc: '全球视频分享平台' },
+  { cat: '影音娱乐', name: 'Spotify', url: 'https://open.spotify.com', desc: '全球音乐流媒体服务' },
+  { cat: '影音娱乐', name: 'Apple Music', url: 'https://music.apple.com', desc: 'Apple 无损音乐服务' },
+  { cat: '影音娱乐', name: '豆瓣', url: 'https://www.douban.com', desc: '书影音评分社区' },
+  { cat: '影音娱乐', name: 'Bangumi', url: 'https://bgm.tv', desc: '番组计划，ACG 数据库' },
+];
+
+const CATS = ['全部', ...new Set(LINKS.map(l => l.cat))];
+const linksJson = JSON.stringify(LINKS);
+const catsJson = JSON.stringify(CATS);
 ---
 
-<Page title="导航 | 枕星" description="常用网站与工具收藏">
-  <section class="nav-section">
-    <div class="content-narrow">
-      <header class="section-header animate-in">
-        <h1>导航</h1>
-        <p>书签与常用入口</p>
-      </header>
-
-      <div class="nav-group">
-        <h2>开发</h2>
-        <div class="nav-grid">
-          <a href="https://github.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Github</span>
-            <span class="nav-desc">代码托管与协作</span>
-          </a>
-          <a href="https://stackoverflow.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Stack Overflow</span>
-            <span class="nav-desc">技术问答社区</span>
-          </a>
-          <a href="https://devdocs.io" target="_blank" class="nav-card card">
-            <span class="nav-domain">DevDocs</span>
-            <span class="nav-desc">多语言 API 文档聚合</span>
-          </a>
-          <a href="https://caniuse.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Can I Use</span>
-            <span class="nav-desc">浏览器兼容性查询</span>
-          </a>
-          <a href="https://codesandbox.io" target="_blank" class="nav-card card">
-            <span class="nav-domain">CodeSandbox</span>
-            <span class="nav-desc">在线代码沙盒</span>
-          </a>
-          <a href="https://npmjs.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">npm</span>
-            <span class="nav-desc">Node.js 包注册中心</span>
-          </a>
-        </div>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class="nav-body">
+    <header class="nav-topbar">
+      <div class="nav-topbar-inner">
+        <a href="/" class="nav-brand" aria-label="枕星首页">
+          <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.8" opacity="0.15"/>
+            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="0.5" opacity="0.3" stroke-dasharray="4 8" stroke-dashoffset="2"/>
+            <line x1="24" y1="6" x2="24" y2="42" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.9"/>
+            <line x1="6" y1="24" x2="42" y2="24" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.9"/>
+            <line x1="11.3" y1="11.3" x2="36.7" y2="36.7" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+            <line x1="36.7" y1="11.3" x2="11.3" y2="36.7" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+            <circle cx="24" cy="24" r="3" fill="currentColor" opacity="0.8"/>
+          </svg>
+          <span>枕星导航</span>
+        </a>
       </div>
+    </header>
 
-      <div class="nav-group">
-        <h2>设计</h2>
-        <div class="nav-grid">
-          <a href="https://www.figma.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Figma</span>
-            <span class="nav-desc">在线 UI 设计协作</span>
-          </a>
-          <a href="https://dribbble.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Dribbble</span>
-            <span class="nav-desc">设计作品灵感</span>
-          </a>
-          <a href="https://uigradients.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">uiGradients</span>
-            <span class="nav-desc">渐变色方案参考</span>
-          </a>
-          <a href="https://fonts.google.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Google Fonts</span>
-            <span class="nav-desc">开源字体库</span>
-          </a>
-          <a href="https://oklch.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">OKLCH Color</span>
-            <span class="nav-desc">感知均匀色彩空间</span>
-          </a>
-          <a href="https://heroicons.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Heroicons</span>
-            <span class="nav-desc">Tailwind 风格 SVG 图标</span>
-          </a>
+    <main class="nav-main">
+      <section class="nav-hero">
+        <h1 class="nav-hero-title">枕星导航</h1>
+        <p class="nav-hero-desc">精选书签 · 手工甄别 · 无广告无套路 · 持续更新</p>
+        <div class="nav-search-wrap">
+          <svg class="nav-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="text" class="nav-search-input" id="navSearch" placeholder="搜索站点..." autocomplete="off" />
+          <kbd class="nav-search-kbd">/</kbd>
         </div>
-      </div>
+        <div class="nav-stats" id="navStats">共收录 <strong id="linkCount">0</strong> 个站点</div>
+      </section>
 
-      <div class="nav-group">
-        <h2>工具</h2>
-        <div class="nav-grid">
-          <a href="https://transform.tools" target="_blank" class="nav-card card">
-            <span class="nav-domain">Transform Tools</span>
-            <span class="nav-desc">多格式代码互转</span>
-          </a>
-          <a href="https://www.photopea.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Photopea</span>
-            <span class="nav-desc">在线 Photoshop 替代</span>
-          </a>
-          <a href="https://squoosh.app" target="_blank" class="nav-card card">
-            <span class="nav-domain">Squoosh</span>
-            <span class="nav-desc">图片压缩与格式转换</span>
-          </a>
-          <a href="https://excalidraw.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Excalidraw</span>
-            <span class="nav-desc">手绘风格白板</span>
-          </a>
-          <a href="https://readme.so" target="_blank" class="nav-card card">
-            <span class="nav-domain">Readme.so</span>
-            <span class="nav-desc">README 快速生成</span>
-          </a>
-          <a href="https://regex101.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Regex101</span>
-            <span class="nav-desc">正则表达式调试</span>
-          </a>
-        </div>
-      </div>
+      <nav class="nav-cats" id="navCats"></nav>
+      <div class="nav-grid" id="navGrid"></div>
+    </main>
 
-      <div class="nav-group">
-        <h2>AI</h2>
-        <div class="nav-grid">
-          <a href="https://chatgpt.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">ChatGPT</span>
-            <span class="nav-desc">OpenAI 对话模型</span>
-          </a>
-          <a href="https://claude.ai" target="_blank" class="nav-card card">
-            <span class="nav-domain">Claude</span>
-            <span class="nav-desc">Anthropic 对话助手</span>
-          </a>
-          <a href="https://huggingface.co" target="_blank" class="nav-card card">
-            <span class="nav-domain">Hugging Face</span>
-            <span class="nav-desc">模型与数据集社区</span>
-          </a>
-          <a href="https://v0.dev" target="_blank" class="nav-card card">
-            <span class="nav-domain">v0</span>
-            <span class="nav-desc">Vercel AI 界面生成</span>
-          </a>
-          <a href="https://bolt.new" target="_blank" class="nav-card card">
-            <span class="nav-domain">Bolt.new</span>
-            <span class="nav-desc">AI 全栈应用生成</span>
-          </a>
-          <a href="https://cursor.com" target="_blank" class="nav-card card">
-            <span class="nav-domain">Cursor</span>
-            <span class="nav-desc">AI 代码编辑器</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-</Page>
+    <footer class="nav-footer">
+      <p>手工筛选，定期剔除失效/投毒站点 · <a href="/">返回枕星</a></p>
+    </footer>
+  </body>
+</html>
 
-<style>
-  .nav-section {
-    padding: var(--space-4xl) 0 var(--space-5xl);
+<script define:vars={{ linksJson, catsJson }}>
+  const links = JSON.parse(linksJson);
+  const cats = JSON.parse(catsJson);
+  let activeCat = '全部';
+
+  const navCats = document.getElementById('navCats');
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-cat' + (cat === '全部' ? ' active' : '');
+    btn.dataset.cat = cat;
+    btn.textContent = cat;
+    btn.addEventListener('click', () => filterCats(cat, btn));
+    navCats.appendChild(btn);
+  });
+
+  function filterCats(cat, btn) {
+    activeCat = cat;
+    document.querySelectorAll('.nav-cat').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderLinks();
   }
 
-  .section-header {
+  const navGrid = document.getElementById('navGrid');
+  const linkCount = document.getElementById('linkCount');
+  const navSearch = document.getElementById('navSearch');
+
+  function renderLinks(filter = '') {
+    const q = filter.toLowerCase().trim();
+    let filtered = activeCat === '全部' ? links : links.filter(l => l.cat === activeCat);
+    if (q) {
+      filtered = filtered.filter(l =>
+        l.name.toLowerCase().includes(q) ||
+        l.desc.toLowerCase().includes(q) ||
+        l.cat.toLowerCase().includes(q)
+      );
+    }
+    linkCount.textContent = filtered.length;
+
+    if (filtered.length === 0) {
+      navGrid.innerHTML = '<div class="nav-empty">没有匹配的站点</div>';
+      return;
+    }
+
+    navGrid.innerHTML = filtered.map(l => {
+      const safeUrl = l.url.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const safeName = l.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const safeDesc = l.desc.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const safeCat = l.cat.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="nav-card" data-cat="${safeCat}">
+        <div class="nav-card-cat">${safeCat}</div>
+        <h3 class="nav-card-name">${safeName}</h3>
+        <p class="nav-card-desc">${safeDesc}</p>
+      </a>`;
+    }).join('');
+  }
+
+  navSearch.addEventListener('input', () => renderLinks(navSearch.value));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== navSearch && document.activeElement?.tagName !== 'INPUT') {
+      e.preventDefault();
+      navSearch.focus();
+    }
+    if (e.key === 'Escape') navSearch.blur();
+  });
+
+  renderLinks();
+</script>
+
+<style is:global>
+  :root {
+    --nav-bg: #080b12;
+    --nav-surface: rgba(255,255,255,0.03);
+    --nav-border: rgba(255,255,255,0.06);
+    --nav-text: rgba(255,255,255,0.87);
+    --nav-text-secondary: rgba(255,255,255,0.5);
+    --nav-accent: #a78bfa;
+    --nav-accent-dim: rgba(167,139,250,0.12);
+    --radius: 10px;
+  }
+  .nav-body {
+    margin: 0;
+    background: var(--nav-bg);
+    color: var(--nav-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .nav-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(8,11,18,0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--nav-border);
+  }
+  .nav-topbar-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--nav-text);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.03em;
+  }
+  .nav-brand svg { color: var(--nav-accent); }
+  .nav-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .nav-hero {
     text-align: center;
-    margin-bottom: var(--space-3xl);
+    padding: 56px 0 40px;
   }
-
-  .section-header h1 {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 5vw, var(--text-4xl));
-    font-weight: var(--weight-bold);
-    color: var(--ink-100);
-    margin-bottom: var(--space-sm);
+  .nav-hero-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 8px;
     letter-spacing: 0.04em;
+    background: linear-gradient(135deg, var(--nav-accent), #f0abfc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-
-  .section-header p {
-    font-size: var(--text-lg);
-    color: var(--ink-50);
+  .nav-hero-desc {
+    color: var(--nav-text-secondary);
+    font-size: 15px;
+    margin: 0 0 32px;
   }
-
-  .nav-group {
-    margin-bottom: var(--space-3xl);
+  .nav-stats {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--nav-text-secondary);
   }
-
-  .nav-group h2 {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    color: var(--ink-90);
-    margin-bottom: var(--space-lg);
-    padding-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--ink-20);
-    position: relative;
+  .nav-stats strong { color: var(--nav-accent); }
+  .nav-search-wrap {
+    display: flex;
+    align-items: center;
+    max-width: 520px;
+    margin: 0 auto;
+    background: var(--nav-surface);
+    border: 1px solid var(--nav-border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    gap: 10px;
+    transition: border-color 0.2s;
   }
-
-  .nav-group h2::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background: var(--amber-400);
-    border-radius: 1px;
+  .nav-search-wrap:focus-within { border-color: var(--nav-accent); }
+  .nav-search-icon { color: var(--nav-text-secondary); flex-shrink: 0; }
+  .nav-search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--nav-text);
+    font-size: 15px;
   }
-
+  .nav-search-input::placeholder { color: rgba(255,255,255,0.25); }
+  .nav-search-kbd {
+    font-size: 12px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    color: var(--nav-text-secondary);
+    flex-shrink: 0;
+  }
+  .nav-cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+    justify-content: center;
+  }
+  .nav-cat {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--nav-border);
+    background: transparent;
+    color: var(--nav-text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-cat:hover { color: var(--nav-text); border-color: rgba(255,255,255,0.15); }
+  .nav-cat.active {
+    background: var(--nav-accent-dim);
+    border-color: var(--nav-accent);
+    color: var(--nav-accent);
+  }
   .nav-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
   }
-
   .nav-card {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: var(--nav-surface);
+    border: 1px solid var(--nav-border);
     text-decoration: none;
-    padding: var(--space-lg);
-    transition: all var(--duration-normal) var(--ease-out);
+    transition: all 0.2s ease;
   }
-
   .nav-card:hover {
-    border-color: var(--ink-30);
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
   }
-
-  .nav-domain {
-    font-size: var(--text-base);
-    font-weight: var(--weight-semibold);
-    color: var(--ink-90);
+  .nav-card-cat {
+    font-size: 11px;
+    color: var(--nav-accent);
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
-
-  .nav-desc {
-    font-size: var(--text-sm);
-    color: var(--ink-50);
-    line-height: var(--leading-snug);
+  .nav-card-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--nav-text);
   }
+  .nav-card-desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--nav-text-secondary);
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .nav-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 0;
+    color: var(--nav-text-secondary);
+    font-size: 15px;
+  }
+  .nav-footer {
+    text-align: center;
+    padding: 24px;
+    border-top: 1px solid var(--nav-border);
+    font-size: 13px;
+    color: var(--nav-text-secondary);
+  }
+  .nav-footer a { color: var(--nav-accent); text-decoration: none; }
 
-  @media (max-width: 480px) {
-    .nav-grid {
-      grid-template-columns: 1fr;
-    }
+  @media (max-width: 640px) {
+    .nav-main { padding: 0 16px 60px; }
+    .nav-hero-title { font-size: 28px; }
+    .nav-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+    .nav-card { padding: 14px 16px; }
+    .nav-cats { gap: 6px; }
+    .nav-cat { padding: 5px 12px; font-size: 12px; }
   }
 </style>
