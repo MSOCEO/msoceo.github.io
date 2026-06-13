@@ -5,22 +5,44 @@ const title = '枕星·星图 | 导航';
 const description = '星辰为引，链接为舟。手工甄选优质站点，无广告、无套路、无投毒。';
 
 const LINKS = [
-  // ===== AI 工具 =====
-  { cat: 'AI 工具', name: 'ChatGPT', url: 'https://chatgpt.com', desc: 'OpenAI 通用对话模型，多模态交互' },
-  { cat: 'AI 工具', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic 长文本推理与代码助手' },
-  { cat: 'AI 工具', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google 多模态 AI，深度整合生态' },
-  { cat: 'AI 工具', name: 'DeepSeek', url: 'https://chat.deepseek.com', desc: '国产开源大模型，代码与推理突出' },
-  { cat: 'AI 工具', name: 'Kimi', url: 'https://kimi.moonshot.cn', desc: '月之暗面出品，200 万字长文本' },
-  { cat: 'AI 工具', name: '通义千问', url: 'https://tongyi.aliyun.com', desc: '阿里云大模型，办公多场景覆盖' },
-  { cat: 'AI 工具', name: 'Poe', url: 'https://poe.com', desc: 'Quora 出品的多模型聚合平台' },
-  { cat: 'AI 工具', name: 'Hugging Face', url: 'https://huggingface.co', desc: '全球最大模型与数据集开源社区' },
-  { cat: 'AI 工具', name: 'Cursor', url: 'https://cursor.com', desc: 'AI 原生代码编辑器，Copilot 替代' },
-  { cat: 'AI 工具', name: 'v0', url: 'https://v0.dev', desc: 'Vercel 出品，自然语言生成 UI 界面' },
-  { cat: 'AI 工具', name: 'Bolt.new', url: 'https://bolt.new', desc: 'AI 全栈应用在线生成与部署' },
-  { cat: 'AI 工具', name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'AI 艺术图像生成，美学天花板' },
-  { cat: 'AI 工具', name: 'Runway', url: 'https://runwayml.com', desc: 'AI 视频生成与专业编辑平台' },
-  { cat: 'AI 工具', name: 'Perplexity', url: 'https://www.perplexity.ai', desc: 'AI 搜索引擎，带来源引用' },
-  { cat: 'AI 工具', name: 'Copilot', url: 'https://github.com/features/copilot', desc: 'GitHub AI 编程助手，IDE 深度集成' },
+  // ===== AI 工具·国内 =====
+  { cat: 'AI 工具·国内', name: 'DeepSeek', url: 'https://chat.deepseek.com', desc: '国产开源大模型，代码与推理突出' },
+  { cat: 'AI 工具·国内', name: 'Kimi', url: 'https://kimi.moonshot.cn', desc: '月之暗面出品，200 万字长文本' },
+  { cat: 'AI 工具·国内', name: '通义千问', url: 'https://tongyi.aliyun.com', desc: '阿里云大模型，办公多场景覆盖' },
+  { cat: 'AI 工具·国内', name: '文心一言', url: 'https://yiyan.baidu.com', desc: '百度大语言模型，多模态知识增强' },
+  { cat: 'AI 工具·国内', name: '豆包', url: 'https://www.doubao.com', desc: '字节跳动 AI 智能助手，多端覆盖' },
+  { cat: 'AI 工具·国内', name: '元宝', url: 'https://yuanbao.tencent.com', desc: '腾讯 AI 助手，深度整合微信生态' },
+  { cat: 'AI 工具·国内', name: '音潮', url: 'https://www.yinchaoyongxian.com', desc: '国产 AI 写歌，零门槛音乐创作' },
+  { cat: 'AI 工具·国内', name: 'MELO音乐', url: 'https://51melo.com', desc: '中文声韵 AI 音乐创作，小程序同步' },
+  { cat: 'AI 工具·国内', name: '蛙蛙写作', url: 'https://wawawriter.com', desc: '网文到漫剧全链路 AI 创作平台' },
+  { cat: 'AI 工具·国内', name: '笔灵AI', url: 'https://ibiling.cn', desc: '小说论文公文一站式 AI 写作' },
+  { cat: 'AI 工具·国内', name: '唐库', url: 'https://tanglib.org', desc: '百万字长篇 AI 小说自动生成' },
+  { cat: 'AI 工具·国内', name: '万兴喵影', url: 'https://miao.wondershare.cn', desc: 'AI 全流程视频剪辑，字幕特效生成' },
+  { cat: 'AI 工具·国内', name: '可灵AI', url: 'https://klingai.kuaishou.com', desc: '快手 AI 视频与图片创意生成' },
+  { cat: 'AI 工具·国内', name: '即梦', url: 'https://jimeng.jianying.com', desc: '字节 AI 图片视频生成，局部编辑' },
+  { cat: 'AI 工具·国内', name: '妙境 Miora', url: 'https://miora.design', desc: '腾讯创意 AI 工作室，多模态设计' },
+
+  // ===== AI 工具·国外 =====
+  { cat: 'AI 工具·国外', name: 'ChatGPT', url: 'https://chatgpt.com', desc: 'OpenAI 通用对话模型，多模态交互' },
+  { cat: 'AI 工具·国外', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic 长文本推理与代码助手' },
+  { cat: 'AI 工具·国外', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google 多模态 AI，深度整合生态' },
+  { cat: 'AI 工具·国外', name: 'Poe', url: 'https://poe.com', desc: 'Quora 出品的多模型聚合平台' },
+  { cat: 'AI 工具·国外', name: 'Hugging Face', url: 'https://huggingface.co', desc: '全球最大模型与数据集开源社区' },
+  { cat: 'AI 工具·国外', name: 'Cursor', url: 'https://cursor.com', desc: 'AI 原生代码编辑器，Copilot 替代' },
+  { cat: 'AI 工具·国外', name: 'v0', url: 'https://v0.dev', desc: 'Vercel 出品，自然语言生成 UI 界面' },
+  { cat: 'AI 工具·国外', name: 'Bolt.new', url: 'https://bolt.new', desc: 'AI 全栈应用在线生成与部署' },
+  { cat: 'AI 工具·国外', name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'AI 艺术图像生成，美学天花板' },
+  { cat: 'AI 工具·国外', name: 'Runway', url: 'https://runwayml.com', desc: 'AI 视频生成与专业编辑平台' },
+  { cat: 'AI 工具·国外', name: 'Perplexity', url: 'https://www.perplexity.ai', desc: 'AI 搜索引擎，带来源引用' },
+  { cat: 'AI 工具·国外', name: 'Copilot', url: 'https://github.com/features/copilot', desc: 'GitHub AI 编程助手，IDE 深度集成' },
+  { cat: 'AI 工具·国外', name: 'Suno', url: 'https://suno.ai', desc: 'AI 文本转音乐，全球最流行' },
+  { cat: 'AI 工具·国外', name: 'Udio', url: 'https://udio.com', desc: '高品质 AI 音乐生成平台' },
+  { cat: 'AI 工具·国外', name: 'AIVA', url: 'https://www.aiva.ai', desc: 'AI 影视配乐与管弦乐作曲' },
+  { cat: 'AI 工具·国外', name: 'Sonauto', url: 'https://sonauto.ai', desc: '免费无限 AI 音乐生成，免版税' },
+  { cat: 'AI 工具·国外', name: 'Gamma', url: 'https://gamma.app', desc: 'AI 生成 PPT、文档和网页，设计感强' },
+  { cat: 'AI 工具·国外', name: 'Grok', url: 'https://x.ai', desc: 'xAI 出品，X/Twitter 实时深度集成' },
+  { cat: 'AI 工具·国外', name: 'Mistral', url: 'https://chat.mistral.ai', desc: '法国顶级开源大模型，多语言能力' },
+  { cat: 'AI 工具·国外', name: 'NotebookLM', url: 'https://notebooklm.google.com', desc: 'Google AI 知识库，文档问答与简报' },
 
   // ===== 开发技术 =====
   { cat: '开发技术', name: 'GitHub', url: 'https://github.com', desc: '全球最大代码托管与协作平台' },
@@ -219,12 +241,16 @@ const catsJson = JSON.stringify(CATS);
         </div>
       </div>
 
-      <div class="nav-stats" id="navStats">
-        <span>已收录 <strong id="linkCount">0</strong> 颗星</span>
-        <span class="nav-stats-dot">·</span>
-        <span>共 <strong id="catCount">0</strong> 个星座</span>
-        <span class="nav-stats-dot">·</span>
-        <span id="navToday"></span>
+      <div class="nav-hotwords" id="navHotwords">
+        <span class="nav-hotwords-label">热门搜索：</span>
+        <button class="nav-hotword" data-kw="DeepSeek">DeepSeek</button>
+        <button class="nav-hotword" data-kw="AI音乐">AI音乐</button>
+        <button class="nav-hotword" data-kw="写小说">写小说</button>
+        <button class="nav-hotword" data-kw="视频剪辑">视频剪辑</button>
+        <button class="nav-hotword" data-kw="设计工具">设计工具</button>
+        <button class="nav-hotword" data-kw="编程">编程</button>
+        <button class="nav-hotword" data-kw="开源项目">开源项目</button>
+        <button class="nav-hotword" data-kw="学习资源">学习资源</button>
       </div>
     </section>
 
@@ -233,6 +259,13 @@ const catsJson = JSON.stringify(CATS);
 
     <!-- 分类星座 -->
     <nav class="nav-cats" id="navCats"></nav>
+
+    <!-- 收录统计 -->
+    <div class="nav-stats" id="navStats">
+      <span>已收录 <strong id="linkCount">0</strong> 颗星</span>
+      <span class="nav-stats-dot">·</span>
+      <span>共 <strong id="catCount">0</strong> 个星座</span>
+    </div>
 
     <!-- 星图网格 -->
     <div class="nav-grid" id="navGrid"></div>
@@ -272,7 +305,8 @@ const catsJson = JSON.stringify(CATS);
 
   // ===== 分类图标映射 =====
   const catEmoji = {
-    'AI 工具':    '\u{1F916} ',
+    'AI 工具·国内': '\u{1F1E8}\u{1F1F3} ',
+    'AI 工具·国外': '\u{1F30F} ',
     '开发技术':   '\u{1F4BB} ',
     '设计创意':   '\u{1F3A8} ',
     '常用工具':   '\u{1F527} ',
@@ -302,7 +336,8 @@ const catsJson = JSON.stringify(CATS);
 
   // ===== 卡片主导色（左色条 + hover 文字色） =====
   const catAccent = {
-    'AI 工具':    '#6366f1',
+    'AI 工具·国内': '#ef4444',
+    'AI 工具·国外': '#6366f1',
     '开发技术':   '#3b82f6',
     '设计创意':   '#ec4899',
     '常用工具':   '#10b981',
@@ -346,9 +381,15 @@ const catsJson = JSON.stringify(CATS);
       const faviconHtml = hostname
         ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=64" class="nav-card-icon" alt="" loading="lazy" width="36" height="36" onerror="this.style.display='none'">`
         : '';
+      let rankHtml = '';
+      const n = i + 1;
+      if (n === 1) rankHtml = '<span class="nav-card-rank rank-1" title="北辰·一等星">北辰</span>';
+      else if (n === 2) rankHtml = '<span class="nav-card-rank rank-2" title="启明·二等星">启明</span>';
+      else if (n === 3) rankHtml = '<span class="nav-card-rank rank-3" title="长庚·三等星">长庚</span>';
+      else rankHtml = `<span class="nav-card-rank rank-num">${n}</span>`;
       return `
       <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;--card-accent:${catAccent[l.cat] || '#6366f1'}">
-        ${faviconHtml}
+        ${rankHtml}${faviconHtml}
         <div class="nav-card-body">
           <div class="nav-card-head">
             <h3 class="nav-card-name">${esc(l.name)}</h3>
@@ -413,23 +454,58 @@ const catsJson = JSON.stringify(CATS);
     </a>
   `).join('');
 
-  // ===== 每日问候 =====
+  // ===== 搜索热词点击 =====
+  document.querySelectorAll('.nav-hotword').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const kw = btn.dataset.kw;
+      navSearch.value = kw;
+      // switch to web search mode
+      searchEngine = 'web';
+      engineLabels.forEach(e => e.classList.remove('active'));
+      const webLabel = document.querySelector('.nav-engine-label[data-engine="web"]');
+      if (webLabel) webLabel.classList.add('active');
+      document.getElementById('navSearch').placeholder = '搜索星图...';
+      renderLinks(kw);
+    });
+  });
+
+  // ===== 顶栏时间与天气 =====
   (function() {
-    const today = new Date();
-    const h = today.getHours();
-    const w = today.getDay();
     const weekNames = ['日', '一', '二', '三', '四', '五', '六'];
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    let greeting;
-    if (h < 7) greeting = '夜深了，注意休息';
-    else if (h < 12) greeting = '早上好，能量满满';
-    else if (h < 14) greeting = '午后时光，稍作停留';
-    else if (h < 18) greeting = '下午好，效率拉满';
-    else if (h < 22) greeting = '晚上好，松弛有度';
-    else greeting = '夜深人静，灵感涌现';
-    document.getElementById('navToday').textContent = `${greeting}  ${month}月${day}日 星期${weekNames[w]}`;
-    document.getElementById('navTopbarDate').textContent = `${month}月${day}日 星期${weekNames[w]}`;
+    let weatherEmoji = '';
+    let weatherTemp = '';
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function updateTopbar() {
+      const now = new Date();
+      const h = pad(now.getHours());
+      const m = pad(now.getMinutes());
+      const timeStr = `${h}:${m}`;
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const w = now.getDay();
+
+      let parts = [`${timeStr}`];
+      if (weatherEmoji && weatherTemp) {
+        parts.push(`${weatherEmoji} ${weatherTemp}`);
+      }
+      parts.push(`${month}月${day}日 星期${weekNames[w]}`);
+      document.getElementById('navTopbarDate').textContent = parts.join(' · ');
+    }
+
+    // fetch weather
+    fetch('https://wttr.in/?format=%C+%t')
+      .then(res => { if (!res.ok) throw new Error('fetch failed'); return res.text(); })
+      .then(text => {
+        const m = text.trim().match(/^(.+?)\s+([+-]?\d+°C)$/);
+        if (m) { weatherEmoji = m[1]; weatherTemp = m[2]; }
+        updateTopbar();
+      })
+      .catch(() => { updateTopbar(); });
+
+    updateTopbar();
+    setInterval(updateTopbar, 30000);
   })();
 
   renderLinks();
@@ -628,7 +704,8 @@ const catsJson = JSON.stringify(CATS);
     color: var(--nav-text-secondary);
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
-    margin-bottom: 36px;
+    margin-bottom: 16px;
+    margin-top: -12px;
   }
   .nav-stats strong { color: var(--nav-accent); font-weight: 600; }
   .nav-stats-dot { margin: 0 10px; opacity: 0.4; }
@@ -852,6 +929,37 @@ const catsJson = JSON.stringify(CATS);
   }
   .nav-search-input::placeholder { color: var(--nav-search-placeholder); }
 
+  /* 搜索热词 */
+  .nav-hotwords {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .nav-hotwords-label {
+    font-size: 12px;
+    color: var(--nav-text-secondary);
+    opacity: 0.6;
+  }
+  .nav-hotword {
+    font-size: 12px;
+    padding: 4px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--nav-border);
+    background: transparent;
+    color: var(--nav-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .nav-hotword:hover {
+    border-color: var(--nav-accent);
+    color: var(--nav-accent);
+    background: var(--nav-accent-pale);
+  }
+
   /* ===== 分类标签 ===== */
   .nav-cats {
     display: flex;
@@ -989,6 +1097,39 @@ const catsJson = JSON.stringify(CATS);
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* 星辰等级排行 */
+  .nav-card-rank {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 0 0 6px 0;
+    line-height: 1.4;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .rank-1 {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(245,158,11,0.4);
+  }
+  .rank-2 {
+    background: linear-gradient(135deg, #94a3b8, #64748b);
+    color: #fff;
+    box-shadow: 0 0 6px rgba(148,163,184,0.3);
+  }
+  .rank-3 {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: #fff;
+    box-shadow: 0 0 6px rgba(217,119,6,0.3);
+  }
+  .rank-num {
+    background: rgba(99,102,241,0.12);
+    color: var(--nav-accent);
   }
 
   .nav-empty {
