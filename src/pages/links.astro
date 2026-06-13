@@ -59,7 +59,6 @@ const LINKS = [
   { cat: '开发技术', name: 'Astro', url: 'https://astro.build', desc: '内容型网站首选框架，零 JS 默认' },
   { cat: '开发技术', name: 'Tailwind CSS', url: 'https://tailwindcss.com', desc: '实用优先 CSS 框架，快速构建' },
   { cat: '开发技术', name: 'Docker Hub', url: 'https://hub.docker.com', desc: '容器镜像仓库，一键部署' },
-  { cat: '开发技术', name: 'Vercel', url: 'https://vercel.com', desc: '前端部署与 Serverless 平台' },
   { cat: '开发技术', name: 'Cloudflare', url: 'https://www.cloudflare.com', desc: 'CDN/DNS/Workers 全栈云平台' },
   { cat: '开发技术', name: 'Replit', url: 'https://replit.com', desc: '在线协作 IDE，浏览器写全栈' },
 
@@ -162,6 +161,20 @@ const LINKS = [
   { cat: '生活服务', name: 'Pexels 视频', url: 'https://www.pexels.com/videos/', desc: '免费高清视频素材，商用可' },
   { cat: '生活服务', name: 'WikiHow', url: 'https://www.wikihow.com', desc: '万事指南，图文生活百科' },
   { cat: '生活服务', name: 'AlternativeTo', url: 'https://alternativeto.net', desc: '软件替代品搜索，找最佳同类' },
+
+  // ===== 主机服务 =====
+  { cat: '主机服务', name: '雨云', url: 'https://www.rainyun.com', desc: '轻量云服务器，低价高带宽，学生友好' },
+  { cat: '主机服务', name: '樱花云', url: 'https://sakuravps.com', desc: '日本 VPS，东亚线路稳定低延迟' },
+  { cat: '主机服务', name: '萤光云', url: 'https://www.ygcloud.com', desc: '高性价比云主机，全球 40+ 节点' },
+  { cat: '主机服务', name: 'LightNode', url: 'https://www.lightnode.com', desc: '按小时计费 VPS，开箱即用' },
+  { cat: '主机服务', name: '搬瓦工', url: 'https://bandwagonhost.com', desc: 'CN2 GIA 优化线路，建站老牌' },
+  { cat: '主机服务', name: 'DMIT', url: 'https://www.dmit.io', desc: '高端 CN2 GIA 线路，稳定建站首选' },
+  { cat: '主机服务', name: 'Hostinger', url: 'https://www.hostinger.com', desc: '全球建站生态，WordPress 友好' },
+  { cat: '主机服务', name: 'UCloud', url: 'https://www.ucloud.cn', desc: '中立云服务商，游戏视频行业经验' },
+  { cat: '主机服务', name: 'Vercel', url: 'https://vercel.com', desc: '前端部署与 Serverless 平台' },
+  { cat: '主机服务', name: 'Netlify', url: 'https://www.netlify.com', desc: '静态站点托管与 Jamstack 部署' },
+  { cat: '主机服务', name: 'Cloudflare Pages', url: 'https://pages.cloudflare.com', desc: 'Cloudflare 边缘静态站点托管' },
+  { cat: '主机服务', name: 'GitHub Pages', url: 'https://pages.github.com', desc: '免费静态站点托管，Git 驱动' },
 ];
 
 const CATS = ['全部', ...new Set(LINKS.map(l => l.cat))];
@@ -185,7 +198,11 @@ const catsJson = JSON.stringify(CATS);
   <!-- 顶栏 -->
   <header class="nav-topbar">
     <div class="nav-topbar-inner">
-      <span class="nav-topbar-title">枕星</span>
+      <a href="/" class="nav-topbar-title" id="navHomeLink" title="拖拽我到浏览器书签栏，设为首页" draggable="true">枕星<svg class="nav-home-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="currentColor" stroke-width="1.5"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="1.5"/></svg></a>
+      <button class="nav-bookmark-btn" id="navBookmarkBtn" title="收藏本站 (Ctrl+D)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>收藏</span>
+      </button>
       <span class="nav-topbar-date" id="navTopbarDate"></span>
       <button class="nav-theme-btn" id="themeToggle" aria-label="切换主题" title="切换深色/浅色主题">
         <svg class="nav-theme-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -316,6 +333,7 @@ const catsJson = JSON.stringify(CATS);
     '影音娱乐':   '\u{1F3AC} ',
     '效率办公':   '\u{26A1} ',
     '生活服务':   '\u{1F3E0} ',
+    '主机服务':   '\u{2601}\u{FE0F} ',
   };
 
   cats.forEach(cat => {
@@ -347,6 +365,7 @@ const catsJson = JSON.stringify(CATS);
     '影音娱乐':   '#ef4444',
     '效率办公':   '#14b8a6',
     '生活服务':   '#84cc16',
+    '主机服务':   '#06b6d4',
   };
 
   // ===== 渲染 =====
@@ -609,6 +628,38 @@ const catsJson = JSON.stringify(CATS);
     color: var(--nav-text);
     letter-spacing: 0.06em;
     font-family: var(--font-mono);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-home-icon {
+    opacity: 0.55;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  .nav-topbar-title:hover .nav-home-icon { opacity: 1; }
+
+  .nav-bookmark-btn {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--nav-border);
+    background: transparent;
+    color: var(--nav-text-secondary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: inherit;
+    transition: all 0.2s;
+    margin-left: 12px;
+  }
+  .nav-bookmark-btn:hover {
+    border-color: var(--nav-accent);
+    color: var(--nav-accent);
+    background: var(--nav-accent-pale);
   }
 
   .nav-topbar-date {
@@ -1270,6 +1321,18 @@ const catsJson = JSON.stringify(CATS);
     window.addEventListener('resize', resize);
     requestAnimationFrame(draw);
   })();
+
+  // ===== 收藏本站 =====
+  document.getElementById('navBookmarkBtn').addEventListener('click', () => {
+    if (window.external && 'AddFavorite' in window.external) {
+      window.external.AddFavorite(location.href, '枕星·星图');
+    } else {
+      const btn = document.getElementById('navBookmarkBtn');
+      const origHTML = btn.innerHTML;
+      btn.innerHTML = '<span>请按 Ctrl+D</span>';
+      setTimeout(() => { btn.innerHTML = origHTML; }, 2500);
+    }
+  });
 
   // ===== 主题切换 =====
   (function() {
