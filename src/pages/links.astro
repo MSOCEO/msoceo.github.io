@@ -276,24 +276,19 @@ const catsJson = JSON.stringify(CATS);
     renderLinks();
   }
 
-  // ===== 卡片发光色 =====
-  const catGlowMap = {
-    'AI 工具':    ['#a78bfa', '#f0abfc'],
-    '开发技术':   ['#7dd3fc', '#38bdf8'],
-    '设计创意':   ['#f0abfc', '#f9a8d4'],
-    '常用工具':   ['#34d399', '#6ee7b7'],
-    '学习资源':   ['#fbbf24', '#fcd34d'],
-    '阅读资讯':   ['#fb923c', '#fdba74'],
-    '开源项目':   ['#22d3ee', '#67e8f9'],
-    '影音娱乐':   ['#a78bfa', '#c084fc'],
-    '效率办公':   ['#818cf8', '#a5b4fc'],
-    '生活服务':   ['#f472b6', '#f9a8d4'],
+  // ===== 卡片主导色（左色条 + hover 文字色） =====
+  const catAccent = {
+    'AI 工具':    '#6366f1',
+    '开发技术':   '#3b82f6',
+    '设计创意':   '#ec4899',
+    '常用工具':   '#10b981',
+    '学习资源':   '#f59e0b',
+    '阅读资讯':   '#f97316',
+    '开源项目':   '#8b5cf6',
+    '影音娱乐':   '#ef4444',
+    '效率办公':   '#14b8a6',
+    '生活服务':   '#84cc16',
   };
-
-  function getGlow(cat) {
-    const g = catGlowMap[cat] || ['#a78bfa', '#7dd3fc'];
-    return `--card-glow1:${g[0]};--card-glow2:${g[1]}`;
-  }
 
   // ===== 渲染 =====
   const navGrid = document.getElementById('navGrid');
@@ -328,7 +323,7 @@ const catsJson = JSON.stringify(CATS);
         ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=48" class="nav-card-icon" alt="" loading="lazy" width="24" height="24" onerror="this.style.display='none'">`
         : '';
       return `
-      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;${getGlow(l.cat)}">
+      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;--card-accent:${catAccent[l.cat] || '#6366f1'}">
         <div class="nav-card-top">
           ${faviconHtml}
           <span class="nav-card-cat">${esc(l.cat)}</span>
@@ -372,16 +367,16 @@ const catsJson = JSON.stringify(CATS);
 
   // ===== 精选推荐 =====
   const featuredLinks = [
-    { name: 'ChatGPT', url: 'https://chatgpt.com', desc: '最强 AI 对话', icon: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64', grad: ['#10a37f', '#34d399'], badge: '趋势' },
-    { name: 'GitHub', url: 'https://github.com', desc: '代码托管圣地', icon: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', grad: ['#f0f6fc', '#8b949e'], badge: '必备' },
-    { name: 'Figma', url: 'https://www.figma.com', desc: '设计协作工具', icon: 'https://www.google.com/s2/favicons?domain=figma.com&sz=64', grad: ['#a259ff', '#ff7262'], badge: '推荐' },
-    { name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: 'https://www.google.com/s2/favicons?domain=v2ex.com&sz=64', grad: ['#6366f1', '#a78bfa'], badge: '热门' },
+    { name: 'ChatGPT', url: 'https://chatgpt.com', desc: '最强 AI 对话', icon: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64', accent: '#10b981', badge: '趋势' },
+    { name: 'GitHub', url: 'https://github.com', desc: '代码托管圣地', icon: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', accent: '#6366f1', badge: '必备' },
+    { name: 'Figma', url: 'https://www.figma.com', desc: '设计协作工具', icon: 'https://www.google.com/s2/favicons?domain=figma.com&sz=64', accent: '#ec4899', badge: '推荐' },
+    { name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: 'https://www.google.com/s2/favicons?domain=v2ex.com&sz=64', accent: '#f59e0b', badge: '热门' },
   ];
 
   const navFeatured = document.getElementById('navFeatured');
   navFeatured.innerHTML = featuredLinks.map((f, i) => `
     <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer" class="nav-featured-card"
-       style="--feat-grad1:${f.grad[0]};--feat-grad2:${f.grad[1]};animation-delay:${i * 100 + 100}ms"
+       style="--feat-accent:${f.accent};animation-delay:${i * 100 + 100}ms"
        onmousemove="this.style.setProperty('--mx', ((event.clientX-this.getBoundingClientRect().left)/this.offsetWidth*100)+'%');this.style.setProperty('--my', ((event.clientY-this.getBoundingClientRect().top)/this.offsetHeight*100)+'%')">
       <img src="${f.icon}" class="nav-featured-icon" alt="" loading="lazy" width="36" height="36" onerror="this.style.display='none'">
       <div class="nav-featured-info">
@@ -426,16 +421,16 @@ const catsJson = JSON.stringify(CATS);
 
 <style is:global>
   :root {
-    --nav-bg: #06080d;
-    --nav-surface: rgba(255,255,255,0.025);
-    --nav-surface-hover: rgba(255,255,255,0.05);
-    --nav-border: rgba(255,255,255,0.06);
-    --nav-border-hover: rgba(255,255,255,0.12);
-    --nav-text: rgba(255,255,255,0.9);
-    --nav-text-secondary: rgba(255,255,255,0.45);
-    --nav-accent: #a78bfa;
-    --nav-accent-glow: rgba(167,139,250,0.2);
-    --nav-accent-pale: rgba(167,139,250,0.08);
+    --nav-bg: #f3f5f7;
+    --nav-surface: #ffffff;
+    --nav-surface-hover: #f8f9fc;
+    --nav-border: rgba(0,0,0,0.06);
+    --nav-border-hover: rgba(0,0,0,0.12);
+    --nav-text: #1a1a2e;
+    --nav-text-secondary: #6b7280;
+    --nav-accent: #6366f1;
+    --nav-accent-glow: rgba(99,102,241,0.12);
+    --nav-accent-pale: rgba(99,102,241,0.06);
     --radius: 12px;
     --font-mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
   }
@@ -457,6 +452,7 @@ const catsJson = JSON.stringify(CATS);
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    opacity: 0;
   }
 
   /* ===== 顶栏 ===== */
@@ -464,7 +460,7 @@ const catsJson = JSON.stringify(CATS);
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(6,8,13,0.8);
+    background: rgba(255,255,255,0.72);
     backdrop-filter: saturate(180%) blur(16px);
     -webkit-backdrop-filter: saturate(180%) blur(16px);
     border-bottom: 1px solid var(--nav-border);
@@ -504,23 +500,27 @@ const catsJson = JSON.stringify(CATS);
     padding: 60px 0 44px;
   }
   .nav-constellation {
-    display: inline-block;
+    display: block;
+    text-align: center;
     margin-bottom: 20px;
     color: var(--nav-accent);
-    opacity: 0.65;
+    opacity: 0.55;
     animation: constellation-pulse 4s ease-in-out infinite;
   }
   @keyframes constellation-pulse {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.03); }
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.03); }
   }
   .nav-hero-title {
-    font-size: 42px;
+    display: block;
+    text-align: center;
+    width: 100%;
+    font-size: 48px;
     font-weight: 700;
     margin: 0 0 10px;
     letter-spacing: 0.06em;
     font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", "Songti SC", serif;
-    background: linear-gradient(135deg, #a78bfa 0%, #7dd3fc 25%, #f0abfc 55%, #a78bfa 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #3b82f6 30%, #ec4899 65%, #6366f1 100%);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -532,18 +532,17 @@ const catsJson = JSON.stringify(CATS);
     50% { background-position: 100% 50%; }
   }
   .nav-hero-desc {
+    display: block;
     text-align: center;
-    font-size: 15px;
-    margin: 0 0 36px;
-    letter-spacing: 0.04em;
+    width: 100%;
+    font-size: 18px;
+    margin: 0 auto 36px;
+    letter-spacing: 0.05em;
     font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", serif;
-    background: linear-gradient(90deg, rgba(167,139,250,0.9), rgba(129,230,217,0.7));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #4b5563;
   }
   .nav-stats {
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--nav-text-secondary);
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
@@ -567,42 +566,28 @@ const catsJson = JSON.stringify(CATS);
     padding: 18px 22px;
     border-radius: var(--radius);
     background: var(--nav-surface);
-    border: 1px solid transparent;
+    border: 1px solid var(--nav-border);
+    border-left: 3px solid var(--feat-accent, #6366f1);
     text-decoration: none;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: feat-in 0.6s ease-out both;
     -webkit-tap-highlight-color: transparent;
   }
-  .nav-featured-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, var(--feat-grad1), var(--feat-grad2), var(--feat-grad1));
-    background-size: 300% 300%;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: feat-border 3s linear infinite;
-    opacity: 0;
-    transition: opacity 0.35s;
-  }
-  .nav-featured-card:hover::before { opacity: 1; }
   .nav-featured-card::after {
     content: '';
     position: absolute;
     inset: -20px;
-    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(167,139,250,0.12) 0%, transparent 50%);
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(99,102,241,0.08) 0%, transparent 50%);
     opacity: 0;
     transition: opacity 0.35s;
     pointer-events: none;
   }
   .nav-featured-card:hover::after { opacity: 1; }
   .nav-featured-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(100,80,200,0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+    border-color: var(--feat-accent, #6366f1);
   }
   @keyframes feat-in {
     from { opacity: 0; transform: translateY(12px); }
@@ -761,49 +746,34 @@ const catsJson = JSON.stringify(CATS);
   /* ===== 星图网格 ===== */
   .nav-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 12px;
   }
 
   .nav-card {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding: 20px 22px;
+    gap: 4px;
+    padding: 22px 24px;
     border-radius: var(--radius);
     background: var(--nav-surface);
     border: 1px solid var(--nav-border);
+    border-left: 3px solid var(--card-accent, var(--nav-accent));
     text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: card-fade-in 0.5s ease-out both, card-float 6s ease-in-out infinite;
-    animation-delay: var(--card-delay, 0ms), calc(var(--card-delay, 0ms) + 0.3s);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: card-fade-in 0.5s ease-out both;
+    animation-delay: var(--card-delay, 0ms);
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
   }
-  .nav-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, var(--card-glow1, #a78bfa), var(--card-glow2, #7dd3fc), var(--card-glow1, #a78bfa));
-    background-size: 300% 300%;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: card-border-sweep 4s linear infinite;
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-  .nav-card:hover::before { opacity: 1; }
   .nav-card::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(167,139,250,0.4) 0%, transparent 60%);
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(99,102,241,0.18) 0%, transparent 60%);
     opacity: 0;
     transform: scale(0);
     transition: none;
@@ -817,65 +787,56 @@ const catsJson = JSON.stringify(CATS);
   }
   .nav-card:hover {
     background: var(--nav-surface-hover);
-    border-color: transparent;
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 44px rgba(100,80,200,0.18), 0 0 0 1px rgba(167,139,250,0.15) inset;
+    border-color: var(--card-accent, var(--nav-accent));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
   }
   .nav-card:hover .nav-card-name {
-    color: var(--nav-accent);
+    color: var(--card-accent, var(--nav-accent));
   }
 
   @keyframes card-fade-in {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes card-border-sweep {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  @keyframes card-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-2px); }
-  }
 
   .nav-card-top {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 2px;
+    gap: 10px;
+    margin-bottom: 4px;
   }
   .nav-card-icon {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     flex-shrink: 0;
-    border-radius: 4px;
+    border-radius: 5px;
     transition: transform 0.25s ease;
   }
   .nav-card:hover .nav-card-icon {
-    transform: scale(1.1);
+    transform: scale(1.08);
   }
   .nav-card-cat {
-    font-size: 10.5px;
-    color: var(--nav-accent);
-    opacity: 0.6;
+    font-size: 11px;
+    color: var(--card-accent, var(--nav-accent));
+    opacity: 0.5;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-family: var(--font-mono);
   }
   .nav-card-name {
-    margin: 4px 0 0;
-    font-size: 17px;
+    margin: 6px 0 0;
+    font-size: 19px;
     font-weight: 700;
     color: var(--nav-text);
     letter-spacing: 0.02em;
     transition: color 0.25s;
   }
   .nav-card-desc {
-    margin: 5px 0 0;
-    font-size: 13px;
+    margin: 6px 0 0;
+    font-size: 14px;
     color: var(--nav-text-secondary);
-    line-height: 1.55;
+    line-height: 1.6;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -901,7 +862,7 @@ const catsJson = JSON.stringify(CATS);
     padding: 20px;
     border-top: 1px solid var(--nav-border);
     font-size: 12px;
-    color: rgba(255,255,255,0.2);
+    color: #94a3b8;
     font-family: var(--font-mono);
     letter-spacing: 0.03em;
   }
