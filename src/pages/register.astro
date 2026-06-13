@@ -1,5 +1,6 @@
 ---
 import AuthLayout from '../layouts/AuthLayout.astro';
+import AuthLogo from '../components/AuthLogo.astro';
 
 const title = '注册 | 枕星';
 const description = '加入枕星，开始记录你的代码与日常';
@@ -7,47 +8,25 @@ const description = '加入枕星，开始记录你的代码与日常';
 
 <AuthLayout title={title} description={description}>
   <div class="auth-card animate-in">
-    <div class="card-accent">
-      <h1>加入枕星</h1>
-      <p class="subtitle">开始记录代码与日常的缝隙</p>
-    </div>
+    <AuthLogo />
 
     <form id="register-form" class="auth-form">
       <div class="form-group">
         <label for="username">用户名</label>
-        <input
-          type="text"
-          id="username"
-          class="input"
-          placeholder="你的笔名"
-          required
-          autocomplete="username"
-        />
+        <input type="text" id="username" class="input" placeholder="你的笔名"
+               required autocomplete="username" />
       </div>
 
       <div class="form-group">
         <label for="email">邮箱</label>
-        <input
-          type="email"
-          id="email"
-          class="input"
-          placeholder="your@email.com"
-          required
-          autocomplete="email"
-        />
+        <input type="email" id="email" class="input" placeholder="your@email.com"
+               required autocomplete="email" />
       </div>
 
       <div class="form-group">
         <label for="password">密码</label>
-        <input
-          type="password"
-          id="password"
-          class="input"
-          placeholder="至少 8 位字符"
-          required
-          minlength="8"
-          autocomplete="new-password"
-        />
+        <input type="password" id="password" class="input" placeholder="至少 8 位字符"
+               required minlength="8" autocomplete="new-password" />
       </div>
 
       <button type="submit" class="btn btn-primary btn-lg">
@@ -64,9 +43,7 @@ const description = '加入枕星，开始记录你的代码与日常';
       通过 GitHub 注册（即将支持）
     </button>
 
-    <p class="footer-text">
-      已有账号？<a href="/login">立即登录</a>
-    </p>
+    <p class="footer-text">已有账号？<a href="/login">立即登录</a></p>
   </div>
 </AuthLayout>
 
@@ -81,7 +58,6 @@ const description = '加入枕星，开始记录你的代码与日常';
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn.loading .btn-label { display: none; }
   .btn.loading .btn-spinner { display: block; }
-
   .form-error {
     margin-top: var(--space-md);
     padding: var(--space-sm) var(--space-md);
@@ -91,26 +67,18 @@ const description = '加入枕星，开始记录你的代码与日常';
     font-size: var(--text-sm);
     color: var(--error);
   }
-
-  .btn-oauth {
-    width: 100%;
-    margin-top: 0;
-  }
+  .btn-oauth { width: 100%; margin-top: 0; }
 </style>
 
 <script>
   const form = document.getElementById('register-form');
   const submitBtn = form.querySelector('button[type="submit"]');
   const errorMsg = document.getElementById('error-msg');
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     submitBtn.classList.add('loading');
     errorMsg.hidden = true;
-
-    // TODO: Replace with real Supabase auth
     await new Promise(r => setTimeout(r, 800));
-
     errorMsg.hidden = false;
     errorMsg.textContent = '注册服务正在搭建中，请稍后再试。';
     submitBtn.classList.remove('loading');

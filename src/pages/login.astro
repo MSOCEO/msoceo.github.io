@@ -1,5 +1,6 @@
 ---
 import AuthLayout from '../layouts/AuthLayout.astro';
+import AuthLogo from '../components/AuthLogo.astro';
 
 const title = '登录 | 枕星';
 const description = '登录枕星，继续你的创作之旅';
@@ -7,34 +8,19 @@ const description = '登录枕星，继续你的创作之旅';
 
 <AuthLayout title={title} description={description}>
   <div class="auth-card animate-in">
-    <div class="card-accent">
-      <h1>欢迎回来</h1>
-      <p class="subtitle">登录枕星，继续你的创作</p>
-    </div>
+    <AuthLogo />
 
     <form id="login-form" class="auth-form">
       <div class="form-group">
         <label for="email">邮箱</label>
-        <input
-          type="email"
-          id="email"
-          class="input"
-          placeholder="your@email.com"
-          required
-          autocomplete="email"
-        />
+        <input type="email" id="email" class="input" placeholder="your@email.com"
+               required autocomplete="email" />
       </div>
 
       <div class="form-group">
         <label for="password">密码</label>
-        <input
-          type="password"
-          id="password"
-          class="input"
-          placeholder="输入密码"
-          required
-          autocomplete="current-password"
-        />
+        <input type="password" id="password" class="input" placeholder="输入密码"
+               required autocomplete="current-password" />
       </div>
 
       <button type="submit" class="btn btn-primary btn-lg">
@@ -51,9 +37,7 @@ const description = '登录枕星，继续你的创作之旅';
       通过 GitHub 登录（即将支持）
     </button>
 
-    <p class="footer-text">
-      还没有账号？<a href="/register">立即注册</a>
-    </p>
+    <p class="footer-text">还没有账号？<a href="/register">立即注册</a></p>
   </div>
 </AuthLayout>
 
@@ -68,7 +52,6 @@ const description = '登录枕星，继续你的创作之旅';
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn.loading .btn-label { display: none; }
   .btn.loading .btn-spinner { display: block; }
-
   .form-error {
     margin-top: var(--space-md);
     padding: var(--space-sm) var(--space-md);
@@ -78,26 +61,18 @@ const description = '登录枕星，继续你的创作之旅';
     font-size: var(--text-sm);
     color: var(--error);
   }
-
-  .btn-oauth {
-    width: 100%;
-    margin-top: 0;
-  }
+  .btn-oauth { width: 100%; margin-top: 0; }
 </style>
 
 <script>
   const form = document.getElementById('login-form');
   const submitBtn = form.querySelector('button[type="submit"]');
   const errorMsg = document.getElementById('error-msg');
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     submitBtn.classList.add('loading');
     errorMsg.hidden = true;
-
-    // TODO: Replace with real Supabase auth
     await new Promise(r => setTimeout(r, 800));
-
     errorMsg.hidden = false;
     errorMsg.textContent = '认证服务正在搭建中，请稍后再试。';
     submitBtn.classList.remove('loading');

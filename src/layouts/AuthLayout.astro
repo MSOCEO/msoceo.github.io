@@ -1,5 +1,5 @@
 ---
-// 墨影 AuthLayout — 纯认证页，无导航/页脚/播放器
+// 墨影 AuthLayout — 纯认证页，带星图背景装饰 + Logo
 import BaseHead from '../components/BaseHead.astro';
 
 const { title, description } = Astro.props;
@@ -11,19 +11,77 @@ const { title, description } = Astro.props;
     <BaseHead title={title} description={description} />
   </head>
   <body class="auth-body">
-    <!-- 背景装饰层 -->
-    <div class="auth-bg-deco" aria-hidden="true">
-      <div class="bg-orb orb-1"></div>
-      <div class="bg-orb orb-2"></div>
-      <div class="bg-orb orb-3"></div>
-      <div class="bg-grid"></div>
-      <div class="bg-lines"></div>
-      <div class="bg-dots">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
+    <!-- ============================================
+         背景装饰层
+         ============================================ -->
+    <div class="auth-scene" aria-hidden="true">
+      <!-- 大光球 -->
+      <div class="scene-orb orb-a"></div>
+      <div class="scene-orb orb-b"></div>
+      <div class="scene-orb orb-c"></div>
+
+      <!-- 星座连线 -->
+      <svg class="scene-constellation" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <!-- 主星座 -->
+        <polyline points="200,150 350,280 500,180 420,400 580,520 380,620 200,550"
+                  fill="none" stroke="var(--amber-400)" stroke-width="0.5" opacity="0.08"/>
+        <polyline points="900,120 1100,250 1300,180 1200,400 1000,350"
+                  fill="none" stroke="var(--amber-400)" stroke-width="0.5" opacity="0.06"/>
+        <polyline points="100,700 250,650 400,720 350,850 180,800"
+                  fill="none" stroke="var(--amber-400)" stroke-width="0.5" opacity="0.07"/>
+        <polyline points="900,600 1050,680 1250,620 1300,780 1100,850 950,800"
+                  fill="none" stroke="var(--amber-400)" stroke-width="0.5" opacity="0.05"/>
+        <polyline points="600,100 720,180 800,120"
+                  fill="none" stroke="var(--amber-400)" stroke-width="0.5" opacity="0.06"/>
+        <!-- 星点 -->
+        <circle cx="200" cy="150" r="2" fill="var(--amber-400)" opacity="0.3"/>
+        <circle cx="350" cy="280" r="1.5" fill="var(--amber-400)" opacity="0.25"/>
+        <circle cx="500" cy="180" r="2.5" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="420" cy="400" r="1.5" fill="var(--amber-400)" opacity="0.3"/>
+        <circle cx="580" cy="520" r="2" fill="var(--amber-400)" opacity="0.25"/>
+        <circle cx="380" cy="620" r="1" fill="var(--amber-400)" opacity="0.3"/>
+        <circle cx="200" cy="550" r="2" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="900" cy="120" r="1.5" fill="var(--amber-400)" opacity="0.25"/>
+        <circle cx="1100" cy="250" r="2" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="1300" cy="180" r="1.5" fill="var(--amber-400)" opacity="0.3"/>
+        <circle cx="1200" cy="400" r="1" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="1000" cy="350" r="2" fill="var(--amber-400)" opacity="0.15"/>
+        <circle cx="100" cy="700" r="2" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="250" cy="650" r="1.5" fill="var(--amber-400)" opacity="0.25"/>
+        <circle cx="400" cy="720" r="1" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="350" cy="850" r="2" fill="var(--amber-400)" opacity="0.15"/>
+        <circle cx="180" cy="800" r="1.5" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="900" cy="600" r="2" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="1050" cy="680" r="1.5" fill="var(--amber-400)" opacity="0.25"/>
+        <circle cx="1250" cy="620" r="2" fill="var(--amber-400)" opacity="0.15"/>
+        <circle cx="1300" cy="780" r="1" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="1100" cy="850" r="2" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="950" cy="800" r="1.5" fill="var(--amber-400)" opacity="0.15"/>
+        <circle cx="600" cy="100" r="1.5" fill="var(--amber-400)" opacity="0.2"/>
+        <circle cx="720" cy="180" r="1" fill="var(--amber-400)" opacity="0.25"/>
+        <circle cx="800" cy="120" r="2" fill="var(--amber-400)" opacity="0.15"/>
+      </svg>
+
+      <!-- 科技网格 -->
+      <div class="scene-grid"></div>
+
+      <!-- 浮动粒子 (纯 CSS) -->
+      <div class="scene-particles">
+        <span class="p p1"></span><span class="p p2"></span><span class="p p3"></span>
+        <span class="p p4"></span><span class="p p5"></span><span class="p p6"></span>
+        <span class="p p7"></span><span class="p p8"></span><span class="p p9"></span>
+        <span class="p p10"></span><span class="p p11"></span><span class="p p12"></span>
+        <span class="p p13"></span><span class="p p14"></span><span class="p p15"></span>
       </div>
+
+      <!-- 装饰环 -->
+      <div class="scene-ring"></div>
+      <div class="scene-ring scene-ring-2"></div>
     </div>
 
+    <!-- ============================================
+         认证卡片区域
+         ============================================ -->
     <main class="auth-main">
       <slot />
     </main>
@@ -31,6 +89,9 @@ const { title, description } = Astro.props;
 </html>
 
 <style>
+  /* ========================================
+     Base
+     ======================================== */
   .auth-body {
     min-height: 100vh;
     background: var(--ink-0);
@@ -52,10 +113,9 @@ const { title, description } = Astro.props;
   }
 
   /* ========================================
-     背景装饰系统
+     场景容器
      ======================================== */
-
-  .auth-bg-deco {
+  .auth-scene {
     position: fixed;
     inset: 0;
     z-index: 1;
@@ -63,149 +123,155 @@ const { title, description } = Astro.props;
     overflow: hidden;
   }
 
-  /* --- 光球 --- */
-  .bg-orb {
+  /* --- 大光球 --- */
+  .scene-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.06;
-    animation: orb-drift 20s ease-in-out infinite;
+    filter: blur(100px);
+    animation: orbFloat 18s ease-in-out infinite;
   }
 
-  .orb-1 {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--amber-400), transparent 70%);
-    top: -20%;
-    left: -10%;
+  .orb-a {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle at 40% 40%, rgba(212,165,116,0.12), transparent 65%);
+    top: -25%; left: -15%;
     animation-delay: 0s;
   }
 
-  .orb-2 {
-    width: 450px;
-    height: 450px;
-    background: radial-gradient(circle, var(--amber-200), transparent 70%);
-    bottom: -15%;
-    right: -5%;
-    animation-delay: -7s;
-    animation-duration: 24s;
+  .orb-b {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle at 60% 60%, rgba(212,165,116,0.08), transparent 65%);
+    bottom: -20%; right: -10%;
+    animation-delay: -6s;
+    animation-duration: 22s;
   }
 
-  .orb-3 {
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 70%);
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.03;
-    animation-delay: -12s;
-    animation-duration: 18s;
+  .orb-c {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle at 50% 50%, rgba(232,205,176,0.06), transparent 60%);
+    top: 50%; left: 55%;
+    animation-delay: -10s;
+    animation-duration: 20s;
   }
 
-  @keyframes orb-drift {
+  @keyframes orbFloat {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    25% { transform: translate(30px, -20px) scale(1.05); }
-    50% { transform: translate(-15px, 25px) scale(0.95); }
-    75% { transform: translate(-25px, -10px) scale(1.02); }
+    25%  { transform: translate(40px, -30px) scale(1.08); }
+    50%  { transform: translate(-20px, 35px) scale(0.93); }
+    75%  { transform: translate(-35px, -15px) scale(1.04); }
   }
 
-  /* --- 极细网格 --- */
-  .bg-grid {
+  /* --- 星座 SVG --- */
+  .scene-constellation {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+  }
+
+  /* --- 科技网格 --- */
+  .scene-grid {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 70%);
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 70% 55% at 50% 45%, black 25%, transparent 65%);
   }
 
-  /* --- 对角线 --- */
-  .bg-lines {
+  /* --- 装饰环 --- */
+  .scene-ring {
     position: absolute;
-    inset: -50%;
-    background: repeating-linear-gradient(
-      105deg,
-      transparent,
-      transparent 200px,
-      rgba(212,165,116,0.02) 200px,
-      rgba(212,165,116,0.02) 201px
-    );
-    animation: line-shift 30s linear infinite;
+    border-radius: 50%;
+    border: 1px solid rgba(212,165,116,0.06);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: ringPulse 8s ease-in-out infinite;
   }
 
-  @keyframes line-shift {
-    from { transform: translateY(0); }
-    to { transform: translateY(200px); }
+  .scene-ring {
+    width: 700px; height: 700px;
+    animation-delay: 0s;
   }
 
-  /* --- 散落光点 --- */
-  .bg-dots {
+  .scene-ring-2 {
+    width: 1000px; height: 1000px;
+    border-color: rgba(212,165,116,0.03);
+    animation-delay: -3s;
+    animation-duration: 12s;
+  }
+
+  @keyframes ringPulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.03); }
+  }
+
+  /* --- 浮动粒子 --- */
+  .scene-particles { position: absolute; inset: 0; }
+
+  .scene-particles .p {
     position: absolute;
-    inset: 0;
-  }
-
-  .bg-dots span {
-    position: absolute;
-    width: 2px;
-    height: 2px;
     border-radius: 50%;
     background: var(--amber-400);
-    opacity: 0;
-    animation: dot-float 6s ease-in-out infinite;
+    animation: particleRise linear infinite;
   }
 
-  .bg-dots span:nth-child(1)  { top: 15%; left: 12%; animation-delay: 0s; }
-  .bg-dots span:nth-child(2)  { top: 25%; left: 85%; animation-delay: 0.8s; }
-  .bg-dots span:nth-child(3)  { top: 70%; left: 8%;  animation-delay: 1.6s; }
-  .bg-dots span:nth-child(4)  { top: 80%; left: 90%; animation-delay: 2.4s; }
-  .bg-dots span:nth-child(5)  { top: 45%; left: 75%; animation-delay: 3.2s; }
-  .bg-dots span:nth-child(6)  { top: 10%; left: 45%; animation-delay: 4.0s; }
-  .bg-dots span:nth-child(7)  { top: 55%; left: 20%; animation-delay: 4.8s; }
-  .bg-dots span:nth-child(8)  { top: 90%; left: 35%; animation-delay: 1.2s; }
-  .bg-dots span:nth-child(9)  { top: 35%; left: 55%; animation-delay: 3.6s; }
-  .bg-dots span:nth-child(10) { top: 65%; left: 65%; animation-delay: 5.4s; }
+  .p1  { width:2px; height:2px; left:10%; top:90%;  animation-duration:12s; animation-delay:0s;   opacity:0.25; }
+  .p2  { width:1px; height:1px; left:25%; top:85%;  animation-duration:15s; animation-delay:1.5s; opacity:0.2;  }
+  .p3  { width:2px; height:2px; left:40%; top:92%;  animation-duration:10s; animation-delay:3s;   opacity:0.3;  }
+  .p4  { width:1px; height:1px; left:55%; top:88%;  animation-duration:14s; animation-delay:4.5s; opacity:0.15; }
+  .p5  { width:3px; height:3px; left:70%; top:95%;  animation-duration:11s; animation-delay:6s;   opacity:0.2;  }
+  .p6  { width:1px; height:1px; left:85%; top:90%;  animation-duration:16s; animation-delay:2s;   opacity:0.25; }
+  .p7  { width:2px; height:2px; left:15%; top:80%;  animation-duration:13s; animation-delay:5s;   opacity:0.15; }
+  .p8  { width:1px; height:1px; left:35%; top:78%;  animation-duration:17s; animation-delay:7s;   opacity:0.2;  }
+  .p9  { width:2px; height:2px; left:50%; top:82%;  animation-duration:9s;  animation-delay:8.5s; opacity:0.25; }
+  .p10 { width:1px; height:1px; left:65%; top:76%;  animation-duration:18s; animation-delay:3.5s; opacity:0.15; }
+  .p11 { width:2px; height:2px; left:80%; top:84%;  animation-duration:14s; animation-delay:9s;   opacity:0.2;  }
+  .p12 { width:1px; height:1px; left:5%;  top:86%;  animation-duration:11s; animation-delay:6.5s; opacity:0.25; }
+  .p13 { width:2px; height:2px; left:45%; top:94%;  animation-duration:15s; animation-delay:1s;   opacity:0.15; }
+  .p14 { width:1px; height:1px; left:60%; top:80%;  animation-duration:13s; animation-delay:10s;  opacity:0.3;  }
+  .p15 { width:2px; height:2px; left:30%; top:91%;  animation-duration:16s; animation-delay:4s;   opacity:0.2;  }
 
-  @keyframes dot-float {
-    0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
-    50% { opacity: 0.4; transform: translateY(-12px) scale(1); }
+  @keyframes particleRise {
+    0%   { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
+    10%  { opacity: var(--p-opacity, 0.25); }
+    90%  { opacity: var(--p-opacity, 0.25); }
+    100% { transform: translateY(-110vh) translateX(40px) scale(0); opacity: 0; }
   }
 
   /* ========================================
-     认证卡片样式增强 (覆盖/补充 global.css)
+     卡片增强
      ======================================== */
-
   .auth-card {
     background: var(--ink-10);
     border: 1px solid rgba(255,255,255,0.06);
     box-shadow:
       0 0 0 1px rgba(255,255,255,0.03),
-      0 8px 40px rgba(0,0,0,0.5),
-      0 0 80px rgba(212,165,116,0.03);
+      0 12px 60px rgba(0,0,0,0.6),
+      0 0 120px rgba(212,165,116,0.04);
     transition: box-shadow var(--duration-slow) var(--ease-out);
   }
 
   .auth-card:hover {
     box-shadow:
       0 0 0 1px rgba(255,255,255,0.05),
-      0 12px 50px rgba(0,0,0,0.6),
-      0 0 100px rgba(212,165,116,0.05);
+      0 16px 70px rgba(0,0,0,0.7),
+      0 0 150px rgba(212,165,116,0.07);
   }
 
-  /* 头部装饰线 */
   .auth-card .card-accent {
     position: relative;
     text-align: center;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-xs);
   }
 
   .auth-card .card-accent::after {
     content: '';
     display: block;
-    width: 32px;
-    height: 3px;
-    margin: var(--space-md) auto 0;
+    width: 40px;
+    height: 2px;
+    margin: var(--space-sm) auto 0;
     background: linear-gradient(90deg, transparent, var(--amber-400), transparent);
     border-radius: 2px;
   }
