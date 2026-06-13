@@ -1,77 +1,76 @@
 ---
-import Page from '../layouts/Page.astro';
+import AuthLayout from '../layouts/AuthLayout.astro';
 
 const title = '注册 | 枕星';
 const description = '加入枕星，开始记录你的代码与日常';
 ---
 
-<Page {title} {description}>
-  <div class="auth-page">
-    <div class="auth-card animate-in">
+<AuthLayout title={title} description={description}>
+  <div class="auth-card animate-in">
+    <div class="card-accent">
       <h1>加入枕星</h1>
       <p class="subtitle">开始记录代码与日常的缝隙</p>
+    </div>
 
-      <form id="register-form" class="auth-form">
-        <div class="form-group">
-          <label for="username">用户名</label>
-          <input
-            type="text"
-            id="username"
-            class="input"
-            placeholder="你的笔名"
-            required
-            autocomplete="username"
-          />
-        </div>
+    <form id="register-form" class="auth-form">
+      <div class="form-group">
+        <label for="username">用户名</label>
+        <input
+          type="text"
+          id="username"
+          class="input"
+          placeholder="你的笔名"
+          required
+          autocomplete="username"
+        />
+      </div>
 
-        <div class="form-group">
-          <label for="email">邮箱</label>
-          <input
-            type="email"
-            id="email"
-            class="input"
-            placeholder="your@email.com"
-            required
-            autocomplete="email"
-          />
-        </div>
+      <div class="form-group">
+        <label for="email">邮箱</label>
+        <input
+          type="email"
+          id="email"
+          class="input"
+          placeholder="your@email.com"
+          required
+          autocomplete="email"
+        />
+      </div>
 
-        <div class="form-group">
-          <label for="password">密码</label>
-          <input
-            type="password"
-            id="password"
-            class="input"
-            placeholder="至少 8 位字符"
-            required
-            minlength="8"
-            autocomplete="new-password"
-          />
-        </div>
+      <div class="form-group">
+        <label for="password">密码</label>
+        <input
+          type="password"
+          id="password"
+          class="input"
+          placeholder="至少 8 位字符"
+          required
+          minlength="8"
+          autocomplete="new-password"
+        />
+      </div>
 
-        <button type="submit" class="btn btn-primary btn-lg">
-          <span class="btn-label">创建账号</span>
-          <span class="btn-spinner" hidden></span>
-        </button>
-
-        <div id="error-msg" class="form-error" hidden></div>
-      </form>
-
-      <div class="divider-text">或</div>
-
-      <button id="oauth-github" class="btn btn-secondary btn-lg btn-oauth" disabled>
-        通过 GitHub 注册（即将支持）
+      <button type="submit" class="btn btn-primary btn-lg">
+        <span class="btn-label">创建账号</span>
+        <span class="btn-spinner" hidden></span>
       </button>
 
-      <p class="footer-text">
-        已有账号？<a href="/login">立即登录</a>
-      </p>
-    </div>
+      <div id="error-msg" class="form-error" hidden></div>
+    </form>
+
+    <div class="divider-text">或</div>
+
+    <button id="oauth-github" class="btn btn-secondary btn-lg btn-oauth" disabled>
+      通过 GitHub 注册（即将支持）
+    </button>
+
+    <p class="footer-text">
+      已有账号？<a href="/login">立即登录</a>
+    </p>
   </div>
-</Page>
+</AuthLayout>
 
 <style>
-  .auth-form .btn { margin-top: var(--space-sm); }
   .btn-spinner {
     width: 16px; height: 16px;
     border: 2px solid rgba(0,0,0,0.2);

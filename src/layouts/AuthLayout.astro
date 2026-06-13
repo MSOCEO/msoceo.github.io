@@ -1,0 +1,212 @@
+---
+// 墨影 AuthLayout — 纯认证页，无导航/页脚/播放器
+import BaseHead from '../components/BaseHead.astro';
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class="auth-body">
+    <!-- 背景装饰层 -->
+    <div class="auth-bg-deco" aria-hidden="true">
+      <div class="bg-orb orb-1"></div>
+      <div class="bg-orb orb-2"></div>
+      <div class="bg-orb orb-3"></div>
+      <div class="bg-grid"></div>
+      <div class="bg-lines"></div>
+      <div class="bg-dots">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <main class="auth-main">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .auth-body {
+    min-height: 100vh;
+    background: var(--ink-0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .auth-main {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+  }
+
+  /* ========================================
+     背景装饰系统
+     ======================================== */
+
+  .auth-bg-deco {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* --- 光球 --- */
+  .bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.06;
+    animation: orb-drift 20s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--amber-400), transparent 70%);
+    top: -20%;
+    left: -10%;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, var(--amber-200), transparent 70%);
+    bottom: -15%;
+    right: -5%;
+    animation-delay: -7s;
+    animation-duration: 24s;
+  }
+
+  .orb-3 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 70%);
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.03;
+    animation-delay: -12s;
+    animation-duration: 18s;
+  }
+
+  @keyframes orb-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(30px, -20px) scale(1.05); }
+    50% { transform: translate(-15px, 25px) scale(0.95); }
+    75% { transform: translate(-25px, -10px) scale(1.02); }
+  }
+
+  /* --- 极细网格 --- */
+  .bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 70%);
+  }
+
+  /* --- 对角线 --- */
+  .bg-lines {
+    position: absolute;
+    inset: -50%;
+    background: repeating-linear-gradient(
+      105deg,
+      transparent,
+      transparent 200px,
+      rgba(212,165,116,0.02) 200px,
+      rgba(212,165,116,0.02) 201px
+    );
+    animation: line-shift 30s linear infinite;
+  }
+
+  @keyframes line-shift {
+    from { transform: translateY(0); }
+    to { transform: translateY(200px); }
+  }
+
+  /* --- 散落光点 --- */
+  .bg-dots {
+    position: absolute;
+    inset: 0;
+  }
+
+  .bg-dots span {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--amber-400);
+    opacity: 0;
+    animation: dot-float 6s ease-in-out infinite;
+  }
+
+  .bg-dots span:nth-child(1)  { top: 15%; left: 12%; animation-delay: 0s; }
+  .bg-dots span:nth-child(2)  { top: 25%; left: 85%; animation-delay: 0.8s; }
+  .bg-dots span:nth-child(3)  { top: 70%; left: 8%;  animation-delay: 1.6s; }
+  .bg-dots span:nth-child(4)  { top: 80%; left: 90%; animation-delay: 2.4s; }
+  .bg-dots span:nth-child(5)  { top: 45%; left: 75%; animation-delay: 3.2s; }
+  .bg-dots span:nth-child(6)  { top: 10%; left: 45%; animation-delay: 4.0s; }
+  .bg-dots span:nth-child(7)  { top: 55%; left: 20%; animation-delay: 4.8s; }
+  .bg-dots span:nth-child(8)  { top: 90%; left: 35%; animation-delay: 1.2s; }
+  .bg-dots span:nth-child(9)  { top: 35%; left: 55%; animation-delay: 3.6s; }
+  .bg-dots span:nth-child(10) { top: 65%; left: 65%; animation-delay: 5.4s; }
+
+  @keyframes dot-float {
+    0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+    50% { opacity: 0.4; transform: translateY(-12px) scale(1); }
+  }
+
+  /* ========================================
+     认证卡片样式增强 (覆盖/补充 global.css)
+     ======================================== */
+
+  .auth-card {
+    background: var(--ink-10);
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 8px 40px rgba(0,0,0,0.5),
+      0 0 80px rgba(212,165,116,0.03);
+    transition: box-shadow var(--duration-slow) var(--ease-out);
+  }
+
+  .auth-card:hover {
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.05),
+      0 12px 50px rgba(0,0,0,0.6),
+      0 0 100px rgba(212,165,116,0.05);
+  }
+
+  /* 头部装饰线 */
+  .auth-card .card-accent {
+    position: relative;
+    text-align: center;
+    margin-bottom: var(--space-md);
+  }
+
+  .auth-card .card-accent::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 3px;
+    margin: var(--space-md) auto 0;
+    background: linear-gradient(90deg, transparent, var(--amber-400), transparent);
+    border-radius: 2px;
+  }
+</style>

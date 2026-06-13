@@ -1,64 +1,63 @@
 ---
-import Page from '../layouts/Page.astro';
+import AuthLayout from '../layouts/AuthLayout.astro';
 
 const title = '登录 | 枕星';
 const description = '登录枕星，继续你的创作之旅';
 ---
 
-<Page {title} {description}>
-  <div class="auth-page">
-    <div class="auth-card animate-in">
+<AuthLayout title={title} description={description}>
+  <div class="auth-card animate-in">
+    <div class="card-accent">
       <h1>欢迎回来</h1>
       <p class="subtitle">登录枕星，继续你的创作</p>
+    </div>
 
-      <form id="login-form" class="auth-form">
-        <div class="form-group">
-          <label for="email">邮箱</label>
-          <input
-            type="email"
-            id="email"
-            class="input"
-            placeholder="your@email.com"
-            required
-            autocomplete="email"
-          />
-        </div>
+    <form id="login-form" class="auth-form">
+      <div class="form-group">
+        <label for="email">邮箱</label>
+        <input
+          type="email"
+          id="email"
+          class="input"
+          placeholder="your@email.com"
+          required
+          autocomplete="email"
+        />
+      </div>
 
-        <div class="form-group">
-          <label for="password">密码</label>
-          <input
-            type="password"
-            id="password"
-            class="input"
-            placeholder="输入密码"
-            required
-            autocomplete="current-password"
-          />
-        </div>
+      <div class="form-group">
+        <label for="password">密码</label>
+        <input
+          type="password"
+          id="password"
+          class="input"
+          placeholder="输入密码"
+          required
+          autocomplete="current-password"
+        />
+      </div>
 
-        <button type="submit" class="btn btn-primary btn-lg">
-          <span class="btn-label">登录</span>
-          <span class="btn-spinner" hidden></span>
-        </button>
-
-        <div id="error-msg" class="form-error" hidden></div>
-      </form>
-
-      <div class="divider-text">或</div>
-
-      <button id="oauth-github" class="btn btn-secondary btn-lg btn-oauth" disabled>
-        通过 GitHub 登录（即将支持）
+      <button type="submit" class="btn btn-primary btn-lg">
+        <span class="btn-label">登录</span>
+        <span class="btn-spinner" hidden></span>
       </button>
 
-      <p class="footer-text">
-        还没有账号？<a href="/register">立即注册</a>
-      </p>
-    </div>
+      <div id="error-msg" class="form-error" hidden></div>
+    </form>
+
+    <div class="divider-text">或</div>
+
+    <button id="oauth-github" class="btn btn-secondary btn-lg btn-oauth" disabled>
+      通过 GitHub 登录（即将支持）
+    </button>
+
+    <p class="footer-text">
+      还没有账号？<a href="/register">立即注册</a>
+    </p>
   </div>
-</Page>
+</AuthLayout>
 
 <style>
-  .auth-form .btn { margin-top: var(--space-sm); }
   .btn-spinner {
     width: 16px; height: 16px;
     border: 2px solid rgba(0,0,0,0.2);
@@ -97,7 +96,6 @@ const description = '登录枕星，继续你的创作之旅';
     errorMsg.hidden = true;
 
     // TODO: Replace with real Supabase auth
-    // const { data, error } = await supabase.auth.signInWithPassword({...})
     await new Promise(r => setTimeout(r, 800));
 
     errorMsg.hidden = false;
