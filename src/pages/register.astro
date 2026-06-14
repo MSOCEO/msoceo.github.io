@@ -25,8 +25,8 @@ const description = '加入枕星，开始记录你的代码与日常';
 
       <div class="form-group">
         <label for="password">密码</label>
-        <input type="password" id="password" class="input" placeholder="至少 8 位字符"
-               required minlength="8" autocomplete="new-password" />
+        <input type="password" id="password" class="input" placeholder="至少 6 位字符"
+               required minlength="6" autocomplete="new-password" />
       </div>
 
       <button type="submit" class="btn btn-primary btn-lg">
@@ -39,8 +39,9 @@ const description = '加入枕星，开始记录你的代码与日常';
 
     <div class="divider-text">或</div>
 
-    <button id="oauth-github" class="btn btn-secondary btn-lg btn-oauth" disabled>
-      通过 GitHub 注册（即将支持）
+    <button id="oauth-github" class="btn btn-secondary btn-lg btn-oauth">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      通过 GitHub 注册
     </button>
 
     <p class="footer-text">已有账号？<a href="/login">立即登录</a></p>
@@ -67,20 +68,66 @@ const description = '加入枕星，开始记录你的代码与日常';
     font-size: var(--text-sm);
     color: var(--error);
   }
-  .btn-oauth { width: 100%; margin-top: 0; }
+  .btn-oauth {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 0;
+    cursor: pointer;
+  }
+  .btn-oauth:hover {
+    border-color: var(--amber-400);
+    color: var(--amber-400);
+  }
 </style>
 
 <script>
   const form = document.getElementById('register-form');
   const submitBtn = form.querySelector('button[type="submit"]');
   const errorMsg = document.getElementById('error-msg');
+  const usernameInput = document.getElementById('username');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
     errorMsg.hidden = true;
+
     await new Promise(r => setTimeout(r, 800));
-    errorMsg.hidden = false;
-    errorMsg.textContent = '注册服务正在搭建中，请稍后再试。';
-    submitBtn.classList.remove('loading');
+
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (username && email && password.length >= 6) {
+      localStorage.setItem('zhenxing_register', JSON.stringify({
+        username,
+        email,
+        registeredAt: new Date().toISOString()
+      }));
+      alert('注册成功！即将跳转到登录页');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1500);
+    } else {
+      errorMsg.hidden = false;
+      if (!username) {
+        errorMsg.textContent = '请输入用户名';
+      } else if (!email) {
+        errorMsg.textContent = '请输入邮箱';
+      } else {
+        errorMsg.textContent = '密码至少需要 6 位字符';
+      }
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+    }
+  });
+
+  document.getElementById('oauth-github').addEventListener('click', () => {
+    alert('GitHub OAuth 即将上线');
   });
 </script>
