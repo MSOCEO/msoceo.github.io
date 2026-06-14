@@ -1,5 +1,5 @@
 ---
-// 枕星 CMS — 仪表板后台
+// 枕星 CMS — 仪表板后台（单页 Hash 路由）
 import BaseHead from '../../components/BaseHead.astro';
 const title = '仪表板 | 枕星后台';
 const description = '枕星内容管理系统后台仪表板';
@@ -7,684 +7,871 @@ const description = '枕星内容管理系统后台仪表板';
 
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <BaseHead title={title} description={description} />
-  </head>
-  <body class="admin-body">
-    <!-- ========== 侧边栏 ========== -->
-    <aside class="admin-sidebar" id="sidebar">
-      <div class="sidebar-brand">
-        <span class="brand-name">枕星 CMS</span>
-        <span class="brand-version">v1.0</span>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active">
-          <span class="nav-dot"></span> 仪表板
-        </a>
-        <a href="#" class="nav-item">
-          文章 <span class="nav-badge">5</span>
-        </a>
-        <a href="#" class="nav-item">
-          页面 <span class="nav-badge">2</span>
-        </a>
-        <a href="#" class="nav-item">媒体库</a>
-        <a href="#" class="nav-item">
-          评论 <span class="nav-badge">3</span>
-        </a>
-        <a href="#" class="nav-item">外观</a>
-        <a href="#" class="nav-item">用户</a>
-        <a href="#" class="nav-item">设置</a>
-        <a href="#" class="nav-item">导航站</a>
-      </nav>
-      <div class="sidebar-footer">
-        <button id="logout-btn" class="btn-logout">退出登录</button>
-      </div>
-    </aside>
+<head>
+  <BaseHead title={title} description={description} />
+</head>
+<body class="admin-body">
 
-    <!-- ========== 主内容区 ========== -->
-    <div class="admin-main">
-      <!-- 顶栏 -->
-      <header class="admin-topbar">
-        <button class="hamburger" id="hamburger" aria-label="菜单">
-          <span></span><span></span><span></span>
-        </button>
-        <div class="topbar-breadcrumb">仪表板 / 概览</div>
-        <div class="topbar-actions">
-          <span class="topbar-icon" title="通知">🔔</span>
-          <div class="topbar-avatar">管理员</div>
+<!-- ========== 侧边栏 ========== -->
+<aside class="admin-sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-name">枕星 CMS</span>
+    <span class="brand-version">v1.0</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#dashboard" class="admin-nav-item active" data-hash="dashboard">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      仪表板
+    </a>
+    <a href="#posts" class="admin-nav-item" data-hash="posts">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      文章 <span class="nav-badge">5</span>
+    </a>
+    <a href="#pages" class="admin-nav-item" data-hash="pages">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      页面 <span class="nav-badge">2</span>
+    </a>
+    <a href="#media" class="admin-nav-item" data-hash="media">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      媒体库
+    </a>
+    <a href="#comments" class="admin-nav-item" data-hash="comments">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      评论 <span class="nav-badge">3</span>
+    </a>
+    <a href="#appearance" class="admin-nav-item" data-hash="appearance">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      外观
+    </a>
+    <a href="#users" class="admin-nav-item" data-hash="users">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      用户 <span class="nav-badge">2</span>
+    </a>
+    <a href="#tools" class="admin-nav-item" data-hash="tools">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      工具
+    </a>
+    <a href="#settings" class="admin-nav-item" data-hash="settings">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      设置
+    </a>
+    <a href="#navlinks" class="admin-nav-item" data-hash="navlinks">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+      导航站
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <button id="logout-btn" class="btn-logout">退出登录</button>
+  </div>
+</aside>
+
+<!-- ========== 主内容区 ========== -->
+<div class="admin-main" id="admin-main">
+  <!-- 顶栏 -->
+  <header class="admin-topbar">
+    <button class="hamburger" id="hamburger" aria-label="菜单"><span></span><span></span><span></span></button>
+    <div class="topbar-breadcrumb" id="breadcrumb">仪表板 / 概览</div>
+    <div class="topbar-actions">
+      <span class="topbar-icon" title="通知">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      </span>
+      <div class="topbar-avatar">管理员</div>
+    </div>
+  </header>
+
+  <div class="admin-content">
+
+    <!-- ================================================================
+         视图 1: #dashboard（仪表板）
+         ================================================================ -->
+    <div data-page="dashboard" class="page-view active">
+
+      <!-- 统计卡片 -->
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent:#3b82f6">
+          <div class="stat-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">5</div>
+            <div class="stat-label">文章</div>
+            <div class="stat-sub">3 已发布 / 2 草稿</div>
+          </div>
         </div>
-      </header>
-
-      <!-- 内容区 -->
-      <div class="admin-content">
-        <!-- 统计卡片 -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon">📝</div>
-            <div class="stat-info">
-              <div class="stat-value">5</div>
-              <div class="stat-label">文章总数</div>
-              <div class="stat-sub">3 篇已发布</div>
-            </div>
+        <div class="stat-card" style="--accent:#10b981">
+          <div class="stat-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           </div>
-          <div class="stat-card">
-            <div class="stat-icon">📄</div>
-            <div class="stat-info">
-              <div class="stat-value">2</div>
-              <div class="stat-label">页面总数</div>
-              <div class="stat-sub">全部已发布</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">💬</div>
-            <div class="stat-info">
-              <div class="stat-value">3</div>
-              <div class="stat-label">总评论数</div>
-              <div class="stat-sub">1 条待审核</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">👁</div>
-            <div class="stat-info">
-              <div class="stat-value">128</div>
-              <div class="stat-label">今日访客</div>
-              <div class="stat-sub">+12% 较昨日</div>
-            </div>
+          <div class="stat-info">
+            <div class="stat-value">2</div>
+            <div class="stat-label">页面</div>
+            <div class="stat-sub">全部已发布</div>
           </div>
         </div>
+        <div class="stat-card" style="--accent:#f59e0b">
+          <div class="stat-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">3</div>
+            <div class="stat-label">评论</div>
+            <div class="stat-sub">1 待审核</div>
+          </div>
+        </div>
+        <div class="stat-card" style="--accent:#8b5cf6">
+          <div class="stat-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">128</div>
+            <div class="stat-label">今日访客</div>
+            <div class="stat-sub">+12% 较昨日</div>
+          </div>
+        </div>
+      </div>
 
-        <!-- 两列布局 -->
-        <div class="content-grid">
-          <!-- 左列: 最近文章 -->
-          <div class="panel panel-recent">
-            <h3 class="panel-title">最近文章</h3>
+      <!-- 网站健康 + 快速草稿 -->
+      <div class="content-grid-2col">
+        <div class="panel">
+          <h3 class="panel-title">网站健康状态</h3>
+          <div class="health-list">
+            <div class="health-item"><span class="health-dot ok"></span> 站点运行正常</div>
+            <div class="health-item"><span class="health-dot ok"></span> Astro 5.x</div>
+            <div class="health-item"><span class="health-dot ok"></span> GitHub Pages</div>
+            <div class="health-item"><span class="health-dot ok"></span> HTTPS 已启用</div>
+            <div class="health-item"><span class="health-dot ok"></span> 最后构建 2026-06-15</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 class="panel-title">快速草稿</h3>
+          <div class="quick-draft">
+            <input class="input" type="text" id="draft-title" placeholder="输入标题..." />
+            <textarea class="input textarea" id="draft-content" rows="3" placeholder="写点什么..."></textarea>
+            <button class="btn btn-primary btn-sm" id="save-draft-btn">保存草稿</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 最近动态时间线 -->
+      <div class="panel">
+        <h3 class="panel-title">最近动态</h3>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-dot post"></span><span class="tl-time">06-15 14:30</span><span class="tl-text">文章 <strong>Astro 5 升级笔记</strong> 已发布</span></div>
+          <div class="tl-item"><span class="tl-dot page"></span><span class="tl-time">06-12 09:15</span><span class="tl-text">页面 <strong>留言板</strong> 已更新</span></div>
+          <div class="tl-item"><span class="tl-dot comment"></span><span class="tl-time">06-10 16:42</span><span class="tl-text">收到新评论：<strong>写得真好，学习了！</strong></span></div>
+          <div class="tl-item"><span class="tl-dot setting"></span><span class="tl-time">06-08 11:00</span><span class="tl-text">设置变更：固定链接结构已更新</span></div>
+          <div class="tl-item"><span class="tl-dot build"></span><span class="tl-time">06-05 03:00</span><span class="tl-text">站点构建完成</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         视图 2: #posts（文章管理）
+         ================================================================ -->
+    <div data-page="posts" class="page-view">
+      <div class="page-toolbar">
+        <h2 class="page-heading">所有文章</h2>
+        <div class="toolbar-actions">
+          <input class="input toolbar-input" type="text" placeholder="搜索文章..." />
+          <select class="input toolbar-select">
+            <option>全部分类</option><option>技术</option><option>教程</option><option>随笔</option>
+          </select>
+          <button class="btn btn-primary btn-sm">写文章</button>
+        </div>
+      </div>
+      <div class="panel panel-table">
+        <table class="data-table">
+          <thead>
+            <tr><th><input type="checkbox" /></th><th>标题</th><th>作者</th><th>分类</th><th>日期</th><th>状态</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><input type="checkbox" /></td><td><a href="#">First post</a><br><small class="text-muted">first-post</small></td><td>管理员</td><td><span class="tag tag-accent">技术</span></td><td>2022-07-08</td><td><span class="status status-published">已发布</span></td><td class="row-actions"><a href="#">编辑</a> | <a href="#">快速编辑</a> | <a href="#" class="text-danger">移至回收站</a></td></tr>
+            <tr><td><input type="checkbox" /></td><td><a href="#">Markdown Style Guide</a><br><small class="text-muted">markdown-style-guide</small></td><td>管理员</td><td><span class="tag tag-accent">教程</span></td><td>2024-06-19</td><td><span class="status status-published">已发布</span></td><td class="row-actions"><a href="#">编辑</a> | <a href="#">快速编辑</a> | <a href="#" class="text-danger">移至回收站</a></td></tr>
+            <tr><td><input type="checkbox" /></td><td><a href="#">Second post</a><br><small class="text-muted">second-post</small></td><td>管理员</td><td><span class="tag tag-accent">技术</span></td><td>2022-07-15</td><td><span class="status status-published">已发布</span></td><td class="row-actions"><a href="#">编辑</a> | <a href="#">快速编辑</a> | <a href="#" class="text-danger">移至回收站</a></td></tr>
+            <tr><td><input type="checkbox" /></td><td><a href="#">Third post</a><br><small class="text-muted">third-post</small></td><td>管理员</td><td><span class="tag tag-accent">随笔</span></td><td>2022-07-22</td><td><span class="status status-draft">草稿</span></td><td class="row-actions"><a href="#">编辑</a> | <a href="#">快速编辑</a> | <a href="#" class="text-danger">移至回收站</a></td></tr>
+            <tr><td><input type="checkbox" /></td><td><a href="#">Using MDX</a><br><small class="text-muted">using-mdx</small></td><td>管理员</td><td><span class="tag tag-accent">教程</span></td><td>2024-06-25</td><td><span class="status status-draft">草稿</span></td><td class="row-actions"><a href="#">编辑</a> | <a href="#">快速编辑</a> | <a href="#" class="text-danger">移至回收站</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <div class="bulk-actions">
+          <select class="input toolbar-select"><option>批量操作</option><option>编辑</option><option>移至回收站</option></select>
+          <button class="btn btn-secondary btn-sm">应用</button>
+        </div>
+        <div class="pagination-info">共 5 篇</div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         视图 3: #pages（页面管理）
+         ================================================================ -->
+    <div data-page="pages" class="page-view">
+      <div class="page-toolbar">
+        <h2 class="page-heading">所有页面</h2>
+        <div class="toolbar-actions">
+          <button class="btn btn-primary btn-sm">新建页面</button>
+        </div>
+      </div>
+      <div class="panel panel-table">
+        <table class="data-table">
+          <thead>
+            <tr><th><input type="checkbox" /></th><th>标题</th><th>作者</th><th>Slug</th><th>日期</th><th>状态</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><input type="checkbox" /></td><td><a href="#">关于</a></td><td>管理员</td><td>about</td><td>2026-01-01</td><td><span class="status status-published">已发布</span></td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">移至回收站</a></td></tr>
+            <tr><td><input type="checkbox" /></td><td><a href="#">留言板</a></td><td>管理员</td><td>guestbook</td><td>2026-06-01</td><td><span class="status status-published">已发布</span></td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">移至回收站</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <div class="bulk-actions">
+          <select class="input toolbar-select"><option>批量操作</option><option>移至回收站</option></select>
+          <button class="btn btn-secondary btn-sm">应用</button>
+        </div>
+        <div class="pagination-info">共 2 页</div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         视图 4: #media（媒体库）
+         ================================================================ -->
+    <div data-page="media" class="page-view">
+      <div class="page-toolbar">
+        <h2 class="page-heading">媒体库</h2>
+        <div class="toolbar-actions">
+          <div class="view-toggle">
+            <button class="btn btn-secondary btn-sm view-btn active" data-view="grid">网格</button>
+            <button class="btn btn-secondary btn-sm view-btn" data-view="list">列表</button>
+          </div>
+          <button class="btn btn-primary btn-sm">添加新媒体</button>
+        </div>
+      </div>
+      <div class="media-grid" id="media-grid">
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#3b82f6)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">hero-banner.png</span><span class="media-meta">2.4 MB · 2026-06-10</span></div></div>
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#10b981)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">avatar-admin.jpg</span><span class="media-meta">128 KB · 2026-06-09</span></div></div>
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#f59e0b)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">blog-placeholder-1.jpg</span><span class="media-meta">1.1 MB · 2026-06-08</span></div></div>
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#8b5cf6)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">og-image.png</span><span class="media-meta">890 KB · 2026-06-07</span></div></div>
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#ef4444)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">screenshot-01.png</span><span class="media-meta">2.0 MB · 2026-06-06</span></div></div>
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#06b6d4)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">icon-favicon.svg</span><span class="media-meta">4 KB · 2026-06-05</span></div></div>
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#84cc16)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">photo-album.zip</span><span class="media-meta">15 MB · 2026-06-04</span></div></div>
+        <div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,#1a1a2e,#a855f7)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="media-info"><span class="media-name">background-dark.jpg</span><span class="media-meta">3.2 MB · 2026-06-03</span></div></div>
+      </div>
+      <div class="table-footer"><div class="pagination-info">共 8 个文件</div></div>
+    </div>
+
+    <!-- ================================================================
+         视图 5: #comments（评论管理）
+         ================================================================ -->
+    <div data-page="comments" class="page-view">
+      <div class="comment-filters">
+        <button class="comment-filter-btn active">全部 <span class="c-count">3</span></button>
+        <button class="comment-filter-btn">待审核 <span class="c-count c-pending">1</span></button>
+        <button class="comment-filter-btn">已批准 <span class="c-count">2</span></button>
+        <button class="comment-filter-btn">垃圾评论 <span class="c-count">0</span></button>
+      </div>
+      <div class="panel panel-table">
+        <table class="data-table">
+          <thead>
+            <tr><th><input type="checkbox" /></th><th>作者</th><th>评论内容</th><th>回复至</th><th>日期</th><th>状态</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><input type="checkbox" /></td><td><strong>张三</strong><br><small class="text-muted">zhangsan@email.com</small></td><td>写得真好，学习了！</td><td>First post</td><td>2026-06-10</td><td><span class="status status-published">已批准</span></td><td class="row-actions"><a href="#">回复</a> | <a href="#" class="text-danger">标记垃圾</a></td></tr>
+            <tr><td><input type="checkbox" /></td><td><strong>李四</strong><br><small class="text-muted">lisi@email.com</small></td><td>请问这个怎么配置？</td><td>Markdown Style Guide</td><td>2026-06-12</td><td><span class="status status-pending">待审核</span></td><td class="row-actions"><a href="#" class="text-success">批准</a> | <a href="#" class="text-danger">驳回</a> | <a href="#">回复</a></td></tr>
+            <tr><td><input type="checkbox" /></td><td><strong>王五</strong><br><small class="text-muted">wangwu@email.com</small></td><td>感谢分享</td><td>Second post</td><td>2026-06-14</td><td><span class="status status-published">已批准</span></td><td class="row-actions"><a href="#">回复</a> | <a href="#" class="text-danger">标记垃圾</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <div class="bulk-actions">
+          <select class="input toolbar-select"><option>批量操作</option><option>批准</option><option>标记为垃圾</option></select>
+          <button class="btn btn-secondary btn-sm">应用</button>
+        </div>
+        <div class="pagination-info">共 3 条评论</div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         视图 6: #appearance（外观）
+         ================================================================ -->
+    <div data-page="appearance" class="page-view">
+      <h2 class="page-heading">主题</h2>
+      <div class="theme-grid">
+        <div class="theme-card active-theme">
+          <div class="theme-thumb" style="background:linear-gradient(135deg,#0a0a0a,#1a1a2e,#d4a574)"><span class="theme-label">当前主题</span></div>
+          <div class="theme-info"><strong>墨影 Monoshade</strong><p>暗色琥珀金主题，专为写作者设计</p><button class="btn btn-primary btn-sm" disabled>已启用</button></div>
+        </div>
+        <div class="theme-card"><div class="theme-thumb" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef,#6366f1)"></div><div class="theme-info"><strong>枕星·经典</strong><p>清新经典的博客布局</p><button class="btn btn-secondary btn-sm">启用</button></div></div>
+        <div class="theme-card"><div class="theme-thumb" style="background:linear-gradient(135deg,#0f0f1a,#1a1a3e,#c084fc)"></div><div class="theme-info"><strong>暗夜·紫韵</strong><p>深邃紫色暗色主题</p><button class="btn btn-secondary btn-sm">启用</button></div></div>
+        <div class="theme-card"><div class="theme-thumb" style="background:linear-gradient(135deg,#ffffff,#f1f3f5,#3b82f6)"></div><div class="theme-info"><strong>极白·轻量</strong><p>极简白色轻量主题</p><button class="btn btn-secondary btn-sm">启用</button></div></div>
+        <div class="theme-card"><div class="theme-thumb" style="background:linear-gradient(135deg,#064e3b,#047857,#10b981)"></div><div class="theme-info"><strong>森林·绿意</strong><p>自然绿色清新风格</p><button class="btn btn-secondary btn-sm">启用</button></div></div>
+        <div class="theme-card"><div class="theme-thumb" style="background:linear-gradient(135deg,#1e3a5f,#0ea5e9,#06b6d4)"></div><div class="theme-info"><strong>海洋·蔚蓝</strong><p>海洋蓝色科技风格</p><button class="btn btn-secondary btn-sm">启用</button></div></div>
+      </div>
+
+      <h2 class="page-heading" style="margin-top:var(--space-2xl)">自定义</h2>
+      <div class="panel">
+        <div class="settings-group">
+          <h4>站点标识</h4>
+          <div class="form-row">
+            <label>站点图标 URL</label><input class="input" type="text" value="" placeholder="https://..." />
+          </div>
+          <div class="form-row">
+            <label>站点标题</label><input class="input" type="text" value="枕星" />
+          </div>
+          <div class="form-row">
+            <label>副标题</label><input class="input" type="text" value="手工筛选，记录优质站点" />
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>布局设置</h4>
+          <div class="form-row">
+            <label>侧边栏位置</label>
+            <select class="input"><option>左侧</option><option>右侧</option></select>
+          </div>
+          <div class="form-row">
+            <label>每页文章数</label><input class="input" type="number" value="10" />
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>颜色方案</h4>
+          <div class="form-row">
+            <label>主色调</label><input class="input" type="color" value="#d4a574" style="max-width:80px;padding:4px" />
+          </div>
+          <div class="form-row">
+            <label>背景色</label><input class="input" type="color" value="#0a0a0a" style="max-width:80px;padding:4px" />
+          </div>
+        </div>
+        <button class="btn btn-primary" id="save-appearance-btn">保存更改</button>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         视图 7: #users（用户管理）
+         ================================================================ -->
+    <div data-page="users" class="page-view">
+      <div class="page-toolbar">
+        <h2 class="page-heading">所有用户</h2>
+        <div class="toolbar-actions">
+          <button class="btn btn-primary btn-sm">添加新用户</button>
+        </div>
+      </div>
+      <div class="panel panel-table">
+        <table class="data-table">
+          <thead>
+            <tr><th>用户名</th><th>显示名称</th><th>邮箱</th><th>角色</th><th>文章数</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>admin</strong></td><td>管理员</td><td>admin@example.com</td><td><span class="tag tag-accent">管理员</span></td><td>5</td><td class="row-actions"><a href="#">编辑</a></td></tr>
+            <tr><td><strong>editor</strong></td><td>编辑小张</td><td>editor@example.com</td><td><span class="tag">编辑</span></td><td>0</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer"><div class="pagination-info">共 2 位用户</div></div>
+    </div>
+
+    <!-- ================================================================
+         视图 8: #tools（工具）
+         ================================================================ -->
+    <div data-page="tools" class="page-view">
+      <div class="content-grid-2col">
+        <div class="panel">
+          <h3 class="panel-title">导入 / 导出</h3>
+          <div class="tools-actions">
+            <button class="btn btn-primary btn-block" id="export-btn">导出内容</button>
+            <button class="btn btn-secondary btn-block" id="import-btn">导入内容</button>
+            <input type="file" id="import-file" hidden />
+          </div>
+        </div>
+        <div class="panel">
+          <h3 class="panel-title">其他工具</h3>
+          <div class="tools-actions">
+            <button class="btn btn-secondary btn-block">站点地图生成</button>
+            <button class="btn btn-secondary btn-block">RSS Feed</button>
+            <button class="btn btn-secondary btn-block">备份管理</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:var(--space-lg)">
+        <h3 class="panel-title">系统信息</h3>
+        <div class="system-info-grid">
+          <div class="sys-item"><span class="sys-label">Astro 版本</span><span class="sys-value">5.x</span></div>
+          <div class="sys-item"><span class="sys-label">Node 版本</span><span class="sys-value">22.x</span></div>
+          <div class="sys-item"><span class="sys-label">部署平台</span><span class="sys-value">GitHub Pages</span></div>
+          <div class="sys-item"><span class="sys-label">站点域名</span><span class="sys-value">msoceo.github.io</span></div>
+          <div class="sys-item"><span class="sys-label">主题</span><span class="sys-value">墨影 Monoshade</span></div>
+          <div class="sys-item"><span class="sys-label">PHP 版本</span><span class="sys-value">N/A (静态站点)</span></div>
+          <div class="sys-item"><span class="sys-label">数据库</span><span class="sys-value">N/A (文件系统)</span></div>
+          <div class="sys-item"><span class="sys-label">最后构建</span><span class="sys-value">2026-06-15</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         视图 9: #settings（设置）
+         ================================================================ -->
+    <div data-page="settings" class="page-view">
+      <form id="settings-form">
+        <!-- 常规 -->
+        <div class="panel settings-panel">
+          <h3 class="panel-title">常规设置</h3>
+          <div class="form-row"><label>站点标题</label><input class="input" type="text" value="枕星" /></div>
+          <div class="form-row"><label>副标题</label><input class="input" type="text" value="手工筛选，记录优质站点" /></div>
+          <div class="form-row"><label>站点地址</label><input class="input" type="text" value="https://msoceo.github.io" /></div>
+          <div class="form-row"><label>管理邮箱</label><input class="input" type="email" value="admin@example.com" /></div>
+          <div class="form-row"><label>时区</label><select class="input"><option>Asia/Shanghai</option><option>UTC</option></select></div>
+          <div class="form-row"><label>语言</label><select class="input"><option>简体中文</option><option>English</option></select></div>
+        </div>
+
+        <!-- 撰写 -->
+        <div class="panel settings-panel">
+          <h3 class="panel-title">撰写设置</h3>
+          <div class="form-row"><label>默认分类</label><select class="input"><option>技术</option><option>教程</option><option>随笔</option></select></div>
+          <div class="form-row"><label>默认文章格式</label><select class="input"><option>标准</option><option>图片</option><option>引用</option></select></div>
+          <div class="form-row"><label>Markdown 编辑器</label><input type="checkbox" checked /> 启用</div>
+        </div>
+
+        <!-- 阅读 -->
+        <div class="panel settings-panel">
+          <h3 class="panel-title">阅读设置</h3>
+          <div class="form-row"><label>首页显示</label><select class="input"><option>最新文章</option><option>静态页面</option></select></div>
+          <div class="form-row"><label>每页文章数</label><input class="input" type="number" value="10" /></div>
+          <div class="form-row"><label>RSS 显示条数</label><input class="input" type="number" value="10" /></div>
+          <div class="form-row"><label>搜索引擎可见性</label><input type="checkbox" checked /> 允许</div>
+        </div>
+
+        <!-- 讨论 -->
+        <div class="panel settings-panel">
+          <h3 class="panel-title">讨论设置</h3>
+          <div class="form-row"><label>启用评论</label><input type="checkbox" checked /> 开</div>
+          <div class="form-row"><label>评论需审核</label><input type="checkbox" checked /> 开</div>
+          <div class="form-row"><label>评论通知</label><input type="checkbox" checked /> 开</div>
+          <div class="form-row"><label>禁止词汇列表</label><textarea class="input textarea" rows="2" placeholder="每行一个词汇"></textarea></div>
+        </div>
+
+        <!-- 媒体 -->
+        <div class="panel settings-panel">
+          <h3 class="panel-title">媒体设置</h3>
+          <div class="form-row-inline">
+            <label>缩略图尺寸</label><input class="input" type="number" value="150" style="width:80px" /> × <input class="input" type="number" value="150" style="width:80px" />
+          </div>
+          <div class="form-row-inline">
+            <label>大图尺寸</label><input class="input" type="number" value="1024" style="width:80px" /> × <input class="input" type="number" value="1024" style="width:80px" />
+          </div>
+          <div class="form-row"><label>上传大小限制</label><input class="input" type="number" value="10" /> MB</div>
+        </div>
+
+        <!-- 固定链接 -->
+        <div class="panel settings-panel">
+          <h3 class="panel-title">固定链接设置</h3>
+          <div class="form-row"><label><input type="radio" name="permalink" /> 朴素型</label><span class="text-muted">/?p=123</span></div>
+          <div class="form-row"><label><input type="radio" name="permalink" /> 日期和名称</label><span class="text-muted">/2026/06/15/sample-post/</span></div>
+          <div class="form-row"><label><input type="radio" name="permalink" checked /> 文章名</label><span class="text-muted">/sample-post/</span></div>
+          <div class="form-row"><label><input type="radio" name="permalink" /> 自定义结构</label><input class="input" type="text" placeholder="/%postname%/" style="width:200px;margin-left:8px" /></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="save-settings-btn">保存设置</button>
+      </form>
+    </div>
+
+    <!-- ================================================================
+         视图 10: #navlinks（导航站管理）
+         ================================================================ -->
+    <div data-page="navlinks" class="page-view">
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent:#3b82f6"><div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div><div class="stat-info"><div class="stat-value">227</div><div class="stat-label">总站点</div></div></div>
+        <div class="stat-card" style="--accent:#10b981"><div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><div class="stat-info"><div class="stat-value">12</div><div class="stat-label">分类数</div></div></div>
+        <div class="stat-card" style="--accent:#f59e0b"><div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10M12 2a15.3 15.3 0 00-4 10 15.3 15.3 0 004 10"/></svg></div><div class="stat-info"><div class="stat-value">136</div><div class="stat-label">AI 工具·国内</div></div></div>
+        <div class="stat-card" style="--accent:#8b5cf6"><div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10"/></svg></div><div class="stat-info"><div class="stat-value">91</div><div class="stat-label">AI 工具·国外</div></div></div>
+      </div>
+
+      <div class="content-grid-2col">
+        <div class="panel">
+          <h3 class="panel-title">分类管理</h3>
+          <table class="data-table">
+            <thead><tr><th>分类名</th><th>站点数</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>AI 工具·国内</td><td>136</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>AI 工具·国外</td><td>91</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>开发技术</td><td>22</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>设计创意</td><td>16</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>常用工具</td><td>15</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>学习资源</td><td>12</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>阅读资讯</td><td>10</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>开源项目</td><td>9</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>影音娱乐</td><td>7</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>效率办公</td><td>5</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>生活服务</td><td>3</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+              <tr><td>主机服务</td><td>1</td><td class="row-actions"><a href="#">编辑</a> | <a href="#" class="text-danger">删除</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel-group">
+          <div class="panel">
+            <h3 class="panel-title">快捷操作</h3>
+            <div class="quick-actions">
+              <button class="btn-action">添加站点</button>
+              <button class="btn-action">批量导入</button>
+              <button class="btn-action" id="rescrape-btn">重新抓取</button>
+              <button class="btn-action" id="export-json-btn">导出 JSON</button>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 class="panel-title">最近添加</h3>
             <table class="data-table">
-              <thead>
-                <tr>
-                  <th>标题</th>
-                  <th>分类</th>
-                  <th>日期</th>
-                  <th>状态</th>
-                </tr>
-              </thead>
+              <thead><tr><th>名称</th><th>分类</th><th>时间</th></tr></thead>
               <tbody>
-                <tr>
-                  <td>First post</td>
-                  <td>技术</td>
-                  <td>2022-07-08</td>
-                  <td><span class="status status-published">已发布</span></td>
-                </tr>
-                <tr>
-                  <td>Markdown Style Guide</td>
-                  <td>教程</td>
-                  <td>2024-06-19</td>
-                  <td><span class="status status-published">已发布</span></td>
-                </tr>
-                <tr>
-                  <td>Second post</td>
-                  <td>技术</td>
-                  <td>2022-07-15</td>
-                  <td><span class="status status-published">已发布</span></td>
-                </tr>
-                <tr>
-                  <td>Third post</td>
-                  <td>技术</td>
-                  <td>2022-07-22</td>
-                  <td><span class="status status-draft">草稿</span></td>
-                </tr>
-                <tr>
-                  <td>Astro 5 升级笔记</td>
-                  <td>开发</td>
-                  <td>2026-06-10</td>
-                  <td><span class="status status-draft">草稿</span></td>
-                </tr>
+                <tr><td><a href="#">OpenAI</a></td><td>AI 工具·国外</td><td>06-15</td></tr>
+                <tr><td><a href="#">文心一言</a></td><td>AI 工具·国内</td><td>06-14</td></tr>
+                <tr><td><a href="#">GitHub</a></td><td>开发技术</td><td>06-13</td></tr>
+                <tr><td><a href="#">Figma</a></td><td>设计创意</td><td>06-12</td></tr>
+                <tr><td><a href="#">Vercel</a></td><td>主机服务</td><td>06-11</td></tr>
+                <tr><td><a href="#">Notion</a></td><td>效率办公</td><td>06-10</td></tr>
+                <tr><td><a href="#">StackBlitz</a></td><td>开发技术</td><td>06-09</td></tr>
+                <tr><td><a href="#">Dribbble</a></td><td>设计创意</td><td>06-08</td></tr>
               </tbody>
             </table>
-          </div>
-
-          <!-- 右列: 快速操作 + 最近评论 -->
-          <div class="panel-group">
-            <div class="panel panel-actions">
-              <h3 class="panel-title">快速操作</h3>
-              <div class="quick-actions">
-                <button class="btn-action">写文章</button>
-                <button class="btn-action">新建页面</button>
-                <button class="btn-action">上传媒体</button>
-                <button class="btn-action">管理评论</button>
-              </div>
-            </div>
-            <div class="panel panel-comments">
-              <h3 class="panel-title">最近评论</h3>
-              <ul class="comment-list">
-                <li class="comment-item">
-                  <span class="comment-author">访客_张三</span>
-                  <span class="comment-text">好文章，学习了！</span>
-                  <span class="comment-meta">First post · 2 天前</span>
-                </li>
-                <li class="comment-item">
-                  <span class="comment-author">访客_李四</span>
-                  <span class="comment-text">请问 Markdown 支持表格吗？</span>
-                  <span class="comment-meta">Markdown Style Guide · 5 天前</span>
-                </li>
-                <li class="comment-item pending">
-                  <span class="comment-author">访客_Wang</span>
-                  <span class="comment-text">期待更多内容更新</span>
-                  <span class="comment-meta">Second post · 1 周前</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- 系统信息 -->
-        <div class="panel panel-system">
-          <h3 class="panel-title">系统信息</h3>
-          <div class="system-info-grid">
-            <div class="sys-item">
-              <span class="sys-label">Astro 版本</span>
-              <span class="sys-value">5.x</span>
-            </div>
-            <div class="sys-item">
-              <span class="sys-label">部署方式</span>
-              <span class="sys-value">GitHub Pages</span>
-            </div>
-            <div class="sys-item">
-              <span class="sys-label">主题</span>
-              <span class="sys-value">墨影 Monoshade</span>
-            </div>
-            <div class="sys-item">
-              <span class="sys-label">最后更新</span>
-              <span class="sys-value">2026-06-15</span>
-            </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
+
+  </div><!-- /.admin-content -->
+</div><!-- /.admin-main -->
+
+</body>
 </html>
 
 <style>
   /* ============================================
-     Admin Layout — CMS 仪表板
-     墨影暗色主题 + 琥珀金强调色
+     Admin Layout — CMS 仪表板 暗色+琥珀金
      ============================================ */
-
-  .admin-body {
-    display: flex;
-    min-height: 100vh;
-    background: var(--ink-5, #0d0d0d);
-    font-family: var(--font-body);
-    color: var(--ink-70);
+  :root {
+    --sidebar-w: 240px;
+    --topbar-h: 60px;
   }
-
+  .admin-body {
+    display: flex; min-height: 100vh;
+    background: var(--ink-0); color: var(--ink-70);
+    font-family: var(--font-body);
+  }
   /* ---- 侧边栏 ---- */
   .admin-sidebar {
-    width: 240px;
-    min-width: 240px;
-    background: #1a1a2e;
-    display: flex;
-    flex-direction: column;
+    width: var(--sidebar-w); min-width: var(--sidebar-w);
+    background: #1a1a2e; display: flex; flex-direction: column;
     border-right: 1px solid rgba(255,255,255,0.06);
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 100;
-    overflow-y: auto;
+    position: fixed; top:0; left:0; bottom:0; z-index:100; overflow-y:auto;
   }
-
   .sidebar-brand {
     padding: var(--space-lg) var(--space-xl);
     border-bottom: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-sm);
+    display: flex; align-items: baseline; gap: var(--space-sm);
   }
-
-  .brand-name {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    font-weight: var(--weight-bold);
-    color: var(--amber-400);
-    letter-spacing: 0.04em;
+  .brand-name { font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--amber-400); letter-spacing: 0.04em; }
+  .brand-version { font-size: var(--text-xs); color: var(--ink-40); }
+  .sidebar-nav { flex:1; padding: var(--space-md) 0; }
+  .admin-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.7rem var(--space-xl); color: #a0a0b0; font-size: var(--text-sm);
+    text-decoration: none; transition: all var(--duration-fast) var(--ease-out); position: relative;
   }
-
-  .brand-version {
-    font-size: var(--text-xs);
-    color: var(--ink-40);
-  }
-
-  .sidebar-nav {
-    flex: 1;
-    padding: var(--space-md) 0;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: 0.7rem var(--space-xl);
-    color: #a0a0b0;
-    font-size: var(--text-sm);
-    text-decoration: none;
-    transition: all var(--duration-fast) var(--ease-out);
-    position: relative;
-  }
-
-  .nav-item:hover {
-    color: var(--ink-90);
-    background: rgba(255,255,255,0.04);
-  }
-
-  .nav-item.active {
-    color: var(--amber-400);
-    background: rgba(212,165,116,0.08);
-  }
-
-  .nav-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 4px;
-    bottom: 4px;
-    width: 3px;
-    background: var(--amber-400);
-    border-radius: 0 2px 2px 0;
-  }
-
-  .nav-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--amber-400);
-  }
-
-  .nav-badge {
-    margin-left: auto;
-    background: rgba(212,165,116,0.15);
-    color: var(--amber-400);
-    font-size: 11px;
-    padding: 1px 7px;
-    border-radius: var(--radius-full);
-    line-height: 1.5;
-  }
-
-  .sidebar-footer {
-    padding: var(--space-md) var(--space-xl);
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .btn-logout {
-    width: 100%;
-    padding: 0.5rem 0;
-    background: transparent;
-    border: 1px solid rgba(229,72,77,0.2);
-    border-radius: var(--radius-md);
-    color: var(--error);
-    font-size: var(--text-sm);
-    cursor: pointer;
-    transition: all var(--duration-fast) var(--ease-out);
-  }
-
-  .btn-logout:hover {
-    background: rgba(229,72,77,0.1);
-  }
+  .admin-nav-item:hover { color: var(--ink-90); background: rgba(255,255,255,0.04); }
+  .admin-nav-item.active { color: var(--amber-400); background: rgba(212,165,116,0.08); }
+  .admin-nav-item.active::before { content:''; position:absolute; left:0; top:4px; bottom:4px; width:3px; background:var(--amber-400); border-radius:0 2px 2px 0; }
+  .nav-icon { width:18px; height:18px; flex-shrink:0; }
+  .nav-badge { margin-left:auto; background:rgba(212,165,116,0.15); color:var(--amber-400); font-size:11px; padding:1px 7px; border-radius:var(--radius-full); line-height:1.5; }
+  .sidebar-footer { padding:var(--space-md) var(--space-xl); border-top:1px solid rgba(255,255,255,0.06); }
+  .btn-logout { width:100%; padding:0.5rem 0; background:transparent; border:1px solid rgba(229,72,77,0.2); border-radius:var(--radius-md); color:var(--error); font-size:var(--text-sm); cursor:pointer; transition:all var(--duration-fast); }
+  .btn-logout:hover { background:rgba(229,72,77,0.1); }
 
   /* ---- 主内容区 ---- */
-  .admin-main {
-    flex: 1;
-    margin-left: 240px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+  .admin-main { flex:1; margin-left:var(--sidebar-w); display:flex; flex-direction:column; min-height:100vh; }
+  .admin-topbar { display:flex; align-items:center; padding:0 var(--space-xl); height:var(--topbar-h); background:var(--ink-10); border-bottom:1px solid var(--ink-20); gap:var(--space-lg); position:sticky; top:0; z-index:50; }
+  .hamburger { display:none; flex-direction:column; gap:4px; background:none; border:none; cursor:pointer; padding:4px; }
+  .hamburger span { display:block; width:20px; height:2px; background:var(--ink-50); border-radius:2px; }
+  .topbar-breadcrumb { font-size:var(--text-sm); color:var(--ink-50); }
+  .topbar-actions { margin-left:auto; display:flex; align-items:center; gap:var(--space-lg); }
+  .topbar-icon { cursor:pointer; opacity:0.7; color:var(--ink-50); transition:opacity var(--duration-fast); }
+  .topbar-icon:hover { opacity:1; }
+  .topbar-avatar { width:36px; height:36px; border-radius:50%; background:var(--amber-400); color:var(--ink-0); display:flex; align-items:center; justify-content:center; font-size:var(--text-xs); font-weight:var(--weight-semibold); cursor:pointer; }
+  .admin-content { flex:1; padding:var(--space-xl); background:var(--ink-5, #0d0d0d); }
 
-  .admin-topbar {
-    display: flex;
-    align-items: center;
-    padding: 0 var(--space-xl);
-    height: 60px;
-    background: var(--ink-10);
-    border-bottom: 1px solid var(--ink-20);
-    gap: var(--space-lg);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-  }
-
-  .hamburger span {
-    display: block;
-    width: 20px;
-    height: 2px;
-    background: var(--ink-50);
-    border-radius: 2px;
-    transition: all var(--duration-fast) var(--ease-out);
-  }
-
-  .topbar-breadcrumb {
-    font-size: var(--text-sm);
-    color: var(--ink-50);
-  }
-
-  .topbar-actions {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: var(--space-lg);
-  }
-
-  .topbar-icon {
-    font-size: 1.2rem;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity var(--duration-fast);
-  }
-
-  .topbar-icon:hover { opacity: 1; }
-
-  .topbar-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--amber-400);
-    color: var(--ink-0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-xs);
-    font-weight: var(--weight-semibold);
-    cursor: pointer;
-  }
-
-  /* ---- 内容区 ---- */
-  .admin-content {
-    flex: 1;
-    padding: var(--space-xl);
-    background: var(--ink-5, #0d0d0d);
-  }
+  /* ---- 页面视图 ---- */
+  .page-view { display:none; }
+  .page-view.active { display:block; }
 
   /* ---- 统计卡片 ---- */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-lg);
-    margin-bottom: var(--space-xl);
-  }
-
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-lg); margin-bottom:var(--space-xl); }
   .stat-card {
-    background: var(--ink-10);
-    border: 1px solid var(--ink-20);
-    border-left: 3px solid var(--amber-400);
-    border-radius: var(--radius-md);
-    padding: var(--space-lg);
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-md);
-    transition: all var(--duration-fast) var(--ease-out);
+    background:var(--ink-10); border:1px solid var(--ink-20); border-left:4px solid var(--accent);
+    border-radius:12px; padding:var(--space-lg); display:flex; align-items:flex-start; gap:var(--space-md);
+    transition:all var(--duration-fast);
   }
-
-  .stat-card:hover {
-    border-color: var(--ink-30);
-    box-shadow: var(--shadow-md);
-  }
-
-  .stat-icon {
-    font-size: 1.8rem;
-    line-height: 1;
-    opacity: 0.8;
-  }
-
-  .stat-value {
-    font-family: var(--font-mono);
-    font-size: var(--text-2xl);
-    font-weight: var(--weight-bold);
-    color: var(--ink-90);
-    line-height: 1.1;
-  }
-
-  .stat-label {
-    font-size: var(--text-xs);
-    color: var(--ink-50);
-    margin-top: 2px;
-  }
-
-  .stat-sub {
-    font-size: 11px;
-    color: var(--ink-40);
-    margin-top: 1px;
-  }
-
-  /* ---- 两列布局 ---- */
-  .content-grid {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: var(--space-lg);
-    margin-bottom: var(--space-xl);
-  }
+  .stat-card:hover { border-color:var(--ink-30); box-shadow:var(--shadow-md); }
+  .stat-icon { color:var(--accent); flex-shrink:0; margin-top:2px; }
+  .stat-value { font-family:var(--font-mono); font-size:32px; font-weight:var(--weight-bold); color:var(--ink-90); line-height:1.1; }
+  .stat-label { font-size:var(--text-xs); color:var(--ink-50); margin-top:2px; }
+  .stat-sub { font-size:11px; color:var(--ink-40); margin-top:1px; }
 
   /* ---- 面板 ---- */
-  .panel {
-    background: var(--ink-10);
-    border: 1px solid var(--ink-20);
-    border-radius: var(--radius-md);
-    padding: var(--space-lg);
-  }
+  .panel { background:var(--ink-10); border:1px solid var(--ink-20); border-radius:12px; padding:20px; margin-bottom:var(--space-lg); }
+  .panel-title { font-size:var(--text-base); font-weight:var(--weight-semibold); color:var(--ink-90); margin-bottom:var(--space-md); padding-bottom:var(--space-sm); border-bottom:1px solid var(--ink-20); }
+  .content-grid-2col { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-lg); margin-bottom:var(--space-lg); }
+  .panel-group { display:flex; flex-direction:column; gap:var(--space-lg); }
 
-  .panel-title {
-    font-size: var(--text-base);
-    font-weight: var(--weight-semibold);
-    color: var(--ink-90);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--ink-20);
-  }
+  /* ---- 页面工具栏 ---- */
+  .page-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-lg); flex-wrap:wrap; gap:var(--space-md); }
+  .page-heading { font-size:var(--text-2xl); color:var(--ink-90); margin:0 0 var(--space-lg); }
+  .toolbar-actions { display:flex; gap:var(--space-sm); align-items:center; flex-wrap:wrap; }
+  .toolbar-input { width:200px; }
+  .toolbar-select { width:auto; }
 
-  .panel-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-lg);
-  }
+  /* ---- 表格 ---- */
+  .panel-table { padding:0; overflow-x:auto; }
+  .data-table { width:100%; border-collapse:collapse; font-size:var(--text-sm); }
+  .data-table th { text-align:left; padding:0.6rem 0.75rem; color:var(--ink-40); font-weight:var(--weight-medium); font-size:var(--text-xs); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid var(--ink-20); background:var(--ink-15); }
+  .data-table td { padding:0.65rem 0.75rem; color:var(--ink-70); border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:middle; }
+  .data-table tbody tr:hover { background:rgba(255,255,255,0.03); }
+  .row-actions { opacity:0; transition:opacity var(--duration-fast); font-size:var(--text-xs); }
+  .data-table tbody tr:hover .row-actions { opacity:1; }
+  .row-actions a { margin:0 4px; }
+  .text-muted { color:var(--ink-40); font-size:11px; }
+  .text-danger { color:var(--error); }
+  .text-success { color:var(--success); }
+  .table-footer { display:flex; justify-content:space-between; align-items:center; padding:var(--space-md) var(--space-lg); }
+  .bulk-actions { display:flex; gap:var(--space-sm); align-items:center; }
+  .pagination-info { font-size:var(--text-sm); color:var(--ink-50); }
 
-  /* ---- 数据表格 ---- */
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--text-sm);
-  }
+  /* ---- 状态标签 ---- */
+  .status { font-size:11px; padding:2px 8px; border-radius:var(--radius-full); font-weight:var(--weight-medium); white-space:nowrap; }
+  .status-published { background:rgba(61,186,130,0.12); color:var(--success); }
+  .status-draft { background:rgba(136,136,136,0.12); color:var(--ink-50); }
+  .status-pending { background:rgba(245,158,11,0.12); color:var(--warn); }
 
-  .data-table th {
-    text-align: left;
-    padding: 0.5rem 0.75rem;
-    color: var(--ink-40);
-    font-weight: var(--weight-medium);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid var(--ink-20);
-  }
+  /* ---- 标签 ---- */
+  .tag { display:inline-flex; padding:0.15em 0.6em; font-size:var(--text-xs); font-weight:var(--weight-medium); border-radius:var(--radius-full); background:var(--ink-15); color:var(--ink-50); border:1px solid var(--ink-20); white-space:nowrap; }
+  .tag-accent { background:rgba(212,165,116,0.1); color:var(--amber-400); border-color:rgba(212,165,116,0.2); }
 
-  .data-table td {
-    padding: 0.6rem 0.75rem;
-    color: var(--ink-70);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
+  /* ---- 按钮 ---- */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:var(--space-sm); padding:0.5rem 1rem; font-family:var(--font-body); font-size:var(--text-sm); font-weight:var(--weight-medium); border:none; border-radius:var(--radius-md); cursor:pointer; transition:all var(--duration-fast); text-decoration:none; line-height:1; white-space:nowrap; }
+  .btn-primary { background:var(--amber-400); color:var(--ink-0); }
+  .btn-primary:hover { background:var(--amber-500); }
+  .btn-secondary { background:var(--ink-15); color:var(--ink-70); border:1px solid var(--ink-20); }
+  .btn-secondary:hover { background:var(--ink-20); color:var(--ink-90); }
+  .btn-sm { padding:0.4rem 0.8rem; font-size:var(--text-xs); }
+  .btn-lg { padding:0.75rem 1.5rem; font-size:var(--text-base); }
+  .btn-block { width:100%; margin-bottom:var(--space-sm); }
 
-  .data-table tbody tr:hover {
-    background: rgba(255,255,255,0.03);
-  }
+  /* ---- 输入框 ---- */
+  .input { width:100%; padding:0.6rem 0.75rem; background:var(--ink-15); border:1px solid var(--ink-20); border-radius:var(--radius-md); color:var(--ink-90); font-family:var(--font-body); font-size:var(--text-sm); transition:all var(--duration-fast); outline:none; }
+  .input::placeholder { color:var(--ink-40); }
+  .input:focus { border-color:var(--amber-400); box-shadow:0 0 0 3px rgba(212,165,116,0.1); }
+  .textarea { resize:vertical; min-height:60px; }
 
-  .status {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
-    font-weight: var(--weight-medium);
-  }
+  /* ---- 健康状态 ---- */
+  .health-list { display:flex; flex-direction:column; gap:var(--space-sm); }
+  .health-item { display:flex; align-items:center; gap:8px; font-size:var(--text-sm); color:var(--ink-70); }
+  .health-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .health-dot.ok { background:var(--success); }
 
-  .status-published {
-    background: rgba(61,186,130,0.12);
-    color: var(--success);
-  }
+  /* ---- 快速草稿 ---- */
+  .quick-draft { display:flex; flex-direction:column; gap:var(--space-sm); }
+  .quick-draft .input { font-size:var(--text-sm); }
 
-  .status-draft {
-    background: rgba(136,136,136,0.12);
-    color: var(--ink-50);
-  }
+  /* ---- 时间线 ---- */
+  .timeline { position:relative; padding-left:var(--space-lg); }
+  .timeline::before { content:''; position:absolute; left:5px; top:0; bottom:0; width:2px; background:var(--ink-20); }
+  .tl-item { position:relative; padding:var(--space-sm) 0 var(--space-sm) var(--space-lg); display:flex; flex-wrap:wrap; align-items:baseline; gap:8px; }
+  .tl-dot { position:absolute; left:-3px; top:14px; width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .tl-dot.post { background:#3b82f6; }
+  .tl-dot.page { background:#10b981; }
+  .tl-dot.comment { background:#f59e0b; }
+  .tl-dot.setting { background:#8b5cf6; }
+  .tl-dot.build { background:#ef4444; }
+  .tl-time { font-size:var(--text-xs); color:var(--ink-40); min-width:70px; }
+  .tl-text { font-size:var(--text-sm); color:var(--ink-70); }
+
+  /* ---- 评论筛选 ---- */
+  .comment-filters { display:flex; gap:var(--space-sm); margin-bottom:var(--space-lg); flex-wrap:wrap; }
+  .comment-filter-btn { padding:0.4rem 0.8rem; background:var(--ink-15); border:1px solid var(--ink-20); border-radius:var(--radius-md); color:var(--ink-50); font-size:var(--text-sm); cursor:pointer; transition:all var(--duration-fast); }
+  .comment-filter-btn:hover { color:var(--ink-90); }
+  .comment-filter-btn.active { background:var(--amber-400); color:var(--ink-0); border-color:var(--amber-400); }
+  .c-count { font-size:11px; font-weight:var(--weight-semibold); }
+  .c-pending { color:var(--warn); }
+
+  /* ---- 媒体库 ---- */
+  .view-toggle { display:flex; gap:2px; }
+  .view-btn.active { background:var(--amber-400); color:var(--ink-0); border-color:var(--amber-400); }
+  .media-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-md); }
+  .media-card { background:var(--ink-10); border:1px solid var(--ink-20); border-radius:12px; overflow:hidden; transition:all var(--duration-fast); }
+  .media-card:hover { border-color:var(--amber-400); }
+  .media-thumb { height:140px; display:flex; align-items:center; justify-content:center; }
+  .media-info { padding:var(--space-sm) var(--space-md); }
+  .media-name { display:block; font-size:var(--text-xs); font-weight:var(--weight-medium); color:var(--ink-70); margin-bottom:2px; word-break:break-all; }
+  .media-meta { font-size:11px; color:var(--ink-40); }
+
+  /* ---- 主题 ---- */
+  .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-lg); margin-bottom:var(--space-xl); }
+  .theme-card { background:var(--ink-10); border:2px solid var(--ink-20); border-radius:12px; overflow:hidden; transition:all var(--duration-fast); }
+  .theme-card:hover { border-color:var(--ink-30); }
+  .theme-card.active-theme { border-color:var(--amber-400); }
+  .theme-thumb { height:120px; display:flex; align-items:flex-end; justify-content:flex-end; padding:8px; position:relative; }
+  .theme-label { font-size:10px; padding:2px 8px; background:var(--amber-400); color:var(--ink-0); border-radius:var(--radius-sm); font-weight:var(--weight-semibold); }
+  .theme-info { padding:var(--space-md); }
+  .theme-info p { font-size:var(--text-xs); color:var(--ink-50); margin:4px 0 var(--space-sm); }
+  .theme-info strong { font-size:var(--text-sm); color:var(--ink-90); }
+
+  /* ---- 设置 ---- */
+  .settings-panel { margin-bottom:var(--space-lg); }
+  .settings-group { margin-bottom:var(--space-lg); }
+  .settings-group h4 { font-size:var(--text-sm); color:var(--amber-400); margin-bottom:var(--space-md); }
+  .form-row { margin-bottom:var(--space-md); display:flex; align-items:center; gap:var(--space-md); }
+  .form-row label { min-width:120px; font-size:var(--text-sm); color:var(--ink-50); }
+  .form-row-inline { margin-bottom:var(--space-md); display:flex; align-items:center; gap:var(--space-sm); }
+  .form-row-inline label { min-width:120px; font-size:var(--text-sm); color:var(--ink-50); }
+  .form-row input[type="checkbox"], .form-row-inline input[type="checkbox"] { accent-color:var(--amber-400); }
 
   /* ---- 快速操作 ---- */
-  .quick-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-sm);
-  }
+  .quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-sm); }
+  .btn-action { padding:0.6rem 0.8rem; background:var(--ink-15); border:1px solid var(--ink-20); border-radius:var(--radius-md); color:var(--ink-70); font-size:var(--text-sm); cursor:pointer; transition:all var(--duration-fast); text-align:center; }
+  .btn-action:hover { border-color:var(--amber-400); color:var(--amber-400); background:rgba(212,165,116,0.06); }
 
-  .btn-action {
-    padding: 0.6rem 0.8rem;
-    background: var(--ink-15);
-    border: 1px solid var(--ink-20);
-    border-radius: var(--radius-md);
-    color: var(--ink-70);
-    font-size: var(--text-sm);
-    cursor: pointer;
-    transition: all var(--duration-fast) var(--ease-out);
-    text-align: center;
-  }
-
-  .btn-action:hover {
-    border-color: var(--amber-400);
-    color: var(--amber-400);
-    background: rgba(212,165,116,0.06);
-  }
-
-  /* ---- 评论列表 ---- */
-  .comment-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    max-height: 260px;
-    overflow-y: auto;
-  }
-
-  .comment-item {
-    padding: var(--space-sm) var(--space-md);
-    background: var(--ink-15);
-    border-radius: var(--radius-sm);
-    border-left: 2px solid transparent;
-  }
-
-  .comment-item.pending {
-    border-left-color: var(--warn);
-  }
-
-  .comment-author {
-    font-weight: var(--weight-semibold);
-    color: var(--ink-70);
-    font-size: var(--text-sm);
-  }
-
-  .comment-text {
-    display: block;
-    color: var(--ink-50);
-    font-size: var(--text-xs);
-    margin-top: 2px;
-  }
-
-  .comment-meta {
-    display: block;
-    color: var(--ink-40);
-    font-size: 11px;
-    margin-top: 4px;
-  }
+  /* ---- 工具 ---- */
+  .tools-actions { display:flex; flex-direction:column; gap:var(--space-sm); }
 
   /* ---- 系统信息 ---- */
-  .panel-system {
-    margin-top: 0;
-  }
-
-  .system-info-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-md);
-  }
-
-  .sys-item {
-    text-align: center;
-    padding: var(--space-md);
-    background: var(--ink-15);
-    border-radius: var(--radius-sm);
-  }
-
-  .sys-label {
-    display: block;
-    font-size: var(--text-xs);
-    color: var(--ink-40);
-    margin-bottom: 4px;
-  }
-
-  .sys-value {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
-    color: var(--amber-400);
-  }
+  .system-info-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-md); }
+  .sys-item { text-align:center; padding:var(--space-md); background:var(--ink-15); border-radius:var(--radius-sm); }
+  .sys-label { display:block; font-size:var(--text-xs); color:var(--ink-40); margin-bottom:4px; }
+  .sys-value { display:block; font-family:var(--font-mono); font-size:var(--text-sm); font-weight:var(--weight-medium); color:var(--amber-400); }
 
   /* ---- 响应式 ---- */
-  @media (max-width: 1024px) {
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .content-grid {
-      grid-template-columns: 1fr;
-    }
-    .system-info-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  @media (max-width:1024px) {
+    .stats-grid { grid-template-columns:repeat(2,1fr); }
+    .content-grid-2col { grid-template-columns:1fr; }
+    .theme-grid { grid-template-columns:repeat(2,1fr); }
+    .media-grid { grid-template-columns:repeat(3,1fr); }
+    .system-info-grid { grid-template-columns:repeat(2,1fr); }
   }
-
-  @media (max-width: 768px) {
-    .admin-sidebar {
-      transform: translateX(-100%);
-      transition: transform var(--duration-slow) var(--ease-out);
-    }
-    .admin-sidebar.open {
-      transform: translateX(0);
-    }
-    .admin-main {
-      margin-left: 0;
-    }
-    .hamburger {
-      display: flex;
-    }
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
-    .system-info-grid {
-      grid-template-columns: 1fr 1fr;
-    }
+  @media (max-width:768px) {
+    .admin-sidebar { transform:translateX(-100%); transition:transform var(--duration-slow); }
+    .admin-sidebar.open { transform:translateX(0); }
+    .admin-main { margin-left:0; }
+    .hamburger { display:flex; }
+    .stats-grid { grid-template-columns:1fr; }
+    .theme-grid { grid-template-columns:1fr; }
+    .media-grid { grid-template-columns:repeat(2,1fr); }
+    .system-info-grid { grid-template-columns:1fr 1fr; }
+    .page-toolbar { flex-direction:column; align-items:flex-start; }
   }
 </style>
 
 <script>
+  // ========== 路由系统 ==========
+  const pageMap = {
+    dashboard: '仪表板 / 概览',
+    posts: '文章 / 所有文章',
+    pages: '页面 / 所有页面',
+    media: '媒体库 / 概览',
+    comments: '评论 / 所有评论',
+    appearance: '外观 / 主题',
+    users: '用户 / 所有用户',
+    tools: '工具 / 系统信息',
+    settings: '设置 / 常规',
+    navlinks: '导航站 / 概览',
+  };
+
+  function navigate() {
+    const hash = (location.hash.slice(1) || 'dashboard').split('?')[0];
+    // 更新页面视图
+    document.querySelectorAll('[data-page]').forEach(p => p.classList.remove('active'));
+    const target = document.querySelector(`[data-page="${hash}"]`);
+    if (target) target.classList.add('active');
+    // 更新侧边栏
+    document.querySelectorAll('.admin-nav-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.hash === hash);
+    });
+    // 更新面包屑
+    document.getElementById('breadcrumb').textContent = pageMap[hash] || hash;
+  }
+
+  window.addEventListener('hashchange', navigate);
+  navigate();
+
+  // 侧边栏菜单点击
+  document.querySelectorAll('.admin-nav-item').forEach(item => {
+    item.addEventListener('click', (e) => { /* hash 自动触发 */ });
+  });
+
   // 汉堡菜单
-  const hamburger = document.getElementById('hamburger');
-  const sidebar = document.getElementById('sidebar');
-  hamburger.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+  // 点击内容区关闭侧边栏
+  document.getElementById('admin-main').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('admin-main')) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
   });
 
   // 退出登录
   document.getElementById('logout-btn').addEventListener('click', () => {
     localStorage.removeItem('zhenxing_auth');
     window.location.href = '/login';
+  });
+
+  // ---- 各视图交互 ----
+
+  // 快速草稿
+  document.getElementById('save-draft-btn')?.addEventListener('click', () => {
+    alert('草稿已保存（本地）');
+  });
+
+  // 评论筛选
+  document.querySelectorAll('.comment-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.comment-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // 媒体视图切换
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // 保存外观
+  document.getElementById('save-appearance-btn')?.addEventListener('click', () => {
+    alert('主题设置已保存（本地存储）');
+  });
+
+  // 保存设置
+  document.getElementById('settings-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('设置已保存（本地存储）');
+    const formData = {};
+    document.querySelectorAll('#settings-form input, #settings-form select, #settings-form textarea').forEach(el => {
+      if (el.type === 'checkbox') formData[el.closest('.form-row')?.querySelector('label')?.textContent || ''] = el.checked;
+      else if (el.type === 'radio' && !el.checked) return;
+      else if (el.name) formData[el.name] = el.value;
+    });
+    localStorage.setItem('zhenxing_settings', JSON.stringify(formData));
+  });
+
+  // 工具页 - 导出
+  document.getElementById('export-btn')?.addEventListener('click', () => {
+    alert('导出功能：将所有文章/页面导出为 JSON 文件（即将支持）');
+  });
+  document.getElementById('import-btn')?.addEventListener('click', () => {
+    document.getElementById('import-file')?.click();
+  });
+
+  // 导航站 - 重新抓取
+  document.getElementById('rescrape-btn')?.addEventListener('click', () => {
+    alert('正在重新抓取站点信息...模拟完成！');
+  });
+  document.getElementById('export-json-btn')?.addEventListener('click', () => {
+    alert('导航站数据已导出为 JSON！');
   });
 </script>
