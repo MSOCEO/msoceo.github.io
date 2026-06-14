@@ -672,23 +672,18 @@ const catsJson = JSON.stringify(CATS);
 
   // ===== 精选推荐 =====
   const featuredLinks = [
-    { name: 'ChatGPT', url: 'https://chatgpt.com', desc: '最强 AI 对话', icon: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64', accent: '#10b981', badge: '趋势', badgeBg: '#10b981' },
-    { name: 'GitHub', url: 'https://github.com', desc: '代码托管圣地', icon: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', accent: '#6366f1', badge: '必备', badgeBg: '#6366f1' },
-    { name: 'Figma', url: 'https://www.figma.com', desc: '设计协作工具', icon: 'https://www.google.com/s2/favicons?domain=figma.com&sz=64', accent: '#ec4899', badge: '推荐', badgeBg: '#ec4899' },
-    { name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: 'https://www.google.com/s2/favicons?domain=v2ex.com&sz=64', accent: '#f59e0b', badge: '热门', badgeBg: '#f59e0b' },
+    { name: 'ChatGPT', url: 'https://chatgpt.com', desc: '最强 AI 对话', icon: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64', accent: '#10b981' },
+    { name: 'GitHub', url: 'https://github.com', desc: '代码托管圣地', icon: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', accent: '#6366f1' },
+    { name: 'Figma', url: 'https://www.figma.com', desc: '设计协作工具', icon: 'https://www.google.com/s2/favicons?domain=figma.com&sz=64', accent: '#ec4899' },
+    { name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: 'https://www.google.com/s2/favicons?domain=v2ex.com&sz=64', accent: '#f59e0b' },
   ];
 
   const navFeatured = document.getElementById('navFeatured');
   navFeatured.innerHTML = featuredLinks.map((f, i) => `
-    <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer" class="nav-featured-card"
-       style="--feat-accent:${f.accent};animation-delay:${i * 100 + 100}ms"
-       onmousemove="this.style.setProperty('--mx', ((event.clientX-this.getBoundingClientRect().left)/this.offsetWidth*100)+'%');this.style.setProperty('--my', ((event.clientY-this.getBoundingClientRect().top)/this.offsetHeight*100)+'%')">
-      <img src="${f.icon}" class="nav-featured-icon" alt="" loading="lazy" width="36" height="36" onerror="this.style.display='none'">
-      <div class="nav-featured-info">
-        <span class="nav-featured-name">${esc(f.name)}</span>
-        <span class="nav-featured-desc">${esc(f.desc)}</span>
-      </div>
-      <span class="nav-featured-badge" style="--badge-bg:${f.badgeBg}">${f.badge}</span>
+    <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer" class="nav-featured-card" style="--feat-accent:${f.accent};animation-delay:${i * 50}ms">
+      <img src="${f.icon}" class="nav-featured-icon" alt="" loading="lazy" width="24" height="24" onerror="this.outerHTML='<span class=\'nav-featured-icon-fallback\' style=\'background:${f.accent}\'>${esc(f.name).charAt(0)}</span>'">
+      <span class="nav-featured-name">${esc(f.name)}</span>
+      <span class="nav-featured-desc">${esc(f.desc)}</span>
     </a>
   `).join('');
 
@@ -1016,109 +1011,81 @@ const catsJson = JSON.stringify(CATS);
   .nav-featured {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 36px;
+    gap: 6px;
+    margin-bottom: 24px;
   }
   .nav-featured-card {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 18px 22px;
-    border-radius: var(--radius);
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
     background: var(--nav-surface);
     border: 1px solid var(--nav-border);
-    border-left: 3px solid var(--feat-accent, #6366f1);
+    border-left: 3px solid var(--feat-accent, var(--nav-accent));
     text-decoration: none;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: feat-in 0.6s ease-out both;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: card-fade-in 0.45s ease-out both;
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
   }
-  .nav-featured-card::after {
-    content: '';
-    position: absolute;
-    inset: -20px;
-    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(99,102,241,0.08) 0%, transparent 50%);
-    opacity: 0;
-    transition: opacity 0.35s;
-    pointer-events: none;
-  }
-  .nav-featured-card:hover::after { opacity: 1; }
   .nav-featured-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 28px rgba(0,0,0,0.07);
-    border-color: var(--feat-accent, #6366f1);
+    background: var(--nav-surface-hover);
+    border-color: var(--feat-accent, var(--nav-accent));
+    transform: translateY(-1px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  [data-theme="dark"] .nav-featured-card:hover {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .nav-featured-card:hover .nav-featured-name {
+    color: var(--feat-accent, var(--nav-accent));
   }
   @keyframes feat-in {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes feat-border {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
   .nav-featured-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
     flex-shrink: 0;
-    transition: transform 0.3s ease;
+    transition: transform 0.25s ease;
   }
   .nav-featured-icon-fallback {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--feat-accent, var(--nav-accent));
     color: #fff;
-    font-size: 18px;
+    font-size: 11px;
     font-weight: 700;
     font-family: var(--font-mono);
     line-height: 1;
-    transition: transform 0.3s ease;
   }
-  .nav-featured-card:hover .nav-featured-icon { transform: scale(1.08) rotate(-2deg); }
-  .nav-featured-card:hover .nav-featured-icon-fallback { transform: scale(1.08) rotate(-2deg); }
-  .nav-featured-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
+  .nav-featured-card:hover .nav-featured-icon { transform: scale(1.1); }
+  .nav-featured-card:hover .nav-featured-icon-fallback { transform: scale(1.1); }
   .nav-featured-name {
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--nav-text);
     letter-spacing: 0.02em;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    transition: color 0.25s;
+    flex-shrink: 0;
   }
   .nav-featured-desc {
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--nav-text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .nav-featured-badge {
-    position: absolute;
-    top: -1px;
-    right: -1px;
-    font-size: 10.5px;
-    font-weight: 700;
-    padding: 3px 12px 3px 12px;
-    border-radius: 0 var(--radius) 0 var(--radius);
-    background: var(--badge-bg, var(--nav-accent));
-    color: #fff;
-    font-family: var(--font-mono);
-    letter-spacing: 0.06em;
-    z-index: 2;
+    flex: 1;
+    min-width: 0;
   }
 
   /* ===== 搜索 ===== */
@@ -1582,10 +1549,11 @@ const catsJson = JSON.stringify(CATS);
     .nav-hero { padding: 44px 0 28px; }
     .nav-hero-title { font-size: 30px; }
     .nav-search-wrap { max-width: 100%; }
-    .nav-featured { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .nav-featured-card { padding: 14px 16px; gap: 10px; }
-    .nav-featured-icon { width: 28px; height: 28px; border-radius: 8px; }
-    .nav-featured-name { font-size: 14px; }
+    .nav-featured { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+    .nav-featured-card { padding: 8px 10px; gap: 6px; }
+    .nav-featured-icon { width: 20px; height: 20px; border-radius: 4px; }
+    .nav-featured-name { font-size: 12.5px; }
+    .nav-featured-desc { font-size: 11px; }
     .nav-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     .nav-section { margin-bottom: 16px; padding: 14px 10px; border-radius: 10px; }
     .nav-section-header { margin-bottom: 10px; padding-bottom: 8px; }
