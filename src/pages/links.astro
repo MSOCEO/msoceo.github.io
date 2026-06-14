@@ -1,7 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 
-const title = '枕星·星图 | 导航';
+const title = '星舟 | 导航';
 const description = '星辰为引，链接为舟。手工甄选优质站点，无广告、无套路、无投毒。';
 
 const LINKS = [
@@ -390,7 +390,7 @@ const catsJson = JSON.stringify(CATS);
   <!-- 顶栏 -->
   <header class="nav-topbar">
     <div class="nav-topbar-inner">
-      <a href="/" class="nav-topbar-title" id="navHomeLink" title="拖拽我到浏览器书签栏，设为首页" draggable="true">枕星</a>
+      <a href="/" class="nav-topbar-title" id="navHomeLink" title="拖拽我到浏览器书签栏，设为首页" draggable="true"><span class="nav-logo-c">星</span><span class="nav-logo-c">舟</span></a>
 
       <span class="nav-topbar-date" id="navTopbarDate"></span>
       <button class="nav-theme-btn" id="themeToggle" aria-label="切换主题" title="切换深色/浅色主题">
@@ -417,7 +417,7 @@ const catsJson = JSON.stringify(CATS);
           <circle cx="32" cy="32" r="1" fill="currentColor" opacity="0.35"/>
         </svg>
       </div>
-      <h1 class="nav-hero-title">枕星 · 星图</h1>
+      <h1 class="nav-hero-title">星舟</h1>
       <p class="nav-hero-desc">星辰为引 · 链接为舟 · 手工甄别 · 持续更新</p>
 
       <!-- 搜索 -->
@@ -478,9 +478,14 @@ const catsJson = JSON.stringify(CATS);
   </main>
 
   <footer class="nav-footer">
-    <div class="nav-footer-badge">枕星</div>
-    <p class="nav-footer-desc">星辰为引，链接为舟 · 手工甄选，持续更新</p>
-    <p class="nav-footer-copy">&copy; 2026 枕星 · 保留所有权利</p>
+    <div class="nav-footer-badge">星舟</div>
+    <p class="nav-footer-desc">星辰为引 · 链接为舟 · 手工甄选 · 持续更新 — 不收录带广告投毒、付费收录、恶意跳转站点</p>
+    <p class="nav-footer-copy">&copy; 2026 星舟导航 · 保留所有权利</p>
+    <p class="nav-footer-icp">
+      <span class="nav-footer-icp-dot"></span>
+      <span>本站收录站点均来自公开互联网，版权归原作者所有</span>
+      <span class="nav-footer-icp-dot"></span>
+    </p>
   </footer>
 </body>
 </html>
@@ -899,14 +904,25 @@ const catsJson = JSON.stringify(CATS);
 
   .nav-topbar-title {
     font-size: 17px;
-    font-weight: 750;
+    font-weight: 600;
     color: var(--nav-text);
-    letter-spacing: 0.06em;
+    letter-spacing: 2px;
     font-family: var(--font-mono);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 2px;
+  }
+  .nav-topbar-title:hover { opacity: 0.85; }
+  /* Logo 单字霓虹 */
+  .nav-logo-c { display: inline-block; }
+  .nav-logo-c:nth-child(1) {
+    color: #c4b5fd;
+    text-shadow: 0 0 6px #a78bfa, 0 0 14px #7c3aed, 0 0 26px #7c3aed;
+  }
+  .nav-logo-c:nth-child(2) {
+    color: #67e8f9;
+    text-shadow: 0 0 6px #22d3ee, 0 0 14px #06b6d4, 0 0 26px #06b6d4;
   }
 
   .nav-topbar-date {
@@ -972,7 +988,7 @@ const catsJson = JSON.stringify(CATS);
     text-align: center;
     width: 100%;
     font-size: 48px;
-    font-weight: 700;
+    font-weight: 600;
     margin: 0 0 10px;
     letter-spacing: 0.06em;
     font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", "Songti SC", serif;
@@ -1005,7 +1021,7 @@ const catsJson = JSON.stringify(CATS);
     margin-bottom: 16px;
     margin-top: -12px;
   }
-  .nav-stats strong { color: var(--nav-accent); font-weight: 600; }
+  .nav-stats strong { color: var(--nav-accent); font-weight: 500; }
   .nav-stats-dot { margin: 0 10px; opacity: 0.4; }
 
   /* ===== 精选推荐 ===== */
@@ -1072,7 +1088,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-featured-card:hover .nav-featured-icon-fallback { transform: scale(1.1); }
   .nav-featured-name {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--nav-text);
     letter-spacing: 0.02em;
     white-space: nowrap;
@@ -1240,6 +1256,7 @@ const catsJson = JSON.stringify(CATS);
     cursor: pointer;
     transition: all 0.2s;
     font-family: inherit;
+    font-weight: 400;
   }
   .nav-hotword:hover {
     border-color: var(--nav-accent);
@@ -1274,7 +1291,7 @@ const catsJson = JSON.stringify(CATS);
     transition: all 0.2s ease;
     white-space: nowrap;
     font-family: inherit;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 0.01em;
     flex-shrink: 0;
   }
@@ -1284,7 +1301,7 @@ const catsJson = JSON.stringify(CATS);
     border-color: var(--nav-accent);
     color: #fff;
     box-shadow: 0 2px 12px var(--nav-accent-glow);
-    font-weight: 600;
+    font-weight: 500;
   }
 
   [data-theme="dark"] .nav-cat {
@@ -1370,7 +1387,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-section-title {
     margin: 0;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--nav-text);
     letter-spacing: 0.02em;
   }
@@ -1473,7 +1490,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-card-name {
     margin: 0;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--nav-text);
     line-height: 1.3;
     white-space: nowrap;
@@ -1580,6 +1597,26 @@ const catsJson = JSON.stringify(CATS);
     font-family: var(--font-mono);
     letter-spacing: 0.03em;
     opacity: 0.7;
+  }
+  .nav-footer-icp {
+    margin: 0;
+    font-size: 11px;
+    color: var(--nav-text-secondary);
+    opacity: 0.55;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .nav-footer-icp-dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--nav-text-secondary);
+    opacity: 0.3;
+    flex-shrink: 0;
   }
 
   @media (max-width: 768px) {
