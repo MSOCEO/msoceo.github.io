@@ -478,8 +478,9 @@ const catsJson = JSON.stringify(CATS);
   </main>
 
   <footer class="nav-footer">
-    <p class="nav-footer-slogan">手工筛选，定期剔除失效 / 投毒站点 · 仅收录活跃可靠网站</p>
-    <p class="nav-footer-copy">&copy; 2026 枕星</p>
+    <div class="nav-footer-badge">枕星</div>
+    <p class="nav-footer-desc">星辰为引，链接为舟 · 手工甄选，持续更新</p>
+    <p class="nav-footer-copy">&copy; 2026 枕星 · 保留所有权利</p>
   </footer>
 </body>
 </html>
@@ -1384,22 +1385,22 @@ const catsJson = JSON.stringify(CATS);
 
   .nav-section-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
+    gap: 8px;
   }
 
   .nav-card {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 8px;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 14px;
     background: var(--nav-bg);
     border: 1px solid var(--nav-border);
     border-left: 3px solid var(--card-accent, var(--nav-accent));
     text-decoration: none;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background 0.25s ease, border-color 0.25s ease;
     animation: card-fade-in 0.45s ease-out both;
     animation-delay: var(--card-delay, 0ms);
     overflow: visible;
@@ -1426,12 +1427,16 @@ const catsJson = JSON.stringify(CATS);
   .nav-card:hover {
     background: var(--nav-surface);
     border-color: var(--card-accent, var(--nav-accent));
-    transform: translateY(-1px);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
     z-index: 2;
   }
   [data-theme="dark"] .nav-card:hover {
-    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .nav-card:hover .nav-card-icon,
+  .nav-card:hover .nav-card-icon-fallback {
+    transform: scale(1.15);
   }
   .nav-card:hover .nav-card-name {
     color: var(--card-accent, var(--nav-accent));
@@ -1443,29 +1448,31 @@ const catsJson = JSON.stringify(CATS);
   }
 
   .nav-card-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
     flex-shrink: 0;
     object-fit: contain;
     image-rendering: auto;
+    transition: transform 0.3s ease;
   }
   .nav-card-icon-fallback {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, var(--card-accent, #6366f1), rgba(99,102,241,0.25));
     color: #fff;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
+    transition: transform 0.3s ease;
   }
   .nav-card-name {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--nav-text);
     line-height: 1.3;
@@ -1526,22 +1533,53 @@ const catsJson = JSON.stringify(CATS);
     position: relative;
     z-index: 1;
     text-align: center;
-    padding: 24px 20px 28px;
+    padding: 32px 20px 36px;
     border-top: 1px solid var(--nav-border);
-    font-size: 12px;
-    color: #94a3b8;
-    font-family: var(--font-mono);
-    letter-spacing: 0.03em;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
-  .nav-footer-slogan { margin: 0; }
+  .nav-footer-badge {
+    font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+    padding: 5px 18px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 12px rgba(99,102,241,0.18);
+  }
+  [data-theme="dark"] .nav-footer-badge {
+    box-shadow: 0 2px 16px rgba(167,139,250,0.25);
+  }
+  .nav-footer-badge::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 6px rgba(255,255,255,0.5);
+  }
+  .nav-footer-desc {
+    margin: 0;
+    font-size: 12px;
+    color: var(--nav-text-secondary);
+    font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", serif;
+    letter-spacing: 0.04em;
+  }
   .nav-footer-copy {
     margin: 0;
     font-size: 11px;
-    opacity: 0.65;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+    opacity: 0.7;
   }
 
   @media (max-width: 768px) {
@@ -1558,11 +1596,11 @@ const catsJson = JSON.stringify(CATS);
     .nav-section { margin-bottom: 16px; padding: 14px 10px; border-radius: 10px; }
     .nav-section-header { margin-bottom: 10px; padding-bottom: 8px; }
     .nav-section-title { font-size: 14px; }
-    .nav-section-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 4px; }
-    .nav-card { padding: 8px 10px; gap: 6px; }
-    .nav-card-icon { width: 18px; height: 18px; }
-    .nav-card-icon-fallback { width: 18px; height: 18px; border-radius: 3px; font-size: 9px; }
-    .nav-card-name { font-size: 12px; }
+    .nav-section-grid { grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 5px; }
+    .nav-card { padding: 10px 12px; gap: 7px; border-radius: 12px; }
+    .nav-card-icon { width: 18px; height: 18px; border-radius: 4px; }
+    .nav-card-icon-fallback { width: 18px; height: 18px; border-radius: 4px; font-size: 9px; }
+    .nav-card-name { font-size: 12.5px; }
     .nav-section-icon { width: 18px; height: 18px; border-radius: 4px; font-size: 10px; }
     .nav-cats { gap: 1px; border-radius: 10px; padding: 3px; }
     .nav-cat { padding: 7px 13px; font-size: 12px; border-radius: 7px; }
