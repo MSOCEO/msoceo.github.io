@@ -478,7 +478,17 @@ const catsJson = JSON.stringify(CATS);
   </main>
 
   <footer class="nav-footer">
-    <div class="nav-footer-badge">星舟</div>
+    <a class="nav-footer-icp-badge" href="https://icp.gov.moe" target="_blank" rel="noopener" title="萌ICP备案">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill="#f472b6" opacity="0.15"/>
+        <circle cx="12" cy="12" r="10" stroke="#f472b6" stroke-width="1.5" opacity="0.5"/>
+        <path d="M7 12a5 5 0 005 5 5 5 0 005-5 5 5 0 00-5-5 5 5 0 00-5 5z" fill="#f472b6" opacity="0.6"/>
+        <circle cx="9.5" cy="10.5" r="1.2" fill="#ec4899"/>
+        <circle cx="14.5" cy="10.5" r="1.2" fill="#ec4899"/>
+        <path d="M9 14.5c.8.6 1.8.9 3 .9s2.2-.3 3-.9" stroke="#ec4899" stroke-width="1" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span>萌ICP备000000号</span>
+    </a>
     <p class="nav-footer-copy">&copy; 2026 星舟导航 · 保留所有权利</p>
     <p class="nav-footer-icp">本站收录站点均来自公开互联网，版权归原作者所有</p>
     <p class="nav-footer-legal">
@@ -1587,31 +1597,24 @@ const catsJson = JSON.stringify(CATS);
     align-items: center;
     gap: 8px;
   }
-  .nav-footer-badge {
-    font-family: "ZCOOL XiaoWei", "STSong", "Noto Serif SC", serif;
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    color: #fff;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
-    padding: 5px 18px;
-    border-radius: 20px;
+  .nav-footer-icp-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 2px 12px rgba(99,102,241,0.18);
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+    transition: color 0.2s, opacity 0.2s;
   }
-  [data-theme="dark"] .nav-footer-badge {
-    box-shadow: 0 2px 16px rgba(167,139,250,0.25);
+  .nav-footer-icp-badge:hover {
+    color: #f472b6;
+    opacity: 0.85;
   }
-  .nav-footer-badge::before {
-    content: '';
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0 0 6px rgba(255,255,255,0.5);
+  .nav-footer-icp-badge svg {
+    flex-shrink: 0;
   }
   .nav-footer-copy {
     margin: 0;
