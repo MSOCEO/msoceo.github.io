@@ -573,6 +573,34 @@ const catsJson = JSON.stringify(CATS);
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  const INITIAL_SHOW = 12;
+
+  function renderCardHTML(l, i, hidden) {
+    let hostname;
+    try { hostname = new URL(l.url).hostname; } catch { hostname = ''; }
+    const faviconHtml = hostname
+      ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=64" class="nav-card-icon" alt="" loading="lazy" width="36" height="36" onerror="this.outerHTML='<span class=\'nav-card-icon-fallback\'>${esc(l.name).charAt(0)}</span>'">`
+      : `<span class="nav-card-icon-fallback">${esc(l.name).charAt(0)}</span>`;
+    let rankHtml = '';
+    const n = i + 1;
+    if (n === 1) rankHtml = '<span class="nav-card-rank rank-1" title="北辰·一等星">北辰</span>';
+    else if (n === 2) rankHtml = '<span class="nav-card-rank rank-2" title="启明·二等星">启明</span>';
+    else if (n === 3) rankHtml = '<span class="nav-card-rank rank-3" title="长庚·三等星">长庚</span>';
+    else rankHtml = `<span class="nav-card-rank rank-num">${n}</span>`;
+    return `
+      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card${hidden ? ' nav-card-hidden' : ''}" style="--card-delay:${i * 30}ms;--card-accent:${catAccent[l.cat] || '#6366f1'}">
+        ${rankHtml}${faviconHtml}
+        <div class="nav-card-body">
+          <div class="nav-card-head">
+            <h3 class="nav-card-name">${esc(l.name)}</h3>
+            <span class="nav-card-cat">${esc(l.cat)}</span>
+          </div>
+          <p class="nav-card-desc">${esc(l.desc)}</p>
+        </div>
+      </a>
+    `;
+  }
+
   function renderLinks(filter = '') {
     const q = filter.toLowerCase().trim();
     let filtered = activeCat === '全部' ? links : links.filter(l => l.cat === activeCat);
@@ -590,30 +618,59 @@ const catsJson = JSON.stringify(CATS);
       return;
     }
 
-    navGrid.innerHTML = filtered.map((l, i) => {
-      let hostname;
-      try { hostname = new URL(l.url).hostname; } catch { hostname = ''; }
-      const faviconHtml = hostname
-        ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=64" class="nav-card-icon" alt="" loading="lazy" width="36" height="36" onerror="this.outerHTML='<span class=\'nav-card-icon-fallback\'>${esc(l.name).charAt(0)}</span>'">`
-        : `<span class="nav-card-icon-fallback">${esc(l.name).charAt(0)}</span>`;
-      let rankHtml = '';
-      const n = i + 1;
-      if (n === 1) rankHtml = '<span class="nav-card-rank rank-1" title="北辰·一等星">北辰</span>';
-      else if (n === 2) rankHtml = '<span class="nav-card-rank rank-2" title="启明·二等星">启明</span>';
-      else if (n === 3) rankHtml = '<span class="nav-card-rank rank-3" title="长庚·三等星">长庚</span>';
-      else rankHtml = `<span class="nav-card-rank rank-num">${n}</span>`;
-      return `
-      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;--card-accent:${catAccent[l.cat] || '#6366f1'}">
-        ${rankHtml}${faviconHtml}
-        <div class="nav-card-body">
-          <div class="nav-card-head">
-            <h3 class="nav-card-name">${esc(l.name)}</h3>
-            <span class="nav-card-cat">${esc(l.cat)}</span>
-          </div>
-          <p class="nav-card-desc">${esc(l.desc)}</p>
-        </div>
-      </a>
-    `}).join('');
+    if (activeCat === '全部') {
+      const grouped = {};
+      filtered.forEach(l => {
+        if (!grouped[l.cat]) grouped[l.cat] = [];
+        grouped[l.cat].push(l);
+      });
+      let html = '';
+      cats.forEach(cat => {
+        if (cat === '全部') return;
+        const sectionLinks = grouped[cat];
+        if (!sectionLinks || sectionLinks.length === 0) return;
+        const total = sectionLinks.length;
+        const visible = sectionLinks.slice(0, INITIAL_SHOW);
+        const hidden = sectionLinks.slice(INITIAL_SHOW);
+        html += `<div class="nav-section" data-cat="${esc(cat)}">
+  <div class="nav-section-header">
+    <h2 class="nav-section-title">${esc(cat)}</h2>
+    <span class="nav-section-count">${total} 个站点</span>
+  </div>
+  <div class="nav-section-grid">
+    ${visible.map((l, i) => renderCardHTML(l, i)).join('')}
+    ${hidden.map((l, i) => renderCardHTML(l, INITIAL_SHOW + i, true)).join('')}
+  </div>
+  ${hidden.length > 0 ? `<button class="nav-more-btn" onclick="expandSection(this)">更多 (${hidden.length}个)</button>` : ''}
+</div>`;
+      });
+      navGrid.innerHTML = html;
+    } else {
+      let html = `<div class="nav-section" data-cat="${esc(activeCat)}">
+  <div class="nav-section-header">
+    <h2 class="nav-section-title">${esc(activeCat)}</h2>
+    <span class="nav-section-count">${filtered.length} 个站点</span>
+  </div>
+  <div class="nav-section-grid">
+    ${filtered.map((l, i) => renderCardHTML(l, i)).join('')}
+  </div>
+</div>`;
+      navGrid.innerHTML = html;
+    }
+  }
+
+  function expandSection(btn) {
+    const grid = btn.parentElement.querySelector('.nav-section-grid');
+    if (!grid) return;
+    const hiddenCards = grid.querySelectorAll('.nav-card-hidden');
+    hiddenCards.forEach(card => {
+      card.classList.remove('nav-card-hidden');
+      // trigger re-animation
+      card.style.animation = 'none';
+      card.offsetHeight;
+      card.style.animation = '';
+    });
+    btn.remove();
   }
 
   // 当搜索引擎不是"站内"时，回车触发外部搜索
@@ -1338,6 +1395,85 @@ const catsJson = JSON.stringify(CATS);
     gap: 12px;
   }
 
+  /* ===== 版块分区 ===== */
+  .nav-section {
+    margin-bottom: 28px;
+    padding: 24px;
+    border: 1px solid var(--nav-border);
+    border-radius: 16px;
+    background: var(--nav-surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--card-accent, #6366f1), transparent);
+  }
+  [data-theme="dark"] .nav-section {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  .nav-section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--nav-border);
+  }
+  .nav-section-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--nav-text);
+    letter-spacing: 0.02em;
+  }
+  .nav-section-count {
+    font-size: 12px;
+    color: var(--nav-text-secondary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+    opacity: 0.7;
+  }
+
+  .nav-section-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 12px;
+  }
+
+  .nav-more-btn {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px 0;
+    border: 1px dashed var(--nav-border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--nav-text-secondary);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.03em;
+  }
+  .nav-more-btn:hover {
+    border-color: var(--nav-accent);
+    color: var(--nav-accent);
+    background: rgba(99,102,241,0.04);
+  }
+  [data-theme="dark"] .nav-more-btn:hover {
+    background: rgba(99,102,241,0.08);
+  }
+
+  .nav-card-hidden { display: none; }
+
   .nav-card {
     position: relative;
     display: flex;
@@ -1515,6 +1651,10 @@ const catsJson = JSON.stringify(CATS);
     .nav-featured-icon { width: 28px; height: 28px; border-radius: 8px; }
     .nav-featured-name { font-size: 14px; }
     .nav-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    .nav-section { margin-bottom: 20px; padding: 16px 12px; border-radius: 12px; }
+    .nav-section-header { margin-bottom: 12px; padding-bottom: 10px; }
+    .nav-section-title { font-size: 16px; }
+    .nav-section-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     .nav-card { padding: 14px 16px; }
     .nav-card-icon { width: 28px; height: 28px; }
     .nav-card-icon-fallback { width: 28px; height: 28px; border-radius: 6px; font-size: 14px; }
