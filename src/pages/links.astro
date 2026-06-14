@@ -478,16 +478,12 @@ const catsJson = JSON.stringify(CATS);
   </main>
 
   <footer class="nav-footer">
-    <a class="nav-footer-icp-badge" href="https://icp.gov.moe" target="_blank" rel="noopener" title="萌ICP备案">
+    <a class="nav-footer-icp-badge" href="/icp" title="星舟ICP备案">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" fill="#f472b6" opacity="0.15"/>
-        <circle cx="12" cy="12" r="10" stroke="#f472b6" stroke-width="1.5" opacity="0.5"/>
-        <path d="M7 12a5 5 0 005 5 5 5 0 005-5 5 5 0 00-5-5 5 5 0 00-5 5z" fill="#f472b6" opacity="0.6"/>
-        <circle cx="9.5" cy="10.5" r="1.2" fill="#ec4899"/>
-        <circle cx="14.5" cy="10.5" r="1.2" fill="#ec4899"/>
-        <path d="M9 14.5c.8.6 1.8.9 3 .9s2.2-.3 3-.9" stroke="#ec4899" stroke-width="1" stroke-linecap="round" fill="none"/>
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.2" opacity="0.45"/>
+        <path d="M12 3l2.5 5.5L20 10l-4 4 1 5.5-5-2.8-5 2.8 1-5.5L4 10l5.5-1.5L12 3z" fill="currentColor" opacity="0.7"/>
       </svg>
-      <span>萌ICP备000000号</span>
+      <span>星舟ICP备000000号</span>
     </a>
     <p class="nav-footer-copy">&copy; 2026 星舟导航 · 保留所有权利</p>
     <p class="nav-footer-icp">本站收录站点均来自公开互联网，版权归原作者所有</p>
@@ -728,6 +724,12 @@ const catsJson = JSON.stringify(CATS);
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
+    function periodLabel(h) {
+      if (h >= 6 && h < 12) return '上午';
+      if (h >= 12 && h < 18) return '下午';
+      return '晚上';
+    }
+
     function getLunarDay(y, m, d) {
       const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
         0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
@@ -789,34 +791,41 @@ const catsJson = JSON.stringify(CATS);
 
     function updateTopbar() {
       const now = new Date();
-      const h = pad(now.getHours());
+      const h = now.getHours();
       const m = pad(now.getMinutes());
-      const timeStr = `${h}:${m}`;
+      const s = pad(now.getSeconds());
+      const period = periodLabel(h);
+      const timeStr = `${period} ${h}:${m}:${s}`;
       const month = now.getMonth() + 1;
       const day = now.getDate();
       const w = now.getDay();
 
-      let parts = [`${timeStr}`];
-      if (weatherTemp) {
-        parts.push(`${weatherTemp} ${weatherEmoji}`);
+      let parts = [timeStr];
+      if (weatherEmoji) {
+        parts.push(`${weatherEmoji} ${weatherTemp}`);
       }
       const lunarText = getLunarDay(now.getFullYear(), month, day);
       parts.push(`${now.getFullYear()}年${month}月${day}日 星期${weekNames[w]} ${lunarText}`);
       document.getElementById('navTopbarDate').textContent = parts.join(' · ');
     }
 
-    // fetch weather
-    fetch('https://wttr.in/?format=%C+%t')
-      .then(res => { if (!res.ok) throw new Error('fetch failed'); return res.text(); })
-      .then(text => {
+    // fetch weather — try wttr.in, fallback silently
+    async function fetchWeather() {
+      try {
+        const res = await fetch('https://wttr.in/?format=%C+%t');
+        if (!res.ok) throw new Error('fetch failed');
+        const text = await res.text();
         const m = text.trim().match(/^(.+?)\s+([+-]?\d+°C)$/);
         if (m) { weatherEmoji = m[1]; weatherTemp = m[2]; }
-        updateTopbar();
-      })
-      .catch(() => { updateTopbar(); });
+      } catch (e) {
+        // weather unavailable, silently skip
+      }
+      updateTopbar();
+    }
 
+    fetchWeather();
     updateTopbar();
-    setInterval(updateTopbar, 30000);
+    setInterval(updateTopbar, 1000);
   })();
 
   renderLinks();
@@ -899,7 +908,7 @@ const catsJson = JSON.stringify(CATS);
 
   .nav-body {
     margin: 0;
-    background: var(--nav-bg);
+    background: transparent;
     color: var(--nav-text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
     line-height: 1.5;
@@ -990,6 +999,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-main {
     position: relative;
     z-index: 1;
+    background: var(--nav-bg);
     max-width: 1480px;
     margin: 0 auto;
     padding: 0 24px 80px;
@@ -1589,6 +1599,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-footer {
     position: relative;
     z-index: 1;
+    background: var(--nav-bg);
     text-align: center;
     padding: 32px 20px 36px;
     border-top: 1px solid var(--nav-border);
@@ -1610,8 +1621,8 @@ const catsJson = JSON.stringify(CATS);
     transition: color 0.2s, opacity 0.2s;
   }
   .nav-footer-icp-badge:hover {
-    color: #f472b6;
-    opacity: 0.85;
+    color: var(--nav-accent);
+    opacity: 0.9;
   }
   .nav-footer-icp-badge svg {
     flex-shrink: 0;

@@ -1,0 +1,643 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星舟ICP备案 · StarArk ICP</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --bg-card: rgba(255,255,255,0.04);
+    --bg-input: rgba(255,255,255,0.06);
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #818cf8;
+    --accent-glow: rgba(129,140,248,0.2);
+    --border: rgba(255,255,255,0.08);
+    --radius: 12px;
+    --font-mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== 顶栏 ===== */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(11,14,20,0.82);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .topbar-logo svg { flex-shrink: 0; }
+  .topbar-links {
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+  }
+  .topbar-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.15s;
+  }
+  .topbar-links a:hover { color: var(--accent); }
+
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 64px 0 36px;
+  }
+  .hero-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--accent-glow);
+    margin-bottom: 20px;
+  }
+  .hero-icon svg { width: 32px; height: 32px; color: var(--accent); }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .hero p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ===== 统计条 ===== */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 0 0 40px;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ===== 表单卡片 ===== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .card h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: inherit;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--accent);
+  }
+  .form-group textarea { resize: vertical; min-height: 64px; }
+  .form-group select { appearance: none; cursor: pointer; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .form-msg {
+    margin-top: 12px;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: none;
+  }
+  .form-msg.success { display: block; background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+  .form-msg.error { display: block; background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+  /* ===== 查询 ===== */
+  .search-row {
+    display: flex;
+    gap: 10px;
+  }
+  .search-row input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-row input:focus { border-color: var(--accent); }
+
+  /* ===== 列表 ===== */
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .list-header h2 { margin-bottom: 0; }
+
+  .entry {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .entry:hover { background: var(--bg-card); border-color: var(--border); }
+  .entry-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 60px;
+    flex-shrink: 0;
+  }
+  .entry-info { flex: 1; min-width: 0; }
+  .entry-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.15s;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .entry-name:hover { color: var(--accent); }
+  .entry-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .entry-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .entry-badge {
+    flex-shrink: 0;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  .badge-personal { background: rgba(129,140,248,0.12); color: #818cf8; }
+  .badge-org { background: rgba(52,211,153,0.12); color: #34d399; }
+  .badge-project { background: rgba(251,191,36,0.12); color: #fbbf24; }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state svg { margin-bottom: 12px; opacity: 0.3; }
+
+  /* ===== 页脚 ===== */
+  .footer {
+    text-align: center;
+    padding: 36px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+  .footer p {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer a:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .stats-bar { gap: 20px; }
+    .hero h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="/links" class="topbar-logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+          <path d="M12 3l2.5 5.5L20 10l-4 4 1 5.5-5-2.8-5 2.8 1-5.5L4 10l5.5-1.5L12 3z" fill="currentColor" opacity="0.7"/>
+        </svg>
+        星舟导航
+      </a>
+      <nav class="topbar-links">
+        <a href="/icp">ICP备案</a>
+        <a href="#join">申请备案</a>
+        <a href="#query">查询备案</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-icon">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M12 3l2.5 5.5L20 10l-4 4 1 5.5-5-2.8-5 2.8 1-5.5L4 10l5.5-1.5L12 3z" fill="currentColor" opacity="0.8"/>
+        </svg>
+      </div>
+      <h1>星舟ICP备案</h1>
+      <p>星舟导航旗下站点备案与查询系统，为中文互联网独立站提供身份标识。</p>
+    </section>
+
+    <!-- 统计 -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-item">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">已备案站点</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statToday">0</div>
+        <div class="stat-label">今日新增</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statLatest">--</div>
+        <div class="stat-label">最新备案号</div>
+      </div>
+    </div>
+
+    <!-- 申请备案 -->
+    <div class="card" id="join">
+      <h2><span class="dot"></span>申请备案</h2>
+      <form id="joinForm" onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>站点名称 *</label>
+            <input type="text" id="siteName" placeholder="我的博客" maxlength="60" required>
+          </div>
+          <div class="form-group">
+            <label>站点 URL *</label>
+            <input type="url" id="siteUrl" placeholder="https://example.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>站长 / 持有人 *</label>
+            <input type="text" id="siteOwner" placeholder="你的昵称" maxlength="30" required>
+          </div>
+          <div class="form-group">
+            <label>站点类型</label>
+            <select id="siteType">
+              <option value="personal">个人站点</option>
+              <option value="project">项目主页</option>
+              <option value="org">组织 / 企业</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>站点描述</label>
+            <textarea id="siteDesc" placeholder="一句话介绍你的站点..." maxlength="120"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            提交备案
+          </button>
+          <button type="button" class="btn btn-outline" onclick="clearForm()">清空</button>
+        </div>
+        <div class="form-msg" id="formMsg"></div>
+      </form>
+    </div>
+
+    <!-- 查询备案 -->
+    <div class="card" id="query">
+      <h2><span class="dot"></span>查询备案</h2>
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="输入域名 / 站点名 / 备案号 / 站长名..." oninput="liveSearch()">
+        <button class="btn btn-outline" onclick="liveSearch()">查询</button>
+      </div>
+      <div id="searchResult" style="margin-top:16px;"></div>
+    </div>
+
+    <!-- 备案列表 -->
+    <div class="card">
+      <div class="list-header">
+        <h2><span class="dot"></span>备案列表</h2>
+        <button class="btn btn-outline" onclick="loadEntries()" style="font-size:12px;padding:6px 12px;">刷新</button>
+      </div>
+      <div id="entryList"></div>
+      <div class="empty-state" id="emptyState">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1"/><path d="M8 12h8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+        <p>暂无备案记录，成为第一个备案的站点吧</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>星舟ICP备案系统 · 非官方民间备案 · 仅供星舟导航生态使用</p>
+    <p style="margin-top:4px;"><a href="/links">返回导航</a></p>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = 'starark_icp_entries';
+
+    function loadEntries() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch { return []; }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    }
+
+    function genId(length) {
+      const chars = '0123456789';
+      let id = '';
+      for (let i = 0; i < length; i++) id += chars[Math.floor(Math.random() * chars.length)];
+      return id;
+    }
+
+    function showMsg(type, text) {
+      const el = document.getElementById('formMsg');
+      el.className = 'form-msg ' + type;
+      el.textContent = text;
+      setTimeout(() => { el.className = 'form-msg'; }, 4000);
+    }
+
+    function getTypeLabel(t) {
+      const map = { personal: '个人', project: '项目', org: '组织' };
+      return map[t] || t;
+    }
+
+    function getTypeBadgeClass(t) {
+      const map = { personal: 'badge-personal', project: 'badge-project', org: 'badge-org' };
+      return map[t] || 'badge-personal';
+    }
+
+    document.getElementById('joinForm').addEventListener('submit', () => {
+      const name = document.getElementById('siteName').value.trim();
+      const url = document.getElementById('siteUrl').value.trim();
+      const owner = document.getElementById('siteOwner').value.trim();
+      const type = document.getElementById('siteType').value;
+      const desc = document.getElementById('siteDesc').value.trim();
+
+      if (!name || !url || !owner) {
+        showMsg('error', '请填写站点名称、URL 和持有人');
+        return;
+      }
+
+      try { new URL(url); }
+      catch { showMsg('error', '请输入有效的站点 URL（以 http:// 或 https:// 开头）'); return; }
+
+      const entries = loadEntries();
+      // check duplicate url
+      if (entries.some(e => e.url === url)) {
+        showMsg('error', '该 URL 已有备案记录，请勿重复提交');
+        return;
+      }
+
+      const id = genId(8);
+      const num = (entries.length + 1).toString().padStart(6, '0');
+      const entry = {
+        id,
+        num,
+        name,
+        url,
+        owner,
+        type,
+        desc,
+        date: new Date().toISOString().slice(0, 10),
+        timestamp: Date.now()
+      };
+      entries.push(entry);
+      saveEntries(entries);
+
+      showMsg('success', `备案成功！备案号：星舟ICP备${num}号`);
+      clearForm();
+      updateStats();
+      renderList(entries);
+    });
+
+    function clearForm() {
+      document.getElementById('siteName').value = '';
+      document.getElementById('siteUrl').value = '';
+      document.getElementById('siteOwner').value = '';
+      document.getElementById('siteDesc').value = '';
+      document.getElementById('formMsg').className = 'form-msg';
+    }
+
+    function renderList(entries) {
+      const el = document.getElementById('entryList');
+      const empty = document.getElementById('emptyState');
+      if (!entries || entries.length === 0) {
+        el.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      const sorted = [...entries].reverse();
+      el.innerHTML = sorted.map((e, i) => `
+        <div class="entry">
+          <span class="entry-num">${e.num}</span>
+          <div class="entry-info">
+            <a href="${e.url}" class="entry-name" target="_blank" rel="noopener">${escapeHtml(e.name)}</a>
+            <div class="entry-meta">
+              <span>${escapeHtml(e.owner)}</span>
+              <span>${e.date}</span>
+              ${e.desc ? `<span>${escapeHtml(e.desc)}</span>` : ''}
+            </div>
+          </div>
+          <span class="entry-badge ${getTypeBadgeClass(e.type)}">${getTypeLabel(e.type)}</span>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function liveSearch() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const entries = loadEntries();
+      const resultEl = document.getElementById('searchResult');
+
+      if (!q) {
+        resultEl.innerHTML = '';
+        renderList(entries);
+        return;
+      }
+
+      const filtered = entries.filter(e =>
+        e.name.toLowerCase().includes(q) ||
+        e.url.toLowerCase().includes(q) ||
+        e.owner.toLowerCase().includes(q) ||
+        e.num.includes(q) ||
+        e.id.includes(q) ||
+        (e.desc && e.desc.toLowerCase().includes(q))
+      );
+
+      if (filtered.length === 0) {
+        resultEl.innerHTML = '<div class="empty-state"><p>未找到匹配的备案记录</p></div>';
+      } else {
+        resultEl.innerHTML = '<p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">找到 ' + filtered.length + ' 条记录</p>';
+        const tempList = document.createElement('div');
+        tempList.id = 'entryList';
+        resultEl.appendChild(tempList);
+        renderList(filtered);
+      }
+    }
+
+    function updateStats() {
+      const entries = loadEntries();
+      document.getElementById('statTotal').textContent = entries.length;
+      
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('statToday').textContent = entries.filter(e => e.date === today).length;
+      
+      if (entries.length > 0) {
+        const last = entries[entries.length - 1];
+        document.getElementById('statLatest').textContent = last.num;
+      } else {
+        document.getElementById('statLatest').textContent = '--';
+      }
+    }
+
+    // init
+    const entries = loadEntries();
+    updateStats();
+    renderList(entries);
+  </script>
+</body>
+</html>
