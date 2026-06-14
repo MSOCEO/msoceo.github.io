@@ -573,9 +573,7 @@ const catsJson = JSON.stringify(CATS);
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  const INITIAL_SHOW = 12;
-
-  function renderCardHTML(l, i, hidden) {
+  function renderCardHTML(l, i) {
     let hostname;
     try { hostname = new URL(l.url).hostname; } catch { hostname = ''; }
     const faviconHtml = hostname
@@ -588,7 +586,7 @@ const catsJson = JSON.stringify(CATS);
     else if (n === 3) rankHtml = '<span class="nav-card-rank rank-3" title="长庚·三等星">长庚</span>';
     else rankHtml = `<span class="nav-card-rank rank-num">${n}</span>`;
     return `
-      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card${hidden ? ' nav-card-hidden' : ''}" style="--card-delay:${i * 30}ms;--card-accent:${catAccent[l.cat] || '#6366f1'}">
+      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;--card-accent:${catAccent[l.cat] || '#6366f1'}">
         ${rankHtml}${faviconHtml}
         <div class="nav-card-body">
           <div class="nav-card-head">
@@ -630,23 +628,19 @@ const catsJson = JSON.stringify(CATS);
         const sectionLinks = grouped[cat];
         if (!sectionLinks || sectionLinks.length === 0) return;
         const total = sectionLinks.length;
-        const visible = sectionLinks.slice(0, INITIAL_SHOW);
-        const hidden = sectionLinks.slice(INITIAL_SHOW);
-        html += `<div class="nav-section" data-cat="${esc(cat)}">
-  <div class="nav-section-header">
+        html += `<div class="nav-section collapsed" data-cat="${esc(cat)}">
+  <div class="nav-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
     <h2 class="nav-section-title">${esc(cat)}</h2>
     <span class="nav-section-count">${total} 个站点</span>
   </div>
   <div class="nav-section-grid">
-    ${visible.map((l, i) => renderCardHTML(l, i)).join('')}
-    ${hidden.map((l, i) => renderCardHTML(l, INITIAL_SHOW + i, true)).join('')}
+    ${sectionLinks.map((l, i) => renderCardHTML(l, i)).join('')}
   </div>
-  ${hidden.length > 0 ? `<button class="nav-more-btn" onclick="expandSection(this)">更多 (${hidden.length}个)</button>` : ''}
 </div>`;
       });
       navGrid.innerHTML = html;
     } else {
-      let html = `<div class="nav-section" data-cat="${esc(activeCat)}">
+      let html = `<div class="nav-section" data-static data-cat="${esc(activeCat)}">
   <div class="nav-section-header">
     <h2 class="nav-section-title">${esc(activeCat)}</h2>
     <span class="nav-section-count">${filtered.length} 个站点</span>
@@ -657,20 +651,6 @@ const catsJson = JSON.stringify(CATS);
 </div>`;
       navGrid.innerHTML = html;
     }
-  }
-
-  function expandSection(btn) {
-    const grid = btn.parentElement.querySelector('.nav-section-grid');
-    if (!grid) return;
-    const hiddenCards = grid.querySelectorAll('.nav-card-hidden');
-    hiddenCards.forEach(card => {
-      card.classList.remove('nav-card-hidden');
-      // trigger re-animation
-      card.style.animation = 'none';
-      card.offsetHeight;
-      card.style.animation = '';
-    });
-    btn.remove();
   }
 
   // 当搜索引擎不是"站内"时，回车触发外部搜索
@@ -1404,6 +1384,7 @@ const catsJson = JSON.stringify(CATS);
     background: var(--nav-surface);
     position: relative;
     overflow: hidden;
+    transition: padding 0.3s ease;
   }
   .nav-section::before {
     content: '';
@@ -1418,15 +1399,38 @@ const catsJson = JSON.stringify(CATS);
     background: rgba(255,255,255,0.03);
     border-color: rgba(255,255,255,0.08);
   }
+  .nav-section.collapsed {
+    padding-bottom: 16px;
+  }
+  .nav-section.collapsed .nav-section-grid { display: none; }
 
   .nav-section-header {
     display: flex;
     align-items: baseline;
     gap: 12px;
+  }
+  .nav-section:not(.collapsed) .nav-section-header {
     margin-bottom: 16px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--nav-border);
   }
+  /* toggleable header (全部模式) */
+  .nav-section:not([data-static]) .nav-section-header {
+    cursor: pointer;
+    user-select: none;
+  }
+  .nav-section:not([data-static]) .nav-section-header::after {
+    content: '▾';
+    margin-left: auto;
+    font-size: 14px;
+    color: var(--nav-text-secondary);
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+  }
+  .nav-section.collapsed:not([data-static]) .nav-section-header::after {
+    transform: rotate(-90deg);
+  }
+
   .nav-section-title {
     margin: 0;
     font-size: 18px;
@@ -1447,32 +1451,6 @@ const catsJson = JSON.stringify(CATS);
     grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     gap: 12px;
   }
-
-  .nav-more-btn {
-    display: block;
-    width: 100%;
-    margin-top: 16px;
-    padding: 12px 0;
-    border: 1px dashed var(--nav-border);
-    border-radius: 10px;
-    background: transparent;
-    color: var(--nav-text-secondary);
-    font-size: 14px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.25s;
-    letter-spacing: 0.03em;
-  }
-  .nav-more-btn:hover {
-    border-color: var(--nav-accent);
-    color: var(--nav-accent);
-    background: rgba(99,102,241,0.04);
-  }
-  [data-theme="dark"] .nav-more-btn:hover {
-    background: rgba(99,102,241,0.08);
-  }
-
-  .nav-card-hidden { display: none; }
 
   .nav-card {
     position: relative;
