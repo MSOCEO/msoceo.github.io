@@ -572,10 +572,12 @@ const catsJson = JSON.stringify(CATS);
     const faviconHtml = hostname
       ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=64" class="nav-card-icon" alt="" loading="lazy" width="20" height="20" onerror="this.outerHTML='<span class=\'nav-card-icon-fallback\'>${esc(l.name).charAt(0)}</span>'">`
       : `<span class="nav-card-icon-fallback">${esc(l.name).charAt(0)}</span>`;
+    const accent = catAccent[l.cat] || '#6366f1';
     return `
-      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 30}ms;--card-accent:${catAccent[l.cat] || '#6366f1'}">
+      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 20}ms;--card-accent:${accent}">
         ${faviconHtml}
         <span class="nav-card-name">${esc(l.name)}</span>
+        ${l.desc ? `<span class="nav-card-tip" style="background:${accent}">${esc(l.desc)}</span>` : ''}
       </a>
     `;
   }
@@ -609,8 +611,10 @@ const catsJson = JSON.stringify(CATS);
         const sectionLinks = grouped[cat];
         if (!sectionLinks || sectionLinks.length === 0) return;
         const total = sectionLinks.length;
-        html += `<div class="nav-section collapsed" data-cat="${esc(cat)}">
+        const sectionAccent = catAccent[cat] || '#6366f1';
+        html += `<div class="nav-section collapsed" data-cat="${esc(cat)}" style="--section-accent:${sectionAccent}">
   <div class="nav-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+    <span class="nav-section-icon" style="background:${sectionAccent}">${catEmoji[cat] || cat.charAt(0)}</span>
     <h2 class="nav-section-title">${esc(cat)}</h2>
     <span class="nav-section-count">${total} 个站点</span>
   </div>
@@ -621,8 +625,9 @@ const catsJson = JSON.stringify(CATS);
       });
       navGrid.innerHTML = html;
     } else {
-      let html = `<div class="nav-section" data-static data-cat="${esc(activeCat)}">
+      let html = `<div class="nav-section" data-static data-cat="${esc(activeCat)}" style="--section-accent:${catAccent[activeCat] || '#6366f1'}">
   <div class="nav-section-header">
+    <span class="nav-section-icon" style="background:${catAccent[activeCat] || '#6366f1'}">${catEmoji[activeCat] || activeCat.charAt(0)}</span>
     <h2 class="nav-section-title">${esc(activeCat)}</h2>
     <span class="nav-section-count">${filtered.length} 个站点</span>
   </div>
@@ -1277,65 +1282,73 @@ const catsJson = JSON.stringify(CATS);
   /* ===== 分类标签 ===== */
   .nav-cats {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 36px;
+    flex-wrap: nowrap;
+    gap: 2px;
+    margin-bottom: 28px;
     justify-content: center;
-  }
-  .nav-cat {
-    padding: 8px 20px;
-    border-radius: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px;
+    background: var(--nav-surface);
     border: 1px solid var(--nav-border);
+    border-radius: 12px;
+  }
+  .nav-cats::-webkit-scrollbar { display: none; }
+  .nav-cat {
+    padding: 9px 18px;
+    border-radius: 9px;
+    border: 1px solid transparent;
     background: transparent;
     color: var(--nav-text-secondary);
-    font-size: 14px;
+    font-size: 13.5px;
     cursor: pointer;
-    transition: all 0.25s;
+    transition: all 0.2s ease;
     white-space: nowrap;
     font-family: inherit;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    flex-shrink: 0;
   }
-  .nav-cat:hover { color: var(--nav-text); border-color: var(--nav-border-hover); background: var(--nav-surface); }
+  .nav-cat:hover { color: var(--nav-text); background: var(--nav-accent-pale); }
   .nav-cat.active {
-    background: var(--nav-accent-pale);
+    background: var(--nav-accent);
     border-color: var(--nav-accent);
-    color: var(--nav-accent);
-    box-shadow: 0 0 16px var(--nav-accent-glow);
+    color: #fff;
+    box-shadow: 0 2px 12px var(--nav-accent-glow);
+    font-weight: 600;
   }
 
   [data-theme="dark"] .nav-cat {
-    border-color: rgba(255,255,255,0.14);
-    color: rgba(255,255,255,0.72);
+    color: rgba(255,255,255,0.7);
+  }
+  [data-theme="dark"] .nav-cat:hover {
+    background: rgba(255,255,255,0.06);
+  }
+  [data-theme="dark"] .nav-cat.active {
+    background: var(--nav-accent);
+    color: #fff;
   }
 
   /* ===== 星图网格 ===== */
   .nav-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
   /* ===== 版块分区 ===== */
   .nav-section {
-    margin-bottom: 28px;
-    padding: 24px;
     border: 1px solid var(--nav-border);
-    border-radius: 16px;
+    border-radius: 14px;
     background: var(--nav-surface);
     position: relative;
     overflow: hidden;
     transition: padding 0.3s ease;
-  }
-  .nav-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--card-accent, #6366f1), transparent);
+    padding: 20px 20px 20px 20px;
   }
   [data-theme="dark"] .nav-section {
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.035);
     border-color: rgba(255,255,255,0.08);
   }
   .nav-section.collapsed {
@@ -1345,12 +1358,12 @@ const catsJson = JSON.stringify(CATS);
 
   .nav-section-header {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
   }
   .nav-section:not(.collapsed) .nav-section-header {
     margin-bottom: 16px;
-    padding-bottom: 12px;
+    padding-bottom: 14px;
     border-bottom: 1px solid var(--nav-border);
   }
   /* toggleable header (全部模式) */
@@ -1359,20 +1372,36 @@ const catsJson = JSON.stringify(CATS);
     user-select: none;
   }
   .nav-section:not([data-static]) .nav-section-header::after {
-    content: '▾';
+    content: '';
     margin-left: auto;
-    font-size: 14px;
+    width: 20px;
+    height: 20px;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;
     color: var(--nav-text-secondary);
-    transition: transform 0.3s ease;
-    opacity: 0.5;
+    transition: transform 0.25s ease;
+    opacity: 0.45;
+    flex-shrink: 0;
   }
   .nav-section.collapsed:not([data-static]) .nav-section-header::after {
     transform: rotate(-90deg);
   }
 
+  .nav-section-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+    line-height: 1;
+  }
   .nav-section-title {
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--nav-text);
     letter-spacing: 0.02em;
@@ -1382,31 +1411,31 @@ const catsJson = JSON.stringify(CATS);
     color: var(--nav-text-secondary);
     font-family: var(--font-mono);
     letter-spacing: 0.03em;
-    opacity: 0.7;
+    opacity: 0.6;
+    flex-shrink: 0;
   }
 
   .nav-section-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
     gap: 6px;
   }
 
   .nav-card {
     position: relative;
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
     border-radius: 8px;
-    background: var(--nav-surface);
+    background: var(--nav-bg);
     border: 1px solid var(--nav-border);
     border-left: 3px solid var(--card-accent, var(--nav-accent));
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: card-fade-in 0.5s ease-out both;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: card-fade-in 0.45s ease-out both;
     animation-delay: var(--card-delay, 0ms);
-    overflow: hidden;
+    overflow: visible;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
   }
@@ -1415,7 +1444,7 @@ const catsJson = JSON.stringify(CATS);
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(99,102,241,0.18) 0%, transparent 60%);
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(99,102,241,0.15) 0%, transparent 60%);
     opacity: 0;
     transform: scale(0);
     transition: none;
@@ -1428,20 +1457,21 @@ const catsJson = JSON.stringify(CATS);
     transition: transform 0.45s cubic-bezier(0, 0, 0.2, 1), opacity 0.45s ease-out;
   }
   .nav-card:hover {
-    background: var(--nav-surface-hover);
+    background: var(--nav-surface);
     border-color: var(--card-accent, var(--nav-accent));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    z-index: 2;
   }
   [data-theme="dark"] .nav-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
   }
   .nav-card:hover .nav-card-name {
     color: var(--card-accent, var(--nav-accent));
   }
 
   @keyframes card-fade-in {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -1461,14 +1491,14 @@ const catsJson = JSON.stringify(CATS);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--card-accent, #6366f1), rgba(99,102,241,0.3));
+    background: linear-gradient(135deg, var(--card-accent, #6366f1), rgba(99,102,241,0.25));
     color: #fff;
     font-size: 10px;
     font-weight: 700;
   }
   .nav-card-name {
     margin: 0;
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 600;
     color: var(--nav-text);
     line-height: 1.3;
@@ -1476,6 +1506,40 @@ const catsJson = JSON.stringify(CATS);
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.25s;
+    flex: 1;
+    min-width: 0;
+  }
+  /* 描述气泡 */
+  .nav-card-tip {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-3px);
+    background: var(--nav-text);
+    color: var(--nav-bg);
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 10;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+  }
+  .nav-card-tip::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom-color: var(--nav-text);
+  }
+  .nav-card:hover .nav-card-tip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   .nav-empty {
@@ -1523,16 +1587,17 @@ const catsJson = JSON.stringify(CATS);
     .nav-featured-icon { width: 28px; height: 28px; border-radius: 8px; }
     .nav-featured-name { font-size: 14px; }
     .nav-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-    .nav-section { margin-bottom: 20px; padding: 16px 12px; border-radius: 12px; }
-    .nav-section-header { margin-bottom: 12px; padding-bottom: 10px; }
-    .nav-section-title { font-size: 16px; }
-    .nav-section-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 4px; }
+    .nav-section { margin-bottom: 16px; padding: 14px 10px; border-radius: 10px; }
+    .nav-section-header { margin-bottom: 10px; padding-bottom: 8px; }
+    .nav-section-title { font-size: 14px; }
+    .nav-section-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 4px; }
     .nav-card { padding: 8px 10px; gap: 6px; }
     .nav-card-icon { width: 18px; height: 18px; }
     .nav-card-icon-fallback { width: 18px; height: 18px; border-radius: 3px; font-size: 9px; }
     .nav-card-name { font-size: 12px; }
-    .nav-cats { gap: 6px; }
-    .nav-cat { padding: 5px 12px; font-size: 12px; }
+    .nav-section-icon { width: 18px; height: 18px; border-radius: 4px; font-size: 10px; }
+    .nav-cats { gap: 1px; border-radius: 10px; padding: 3px; }
+    .nav-cat { padding: 7px 13px; font-size: 12px; border-radius: 7px; }
     .nav-search-engine { padding: 6px 12px; }
     .nav-engine-label { font-size: 11px; padding: 2px 8px; }
   }
