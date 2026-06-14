@@ -3,7 +3,6 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import MusicPlayer from '../components/MusicPlayer.astro';
 
 const { title, description } = Astro.props;
 ---
@@ -18,7 +17,6 @@ const { title, description } = Astro.props;
     <main class="site-main">
       <slot />
     </main>
-    <MusicPlayer />
     <Footer />
   </body>
 </html>
