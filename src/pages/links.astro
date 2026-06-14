@@ -390,9 +390,9 @@ const catsJson = JSON.stringify(CATS);
   <!-- 顶栏 -->
   <header class="nav-topbar">
     <div class="nav-topbar-inner">
-      <a href="/" class="nav-topbar-title" id="navHomeLink" title="拖拽我到浏览器书签栏，设为首页" draggable="true"><span class="nav-logo-c">星</span><span class="nav-logo-c">舟</span></a>
-
       <span class="nav-topbar-date" id="navTopbarDate"></span>
+      <a href="#" class="nav-topbar-action" id="navSetHome" title="设为首页" onclick="return false;">设为首页</a>
+      <a href="#" class="nav-topbar-action" id="navAddBookmark" title="收藏本站" onclick="return false;">收藏本站</a>
       <button class="nav-theme-btn" id="themeToggle" aria-label="切换主题" title="切换深色/浅色主题">
         <svg class="nav-theme-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         <svg class="nav-theme-moon" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -821,6 +821,32 @@ const catsJson = JSON.stringify(CATS);
     card.style.setProperty('--ripple-x', x + '%');
     card.style.setProperty('--ripple-y', y + '%');
   });
+
+  // ===== 设为首页 / 收藏本站 =====
+  document.getElementById('navSetHome').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (document.body.style.zoom !== undefined || 'msRequestFullscreen' in document.body) {
+      document.body.style.behavior = 'url(#default#homepage)';
+      document.body.setHomePage(location.href);
+    } else {
+      alert('请手动将本站设为浏览器首页：拖动地址栏链接到浏览器主页按钮，或在浏览器设置中设置。');
+    }
+  });
+
+  document.getElementById('navAddBookmark').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (window.external && window.external.addFavorite) {
+      window.external.addFavorite(location.href, '星舟导航');
+    } else if (window.sidebar && window.sidebar.addPanel) {
+      window.sidebar.addPanel('星舟导航', location.href, '');
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(location.href).then(() => {
+        alert('链接已复制到剪贴板，请在浏览器中按 ' + (navigator.platform.includes('Mac') ? 'Cmd+D' : 'Ctrl+D') + ' 收藏本站。');
+      });
+    } else {
+      alert('请按 ' + (navigator.platform.includes('Mac') ? 'Cmd+D' : 'Ctrl+D') + ' 收藏本站');
+    }
+  });
 </script>
 
 <style is:global>
@@ -904,37 +930,28 @@ const catsJson = JSON.stringify(CATS);
     justify-content: space-between;
   }
 
-  .nav-topbar-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--nav-text);
-    letter-spacing: 2px;
-    font-family: var(--font-mono);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-  }
-  .nav-topbar-title:hover { opacity: 0.85; }
-  /* Logo 单字霓虹 */
-  .nav-logo-c { display: inline-block; }
-  .nav-logo-c:nth-child(1) {
-    color: #c4b5fd;
-    text-shadow: 0 0 6px #a78bfa, 0 0 14px #7c3aed, 0 0 26px #7c3aed;
-  }
-  .nav-logo-c:nth-child(2) {
-    color: #67e8f9;
-    text-shadow: 0 0 6px #22d3ee, 0 0 14px #06b6d4, 0 0 26px #06b6d4;
-  }
 
   .nav-topbar-date {
     font-size: 12.5px;
+    font-weight: 600;
     color: var(--nav-text-secondary);
     font-family: var(--font-mono);
     letter-spacing: 0.04em;
-    margin-left: auto;
-    margin-right: 16px;
+    margin-right: auto;
   }
+
+  .nav-topbar-action {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--nav-text-secondary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    padding: 4px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .nav-topbar-action:hover { color: var(--nav-accent); background: var(--nav-accent-pale); }
 
   .nav-theme-btn {
     display: flex;
@@ -1258,7 +1275,7 @@ const catsJson = JSON.stringify(CATS);
     cursor: pointer;
     transition: all 0.2s;
     font-family: inherit;
-    font-weight: 500;
+    font-weight: 600;
   }
   .nav-hotword:hover {
     border-color: var(--nav-accent);
@@ -1599,6 +1616,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-footer-copy {
     margin: 0;
     font-size: 13px;
+    font-weight: 600;
     color: #94a3b8;
     font-family: var(--font-mono);
     letter-spacing: 0.03em;
@@ -1607,6 +1625,7 @@ const catsJson = JSON.stringify(CATS);
   .nav-footer-icp {
     margin: 0;
     font-size: 13px;
+    font-weight: 600;
     color: var(--nav-text-secondary);
     opacity: 0.55;
     font-family: var(--font-mono);
@@ -1618,6 +1637,7 @@ const catsJson = JSON.stringify(CATS);
     align-items: center;
     gap: 10px;
     font-size: 13px;
+    font-weight: 600;
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
   }
