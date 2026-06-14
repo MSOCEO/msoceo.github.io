@@ -5,239 +5,239 @@ const title = '星舟 | 导航';
 const description = '星辰为引，链接为舟。手工甄选优质站点，无广告、无套路、无投毒。';
 
 const LINKS = [
-  // ===== AI 工具·国内 =====
-  { cat: 'AI 工具·国内', name: 'DeepSeek', url: 'https://chat.deepseek.com', desc: '国产开源大模型，代码与推理突出' },
-  { cat: 'AI 工具·国内', name: 'Kimi', url: 'https://kimi.moonshot.cn', desc: '月之暗面出品，200 万字长文本' },
-  { cat: 'AI 工具·国内', name: '通义千问', url: 'https://tongyi.aliyun.com', desc: '阿里云大模型，办公多场景覆盖' },
-  { cat: 'AI 工具·国内', name: '文心一言', url: 'https://yiyan.baidu.com', desc: '百度大语言模型，多模态知识增强' },
-  { cat: 'AI 工具·国内', name: '豆包', url: 'https://www.doubao.com', desc: '字节跳动 AI 智能助手，多端覆盖' },
-  { cat: 'AI 工具·国内', name: '元宝', url: 'https://yuanbao.tencent.com', desc: '腾讯 AI 助手，深度整合微信生态' },
-  { cat: 'AI 工具·国内', name: '音潮', url: 'https://www.yinchaoyongxian.com', desc: '国产 AI 写歌，零门槛音乐创作' },
-  { cat: 'AI 工具·国内', name: 'MELO音乐', url: 'https://51melo.com', desc: '中文声韵 AI 音乐创作，小程序同步' },
-  { cat: 'AI 工具·国内', name: '蛙蛙写作', url: 'https://wawawriter.com', desc: '网文到漫剧全链路 AI 创作平台' },
-  { cat: 'AI 工具·国内', name: '笔灵AI', url: 'https://ibiling.cn', desc: '小说论文公文一站式 AI 写作' },
-  { cat: 'AI 工具·国内', name: '唐库', url: 'https://tanglib.org', desc: '百万字长篇 AI 小说自动生成' },
-  { cat: 'AI 工具·国内', name: '万兴喵影', url: 'https://miao.wondershare.cn', desc: 'AI 全流程视频剪辑，字幕特效生成' },
-  { cat: 'AI 工具·国内', name: '可灵AI', url: 'https://klingai.kuaishou.com', desc: '快手 AI 视频与图片创意生成' },
-  { cat: 'AI 工具·国内', name: '即梦', url: 'https://jimeng.jianying.com', desc: '字节 AI 图片视频生成，局部编辑' },
-  { cat: 'AI 工具·国内', name: '妙境 Miora', url: 'https://miora.design', desc: '腾讯创意 AI 工作室，多模态设计' },
-  { cat: 'AI 工具·国内', name: 'LibTV', url: 'https://www.liblib.tv', desc: '专业AI视频创作平台，支持Seedance 2.0（真人参考）' },
-  { cat: 'AI 工具·国内', name: '秒哒', url: 'https://miaoda.baidu.com', desc: '无代码AI应用开发平台，一句话做应用' },
-  { cat: 'AI 工具·国内', name: 'AiPPT', url: 'https://www.aippt.cn', desc: 'AI快速生成高质量PPT' },
-  { cat: 'AI 工具·国内', name: '秘塔AI搜索', url: 'https://metaso.cn', desc: '最好用的AI搜索工具，没有广告，直达结果' },
-  { cat: 'AI 工具·国内', name: 'TRAE编程', url: 'https://www.trae.ai', desc: 'AI编程IDE，Vibe Coding 必备！' },
-  { cat: 'AI 工具·国内', name: '堆友AI', url: 'https://d.design', desc: '全能AI绘画和视频创作神器' },
-  { cat: 'AI 工具·国内', name: '美图设计室', url: 'https://www.designkit.cn', desc: 'AI图像创作和设计平台' },
-  { cat: 'AI 工具·国内', name: '绘蛙AI', url: 'https://ai-bot.cn/sites/9195.html', desc: 'AI 电商营销工具，免费生成商品图' },
-  { cat: 'AI 工具·国内', name: '星流AI', url: 'https://www.xingliu.art', desc: '一站式 AI 设计与创作工具' },
-  { cat: 'AI 工具·国内', name: '响指HaiSnap', url: 'https://ai-bot.cn/sites/64863.html', desc: '面向工作与学习场景的通用 AI Agent 平台' },
-  { cat: 'AI 工具·国内', name: '办公小浣熊', url: 'https://ai-bot.cn/sites/8516.html', desc: '最强AI数据分析助手' },
-  { cat: 'AI 工具·国内', name: 'TRAE', url: 'https://www.trae.ai', desc: 'Work 字节跳动推出的 AI 原生工作台' },
-  { cat: 'AI 工具·国内', name: 'MiMo', url: 'https://mimo.codes', desc: 'Code 小米大模型团队开源的新一代 AI 编程助手' },
-  { cat: 'AI 工具·国内', name: '万象有声', url: 'https://ai-bot.cn/sites/79330.html', desc: 'AI 一站式有声内容创作平台' },
-  { cat: 'AI 工具·国内', name: '剧云', url: 'https://ai-bot.cn/sites/79219.html', desc: '免费 AI 智能中文剧本创作平台' },
-  { cat: 'AI 工具·国内', name: '知达AI', url: 'https://ai-bot.cn/sites/79107.html', desc: '专为教育全场景打造的AI智能助教' },
-  { cat: 'AI 工具·国内', name: '讯飞绘文', url: 'https://huwen.xfyun.cn', desc: 'AI批量原创，多平台矩阵号管理' },
-  { cat: 'AI 工具·国内', name: '稿定AI文案', url: 'https://www.gaoding.com', desc: '小红书、公众号、短视频AI文案生成工具' },
-  { cat: 'AI 工具·国内', name: '沁言学术', url: 'https://ai-bot.cn/sites/56573.html', desc: 'AI科研写作平台，一站式文献管理' },
-  { cat: 'AI 工具·国内', name: '笔目鱼', url: 'https://ai-bot.cn/sites/53972.html', desc: '专业英文论文写作器' },
-  { cat: 'AI 工具·国内', name: '稿易AI论文', url: 'https://ai-bot.cn/sites/36409.html', desc: 'AI论文写作助手，免费生成2000字大纲' },
-  { cat: 'AI 工具·国内', name: '千笔AI论文', url: 'https://ai-bot.cn/sites/7358.html', desc: '全网首家论文无限改稿平台' },
-  { cat: 'AI 工具·国内', name: '66AI论文', url: 'https://ai-bot.cn/sites/14679.html', desc: '高质量、低查重、低AIGC率的AI论文写作工具' },
-  { cat: 'AI 工具·国内', name: '维普科创助手', url: 'https://ai-bot.cn/sites/60799.html', desc: '维普的一站式AI科研服务平台' },
-  { cat: 'AI 工具·国内', name: '茅茅虫', url: 'https://ai-bot.cn/sites/7381.html', desc: '一站式AI论文写作助手' },
-  { cat: 'AI 工具·国内', name: '光速写作', url: 'https://ai-bot.cn/sites/7244.html', desc: 'AI写作、PPT生成工具，单篇最长15000字' },
-  { cat: 'AI 工具·国内', name: '万能小in', url: 'https://ai-bot.cn/sites/14504.html', desc: '3分钟4万字150+应用，只需标题，快速生成毕业论文' },
-  { cat: 'AI 工具·国内', name: '墨问', url: 'https://ai-bot.cn/sites/62793.html', desc: '专为创作者设计的AI笔记工具' },
-  { cat: 'AI 工具·国内', name: '新华妙笔', url: 'https://ai-bot.cn/sites/6498.html', desc: '新华社推出的AI公文写作平台' },
-  { cat: 'AI 工具·国内', name: '丹青妙笔', url: 'https://ai-bot.cn/sites/75420.html', desc: '专为体制内打造的AI公文写作工具' },
-  { cat: 'AI 工具·国内', name: '小鱼AI写作', url: 'https://ai-bot.cn/sites/18646.html', desc: '一站式AI写作平台，一键生成高质量原创内容' },
-  { cat: 'AI 工具·国内', name: '落笔AI写作', url: 'https://ai-bot.cn/sites/66726.html', desc: '专注于小说网文创作的AI写作工具' },
-  { cat: 'AI 工具·国内', name: '创飞写作', url: 'https://ai-bot.cn/sites/74592.html', desc: '新一代智能AIGC写作调度平台' },
-  { cat: 'AI 工具·国内', name: '超级小说家', url: 'https://ai-bot.cn/sites/72610.html', desc: '专为网文作家和短剧编剧打造的AI创作助手' },
-  { cat: 'AI 工具·国内', name: '堆友AI反应堆', url: 'https://d.design', desc: '全能AI绘画生成器' },
-  { cat: 'AI 工具·国内', name: '稿定AI', url: 'https://www.gaoding.art', desc: '一站式AI设计工具集，免费AI绘图、图片转AI绘画、AI抠图消除' },
-  { cat: 'AI 工具·国内', name: '阿贝智能', url: 'https://ai-bot.cn/sites/17330.html', desc: '一站式AI绘本创作平台，副业变现必备' },
-  { cat: 'AI 工具·国内', name: '造点AI', url: 'https://zaodian.quark.cn', desc: '夸克团队推出的AI图像与视频创作平台' },
-  { cat: 'AI 工具·国内', name: '通义万相', url: 'https://tongyi.aliyun.com/wanxiang', desc: '阿里推出的AI创意内容生成平台' },
-  { cat: 'AI 工具·国内', name: '秒画', url: 'https://miaohua.sensetime.com', desc: '商汤科技推出的免费AI作画和图片生成平台' },
-  { cat: 'AI 工具·国内', name: 'WHEE', url: 'https://whee.com', desc: '美图推出的AI图片和绘画创作生成平台' },
-  { cat: 'AI 工具·国内', name: '呜哩', url: 'https://ai-bot.cn/sites/70059.html', desc: '阿里推出的AIGC创意生产力平台' },
-  { cat: 'AI 工具·国内', name: '抠抠图', url: 'https://ai-bot.cn/sites/70008.html', desc: '免费在线AI抠图工具，一键批量抠图' },
-  { cat: 'AI 工具·国内', name: 'Krene', url: 'https://ai-bot.cn/sites/78196.html', desc: '深耕游戏/影视美术创作领域的 AIGC 创作平台' },
-  { cat: 'AI 工具·国内', name: 'AI改图神器', url: 'https://www.gaituqishenqi.com', desc: 'AI在线图像编辑工具' },
-  { cat: 'AI 工具·国内', name: '米粿AI', url: 'https://ai-bot.cn/sites/74842.html', desc: '懂画师的渐进式分层绘画助手，主攻日系二次元绘画' },
-  { cat: 'AI 工具·国内', name: '咖图AI', url: 'https://ai-bot.cn/sites/71738.html', desc: 'AI图像设计平台，搭载NanoBanana Pro模型' },
-  { cat: 'AI 工具·国内', name: '视觉工厂', url: 'https://ai-bot.cn/sites/70659.html', desc: 'AI创作工具，支持AI生图和视频生成服务' },
-  { cat: 'AI 工具·国内', name: '秒绘AI', url: 'https://ai-bot.cn/sites/70073.html', desc: '一键生成爆款图文，免费发布小红书' },
-  { cat: 'AI 工具·国内', name: '妙话AI', url: 'https://ai-bot.cn/sites/68984.html', desc: '专为内容创作者设计的创意图片生成工具' },
-  { cat: 'AI 工具·国内', name: '即梦AI', url: 'https://jimeng.jianying.com', desc: '一站式AI视频、图片、数字人创作工具' },
-  { cat: 'AI 工具·国内', name: '绘蛙AI视频', url: 'https://ai-bot.cn/sites/33687.html', desc: '绘蛙推出的AI图生视频工具' },
-  { cat: 'AI 工具·国内', name: '堆友AI视频', url: 'https://d.design', desc: '堆友推出的AI视频生成工具' },
-  { cat: 'AI 工具·国内', name: '蝉镜', url: 'https://ai-bot.cn/sites/11290.html', desc: 'AI数字人视频生成平台' },
-  { cat: 'AI 工具·国内', name: '有言', url: 'https://ai-bot.cn/sites/10847.html', desc: '一站式AI视频创作和3D数字人生成平台' },
-  { cat: 'AI 工具·国内', name: '白日梦', url: 'https://ai-bot.cn/sites/13065.html', desc: '领先AI创作平台，可生成最长50分钟的视频' },
-  { cat: 'AI 工具·国内', name: '魔珐星云', url: 'https://ai-bot.cn/sites/68669.html', desc: '具身智能3D数字人开放平台' },
-  { cat: 'AI 工具·国内', name: '腾讯混元AI视频', url: 'https://hunyuan.tencent.com', desc: '腾讯推出的AI视频生成工具' },
-  { cat: 'AI 工具·国内', name: '灵芽社区', url: 'https://ai-bot.cn/sites/77343.html', desc: '腾讯推出的 AI 多模态创作者社区' },
-  { cat: 'AI 工具·国内', name: 'YOCO智能制课', url: 'https://ai-bot.cn/sites/78997.html', desc: 'AI PPT讲解视频生成创作工具' },
-  { cat: 'AI 工具·国内', name: '立刻MV', url: 'https://ai-bot.cn/sites/78606.html', desc: '一站式 AI 音乐视频（MV）创作工具' },
-  { cat: 'AI 工具·国内', name: '讯飞智文', url: 'https://zhiwen.xfyun.cn', desc: '一键生成PPT和Word' },
-  { cat: 'AI 工具·国内', name: '咔片PPT', url: 'https://ai-bot.cn/sites/44612.html', desc: 'AI PPT制作工具，设计美化全流程自动化' },
-  { cat: 'AI 工具·国内', name: '文多多AiPPT', url: 'https://docmee.cn', desc: 'AI一键生成PPT，支持AI配图和智能资料整合' },
-  { cat: 'AI 工具·国内', name: '博思AIPPT', url: 'https://www.bosiaippt.com', desc: 'PPT效率神器，AI一键生成PPT' },
-  { cat: 'AI 工具·国内', name: 'Pi智能PPT', url: 'https://ai-bot.cn/sites/63272.html', desc: '一键生成PPT，复制精美模板' },
-  { cat: 'AI 工具·国内', name: '稿定PPT', url: 'https://www.gaoding.com', desc: '稿定推出的PPT模板资源库' },
-  { cat: 'AI 工具·国内', name: '笔格AIPPT', url: 'https://ai-bot.cn/sites/7012.html', desc: '高效的AI PPT生成工具' },
-  { cat: 'AI 工具·国内', name: '百度文库AI助手', url: 'https://wenku.baidu.com', desc: '基于文心一言的一站式智能文档助手' },
-  { cat: 'AI 工具·国内', name: 'AiPPT插件', url: 'https://ai-bot.cn/sites/75247.html', desc: 'AiPPT推出的AI PPT制作工具（插件版）' },
-  { cat: 'AI 工具·国内', name: '夸克PPT', url: 'https://ai-bot.cn/sites/66082.html', desc: '夸克团队推出的AI PPT生成工具' },
-  { cat: 'AI 工具·国内', name: '飞象老师', url: 'https://ai-bot.cn/sites/67628.html', desc: '猿辅导推出的国内首个AI教学和备课工具' },
-  { cat: 'AI 工具·国内', name: '二狗PPT', url: 'https://ai-bot.cn/sites/76405.html', desc: '去 AI 味中式职场 PPT 生成工具' },
-  { cat: 'AI 工具·国内', name: '一点PPT', url: 'https://ai-bot.cn/sites/73154.html', desc: '一句话生成专业PPT，AI自动排版配图' },
-  { cat: 'AI 工具·国内', name: '万兴智演', url: 'https://ai-bot.cn/sites/14023.html', desc: '万兴科技推出的AI PPT和演示制作软件' },
-  { cat: 'AI 工具·国内', name: '麦当秀MindShow', url: 'https://ai-bot.cn/sites/67508.html', desc: 'AI在线PPT生成工具' },
-  { cat: 'AI 工具·国内', name: '千问', url: 'https://tongyi.aliyun.com/qianwen', desc: '全能AI助手，基于Qwen模型' },
-  { cat: 'AI 工具·国内', name: '腾讯元宝', url: 'https://yuanbao.tencent.com', desc: '腾讯推出的免费AI智能助手' },
-  { cat: 'AI 工具·国内', name: 'MiniMax', url: 'https://hailuoai.com', desc: '推出的AI智能问答助手' },
-  { cat: 'AI 工具·国内', name: '智谱清言', url: 'https://chatglm.cn', desc: '智谱推出的全能AI助手' },
-  { cat: 'AI 工具·国内', name: '讯飞星火', url: 'https://xinghuo.xfyun.cn', desc: 'AI智能助手，免费PPT生成、深度研究' },
-  { cat: 'AI 工具·国内', name: '逗逗AI', url: 'https://ai-bot.cn/sites/14769.html', desc: 'AI游戏陪玩，支持原神、黑神话、LOL！' },
-  { cat: 'AI 工具·国内', name: '问小白', url: 'https://ai-bot.cn/sites/14215.html', desc: 'AI智能助手，支持DeepSeek满血版' },
-  { cat: 'AI 工具·国内', name: '百灵大模型', url: 'https://ai-bot.cn/sites/64622.html', desc: '蚂蚁集团推出的 Ling-1T 大模型对话体验平台' },
-  { cat: 'AI 工具·国内', name: '书生大模型', url: 'https://ai-bot.cn/sites/53308.html', desc: '上海人工智能实验室推出的系列AI模型' },
-  { cat: 'AI 工具·国内', name: '阶跃AI', url: 'https://www.jieyue.ai', desc: '阶跃星辰推出的支持多模态的AI聊天机器人' },
-  { cat: 'AI 工具·国内', name: '百小应', url: 'https://ying.baichuan-ai.com', desc: '百川智能推出的免费AI助手' },
-  { cat: 'AI 工具·国内', name: '天工AI', url: 'https://www.tiangong.cn', desc: '昆仑万维推出的AI智能助手' },
-  { cat: 'AI 工具·国内', name: '商量SenseChat', url: 'https://ai-bot.cn/sites/11529.html', desc: '商汤科技推出的免费AI聊天助手' },
-  { cat: 'AI 工具·国内', name: '爱派AiPy', url: 'https://ai-bot.cn/sites/63774.html', desc: '本地Manus、国内能用、内网能用，开源免费' },
-  { cat: 'AI 工具·国内', name: '堆友Agent', url: 'https://ai-bot.cn/sites/77488.html', desc: '堆友推出的 AI 设计智能体' },
-  { cat: 'AI 工具·国内', name: '码上飞', url: 'https://ai-bot.cn/sites/60995.html', desc: '一句话生成微信小程序、APP、H5网页' },
-  { cat: 'AI 工具·国内', name: '讯飞星辰Agent', url: 'https://xingchen.xfyun.cn', desc: '科大讯飞推出的AI智能体开发平台' },
-  { cat: 'AI 工具·国内', name: 'AutoClaw', url: 'https://github.com/zhihuiai/autoclaw', desc: '智谱推出的国内首个一键安装本地版OpenClaw' },
-  { cat: 'AI 工具·国内', name: '扣子', url: 'https://www.coze.cn', desc: '免费全能的AI办公智能体' },
-  { cat: 'AI 工具·国内', name: 'Mavis', url: 'https://ai-bot.cn/sites/77290.html', desc: 'MiniMax Agent 推出的多 Agent 协作模式' },
-  { cat: 'AI 工具·国内', name: '腾讯Marvis', url: 'https://ai-bot.cn/sites/77977.html', desc: '腾讯应用宝团队推出的操作系统级 AI 助手' },
-  { cat: 'AI 工具·国内', name: '悟空', url: 'https://ai-bot.cn/sites/73661.html', desc: '阿里推出的全球首个企业级AI原生工作平台' },
-  { cat: 'AI 工具·国内', name: '代码小浣熊', url: 'https://ai-bot.cn/sites/6519.html', desc: '商汤科技推出的免费AI编程助手' },
-  { cat: 'AI 工具·国内', name: 'Qoder', url: 'https://qoder.alibaba.com', desc: '阿里巴巴推出的 AI Agentic 编程工具' },
-  { cat: 'AI 工具·国内', name: 'Kiro', url: 'https://ai-bot.cn/sites/57086.html', desc: '亚马逊公司推出的 AI IDE' },
-  { cat: 'AI 工具·国内', name: 'Zcode', url: 'https://ai-bot.cn/sites/69134.html', desc: '智谱推出的轻量级AI IDE编程工具' },
-  { cat: 'AI 工具·国内', name: 'CodeBuddy', url: 'https://codebuddy.tencent.com', desc: 'IDE 腾讯推出的全栈开发AI IDE' },
-  { cat: 'AI 工具·国内', name: 'CatPaw', url: 'https://catpaw.ai', desc: '美团推出的 AI IDE 编程工具' },
-  { cat: 'AI 工具·国内', name: 'MonkeyCode', url: 'https://monkeycode.chaitin.net', desc: '长亭科技开源的 AI 编程助手与企业级开发平台' },
-  { cat: 'AI 工具·国内', name: '通义灵码', url: 'https://tongyi.aliyun.com/lingma', desc: '阿里推出的免费AI编程工具，基于通义大模型' },
-  { cat: 'AI 工具·国内', name: 'CodeFlicker', url: 'https://codeflicker.kuaishou.com', desc: '快手推出的AI原生IDE编程工具' },
-  { cat: 'AI 工具·国内', name: '讯飞星辰MaaS', url: 'https://maas.xfyun.cn', desc: 'Qwen-3.6 模型免费不限量用（限时活动）' },
-  { cat: 'AI 工具·国内', name: 'BigModel', url: 'https://bigmodel.cn', desc: '智谱推出的企业级大模型开放平台（MaaS）' },
-  { cat: 'AI 工具·国内', name: '阿里云百炼', url: 'https://bailian.aliyun.com', desc: '一站式大模型开发与应用构建平台' },
-  { cat: 'AI 工具·国内', name: '方舟', url: 'https://www.volcengine.com/product/ark', desc: 'Agent Plan 火山引擎推出的业界首个 Agent 套餐' },
-  { cat: 'AI 工具·国内', name: 'ZenMux', url: 'https://zenmux.com', desc: '全球首个带保险赔付机制的企业级大模型聚合平台' },
-  { cat: 'AI 工具·国内', name: '千问云', url: 'https://ai-bot.cn/sites/77621.html', desc: '阿里云推出的全新MaaS模型服务平台' },
-  { cat: 'AI 工具·国内', name: '秒悟Meoo', url: 'https://ai-bot.cn/sites/75263.html', desc: '阿里推出的首个对话式AI开发工具' },
-  { cat: 'AI 工具·国内', name: '万小智', url: 'https://ai-bot.cn/sites/77243.html', desc: '阿里云推出的企业级 AI 建站平台' },
-  { cat: 'AI 工具·国内', name: '麦芽AI', url: 'https://ai-bot.cn/sites/77069.html', desc: '多范式兼容，全流程 AI 项目开发' },
-  { cat: 'AI 工具·国内', name: '博查万象', url: 'https://ai-bot.cn/sites/76040.html', desc: '博查多模态混合搜索和语义排序API开放平台' },
-  { cat: 'AI 工具·国内', name: '灵光', url: 'https://ai-bot.cn/sites/68455.html', desc: '蚂蚁推出的AI对话与应用生成平台' },
-  { cat: 'AI 工具·国内', name: '英博云AI算力', url: 'https://ai-bot.cn/sites/66477.html', desc: '英博数科推出的GPU智算服务云平台' },
-  { cat: 'AI 工具·国内', name: '汇智Token工场', url: 'https://ai-bot.cn/sites/76356.html', desc: '大模型API聚合与极速推理云平台' },
-  { cat: 'AI 工具·国内', name: '墨刀AI', url: 'https://modao.cc', desc: 'AI秒生原型稿' },
+  // ===== AI 工具 =====
+  { cat: 'AI 工具', name: 'DeepSeek', url: 'https://chat.deepseek.com', badge: 'hot', desc: '国产开源大模型，代码与推理突出' },
+  { cat: 'AI 工具', name: 'Kimi', url: 'https://kimi.moonshot.cn', desc: '月之暗面出品，200 万字长文本' , badge: 'hot' },
+  { cat: 'AI 工具', name: '通义千问', url: 'https://tongyi.aliyun.com', desc: '阿里云大模型，办公多场景覆盖' , badge: 'rec' },
+  { cat: 'AI 工具', name: '文心一言', url: 'https://yiyan.baidu.com', desc: '百度大语言模型，多模态知识增强' },
+  { cat: 'AI 工具', name: '豆包', url: 'https://www.doubao.com', desc: '字节跳动 AI 智能助手，多端覆盖' , badge: 'rec' },
+  { cat: 'AI 工具', name: '元宝', url: 'https://yuanbao.tencent.com', desc: '腾讯 AI 助手，深度整合微信生态' },
+  { cat: 'AI 工具', name: '音潮', url: 'https://www.yinchaoyongxian.com', desc: '国产 AI 写歌，零门槛音乐创作' },
+  { cat: 'AI 工具', name: 'MELO音乐', url: 'https://51melo.com', desc: '中文声韵 AI 音乐创作，小程序同步' },
+  { cat: 'AI 工具', name: '蛙蛙写作', url: 'https://wawawriter.com', desc: '网文到漫剧全链路 AI 创作平台' },
+  { cat: 'AI 工具', name: '笔灵AI', url: 'https://ibiling.cn', desc: '小说论文公文一站式 AI 写作' },
+  { cat: 'AI 工具', name: '唐库', url: 'https://tanglib.org', desc: '百万字长篇 AI 小说自动生成' },
+  { cat: 'AI 工具', name: '万兴喵影', url: 'https://miao.wondershare.cn', desc: 'AI 全流程视频剪辑，字幕特效生成' },
+  { cat: 'AI 工具', name: '可灵AI', url: 'https://klingai.kuaishou.com', desc: '快手 AI 视频与图片创意生成' },
+  { cat: 'AI 工具', name: '即梦', url: 'https://jimeng.jianying.com', desc: '字节 AI 图片视频生成，局部编辑' },
+  { cat: 'AI 工具', name: '妙境 Miora', url: 'https://miora.design', desc: '腾讯创意 AI 工作室，多模态设计' },
+  { cat: 'AI 工具', name: 'LibTV', url: 'https://www.liblib.tv', desc: '专业AI视频创作平台，支持Seedance 2.0（真人参考）' },
+  { cat: 'AI 工具', name: '秒哒', url: 'https://miaoda.baidu.com', desc: '无代码AI应用开发平台，一句话做应用' },
+  { cat: 'AI 工具', name: 'AiPPT', url: 'https://www.aippt.cn', desc: 'AI快速生成高质量PPT' },
+  { cat: 'AI 工具', name: '秘塔AI搜索', url: 'https://metaso.cn', desc: '最好用的AI搜索工具，没有广告，直达结果' },
+  { cat: 'AI 工具', name: 'TRAE编程', url: 'https://www.trae.ai', desc: 'AI编程IDE，Vibe Coding 必备！' },
+  { cat: 'AI 工具', name: '堆友AI', url: 'https://d.design', desc: '全能AI绘画和视频创作神器' },
+  { cat: 'AI 工具', name: '美图设计室', url: 'https://www.designkit.cn', desc: 'AI图像创作和设计平台' },
+  { cat: 'AI 工具', name: '绘蛙AI', url: 'https://ai-bot.cn/sites/9195.html', desc: 'AI 电商营销工具，免费生成商品图' },
+  { cat: 'AI 工具', name: '星流AI', url: 'https://www.xingliu.art', desc: '一站式 AI 设计与创作工具' },
+  { cat: 'AI 工具', name: '响指HaiSnap', url: 'https://ai-bot.cn/sites/64863.html', desc: '面向工作与学习场景的通用 AI Agent 平台' },
+  { cat: 'AI 工具', name: '办公小浣熊', url: 'https://ai-bot.cn/sites/8516.html', desc: '最强AI数据分析助手' },
+  { cat: 'AI 工具', name: 'TRAE', url: 'https://www.trae.ai', desc: 'Work 字节跳动推出的 AI 原生工作台' },
+  { cat: 'AI 工具', name: 'MiMo', url: 'https://mimo.codes', desc: 'Code 小米大模型团队开源的新一代 AI 编程助手' },
+  { cat: 'AI 工具', name: '万象有声', url: 'https://ai-bot.cn/sites/79330.html', desc: 'AI 一站式有声内容创作平台' },
+  { cat: 'AI 工具', name: '剧云', url: 'https://ai-bot.cn/sites/79219.html', desc: '免费 AI 智能中文剧本创作平台' },
+  { cat: 'AI 工具', name: '知达AI', url: 'https://ai-bot.cn/sites/79107.html', desc: '专为教育全场景打造的AI智能助教' },
+  { cat: 'AI 工具', name: '讯飞绘文', url: 'https://huwen.xfyun.cn', desc: 'AI批量原创，多平台矩阵号管理' },
+  { cat: 'AI 工具', name: '稿定AI文案', url: 'https://www.gaoding.com', desc: '小红书、公众号、短视频AI文案生成工具' },
+  { cat: 'AI 工具', name: '沁言学术', url: 'https://ai-bot.cn/sites/56573.html', desc: 'AI科研写作平台，一站式文献管理' },
+  { cat: 'AI 工具', name: '笔目鱼', url: 'https://ai-bot.cn/sites/53972.html', desc: '专业英文论文写作器' },
+  { cat: 'AI 工具', name: '稿易AI论文', url: 'https://ai-bot.cn/sites/36409.html', desc: 'AI论文写作助手，免费生成2000字大纲' },
+  { cat: 'AI 工具', name: '千笔AI论文', url: 'https://ai-bot.cn/sites/7358.html', desc: '全网首家论文无限改稿平台' },
+  { cat: 'AI 工具', name: '66AI论文', url: 'https://ai-bot.cn/sites/14679.html', desc: '高质量、低查重、低AIGC率的AI论文写作工具' },
+  { cat: 'AI 工具', name: '维普科创助手', url: 'https://ai-bot.cn/sites/60799.html', desc: '维普的一站式AI科研服务平台' },
+  { cat: 'AI 工具', name: '茅茅虫', url: 'https://ai-bot.cn/sites/7381.html', desc: '一站式AI论文写作助手' },
+  { cat: 'AI 工具', name: '光速写作', url: 'https://ai-bot.cn/sites/7244.html', desc: 'AI写作、PPT生成工具，单篇最长15000字' },
+  { cat: 'AI 工具', name: '万能小in', url: 'https://ai-bot.cn/sites/14504.html', desc: '3分钟4万字150+应用，只需标题，快速生成毕业论文' },
+  { cat: 'AI 工具', name: '墨问', url: 'https://ai-bot.cn/sites/62793.html', desc: '专为创作者设计的AI笔记工具' },
+  { cat: 'AI 工具', name: '新华妙笔', url: 'https://ai-bot.cn/sites/6498.html', desc: '新华社推出的AI公文写作平台' },
+  { cat: 'AI 工具', name: '丹青妙笔', url: 'https://ai-bot.cn/sites/75420.html', desc: '专为体制内打造的AI公文写作工具' },
+  { cat: 'AI 工具', name: '小鱼AI写作', url: 'https://ai-bot.cn/sites/18646.html', desc: '一站式AI写作平台，一键生成高质量原创内容' },
+  { cat: 'AI 工具', name: '落笔AI写作', url: 'https://ai-bot.cn/sites/66726.html', desc: '专注于小说网文创作的AI写作工具' },
+  { cat: 'AI 工具', name: '创飞写作', url: 'https://ai-bot.cn/sites/74592.html', desc: '新一代智能AIGC写作调度平台' },
+  { cat: 'AI 工具', name: '超级小说家', url: 'https://ai-bot.cn/sites/72610.html', desc: '专为网文作家和短剧编剧打造的AI创作助手' },
+  { cat: 'AI 工具', name: '堆友AI反应堆', url: 'https://d.design', desc: '全能AI绘画生成器' },
+  { cat: 'AI 工具', name: '稿定AI', url: 'https://www.gaoding.art', desc: '一站式AI设计工具集，免费AI绘图、图片转AI绘画、AI抠图消除' },
+  { cat: 'AI 工具', name: '阿贝智能', url: 'https://ai-bot.cn/sites/17330.html', desc: '一站式AI绘本创作平台，副业变现必备' },
+  { cat: 'AI 工具', name: '造点AI', url: 'https://zaodian.quark.cn', desc: '夸克团队推出的AI图像与视频创作平台' },
+  { cat: 'AI 工具', name: '通义万相', url: 'https://tongyi.aliyun.com/wanxiang', desc: '阿里推出的AI创意内容生成平台' },
+  { cat: 'AI 工具', name: '秒画', url: 'https://miaohua.sensetime.com', desc: '商汤科技推出的免费AI作画和图片生成平台' },
+  { cat: 'AI 工具', name: 'WHEE', url: 'https://whee.com', desc: '美图推出的AI图片和绘画创作生成平台' },
+  { cat: 'AI 工具', name: '呜哩', url: 'https://ai-bot.cn/sites/70059.html', desc: '阿里推出的AIGC创意生产力平台' },
+  { cat: 'AI 工具', name: '抠抠图', url: 'https://ai-bot.cn/sites/70008.html', desc: '免费在线AI抠图工具，一键批量抠图' },
+  { cat: 'AI 工具', name: 'Krene', url: 'https://ai-bot.cn/sites/78196.html', desc: '深耕游戏/影视美术创作领域的 AIGC 创作平台' },
+  { cat: 'AI 工具', name: 'AI改图神器', url: 'https://www.gaituqishenqi.com', desc: 'AI在线图像编辑工具' },
+  { cat: 'AI 工具', name: '米粿AI', url: 'https://ai-bot.cn/sites/74842.html', desc: '懂画师的渐进式分层绘画助手，主攻日系二次元绘画' },
+  { cat: 'AI 工具', name: '咖图AI', url: 'https://ai-bot.cn/sites/71738.html', desc: 'AI图像设计平台，搭载NanoBanana Pro模型' },
+  { cat: 'AI 工具', name: '视觉工厂', url: 'https://ai-bot.cn/sites/70659.html', desc: 'AI创作工具，支持AI生图和视频生成服务' },
+  { cat: 'AI 工具', name: '秒绘AI', url: 'https://ai-bot.cn/sites/70073.html', desc: '一键生成爆款图文，免费发布小红书' },
+  { cat: 'AI 工具', name: '妙话AI', url: 'https://ai-bot.cn/sites/68984.html', desc: '专为内容创作者设计的创意图片生成工具' },
+  { cat: 'AI 工具', name: '即梦AI', url: 'https://jimeng.jianying.com', desc: '一站式AI视频、图片、数字人创作工具' },
+  { cat: 'AI 工具', name: '绘蛙AI视频', url: 'https://ai-bot.cn/sites/33687.html', desc: '绘蛙推出的AI图生视频工具' },
+  { cat: 'AI 工具', name: '堆友AI视频', url: 'https://d.design', desc: '堆友推出的AI视频生成工具' },
+  { cat: 'AI 工具', name: '蝉镜', url: 'https://ai-bot.cn/sites/11290.html', desc: 'AI数字人视频生成平台' },
+  { cat: 'AI 工具', name: '有言', url: 'https://ai-bot.cn/sites/10847.html', desc: '一站式AI视频创作和3D数字人生成平台' },
+  { cat: 'AI 工具', name: '白日梦', url: 'https://ai-bot.cn/sites/13065.html', desc: '领先AI创作平台，可生成最长50分钟的视频' },
+  { cat: 'AI 工具', name: '魔珐星云', url: 'https://ai-bot.cn/sites/68669.html', desc: '具身智能3D数字人开放平台' },
+  { cat: 'AI 工具', name: '腾讯混元AI视频', url: 'https://hunyuan.tencent.com', desc: '腾讯推出的AI视频生成工具' },
+  { cat: 'AI 工具', name: '灵芽社区', url: 'https://ai-bot.cn/sites/77343.html', desc: '腾讯推出的 AI 多模态创作者社区' },
+  { cat: 'AI 工具', name: 'YOCO智能制课', url: 'https://ai-bot.cn/sites/78997.html', desc: 'AI PPT讲解视频生成创作工具' },
+  { cat: 'AI 工具', name: '立刻MV', url: 'https://ai-bot.cn/sites/78606.html', desc: '一站式 AI 音乐视频（MV）创作工具' },
+  { cat: 'AI 工具', name: '讯飞智文', url: 'https://zhiwen.xfyun.cn', desc: '一键生成PPT和Word' },
+  { cat: 'AI 工具', name: '咔片PPT', url: 'https://ai-bot.cn/sites/44612.html', desc: 'AI PPT制作工具，设计美化全流程自动化' },
+  { cat: 'AI 工具', name: '文多多AiPPT', url: 'https://docmee.cn', desc: 'AI一键生成PPT，支持AI配图和智能资料整合' },
+  { cat: 'AI 工具', name: '博思AIPPT', url: 'https://www.bosiaippt.com', desc: 'PPT效率神器，AI一键生成PPT' },
+  { cat: 'AI 工具', name: 'Pi智能PPT', url: 'https://ai-bot.cn/sites/63272.html', desc: '一键生成PPT，复制精美模板' },
+  { cat: 'AI 工具', name: '稿定PPT', url: 'https://www.gaoding.com', desc: '稿定推出的PPT模板资源库' },
+  { cat: 'AI 工具', name: '笔格AIPPT', url: 'https://ai-bot.cn/sites/7012.html', desc: '高效的AI PPT生成工具' },
+  { cat: 'AI 工具', name: '百度文库AI助手', url: 'https://wenku.baidu.com', desc: '基于文心一言的一站式智能文档助手' },
+  { cat: 'AI 工具', name: 'AiPPT插件', url: 'https://ai-bot.cn/sites/75247.html', desc: 'AiPPT推出的AI PPT制作工具（插件版）' },
+  { cat: 'AI 工具', name: '夸克PPT', url: 'https://ai-bot.cn/sites/66082.html', desc: '夸克团队推出的AI PPT生成工具' },
+  { cat: 'AI 工具', name: '飞象老师', url: 'https://ai-bot.cn/sites/67628.html', desc: '猿辅导推出的国内首个AI教学和备课工具' },
+  { cat: 'AI 工具', name: '二狗PPT', url: 'https://ai-bot.cn/sites/76405.html', desc: '去 AI 味中式职场 PPT 生成工具' },
+  { cat: 'AI 工具', name: '一点PPT', url: 'https://ai-bot.cn/sites/73154.html', desc: '一句话生成专业PPT，AI自动排版配图' },
+  { cat: 'AI 工具', name: '万兴智演', url: 'https://ai-bot.cn/sites/14023.html', desc: '万兴科技推出的AI PPT和演示制作软件' },
+  { cat: 'AI 工具', name: '麦当秀MindShow', url: 'https://ai-bot.cn/sites/67508.html', desc: 'AI在线PPT生成工具' },
+  { cat: 'AI 工具', name: '千问', url: 'https://tongyi.aliyun.com/qianwen', desc: '全能AI助手，基于Qwen模型' },
+  { cat: 'AI 工具', name: '腾讯元宝', url: 'https://yuanbao.tencent.com', desc: '腾讯推出的免费AI智能助手' },
+  { cat: 'AI 工具', name: 'MiniMax', url: 'https://hailuoai.com', desc: '推出的AI智能问答助手' },
+  { cat: 'AI 工具', name: '智谱清言', url: 'https://chatglm.cn', desc: '智谱推出的全能AI助手' },
+  { cat: 'AI 工具', name: '讯飞星火', url: 'https://xinghuo.xfyun.cn', desc: 'AI智能助手，免费PPT生成、深度研究' },
+  { cat: 'AI 工具', name: '逗逗AI', url: 'https://ai-bot.cn/sites/14769.html', desc: 'AI游戏陪玩，支持原神、黑神话、LOL！' },
+  { cat: 'AI 工具', name: '问小白', url: 'https://ai-bot.cn/sites/14215.html', desc: 'AI智能助手，支持DeepSeek满血版' },
+  { cat: 'AI 工具', name: '百灵大模型', url: 'https://ai-bot.cn/sites/64622.html', desc: '蚂蚁集团推出的 Ling-1T 大模型对话体验平台' },
+  { cat: 'AI 工具', name: '书生大模型', url: 'https://ai-bot.cn/sites/53308.html', desc: '上海人工智能实验室推出的系列AI模型' },
+  { cat: 'AI 工具', name: '阶跃AI', url: 'https://www.jieyue.ai', desc: '阶跃星辰推出的支持多模态的AI聊天机器人' },
+  { cat: 'AI 工具', name: '百小应', url: 'https://ying.baichuan-ai.com', desc: '百川智能推出的免费AI助手' },
+  { cat: 'AI 工具', name: '天工AI', url: 'https://www.tiangong.cn', desc: '昆仑万维推出的AI智能助手' },
+  { cat: 'AI 工具', name: '商量SenseChat', url: 'https://ai-bot.cn/sites/11529.html', desc: '商汤科技推出的免费AI聊天助手' },
+  { cat: 'AI 工具', name: '爱派AiPy', url: 'https://ai-bot.cn/sites/63774.html', desc: '本地Manus、国内能用、内网能用，开源免费' },
+  { cat: 'AI 工具', name: '堆友Agent', url: 'https://ai-bot.cn/sites/77488.html', desc: '堆友推出的 AI 设计智能体' },
+  { cat: 'AI 工具', name: '码上飞', url: 'https://ai-bot.cn/sites/60995.html', desc: '一句话生成微信小程序、APP、H5网页' },
+  { cat: 'AI 工具', name: '讯飞星辰Agent', url: 'https://xingchen.xfyun.cn', desc: '科大讯飞推出的AI智能体开发平台' },
+  { cat: 'AI 工具', name: 'AutoClaw', url: 'https://github.com/zhihuiai/autoclaw', desc: '智谱推出的国内首个一键安装本地版OpenClaw' },
+  { cat: 'AI 工具', name: '扣子', url: 'https://www.coze.cn', desc: '免费全能的AI办公智能体' },
+  { cat: 'AI 工具', name: 'Mavis', url: 'https://ai-bot.cn/sites/77290.html', desc: 'MiniMax Agent 推出的多 Agent 协作模式' },
+  { cat: 'AI 工具', name: '腾讯Marvis', url: 'https://ai-bot.cn/sites/77977.html', desc: '腾讯应用宝团队推出的操作系统级 AI 助手' },
+  { cat: 'AI 工具', name: '悟空', url: 'https://ai-bot.cn/sites/73661.html', desc: '阿里推出的全球首个企业级AI原生工作平台' },
+  { cat: 'AI 工具', name: '代码小浣熊', url: 'https://ai-bot.cn/sites/6519.html', desc: '商汤科技推出的免费AI编程助手' },
+  { cat: 'AI 工具', name: 'Qoder', url: 'https://qoder.alibaba.com', desc: '阿里巴巴推出的 AI Agentic 编程工具' },
+  { cat: 'AI 工具', name: 'Kiro', url: 'https://ai-bot.cn/sites/57086.html', desc: '亚马逊公司推出的 AI IDE' },
+  { cat: 'AI 工具', name: 'Zcode', url: 'https://ai-bot.cn/sites/69134.html', desc: '智谱推出的轻量级AI IDE编程工具' },
+  { cat: 'AI 工具', name: 'CodeBuddy', url: 'https://codebuddy.tencent.com', desc: 'IDE 腾讯推出的全栈开发AI IDE' },
+  { cat: 'AI 工具', name: 'CatPaw', url: 'https://catpaw.ai', desc: '美团推出的 AI IDE 编程工具' },
+  { cat: 'AI 工具', name: 'MonkeyCode', url: 'https://monkeycode.chaitin.net', desc: '长亭科技开源的 AI 编程助手与企业级开发平台' },
+  { cat: 'AI 工具', name: '通义灵码', url: 'https://tongyi.aliyun.com/lingma', desc: '阿里推出的免费AI编程工具，基于通义大模型' },
+  { cat: 'AI 工具', name: 'CodeFlicker', url: 'https://codeflicker.kuaishou.com', desc: '快手推出的AI原生IDE编程工具' },
+  { cat: 'AI 工具', name: '讯飞星辰MaaS', url: 'https://maas.xfyun.cn', desc: 'Qwen-3.6 模型免费不限量用（限时活动）' },
+  { cat: 'AI 工具', name: 'BigModel', url: 'https://bigmodel.cn', desc: '智谱推出的企业级大模型开放平台（MaaS）' },
+  { cat: 'AI 工具', name: '阿里云百炼', url: 'https://bailian.aliyun.com', desc: '一站式大模型开发与应用构建平台' },
+  { cat: 'AI 工具', name: '方舟', url: 'https://www.volcengine.com/product/ark', desc: 'Agent Plan 火山引擎推出的业界首个 Agent 套餐' },
+  { cat: 'AI 工具', name: 'ZenMux', url: 'https://zenmux.com', desc: '全球首个带保险赔付机制的企业级大模型聚合平台' },
+  { cat: 'AI 工具', name: '千问云', url: 'https://ai-bot.cn/sites/77621.html', desc: '阿里云推出的全新MaaS模型服务平台' },
+  { cat: 'AI 工具', name: '秒悟Meoo', url: 'https://ai-bot.cn/sites/75263.html', desc: '阿里推出的首个对话式AI开发工具' },
+  { cat: 'AI 工具', name: '万小智', url: 'https://ai-bot.cn/sites/77243.html', desc: '阿里云推出的企业级 AI 建站平台' },
+  { cat: 'AI 工具', name: '麦芽AI', url: 'https://ai-bot.cn/sites/77069.html', desc: '多范式兼容，全流程 AI 项目开发' },
+  { cat: 'AI 工具', name: '博查万象', url: 'https://ai-bot.cn/sites/76040.html', desc: '博查多模态混合搜索和语义排序API开放平台' },
+  { cat: 'AI 工具', name: '灵光', url: 'https://ai-bot.cn/sites/68455.html', desc: '蚂蚁推出的AI对话与应用生成平台' },
+  { cat: 'AI 工具', name: '英博云AI算力', url: 'https://ai-bot.cn/sites/66477.html', desc: '英博数科推出的GPU智算服务云平台' },
+  { cat: 'AI 工具', name: '汇智Token工场', url: 'https://ai-bot.cn/sites/76356.html', desc: '大模型API聚合与极速推理云平台' },
+  { cat: 'AI 工具', name: '墨刀AI', url: 'https://modao.cc', desc: 'AI秒生原型稿' },
 
-  // ===== AI 工具·国外 =====
-  { cat: 'AI 工具·国外', name: 'ChatGPT', url: 'https://chatgpt.com', desc: 'OpenAI 通用对话模型，多模态交互' },
-  { cat: 'AI 工具·国外', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic 长文本推理与代码助手' },
-  { cat: 'AI 工具·国外', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google 多模态 AI，深度整合生态' },
-  { cat: 'AI 工具·国外', name: 'Poe', url: 'https://poe.com', desc: 'Quora 出品的多模型聚合平台' },
-  { cat: 'AI 工具·国外', name: 'Hugging Face', url: 'https://huggingface.co', desc: '全球最大模型与数据集开源社区' },
-  { cat: 'AI 工具·国外', name: 'Cursor', url: 'https://cursor.com', desc: 'AI 原生代码编辑器，Copilot 替代' },
-  { cat: 'AI 工具·国外', name: 'v0', url: 'https://v0.dev', desc: 'Vercel 出品，自然语言生成 UI 界面' },
-  { cat: 'AI 工具·国外', name: 'Bolt.new', url: 'https://bolt.new', desc: 'AI 全栈应用在线生成与部署' },
-  { cat: 'AI 工具·国外', name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'AI 艺术图像生成，美学天花板' },
-  { cat: 'AI 工具·国外', name: 'Runway', url: 'https://runwayml.com', desc: 'AI 视频生成与专业编辑平台' },
-  { cat: 'AI 工具·国外', name: 'Perplexity', url: 'https://www.perplexity.ai', desc: 'AI 搜索引擎，带来源引用' },
-  { cat: 'AI 工具·国外', name: 'Copilot', url: 'https://github.com/features/copilot', desc: 'GitHub AI 编程助手，IDE 深度集成' },
-  { cat: 'AI 工具·国外', name: 'Suno', url: 'https://suno.ai', desc: 'AI 文本转音乐，全球最流行' },
-  { cat: 'AI 工具·国外', name: 'Udio', url: 'https://udio.com', desc: '高品质 AI 音乐生成平台' },
-  { cat: 'AI 工具·国外', name: 'AIVA', url: 'https://www.aiva.ai', desc: 'AI 影视配乐与管弦乐作曲' },
-  { cat: 'AI 工具·国外', name: 'Sonauto', url: 'https://sonauto.ai', desc: '免费无限 AI 音乐生成，免版税' },
-  { cat: 'AI 工具·国外', name: 'Gamma', url: 'https://gamma.app', desc: 'AI 生成 PPT、文档和网页，设计感强' },
-  { cat: 'AI 工具·国外', name: 'Grok', url: 'https://x.ai', desc: 'xAI 出品，X/Twitter 实时深度集成' },
-  { cat: 'AI 工具·国外', name: 'Mistral', url: 'https://chat.mistral.ai', desc: '法国顶级开源大模型，多语言能力' },
-  { cat: 'AI 工具·国外', name: 'NotebookLM', url: 'https://notebooklm.google.com', desc: 'Google AI 知识库，文档问答与简报' },
-  { cat: 'AI 工具·国外', name: 'Paperpal', url: 'https://paperpal.cn', desc: '英文论文写作助手' },
-  { cat: 'AI 工具·国外', name: 'GetDraft', url: 'https://ai-bot.cn/sites/67418.html', desc: '得到推出的多AI专家协作AI写作工具' },
-  { cat: 'AI 工具·国外', name: 'YouMind', url: 'https://ai-bot.cn/sites/61208.html', desc: '专注提升创作效率和信息整合的AI原生工具' },
-  { cat: 'AI 工具·国外', name: 'FeelFish', url: 'https://ai-bot.cn/sites/66997.html', desc: '专为小说创作者打造的 AI 写作 PC 客户端软件' },
-  { cat: 'AI 工具·国外', name: 'Loomi', url: 'https://ai-bot.cn/sites/66375.html', desc: '创作版Claude Code，AI原生写作工具' },
-  { cat: 'AI 工具·国外', name: '01Agent', url: 'https://ai-bot.cn/sites/69212.html', desc: 'AI图文创作工具，支持生成、排版、编辑、发布' },
-  { cat: 'AI 工具·国外', name: 'Civitai', url: 'https://civitai.com', desc: '免费的AI图像绘画作品和模型分享平台和社区' },
-  { cat: 'AI 工具·国外', name: 'RunningHub', url: 'https://www.runninghub.com', desc: '基于云端ComfyUI的AI图像与视频创作平台' },
-  { cat: 'AI 工具·国外', name: 'insMind', url: 'https://ai-bot.cn/sites/60138.html', desc: '稿定面向全球市场推出的AI图片编辑工具' },
-  { cat: 'AI 工具·国外', name: 'Krea', url: 'https://www.krea.ai', desc: 'AI 实时AI图像、视频生成和编辑平台' },
-  { cat: 'AI 工具·国外', name: 'Kira', url: 'https://kira.ai', desc: 'AI 图像生成与编辑工具' },
-  { cat: 'AI 工具·国外', name: 'SoundView', url: 'https://ai-bot.cn/sites/35756.html', desc: '讯飞推出的AI短视频智能创作平台' },
-  { cat: 'AI 工具·国外', name: 'HeyGen', url: 'https://www.heygen.com', desc: '专业的AI数字人视频创作平台' },
-  { cat: 'AI 工具·国外', name: 'Seko', url: 'https://ai-bot.cn/sites/58360.html', desc: '首个创编一体的AI视频创作Agent' },
-  { cat: 'AI 工具·国外', name: 'Seedance', url: 'https://ai-bot.cn/sites/76349.html', desc: '字节跳动 Seed 团队推出的多模态 AI 视频生成模型' },
-  { cat: 'AI 工具·国外', name: 'Pollo', url: 'https://ai-bot.cn/sites/70438.html', desc: 'AI 一站式AI图像和视频创作平台' },
-  { cat: 'AI 工具·国外', name: 'JoyPix', url: 'https://ai-bot.cn/sites/45413.html', desc: 'AI数字人创作工具，支持声音克隆' },
-  { cat: 'AI 工具·国外', name: 'RHTV', url: 'https://ai-bot.cn/sites/76657.html', desc: 'RunningHub 推出的原生 AI 无限画布创作工具' },
-  { cat: 'AI 工具·国外', name: 'TapNow', url: 'https://ai-bot.cn/sites/66332.html', desc: 'AI视觉内容创作平台，提供多种预设工作流' },
-  { cat: 'AI 工具·国外', name: 'Higgsfield', url: 'https://ai-bot.cn/sites/59035.html', desc: 'AI视频生成工具，支持专业运镜效果' },
-  { cat: 'AI 工具·国外', name: 'Vidu', url: 'https://www.vidu.com', desc: '生数科技推出的AI视频生成大模型' },
-  { cat: 'AI 工具·国外', name: 'Flova', url: 'https://ai-bot.cn/sites/76121.html', desc: '全球首个一体化 AI 视频创作平台' },
-  { cat: 'AI 工具·国外', name: 'OhYesAI', url: 'https://ai-bot.cn/sites/78902.html', desc: 'AI 音乐 MV 一体化创作智能体平台' },
-  { cat: 'AI 工具·国外', name: 'Oiiyao', url: 'https://ai-bot.cn/sites/78886.html', desc: 'AI视频本地化平台' },
-  { cat: 'AI 工具·国外', name: 'iSlide', url: 'https://www.islide.cc', desc: 'AIPPT AI一键设计精美PPT，只需一句标题' },
-  { cat: 'AI 工具·国外', name: 'Napkin', url: 'https://ai-bot.cn/sites/16885.html', desc: '将文本内容快速转换成演示图像的AI办公工具' },
-  { cat: 'AI 工具·国外', name: 'Swishy', url: 'https://ai-bot.cn/sites/76133.html', desc: 'AI 动态设计与动画生成平台' },
-  { cat: 'AI 工具·国外', name: 'ChartGen', url: 'https://ai-bot.cn/sites/69545.html', desc: 'AI图表生成工具，快速生成专业图表' },
-  { cat: 'AI 工具·国外', name: 'Diagrimo', url: 'https://ai-bot.cn/sites/68868.html', desc: 'Tenorshare AI推出的AI图表生成工具' },
-  { cat: 'AI 工具·国外', name: 'PicDoc', url: 'https://ai-bot.cn/sites/53412.html', desc: 'AI文本转图表工具，一键生成多种视觉图表' },
-  { cat: 'AI 工具·国外', name: 'NarraLand', url: 'https://ai-bot.cn/sites/72530.html', desc: 'AI智能演示内容创作平台' },
-  { cat: 'AI 工具·国外', name: 'VoxDeck', url: 'https://ai-bot.cn/sites/59512.html', desc: '创新的AI演示文稿生成工具' },
-  { cat: 'AI 工具·国外', name: 'Flowith', url: 'https://flowith.io', desc: '一站式用GPT-5.5、Claude-4.7' },
-  { cat: 'AI 工具·国外', name: 'Z.ai', url: 'https://z.ai', desc: '智谱面向全球推出的AI模型体验平台' },
-  { cat: 'AI 工具·国外', name: 'LongCat', url: 'https://ai-bot.cn/sites/61432.html', desc: '美团推出的自研大模型AI对话平台' },
-  { cat: 'AI 工具·国外', name: 'Lorka', url: 'https://ai-bot.cn/sites/76161.html', desc: 'AI 多模型 AI 聚合对话平台' },
-  { cat: 'AI 工具·国外', name: 'Me.bot', url: 'https://ai-bot.cn/sites/16356.html', desc: '心识宇宙推出的个性化AI伴侣产品' },
-  { cat: 'AI 工具·国外', name: 'Saylo', url: 'https://ai-bot.cn/sites/21956.html', desc: 'AI驱动的故事角色扮演游戏应用，沉浸式的剧本互动体验' },
-  { cat: 'AI 工具·国外', name: 'WorkBuddy', url: 'https://ai-bot.cn/sites/73160.html', desc: '腾讯云推出的AI原生桌面智能体工作台' },
-  { cat: 'AI 工具·国外', name: 'QoderWork', url: 'https://ai-bot.cn/sites/72782.html', desc: '阿里Qoder团队推出的桌面端AI智能体' },
-  { cat: 'AI 工具·国外', name: 'Atoms', url: 'https://ai-bot.cn/sites/70016.html', desc: '第一支自动构建真实业务的 AI 团队' },
-  { cat: 'AI 工具·国外', name: 'ArkClaw', url: 'https://ai-bot.cn/sites/74340.html', desc: '火山引擎推出的云端托管版OpenClaw服务' },
-  { cat: 'AI 工具·国外', name: 'DuMate', url: 'https://ai-bot.cn/sites/74011.html', desc: '百度推出的桌面端 AI 智能体' },
-  { cat: 'AI 工具·国外', name: 'OpenClaw', url: 'https://github.com/haofanwang/openclaw', desc: '开源免费的个人 AI 助手' },
-  { cat: 'AI 工具·国外', name: 'Tabbit', url: 'https://ai-bot.cn/sites/72614.html', desc: '美团光年之外推出的AI原生浏览器' },
-  { cat: 'AI 工具·国外', name: 'Manus', url: 'https://manus.im', desc: '蝴蝶效应公司推出的首款自主通用AI Agent' },
-  { cat: 'AI 工具·国外', name: 'Hermes', url: 'https://ai-bot.cn/sites/78174.html', desc: 'Agent Nous Research 开源的自主 AI Agent 框架' },
-  { cat: 'AI 工具·国外', name: 'Moxt', url: 'https://ai-bot.cn/sites/76261.html', desc: 'AI 原生工作空间' },
-  { cat: 'AI 工具·国外', name: 'happycapy', url: 'https://ai-bot.cn/sites/71899.html', desc: 'Trickle 团队推出的云端 AI Agent 计算机' },
-  { cat: 'AI 工具·国外', name: 'Genspark', url: 'https://ai-bot.cn/sites/66341.html', desc: '通用AI智能体，您的一站式AI工作空间' },
-  { cat: 'AI 工具·国外', name: 'OiiOii', url: 'https://ai-bot.cn/sites/66553.html', desc: '全球首个专业动画创作Agent' },
-  { cat: 'AI 工具·国外', name: 'QClaw', url: 'https://ai-bot.cn/sites/73177.html', desc: '腾讯电脑管家团队基于 OpenClaw 打造的本地 AI 助手' },
-  { cat: 'AI 工具·国外', name: 'Codex', url: 'https://openai.com/index/openai-codex', desc: 'OpenAI 推出的 AI 编程智能体' },
-  { cat: 'AI 工具·国外', name: 'OpenCode', url: 'https://github.com/opencode-ai/opencode', desc: '开源 AI 编程工具 ， Claude Code 最佳平替' },
-  { cat: 'AI 工具·国外', name: 'Kilo', url: 'https://kilocode.ai', desc: 'Code 开源的 AI 编程扩展插件' },
-  { cat: 'AI 工具·国外', name: 'YouWare', url: 'https://ai-bot.cn/sites/70432.html', desc: '一站式 AI 编程社区与开发平台' },
-  { cat: 'AI 工具·国外', name: 'Lovable', url: 'https://lovable.dev', desc: '全栈AI编程工具，一句话构建网站应用' },
-  { cat: 'AI 工具·国外', name: 'Augment', url: 'https://www.augmentcode.com', desc: 'Code AI编程辅助工具，专为大型代码库设计' },
-  { cat: 'AI 工具·国外', name: 'iFlow', url: 'https://ai-bot.cn/sites/64688.html', desc: 'CLI 心流AI推出的免费终端 AI 智能体' },
-  { cat: 'AI 工具·国外', name: 'InfCode', url: 'https://ai-bot.cn/sites/69316.html', desc: '词元无限推出的企业级AI编程工具' },
-  { cat: 'AI 工具·国外', name: 'Coze', url: 'https://www.coze.cn', desc: '海量AI智能体免费用，一键复制同款' },
-  { cat: 'AI 工具·国外', name: 'FastGPT', url: 'https://fastgpt.in', desc: '免费AI工作流搭建工具 自动化提高效率' },
-  { cat: 'AI 工具·国外', name: 'n8n', url: 'https://n8n.io', desc: '开源的低代码AI工作流自动化工具' },
-  { cat: 'AI 工具·国外', name: 'Trickle', url: 'https://ai-bot.cn/sites/58463.html', desc: 'AI 一站式无代码 AI 开发平台' },
-  { cat: 'AI 工具·国外', name: 'OpenRouter', url: 'https://openrouter.ai', desc: 'AI 模型 API 聚合平台，一个接口调用400多个模型' },
-  { cat: 'AI 工具·国外', name: 'SiliconFlow', url: 'https://siliconflow.cn', desc: '生成式AI计算基础设施平台' },
-  { cat: 'AI 工具·国外', name: 'OfoxAI', url: 'https://ai-bot.cn/sites/77667.html', desc: '统一大模型 API 聚合网关' },
-  { cat: 'AI 工具·国外', name: 'WorldClaw', url: 'https://ai-bot.cn/sites/76617.html', desc: 'World Liberty Financial 团队推出的 AI 模型聚合平台' },
-  { cat: 'AI 工具·国外', name: 'TokenDance', url: 'https://ai-bot.cn/sites/76277.html', desc: '观猹团队推出的一站式大模型 API 调用平台' },
-  { cat: 'AI 工具·国外', name: 'MoMA', url: 'https://ai-bot.cn/sites/77159.html', desc: '中国移动推出的国内首个开放普惠大模型聚合平台' },
-  { cat: 'AI 工具·国外', name: 'B.AI', url: 'https://ai-bot.cn/sites/76652.html', desc: '基于区块链构建的大模型API聚合平台' },
+  // ===== AI 工具 =====
+  { cat: 'AI 工具', name: 'ChatGPT', url: 'https://chatgpt.com', desc: 'OpenAI 通用对话模型，多模态交互' , badge: 'hot' },
+  { cat: 'AI 工具', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic 长文本推理与代码助手' },
+  { cat: 'AI 工具', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google 多模态 AI，深度整合生态' },
+  { cat: 'AI 工具', name: 'Poe', url: 'https://poe.com', desc: 'Quora 出品的多模型聚合平台' },
+  { cat: 'AI 工具', name: 'Hugging Face', url: 'https://huggingface.co', desc: '全球最大模型与数据集开源社区' },
+  { cat: 'AI 工具', name: 'Cursor', url: 'https://cursor.com', desc: 'AI 原生代码编辑器，Copilot 替代' },
+  { cat: 'AI 工具', name: 'v0', url: 'https://v0.dev', desc: 'Vercel 出品，自然语言生成 UI 界面' },
+  { cat: 'AI 工具', name: 'Bolt.new', url: 'https://bolt.new', desc: 'AI 全栈应用在线生成与部署' },
+  { cat: 'AI 工具', name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'AI 艺术图像生成，美学天花板' },
+  { cat: 'AI 工具', name: 'Runway', url: 'https://runwayml.com', desc: 'AI 视频生成与专业编辑平台' },
+  { cat: 'AI 工具', name: 'Perplexity', url: 'https://www.perplexity.ai', desc: 'AI 搜索引擎，带来源引用' },
+  { cat: 'AI 工具', name: 'Copilot', url: 'https://github.com/features/copilot', desc: 'GitHub AI 编程助手，IDE 深度集成' },
+  { cat: 'AI 工具', name: 'Suno', url: 'https://suno.ai', desc: 'AI 文本转音乐，全球最流行' },
+  { cat: 'AI 工具', name: 'Udio', url: 'https://udio.com', desc: '高品质 AI 音乐生成平台' },
+  { cat: 'AI 工具', name: 'AIVA', url: 'https://www.aiva.ai', desc: 'AI 影视配乐与管弦乐作曲' },
+  { cat: 'AI 工具', name: 'Sonauto', url: 'https://sonauto.ai', desc: '免费无限 AI 音乐生成，免版税' },
+  { cat: 'AI 工具', name: 'Gamma', url: 'https://gamma.app', desc: 'AI 生成 PPT、文档和网页，设计感强' },
+  { cat: 'AI 工具', name: 'Grok', url: 'https://x.ai', desc: 'xAI 出品，X/Twitter 实时深度集成' },
+  { cat: 'AI 工具', name: 'Mistral', url: 'https://chat.mistral.ai', desc: '法国顶级开源大模型，多语言能力' },
+  { cat: 'AI 工具', name: 'NotebookLM', url: 'https://notebooklm.google.com', desc: 'Google AI 知识库，文档问答与简报' },
+  { cat: 'AI 工具', name: 'Paperpal', url: 'https://paperpal.cn', desc: '英文论文写作助手' },
+  { cat: 'AI 工具', name: 'GetDraft', url: 'https://ai-bot.cn/sites/67418.html', desc: '得到推出的多AI专家协作AI写作工具' },
+  { cat: 'AI 工具', name: 'YouMind', url: 'https://ai-bot.cn/sites/61208.html', desc: '专注提升创作效率和信息整合的AI原生工具' },
+  { cat: 'AI 工具', name: 'FeelFish', url: 'https://ai-bot.cn/sites/66997.html', desc: '专为小说创作者打造的 AI 写作 PC 客户端软件' },
+  { cat: 'AI 工具', name: 'Loomi', url: 'https://ai-bot.cn/sites/66375.html', desc: '创作版Claude Code，AI原生写作工具' },
+  { cat: 'AI 工具', name: '01Agent', url: 'https://ai-bot.cn/sites/69212.html', desc: 'AI图文创作工具，支持生成、排版、编辑、发布' },
+  { cat: 'AI 工具', name: 'Civitai', url: 'https://civitai.com', desc: '免费的AI图像绘画作品和模型分享平台和社区' },
+  { cat: 'AI 工具', name: 'RunningHub', url: 'https://www.runninghub.com', desc: '基于云端ComfyUI的AI图像与视频创作平台' },
+  { cat: 'AI 工具', name: 'insMind', url: 'https://ai-bot.cn/sites/60138.html', desc: '稿定面向全球市场推出的AI图片编辑工具' },
+  { cat: 'AI 工具', name: 'Krea', url: 'https://www.krea.ai', desc: 'AI 实时AI图像、视频生成和编辑平台' },
+  { cat: 'AI 工具', name: 'Kira', url: 'https://kira.ai', desc: 'AI 图像生成与编辑工具' },
+  { cat: 'AI 工具', name: 'SoundView', url: 'https://ai-bot.cn/sites/35756.html', desc: '讯飞推出的AI短视频智能创作平台' },
+  { cat: 'AI 工具', name: 'HeyGen', url: 'https://www.heygen.com', desc: '专业的AI数字人视频创作平台' },
+  { cat: 'AI 工具', name: 'Seko', url: 'https://ai-bot.cn/sites/58360.html', desc: '首个创编一体的AI视频创作Agent' },
+  { cat: 'AI 工具', name: 'Seedance', url: 'https://ai-bot.cn/sites/76349.html', desc: '字节跳动 Seed 团队推出的多模态 AI 视频生成模型' },
+  { cat: 'AI 工具', name: 'Pollo', url: 'https://ai-bot.cn/sites/70438.html', desc: 'AI 一站式AI图像和视频创作平台' },
+  { cat: 'AI 工具', name: 'JoyPix', url: 'https://ai-bot.cn/sites/45413.html', desc: 'AI数字人创作工具，支持声音克隆' },
+  { cat: 'AI 工具', name: 'RHTV', url: 'https://ai-bot.cn/sites/76657.html', desc: 'RunningHub 推出的原生 AI 无限画布创作工具' },
+  { cat: 'AI 工具', name: 'TapNow', url: 'https://ai-bot.cn/sites/66332.html', desc: 'AI视觉内容创作平台，提供多种预设工作流' },
+  { cat: 'AI 工具', name: 'Higgsfield', url: 'https://ai-bot.cn/sites/59035.html', desc: 'AI视频生成工具，支持专业运镜效果' },
+  { cat: 'AI 工具', name: 'Vidu', url: 'https://www.vidu.com', desc: '生数科技推出的AI视频生成大模型' },
+  { cat: 'AI 工具', name: 'Flova', url: 'https://ai-bot.cn/sites/76121.html', desc: '全球首个一体化 AI 视频创作平台' },
+  { cat: 'AI 工具', name: 'OhYesAI', url: 'https://ai-bot.cn/sites/78902.html', desc: 'AI 音乐 MV 一体化创作智能体平台' },
+  { cat: 'AI 工具', name: 'Oiiyao', url: 'https://ai-bot.cn/sites/78886.html', desc: 'AI视频本地化平台' },
+  { cat: 'AI 工具', name: 'iSlide', url: 'https://www.islide.cc', desc: 'AIPPT AI一键设计精美PPT，只需一句标题' },
+  { cat: 'AI 工具', name: 'Napkin', url: 'https://ai-bot.cn/sites/16885.html', desc: '将文本内容快速转换成演示图像的AI办公工具' },
+  { cat: 'AI 工具', name: 'Swishy', url: 'https://ai-bot.cn/sites/76133.html', desc: 'AI 动态设计与动画生成平台' },
+  { cat: 'AI 工具', name: 'ChartGen', url: 'https://ai-bot.cn/sites/69545.html', desc: 'AI图表生成工具，快速生成专业图表' },
+  { cat: 'AI 工具', name: 'Diagrimo', url: 'https://ai-bot.cn/sites/68868.html', desc: 'Tenorshare AI推出的AI图表生成工具' },
+  { cat: 'AI 工具', name: 'PicDoc', url: 'https://ai-bot.cn/sites/53412.html', desc: 'AI文本转图表工具，一键生成多种视觉图表' },
+  { cat: 'AI 工具', name: 'NarraLand', url: 'https://ai-bot.cn/sites/72530.html', desc: 'AI智能演示内容创作平台' },
+  { cat: 'AI 工具', name: 'VoxDeck', url: 'https://ai-bot.cn/sites/59512.html', desc: '创新的AI演示文稿生成工具' },
+  { cat: 'AI 工具', name: 'Flowith', url: 'https://flowith.io', desc: '一站式用GPT-5.5、Claude-4.7' },
+  { cat: 'AI 工具', name: 'Z.ai', url: 'https://z.ai', desc: '智谱面向全球推出的AI模型体验平台' },
+  { cat: 'AI 工具', name: 'LongCat', url: 'https://ai-bot.cn/sites/61432.html', desc: '美团推出的自研大模型AI对话平台' },
+  { cat: 'AI 工具', name: 'Lorka', url: 'https://ai-bot.cn/sites/76161.html', desc: 'AI 多模型 AI 聚合对话平台' },
+  { cat: 'AI 工具', name: 'Me.bot', url: 'https://ai-bot.cn/sites/16356.html', desc: '心识宇宙推出的个性化AI伴侣产品' },
+  { cat: 'AI 工具', name: 'Saylo', url: 'https://ai-bot.cn/sites/21956.html', desc: 'AI驱动的故事角色扮演游戏应用，沉浸式的剧本互动体验' },
+  { cat: 'AI 工具', name: 'WorkBuddy', url: 'https://ai-bot.cn/sites/73160.html', desc: '腾讯云推出的AI原生桌面智能体工作台' },
+  { cat: 'AI 工具', name: 'QoderWork', url: 'https://ai-bot.cn/sites/72782.html', desc: '阿里Qoder团队推出的桌面端AI智能体' },
+  { cat: 'AI 工具', name: 'Atoms', url: 'https://ai-bot.cn/sites/70016.html', desc: '第一支自动构建真实业务的 AI 团队' },
+  { cat: 'AI 工具', name: 'ArkClaw', url: 'https://ai-bot.cn/sites/74340.html', desc: '火山引擎推出的云端托管版OpenClaw服务' },
+  { cat: 'AI 工具', name: 'DuMate', url: 'https://ai-bot.cn/sites/74011.html', desc: '百度推出的桌面端 AI 智能体' },
+  { cat: 'AI 工具', name: 'OpenClaw', url: 'https://github.com/haofanwang/openclaw', desc: '开源免费的个人 AI 助手' },
+  { cat: 'AI 工具', name: 'Tabbit', url: 'https://ai-bot.cn/sites/72614.html', desc: '美团光年之外推出的AI原生浏览器' },
+  { cat: 'AI 工具', name: 'Manus', url: 'https://manus.im', desc: '蝴蝶效应公司推出的首款自主通用AI Agent' },
+  { cat: 'AI 工具', name: 'Hermes', url: 'https://ai-bot.cn/sites/78174.html', desc: 'Agent Nous Research 开源的自主 AI Agent 框架' },
+  { cat: 'AI 工具', name: 'Moxt', url: 'https://ai-bot.cn/sites/76261.html', desc: 'AI 原生工作空间' },
+  { cat: 'AI 工具', name: 'happycapy', url: 'https://ai-bot.cn/sites/71899.html', desc: 'Trickle 团队推出的云端 AI Agent 计算机' },
+  { cat: 'AI 工具', name: 'Genspark', url: 'https://ai-bot.cn/sites/66341.html', desc: '通用AI智能体，您的一站式AI工作空间' },
+  { cat: 'AI 工具', name: 'OiiOii', url: 'https://ai-bot.cn/sites/66553.html', desc: '全球首个专业动画创作Agent' },
+  { cat: 'AI 工具', name: 'QClaw', url: 'https://ai-bot.cn/sites/73177.html', desc: '腾讯电脑管家团队基于 OpenClaw 打造的本地 AI 助手' },
+  { cat: 'AI 工具', name: 'Codex', url: 'https://openai.com/index/openai-codex', desc: 'OpenAI 推出的 AI 编程智能体' },
+  { cat: 'AI 工具', name: 'OpenCode', url: 'https://github.com/opencode-ai/opencode', desc: '开源 AI 编程工具 ， Claude Code 最佳平替' },
+  { cat: 'AI 工具', name: 'Kilo', url: 'https://kilocode.ai', desc: 'Code 开源的 AI 编程扩展插件' },
+  { cat: 'AI 工具', name: 'YouWare', url: 'https://ai-bot.cn/sites/70432.html', desc: '一站式 AI 编程社区与开发平台' },
+  { cat: 'AI 工具', name: 'Lovable', url: 'https://lovable.dev', desc: '全栈AI编程工具，一句话构建网站应用' },
+  { cat: 'AI 工具', name: 'Augment', url: 'https://www.augmentcode.com', desc: 'Code AI编程辅助工具，专为大型代码库设计' },
+  { cat: 'AI 工具', name: 'iFlow', url: 'https://ai-bot.cn/sites/64688.html', desc: 'CLI 心流AI推出的免费终端 AI 智能体' },
+  { cat: 'AI 工具', name: 'InfCode', url: 'https://ai-bot.cn/sites/69316.html', desc: '词元无限推出的企业级AI编程工具' },
+  { cat: 'AI 工具', name: 'Coze', url: 'https://www.coze.cn', desc: '海量AI智能体免费用，一键复制同款' },
+  { cat: 'AI 工具', name: 'FastGPT', url: 'https://fastgpt.in', desc: '免费AI工作流搭建工具 自动化提高效率' },
+  { cat: 'AI 工具', name: 'n8n', url: 'https://n8n.io', desc: '开源的低代码AI工作流自动化工具' },
+  { cat: 'AI 工具', name: 'Trickle', url: 'https://ai-bot.cn/sites/58463.html', desc: 'AI 一站式无代码 AI 开发平台' },
+  { cat: 'AI 工具', name: 'OpenRouter', url: 'https://openrouter.ai', desc: 'AI 模型 API 聚合平台，一个接口调用400多个模型' },
+  { cat: 'AI 工具', name: 'SiliconFlow', url: 'https://siliconflow.cn', desc: '生成式AI计算基础设施平台' },
+  { cat: 'AI 工具', name: 'OfoxAI', url: 'https://ai-bot.cn/sites/77667.html', desc: '统一大模型 API 聚合网关' },
+  { cat: 'AI 工具', name: 'WorldClaw', url: 'https://ai-bot.cn/sites/76617.html', desc: 'World Liberty Financial 团队推出的 AI 模型聚合平台' },
+  { cat: 'AI 工具', name: 'TokenDance', url: 'https://ai-bot.cn/sites/76277.html', desc: '观猹团队推出的一站式大模型 API 调用平台' },
+  { cat: 'AI 工具', name: 'MoMA', url: 'https://ai-bot.cn/sites/77159.html', desc: '中国移动推出的国内首个开放普惠大模型聚合平台' },
+  { cat: 'AI 工具', name: 'B.AI', url: 'https://ai-bot.cn/sites/76652.html', desc: '基于区块链构建的大模型API聚合平台' },
 
   // ===== 开发技术 =====
-  { cat: '开发技术', name: 'GitHub', url: 'https://github.com', desc: '全球最大代码托管与协作平台' },
+  { cat: '开发技术', name: 'GitHub', url: 'https://github.com', desc: '全球最大代码托管与协作平台' , badge: 'hot' },
   { cat: '开发技术', name: 'MDN Web Docs', url: 'https://developer.mozilla.org', desc: 'Web 标准权威文档，前端圣经' },
   { cat: '开发技术', name: 'DevDocs', url: 'https://devdocs.io', desc: '多语言 API 文档聚合，离线可用' },
   { cat: '开发技术', name: 'Stack Overflow', url: 'https://stackoverflow.com', desc: '全球程序员问答社区' },
@@ -255,7 +255,7 @@ const LINKS = [
   { cat: '开发技术', name: 'Replit', url: 'https://replit.com', desc: '在线协作 IDE，浏览器写全栈' },
 
   // ===== 设计创意 =====
-  { cat: '设计创意', name: 'Figma', url: 'https://www.figma.com', desc: '在线 UI 设计协作，行业标准' },
+  { cat: '设计创意', name: 'Figma', url: 'https://www.figma.com', desc: '在线 UI 设计协作，行业标准' , badge: 'rec' },
   { cat: '设计创意', name: 'Dribbble', url: 'https://dribbble.com', desc: '全球设计师作品灵感社区' },
   { cat: '设计创意', name: 'Behance', url: 'https://www.behance.net', desc: 'Adobe 旗下创意作品展示平台' },
   { cat: '设计创意', name: 'Canva', url: 'https://www.canva.cn', desc: '在线平面设计，海量模板一键出图' },
@@ -299,7 +299,7 @@ const LINKS = [
 
   // ===== 阅读资讯 =====
   { cat: '阅读资讯', name: 'Hacker News', url: 'https://news.ycombinator.com', desc: '硅谷技术创投社区，每日必读' },
-  { cat: '阅读资讯', name: 'V2EX', url: 'https://www.v2ex.com', desc: '国内技术创意交流社区' },
+  { cat: '阅读资讯', name: 'V2EX', url: 'https://www.v2ex.com', desc: '国内技术创意交流社区' , badge: 'rec' },
   { cat: '阅读资讯', name: '掘金', url: 'https://juejin.cn', desc: '前端/后端/移动开发技术文章' },
   { cat: '阅读资讯', name: '少数派', url: 'https://sspai.com', desc: '数字生活效率指南与深度评测' },
   { cat: '阅读资讯', name: '36氪', url: 'https://36kr.com', desc: '新商业媒体，科技创投快讯' },
@@ -312,7 +312,7 @@ const LINKS = [
   // ===== 开源项目 =====
   { cat: '开源项目', name: 'Oh My Zsh', url: 'https://ohmyz.sh', desc: '终端配置框架，开发者标配' },
   { cat: '开源项目', name: 'Homebrew', url: 'https://brew.sh', desc: 'macOS / Linux 包管理器' },
-  { cat: '开源项目', name: 'VS Code', url: 'https://code.visualstudio.com', desc: '微软开源编辑器，插件生态强大' },
+  { cat: '开源项目', name: 'VS Code', url: 'https://code.visualstudio.com', desc: '微软开源编辑器，插件生态强大' , badge: 'rec' },
   { cat: '开源项目', name: 'React', url: 'https://react.dev', desc: 'Meta 出品，前端 UI 库行业标杆' },
   { cat: '开源项目', name: 'Vue.js', url: 'https://vuejs.org', desc: '渐进式 JS 框架，中文社区活跃' },
   { cat: '开源项目', name: 'Linux Kernel', url: 'https://www.kernel.org', desc: 'Linux 内核主线仓库' },
@@ -333,7 +333,7 @@ const LINKS = [
   { cat: '影音娱乐', name: 'Netflix', url: 'https://www.netflix.com', desc: '全球流媒体剧集与电影平台' },
 
   // ===== 效率办公 =====
-  { cat: '效率办公', name: 'Notion', url: 'https://www.notion.so', desc: '全能笔记与协作工作空间' },
+  { cat: '效率办公', name: 'Notion', url: 'https://www.notion.so', desc: '全能笔记与协作工作空间' , badge: 'rec' },
   { cat: '效率办公', name: 'Obsidian', url: 'https://obsidian.md', desc: '本地 Markdown 双向链接笔记' },
   { cat: '效率办公', name: 'Craft', url: 'https://www.craft.do', desc: '设计精美原生笔记应用' },
   { cat: '效率办公', name: 'Linear', url: 'https://linear.app', desc: '设计最优雅的项目管理工具' },
@@ -460,9 +460,6 @@ const catsJson = JSON.stringify(CATS);
       </div>
     </section>
 
-    <!-- 精选推荐 -->
-    <section class="nav-featured" id="navFeatured"></section>
-
     <!-- 分类星座 -->
     <nav class="nav-cats" id="navCats"></nav>
 
@@ -525,8 +522,8 @@ const catsJson = JSON.stringify(CATS);
 
   // ===== 分类图标映射 =====
   const catEmoji = {
-    'AI 工具·国内': '\u{1F1E8}\u{1F1F3} ',
-    'AI 工具·国外': '\u{1F30F} ',
+    'AI 工具': '\u{1F1E8}\u{1F1F3} ',
+    'AI 工具': '\u{1F30F} ',
     '开发技术':   '\u{1F4BB} ',
     '设计创意':   '\u{1F3A8} ',
     '常用工具':   '\u{1F527} ',
@@ -557,8 +554,8 @@ const catsJson = JSON.stringify(CATS);
 
   // ===== 卡片主导色（左色条 + hover 文字色） =====
   const catAccent = {
-    'AI 工具·国内': '#ef4444',
-    'AI 工具·国外': '#6366f1',
+    'AI 工具': '#ef4444',
+    'AI 工具': '#6366f1',
     '开发技术':   '#3b82f6',
     '设计创意':   '#ec4899',
     '常用工具':   '#10b981',
@@ -587,8 +584,11 @@ const catsJson = JSON.stringify(CATS);
       ? `<img src="https://www.google.com/s2/favicons?domain=${hostname}&sz=64" class="nav-card-icon" alt="" loading="lazy" width="20" height="20" onerror="this.outerHTML='<span class=\'nav-card-icon-fallback\'>${esc(l.name).charAt(0)}</span>'">`
       : `<span class="nav-card-icon-fallback">${esc(l.name).charAt(0)}</span>`;
     const accent = catAccent[l.cat] || '#6366f1';
+    const badge = l.badge || '';
+    const badgeHtml = badge ? `<span class="nav-card-badge badge-${badge}">${badge === 'hot' ? '热门' : badge === 'new' ? '新上' : badge === 'rec' ? '推荐' : badge}</span>` : '';
     return `
-      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card" style="--card-delay:${i * 20}ms;--card-accent:${accent}">
+      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card${badge ? ' nav-card-' + badge : ''}" style="--card-delay:${i * 20}ms;--card-accent:${accent}">
+        ${badgeHtml}
         ${faviconHtml}
         <span class="nav-card-name">${esc(l.name)}</span>
         ${l.desc ? `<span class="nav-card-tip" style="background:${accent}">${esc(l.desc)}</span>` : ''}
@@ -683,23 +683,6 @@ const catsJson = JSON.stringify(CATS);
     }
     if (e.key === 'Escape') navSearch.blur();
   });
-
-  // ===== 精选推荐 =====
-  const featuredLinks = [
-    { name: 'ChatGPT', url: 'https://chatgpt.com', desc: '最强 AI 对话', icon: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64', accent: '#10b981' },
-    { name: 'GitHub', url: 'https://github.com', desc: '代码托管圣地', icon: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', accent: '#6366f1' },
-    { name: 'Figma', url: 'https://www.figma.com', desc: '设计协作工具', icon: 'https://www.google.com/s2/favicons?domain=figma.com&sz=64', accent: '#ec4899' },
-    { name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: 'https://www.google.com/s2/favicons?domain=v2ex.com&sz=64', accent: '#f59e0b' },
-  ];
-
-  const navFeatured = document.getElementById('navFeatured');
-  navFeatured.innerHTML = featuredLinks.map((f, i) => `
-    <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer" class="nav-featured-card" style="--feat-accent:${f.accent};animation-delay:${i * 50}ms">
-      <img src="${f.icon}" class="nav-featured-icon" alt="" loading="lazy" width="24" height="24" onerror="this.outerHTML='<span class=\'nav-featured-icon-fallback\' style=\'background:${f.accent}\'>${esc(f.name).charAt(0)}</span>'">
-      <span class="nav-featured-name">${esc(f.name)}</span>
-      <span class="nav-featured-desc">${esc(f.desc)}</span>
-    </a>
-  `).join('');
 
   // ===== 搜索热词点击 =====
   document.querySelectorAll('.nav-hotword').forEach(btn => {
@@ -940,9 +923,9 @@ const catsJson = JSON.stringify(CATS);
     background: rgba(11,14,20,0.78);
   }
   .nav-topbar-inner {
-    max-width: 1480px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 32px;
     height: 52px;
     display: flex;
     align-items: center;
@@ -1000,9 +983,9 @@ const catsJson = JSON.stringify(CATS);
     position: relative;
     z-index: 1;
     background: var(--nav-bg);
-    max-width: 1480px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 0 24px 80px;
+    padding: 0 32px 80px;
   }
 
   /* ===== 标题区 ===== */
@@ -1063,86 +1046,6 @@ const catsJson = JSON.stringify(CATS);
   .nav-stats strong { color: var(--nav-accent); font-weight: 600; }
   .nav-stats-dot { margin: 0 10px; opacity: 0.4; }
 
-  /* ===== 精选推荐 ===== */
-  .nav-featured {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 24px;
-  }
-  .nav-featured-card {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    background: var(--nav-surface);
-    border: 1px solid var(--nav-border);
-    border-left: 3px solid var(--feat-accent, var(--nav-accent));
-    text-decoration: none;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: card-fade-in 0.45s ease-out both;
-    -webkit-tap-highlight-color: transparent;
-    overflow: hidden;
-  }
-  .nav-featured-card:hover {
-    background: var(--nav-surface-hover);
-    border-color: var(--feat-accent, var(--nav-accent));
-    transform: translateY(-1px);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-  }
-  [data-theme="dark"] .nav-featured-card:hover {
-    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
-  }
-  .nav-featured-card:hover .nav-featured-name {
-    color: var(--feat-accent, var(--nav-accent));
-  }
-  @keyframes feat-in {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .nav-featured-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 5px;
-    flex-shrink: 0;
-    transition: transform 0.25s ease;
-  }
-  .nav-featured-icon-fallback {
-    width: 24px;
-    height: 24px;
-    border-radius: 5px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    font-family: var(--font-mono);
-    line-height: 1;
-  }
-  .nav-featured-card:hover .nav-featured-icon { transform: scale(1.1); }
-  .nav-featured-card:hover .nav-featured-icon-fallback { transform: scale(1.1); }
-  .nav-featured-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--nav-text);
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    transition: color 0.25s;
-    flex-shrink: 0;
-  }
-  .nav-featured-desc {
-    font-size: 12px;
-    color: var(--nav-text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-    min-width: 0;
-  }
 
   /* ===== 搜索 ===== */
   .nav-search-stage {
@@ -1680,11 +1583,6 @@ const catsJson = JSON.stringify(CATS);
     .nav-hero { padding: 44px 0 28px; }
     .nav-hero-title { font-size: 30px; }
     .nav-search-wrap { max-width: 100%; }
-    .nav-featured { grid-template-columns: repeat(2, 1fr); gap: 4px; }
-    .nav-featured-card { padding: 8px 10px; gap: 6px; }
-    .nav-featured-icon { width: 20px; height: 20px; border-radius: 4px; }
-    .nav-featured-name { font-size: 12.5px; }
-    .nav-featured-desc { font-size: 11px; }
     .nav-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     .nav-section { margin-bottom: 16px; padding: 14px 10px; border-radius: 10px; }
     .nav-section-header { margin-bottom: 10px; padding-bottom: 8px; }
