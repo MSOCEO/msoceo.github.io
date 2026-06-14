@@ -1,693 +1,274 @@
----
-// 枕星 CMS — 管理后台 v2.0
-import BaseHead from '../../components/BaseHead.astro';
-const title = '管理后台 | 枕星 CMS';
-const description = '枕星内容管理系统后台';
----
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <BaseHead title={title} description={description} />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台管理 · 星舟</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --bg-card: #13161e;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #818cf8;
+    --border: #1e2130;
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { opacity: 0.8; }
+
+  /* Layout */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(11,14,20,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 52px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .topbar-brand { font-weight: 600; font-size: 15px; color: var(--text); }
+  .topbar-nav { display: flex; gap: 4px; }
+  .topbar-nav a, .topbar-nav button {
+    padding: 6px 14px; border-radius: 6px; font-size: 13px;
+    color: var(--text-secondary); border: none; background: none;
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .topbar-nav a:hover, .topbar-nav button:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .topbar-nav a.active, .topbar-nav button.active { color: var(--accent); background: rgba(129,140,248,0.08); }
+  .topbar-spacer { flex: 1; }
+  .topbar-link { font-size: 13px; color: var(--text-secondary); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stat-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+  }
+  .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .stat-value { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+  }
+  .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left; padding: 10px 14px; font-weight: 600; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  tr:last-child td { border-bottom: none; }
+  .td-title { color: var(--text); font-weight: 500; }
+  .td-mono { font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; color: var(--text-muted); }
+  .tag {
+    display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 4px;
+    font-weight: 500; letter-spacing: 0.03em;
+  }
+  .tag-blog { background: rgba(129,140,248,0.12); color: #818cf8; }
+  .tag-page { background: rgba(52,211,153,0.12); color: #34d399; }
+  .tag-system { background: rgba(251,191,36,0.12); color: #fbbf24; }
+
+  /* Quick actions */
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border); color: var(--text-secondary);
+    background: transparent; cursor: pointer; transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { opacity: 0.88; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .list-simple { display: flex; flex-direction: column; gap: 10px; }
+  .list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .list-item:last-child { border-bottom: none; }
+  .list-item .label { color: var(--text-secondary); }
+  .list-item .value { font-weight: 500; }
+
+  @media (max-width: 768px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
-<body class="admin-root">
+<body>
+  <header class="topbar">
+    <span class="topbar-brand">星舟后台</span>
+    <nav class="topbar-nav" id="topNav">
+      <button class="active" data-view="overview">概览</button>
+      <button data-view="content">内容</button>
+      <button data-view="pages">页面</button>
+      <button data-view="settings">设置</button>
+    </nav>
+    <span class="topbar-spacer"></span>
+    <a href="/" class="topbar-link">返回前台</a>
+  </header>
 
-<!-- ============ TOPBAR ============ -->
-<header class="topbar">
-  <button class="btn-hamburger" id="hamburger" aria-label="菜单">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-  </button>
-  <span class="topbar-breadcrumb" id="breadcrumb">管理后台 / 仪表板</span>
-  <div class="topbar-spacer"></div>
-  <button class="topbar-icon-btn" aria-label="搜索">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-  </button>
-  <button class="topbar-icon-btn has-dot" aria-label="通知">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 00-4 4v3l-1.5 2h11l-1.5-2V6a4 4 0 00-4-4z" stroke="currentColor" stroke-width="1.5"/><path d="M6 13a2 2 0 004 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-  </button>
-  <div class="topbar-avatar" title="管理员">
-    <div class="avatar-img"></div>
-    <span class="avatar-name">管理员</span>
-  </div>
-</header>
+  <div class="container" id="mainContent"></div>
 
-<!-- ============ SIDEBAR ============ -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <div class="brand-name">枕星 CMS</div>
-    <div class="brand-sub">管理控制台 v2.0</div>
-  </div>
+  <script>
+    // Site manifest — captures all pages for this static blog
+    const SITE = {
+      blog: [
+        { title: 'Getting Started', slug: 'first-post', date: '2026-01-15', status: 'published' },
+        { title: 'Markdown 样式指南', slug: 'markdown-style-guide', date: '2026-01-20', status: 'published' },
+        { title: 'Building with Astro', slug: 'second-post', date: '2026-02-10', status: 'published' },
+        { title: 'MDX in Astro', slug: 'third-post', date: '2026-03-05', status: 'published' },
+        { title: 'Using MDX', slug: 'using-mdx', date: '2026-03-05', status: 'published' },
+      ],
+      pages: [
+        { title: '首页', path: '/', status: 'published' },
+        { title: '导航', path: '/links', status: 'published' },
+        { title: '关于', path: '/about', status: 'published' },
+        { title: '博客', path: '/blog', status: 'published' },
+        { title: '资源', path: '/resources', status: 'published' },
+        { title: '留言板', path: '/guestbook', status: 'published' },
+        { title: 'ICP备案', path: '/icp', status: 'published' },
+        { title: '管理后台', path: '/admin', status: 'system' },
+        { title: '登录', path: '/login', status: 'system' },
+        { title: '注册', path: '/register', status: 'system' },
+      ]
+    };
 
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">内容管理</div>
-    <a href="#dashboard" class="nav-item active" data-nav="dashboard">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h2l1-1v9h6v-6h4v6h6v-9l1 1h2L13 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      仪表板
-    </a>
-    <a href="#posts" class="nav-item" data-nav="posts">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      文章 <span class="nav-badge">5</span>
-    </a>
-    <a href="#pages" class="nav-item" data-nav="pages">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
-      页面 <span class="nav-badge">2</span>
-    </a>
-    <a href="#media" class="nav-item" data-nav="media">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      媒体库
-    </a>
-    <a href="#comments" class="nav-item" data-nav="comments">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      评论 <span class="nav-badge">3</span>
-    </a>
+    const views = {
+      overview: () => `
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-label">文章</div>
+            <div class="stat-value" style="color:#818cf8">${SITE.blog.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">页面</div>
+            <div class="stat-value" style="color:#34d399">${SITE.pages.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">最后更新</div>
+            <div class="stat-value" style="color:#fbbf24;font-size:16px;">${new Date().toISOString().slice(0,10)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">状态</div>
+            <div class="stat-value" style="color:#34d399;font-size:16px;">运行中</div>
+          </div>
+        </div>
 
-    <div class="nav-section-label">站点管理</div>
-    <a href="#navlinks" class="nav-item" data-nav="navlinks">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      导航站
-    </a>
-    <a href="#friends" class="nav-item" data-nav="friends">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      友链管理 <span class="nav-badge nav-badge-new">新</span>
-    </a>
-    <a href="#shuoshuo" class="nav-item" data-nav="shuoshuo">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M13 2L4.093 12.688c-.348.418-.523.627-.525.865a.5.5 0 00.185.383c.138.118.397.172.915.28l1.538.32c.15.031.225.047.292.08a.5.5 0 01.153.153c.033.067.049.142.08.292l.32 1.538c.108.518.162.777.28.915a.5.5 0 00.383.185c.238-.002.447-.177.865-.525L13 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      说说
-    </a>
+        <div class="grid-2">
+          <div class="card">
+            <h2>最近文章</h2>
+            <div class="list-simple">
+              ${[...SITE.blog].reverse().slice(0,5).map(p => `
+                <div class="list-item">
+                  <span><a href="/blog/${p.slug}">${p.title}</a></span>
+                  <span style="color:var(--text-muted);font-size:12px;">${p.date}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="card">
+            <h2>快捷操作</h2>
+            <div class="actions" style="flex-direction:column;">
+              <a href="/links" class="btn">前往导航站</a>
+              <a href="/icp" class="btn">ICP备案系统</a>
+              <a href="/blog" class="btn">查看博客</a>
+              <button class="btn" onclick="alert('静态站点，内容通过 Git 管理。\\n编辑源文件后运行 npm run build 部署。')">如何发布文章</button>
+            </div>
+          </div>
+        </div>
+      `,
 
-    <div class="nav-section-label">系统设置</div>
-    <a href="#appearance" class="nav-item" data-nav="appearance">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      外观
-    </a>
-    <a href="#users" class="nav-item" data-nav="users">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      用户 <span class="nav-badge">2</span>
-    </a>
-    <a href="#analytics" class="nav-item" data-nav="analytics">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      分析
-    </a>
-    <a href="#tools" class="nav-item" data-nav="tools">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      工具
-    </a>
-    <a href="#settings" class="nav-item" data-nav="settings">
-      <svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.5"/></svg>
-      设置
-    </a>
-  </nav>
+      content: () => `
+        <div class="card">
+          <h2>文章列表 (${SITE.blog.length})</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>标题</th><th>别名</th><th>日期</th><th>状态</th></tr></thead>
+              <tbody>${[...SITE.blog].reverse().map(p => `
+                <tr>
+                  <td class="td-title"><a href="/blog/${p.slug}">${p.title}</a></td>
+                  <td class="td-mono">${p.slug}</td>
+                  <td>${p.date}</td>
+                  <td><span class="tag tag-blog">${p.status === 'published' ? '已发布' : p.status}</span></td>
+                </tr>
+              `).join('')}</tbody>
+            </table>
+          </div>
+        </div>
+      `,
 
-  <div class="sidebar-footer">
-    <div class="sidebar-user">
-      <div class="sidebar-avatar"></div>
-      <div class="sidebar-user-info">
-        <div class="sidebar-user-name">管理员</div>
-        <div class="sidebar-user-role">administrator</div>
-      </div>
-    </div>
-    <button class="btn-logout" id="btn-logout">退出登录</button>
-  </div>
-</aside>
+      pages: () => `
+        <div class="card">
+          <h2>页面列表 (${SITE.pages.length})</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>页面</th><th>路径</th><th>类型</th></tr></thead>
+              <tbody>${SITE.pages.map(p => `
+                <tr>
+                  <td class="td-title"><a href="${p.path}">${p.title}</a></td>
+                  <td class="td-mono">${p.path}</td>
+                  <td><span class="tag ${p.status === 'system' ? 'tag-system' : 'tag-page'}">${p.status === 'published' ? '内容页' : p.status === 'system' ? '系统页' : p.status}</span></td>
+                </tr>
+              `).join('')}</tbody>
+            </table>
+          </div>
+        </div>
+      `,
 
-<!-- ============ MAIN CONTENT ============ -->
-<main class="main-area" id="main-area"></main>
+      settings: () => `
+        <div class="card">
+          <h2>站点信息</h2>
+          <div class="list-simple">
+            <div class="list-item"><span class="label">站点名称</span><span class="value">星舟博客</span></div>
+            <div class="list-item"><span class="label">域名</span><span class="value">msoceo.github.io</span></div>
+            <div class="list-item"><span class="label">框架</span><span class="value">Astro SSG</span></div>
+            <div class="list-item"><span class="label">构建方式</span><span class="value">GitHub Actions / 手动 push</span></div>
+            <div class="list-item"><span class="label">内容管理</span><span class="value">Git 仓库 · src/content/</span></div>
+            <div class="list-item"><span class="label">部署分支</span><span class="value">gh-pages / master</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>发布流程</h2>
+          <p style="color:var(--text-secondary);font-size:13px;line-height:2;">
+            1. 在 <code style="background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px;">src/content/blog/</code> 下创建 Markdown 文件<br>
+            2. 本地运行 <code style="background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px;">npm run dev</code> 预览<br>
+            3. <code style="background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px;">git add -A && git commit && git push</code> 即可自动部署
+          </p>
+        </div>
+      `
+    };
 
-<!-- ============ OVERLAY ============ -->
-<div class="overlay" id="overlay"></div>
+    function render(view) {
+      document.getElementById('mainContent').innerHTML = views[view]();
+      document.querySelectorAll('#topNav button').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    }
 
+    document.querySelectorAll('#topNav button').forEach(btn => {
+      btn.addEventListener('click', () => render(btn.dataset.view));
+    });
+
+    // Init
+    render('overview');
+  </script>
 </body>
 </html>
-
-<style>
-/* ============ DESIGN TOKENS & RESET ============ */
-:root {
-  --bg-root: #0d0d12;
-  --bg-surface: #131318;
-  --bg-elevated: #1a1a21;
-  --bg-hover: #1f1f28;
-  --bg-active: #252530;
-  --text-primary: #e4e4ec;
-  --text-secondary: #8b8b9e;
-  --text-tertiary: #5c5c6e;
-  --text-disabled: #3a3a48;
-  --accent: #d4a853;
-  --accent-hover: #e0b963;
-  --accent-muted: #3d3424;
-  --accent-border: #4a3a1f;
-  --green: #3cb371; --green-bg: #142c1f;
-  --blue: #5b9bd5; --blue-bg: #162438;
-  --amber: #d4a853; --amber-bg: #3d3424;
-  --red: #e0556a; --red-bg: #2d1820;
-  --purple: #9b7ec4; --purple-bg: #241e32;
-  --border-subtle: #1e1e28;
-  --border-default: #272730;
-  --border-strong: #343440;
-  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;
-  --radius-sm:4px;--radius-md:6px;--radius-lg:8px;--radius-xl:10px;
-  --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
-  --shadow-md:0 2px 4px rgba(0,0,0,0.2),0 0 0 1px rgba(255,255,255,0.03);
-  --shadow-lg:0 8px 24px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.04);
-  --font-mono:'SF Mono','Fira Code','Cascadia Code',monospace;
-  --font-sans:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',sans-serif;
-  --transition-fast:120ms ease-out;
-  --transition-base:150ms ease-out;
-}
-
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
-body{font-family:var(--font-sans);font-size:13px;line-height:1.5;color:var(--text-primary);background:var(--bg-root);min-height:100vh}
-::selection{background:var(--accent-muted);color:var(--text-primary)}
-a{color:var(--accent);text-decoration:none}
-a:hover{color:var(--accent-hover)}
-input,textarea,select,button{font-family:inherit;font-size:inherit}
-button{cursor:pointer;border:none;background:none;color:inherit}
-input[type="text"],input[type="email"],input[type="number"],input[type="color"],textarea,select{background:var(--bg-root);border:1px solid var(--border-default);border-radius:var(--radius-sm);color:var(--text-primary);padding:5px 8px;height:30px;font-size:13px;outline:none;transition:border-color var(--transition-fast)}
-input:focus,textarea:focus,select:focus{border-color:var(--accent);outline:1.5px solid var(--accent);outline-offset:-1px}
-::placeholder{color:var(--text-tertiary)}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border-default);border-radius:2px}
-::-webkit-scrollbar-thumb:hover{background:var(--border-strong)}
-[hidden]{display:none!important}
-
-/* ============ LAYOUT ============ */
-.admin-root{display:flex;min-height:100vh;padding-top:48px}
-
-/* ---- Topbar ---- */
-.topbar{position:fixed;top:0;left:0;right:0;height:48px;background:var(--bg-surface);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 var(--space-4);z-index:200;gap:var(--space-3)}
-.topbar-breadcrumb{font-size:12px;color:var(--text-tertiary);white-space:nowrap}
-.topbar-spacer{flex:1}
-.topbar-icon-btn{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:var(--radius-sm);color:var(--text-tertiary);position:relative;transition:all var(--transition-fast)}
-.topbar-icon-btn:hover{background:var(--bg-hover);color:var(--text-secondary)}
-.topbar-icon-btn.has-dot::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg-surface)}
-.topbar-avatar{display:flex;align-items:center;gap:var(--space-2);cursor:pointer;padding:2px;border-radius:var(--radius-md);transition:background var(--transition-fast)}
-.topbar-avatar:hover{background:var(--bg-hover)}
-.avatar-img{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2a1f3d,#1f2a3d)}
-.avatar-name{font-size:12px;color:var(--text-secondary)}
-
-/* ---- Sidebar ---- */
-.sidebar{position:fixed;top:48px;left:0;bottom:0;width:240px;background:var(--bg-surface);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;z-index:100;overflow-y:auto}
-.sidebar-brand{padding:var(--space-4) var(--space-4) var(--space-3);border-bottom:1px solid var(--border-subtle)}
-.brand-name{font-size:13px;font-weight:600;color:var(--text-primary);letter-spacing:0.02em}
-.brand-sub{font-size:10px;color:var(--text-tertiary);margin-top:1px}
-.sidebar-nav{flex:1;padding:var(--space-2) 0}
-.nav-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);padding:var(--space-3) var(--space-4) var(--space-1)}
-.nav-item{display:flex;align-items:center;gap:var(--space-2);height:32px;padding:0 var(--space-2);margin:1px var(--space-2);border-radius:var(--radius-md);font-size:13px;color:var(--text-secondary);text-decoration:none;transition:all var(--transition-fast);position:relative}
-.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
-.nav-item.active{background:var(--bg-active);color:var(--text-primary);font-weight:500}
-.nav-icon{flex-shrink:0;opacity:0.6}
-.nav-item.active .nav-icon{opacity:1;color:var(--accent)}
-.nav-badge{font-size:10px;background:var(--bg-elevated);color:var(--text-tertiary);padding:1px 5px;border-radius:var(--radius-sm);margin-left:auto;line-height:1.4}
-.nav-item.active .nav-badge{background:var(--accent-muted);color:var(--accent)}
-.nav-badge-new{background:var(--blue-bg)!important;color:var(--blue)!important;font-size:9px;padding:1px 4px}
-.sidebar-footer{padding:var(--space-3) var(--space-4);border-top:1px solid var(--border-subtle)}
-.sidebar-user{display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2)}
-.sidebar-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#2a1f3d,#1f2a3d);flex-shrink:0}
-.sidebar-user-name{font-size:12px;font-weight:500;color:var(--text-secondary);line-height:1.2}
-.sidebar-user-role{font-size:10px;color:var(--text-tertiary)}
-.btn-logout{display:block;width:100%;padding:4px 0;font-size:12px;color:var(--text-tertiary);text-align:left;transition:color var(--transition-fast)}
-.btn-logout:hover{color:var(--red)}
-
-/* ---- Main Area ---- */
-.main-area{flex:1;margin-left:240px;padding:var(--space-8);min-height:calc(100vh - 48px);overflow-y:auto}
-
-/* ---- Page Header ---- */
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6);flex-wrap:wrap;gap:var(--space-3)}
-.page-title{font-size:20px;font-weight:500;color:var(--text-primary);letter-spacing:-0.01em}
-.page-desc{font-size:12px;color:var(--text-tertiary)}
-.page-header-right{display:flex;align-items:center;gap:var(--space-2)}
-
-/* ============ CARDS & GRIDS ============ */
-.card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-5)}
-.card-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-3)}
-.card-title{font-size:12px;font-weight:500;color:var(--text-secondary);letter-spacing:0.02em}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-4)}
-.stat-card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-4) var(--space-5);transition:border-color var(--transition-fast)}
-.stat-card:hover{border-color:var(--border-default)}
-.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)}
-.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary)}
-.stat-icon-box{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--radius-sm)}
-.stat-icon-blue{background:var(--blue-bg);color:var(--blue)}
-.stat-icon-green{background:var(--green-bg);color:var(--green)}
-.stat-icon-amber{background:var(--amber-bg);color:var(--amber)}
-.stat-icon-purple{background:var(--purple-bg);color:var(--purple)}
-.stat-value{font-family:var(--font-mono);font-size:26px;font-weight:600;color:var(--text-primary);line-height:1.1;margin-bottom:2px}
-.stat-change{font-size:12px}
-.stat-change.positive{color:var(--green)}
-.stat-change.negative{color:var(--red)}
-.stat-change.dimmed{color:var(--text-tertiary)}
-.grid-2col{display:grid;grid-template-columns:3fr 2fr;gap:var(--space-4);margin-bottom:var(--space-4)}
-
-/* ============ CHART ============ */
-.chart-card{padding-bottom:var(--space-3)}
-.chart-svg{width:100%;height:120px;display:block}
-.chart-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-tertiary);margin-top:var(--space-2);padding:0 2px}
-
-/* ============ PILLS ============ */
-.pill-group{display:flex;gap:2px}
-.pill{font-size:11px;padding:2px 8px;border-radius:var(--radius-sm);color:var(--text-tertiary);transition:all var(--transition-fast)}
-.pill:hover{color:var(--text-secondary)}
-.pill.active{background:var(--bg-active);color:var(--text-primary)}
-.pill-count{color:var(--text-tertiary);font-size:10px}
-.pill-count-amber{color:var(--amber)}
-
-/* ============ DRAFT ============ */
-.draft-input{width:100%;margin-bottom:var(--space-2)}
-.draft-textarea{width:100%;resize:vertical;min-height:80px;padding:6px 8px;background:var(--bg-root);border:1px solid var(--border-default);border-radius:var(--radius-sm);color:var(--text-primary);font-size:13px;outline:none;font-family:inherit;transition:border-color var(--transition-fast)}
-.draft-textarea:focus{border-color:var(--accent);outline:1.5px solid var(--accent);outline-offset:-1px}
-.draft-textarea::placeholder{color:var(--text-tertiary)}
-
-/* ============ BUTTONS ============ */
-.btn-accent-sm{display:inline-flex;align-items:center;padding:4px 12px;background:var(--accent);color:#0d0d12;font-size:12px;font-weight:500;border-radius:var(--radius-sm);transition:all var(--transition-fast);border:none;line-height:1.5}
-.btn-accent-sm:hover{background:var(--accent-hover)}
-.btn-ghost-sm{display:inline-flex;align-items:center;padding:4px 12px;background:transparent;color:var(--text-secondary);font-size:12px;border-radius:var(--radius-sm);border:1px solid var(--border-default);transition:all var(--transition-fast);line-height:1.5}
-.btn-ghost-sm:hover{background:var(--bg-hover);border-color:var(--border-strong);color:var(--text-primary)}
-.btn-ghost-xs{padding:2px 6px;font-size:11px;color:var(--text-tertiary);border-radius:var(--radius-sm);transition:all var(--transition-fast);background:transparent;border:none}
-.btn-ghost-xs:hover{background:var(--bg-hover);color:var(--text-primary)}
-.btn-ghost-xs.active{background:var(--bg-active);color:var(--text-primary)}
-.btn-ghost-xs.btn-danger:hover{color:var(--red);background:var(--red-bg)}
-.btn-hamburger{display:none;align-items:center;justify-content:center;width:28px;height:28px;border-radius:var(--radius-sm);color:var(--text-tertiary);transition:all var(--transition-fast)}
-.btn-hamburger:hover{background:var(--bg-hover);color:var(--text-secondary)}
-
-/* ============ TABLE ============ */
-.table-wrap{border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;background:var(--bg-surface)}
-.data-table{width:100%;border-collapse:collapse}
-.data-table thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-tertiary);padding:0 var(--space-3);height:36px;text-align:left;border-bottom:1px solid var(--border-subtle);background:var(--bg-surface)}
-.data-table thead th.col-check{width:36px;text-align:center}
-.data-table thead th.col-actions{width:140px}
-.data-table td{padding:0 var(--space-3);height:44px;font-size:13px;border-bottom:1px solid var(--border-subtle)}
-.data-table tbody tr:hover{background:var(--bg-hover)}
-.data-table tbody tr:last-child td{border-bottom:none}
-.data-table input[type="checkbox"]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
-.row-title{display:block;color:var(--text-primary);font-weight:500;line-height:1.3}
-.row-slug{display:block;font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono)}
-.td-mono{font-family:var(--font-mono);font-size:12px;color:var(--text-tertiary)}
-.td-actions{display:flex;gap:2px}
-.td-actions .btn-ghost-xs{opacity:0}
-.data-table tbody tr:hover .td-actions .btn-ghost-xs{opacity:1}
-.table-footer{display:flex;align-items:center;justify-content:space-between;margin-top:var(--space-3)}
-.batch-actions{display:flex;align-items:center;gap:var(--space-2)}
-.pagination{font-size:12px;color:var(--text-tertiary)}
-
-/* ============ TAGS & STATUS ============ */
-.tag{display:inline-flex;font-size:10px;padding:1px 6px;border-radius:var(--radius-sm);font-weight:500;line-height:1.5}
-.tag-blue{background:var(--blue-bg);color:var(--blue)}
-.tag-green{background:var(--green-bg);color:var(--green)}
-.tag-amber{background:var(--amber-bg);color:var(--amber)}
-.tag-purple{background:var(--purple-bg);color:var(--purple)}
-.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:middle}
-.status-published{background:var(--green)}
-.status-draft{background:var(--text-tertiary)}
-.status-scheduled{background:var(--blue)}
-
-/* ============ TIMELINE ============ */
-.timeline{position:relative;padding-left:var(--space-5)}
-.timeline::before{content:'';position:absolute;left:4px;top:4px;bottom:4px;width:1px;background:var(--border-default)}
-.tl-item{display:flex;align-items:baseline;gap:var(--space-3);padding:var(--space-2) 0;position:relative}
-.tl-dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--border-strong);background:var(--bg-surface);flex-shrink:0;margin-left:-20px}
-.tl-dot-blue{border-color:var(--blue);background:var(--blue-bg)}
-.tl-dot-green{border-color:var(--green);background:var(--green-bg)}
-.tl-dot-amber{border-color:var(--amber);background:var(--amber-bg)}
-.tl-dot-purple{border-color:var(--purple);background:var(--purple-bg)}
-.tl-time{font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary);min-width:55px;flex-shrink:0}
-.tl-text{font-size:13px;color:var(--text-secondary)}
-.tl-link{color:var(--accent)}
-.tl-mono{font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary)}
-
-/* ============ HEALTH ============ */
-.health-list{display:flex;flex-direction:column;gap:var(--space-2)}
-.health-row{display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary)}
-.health-dot{width:6px;height:6px;border-radius:50%}
-.health-dot.ok{background:var(--green)}
-
-/* ============ SEARCH & SELECT ============ */
-.input-search{display:flex;align-items:center;gap:5px;background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 8px;height:28px;transition:border-color var(--transition-fast)}
-.input-search:focus-within{border-color:var(--accent)}
-.input-search svg{color:var(--text-tertiary);flex-shrink:0}
-.search-field{background:transparent;border:none;outline:none;color:var(--text-primary);font-size:12px;width:140px;height:100%}
-.search-field::placeholder{color:var(--text-tertiary)}
-.select-sm{background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-sm);color:var(--text-secondary);font-size:12px;padding:3px 6px;height:28px;outline:none;cursor:pointer}
-
-/* ============ FILTER PILLS ============ */
-.filter-pills{display:flex;gap:var(--space-2);margin-bottom:var(--space-4)}
-
-/* ============ COMMENT CARDS ============ */
-.comment-cards{display:flex;flex-direction:column;gap:var(--space-3)}
-.comment-card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-4)}
-.comment-card-top{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-2)}
-.cc-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0}
-.cc-av-1{background:linear-gradient(135deg,#2a3d1f,#3d2a1f)}
-.cc-av-2{background:linear-gradient(135deg,#1f2a3d,#2a1f3d)}
-.cc-av-3{background:linear-gradient(135deg,#3d1f2a,#1f3d2a)}
-.cc-meta{flex:1;min-width:0}
-.cc-author{font-size:13px;font-weight:500;color:var(--text-primary)}
-.cc-time{font-size:11px;color:var(--text-tertiary);margin-left:var(--space-2)}
-.cc-post{display:block;font-size:11px;color:var(--text-tertiary);margin-top:1px}
-.cc-post a{color:var(--accent)}
-.cc-status{font-size:10px;padding:1px 6px;border-radius:var(--radius-sm);font-weight:500}
-.cc-approved{background:var(--green-bg);color:var(--green)}
-.cc-pending{background:var(--amber-bg);color:var(--amber)}
-.cc-body{font-size:13px;color:var(--text-secondary);margin-bottom:var(--space-2);line-height:1.5}
-.cc-actions{display:flex;gap:var(--space-3)}
-
-/* ============ THEME GRID ============ */
-.section-label-sm{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);margin-bottom:var(--space-3)}
-.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
-.theme-card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;transition:border-color var(--transition-fast)}
-.theme-card:hover{border-color:var(--border-default)}
-.theme-card.theme-active{border-color:var(--accent-border);box-shadow:0 0 0 1px var(--accent-border)}
-.theme-preview{height:120px}
-.theme-info{padding:var(--space-3) var(--space-3) var(--space-2)}
-.theme-name{font-size:13px;font-weight:500;color:var(--text-primary)}
-.theme-current-tag{font-size:9px;background:var(--accent-muted);color:var(--accent);padding:1px 5px;border-radius:var(--radius-sm);margin-left:var(--space-1);font-weight:500}
-.theme-desc{font-size:11px;color:var(--text-tertiary);margin-top:2px}
-.theme-card .btn-ghost-xs{margin:0 var(--space-3) var(--space-3)}
-.theme-card .btn-ghost-xs.disabled{opacity:0.4;cursor:default}
-
-/* ============ SETTINGS ============ */
-.settings-row{display:flex;gap:var(--space-4);margin-bottom:var(--space-3)}
-.setting-group{flex:1;min-width:0}
-.field-label{display:block;font-size:11px;font-weight:500;color:var(--text-tertiary);margin-bottom:4px}
-.field-input{width:100%}
-.field-color{width:40px;height:30px;padding:2px;cursor:pointer}
-input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
-input[type="color"]::-webkit-color-swatch{border:none;border-radius:2px}
-
-/* ============ SWITCH ============ */
-.switch{position:relative;display:inline-block;width:32px;height:18px;cursor:pointer}
-.switch input{opacity:0;width:0;height:0}
-.switch-slider{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--border-default);border-radius:9px;transition:all var(--transition-fast)}
-.switch-slider::before{content:'';position:absolute;height:14px;width:14px;left:2px;bottom:2px;background:var(--text-tertiary);border-radius:50%;transition:all var(--transition-fast)}
-.switch input:checked+.switch-slider{background:var(--accent-muted)}
-.switch input:checked+.switch-slider::before{transform:translateX(14px);background:var(--accent)}
-
-/* ============ ACCORDION ============ */
-.accordion{display:flex;flex-direction:column;gap:1px}
-.acc-item{border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;background:var(--bg-surface)}
-.acc-trigger{width:100%;text-align:left;padding:var(--space-3) var(--space-4);font-size:13px;font-weight:500;color:var(--text-secondary);display:flex;align-items:center;justify-content:space-between;transition:color var(--transition-fast)}
-.acc-trigger::after{content:'+';font-family:var(--font-mono);font-size:14px;color:var(--text-tertiary);transition:transform var(--transition-fast)}
-.acc-item.open .acc-trigger::after{content:'\2212'}
-.acc-trigger:hover{color:var(--text-primary)}
-.acc-panel{padding:0 var(--space-4) var(--space-4);display:block}
-
-/* ============ RADIO ============ */
-.radio-list{display:flex;flex-direction:column;gap:var(--space-2)}
-.radio-item{display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);cursor:pointer}
-.radio-item input[type="radio"]{accent-color:var(--accent);width:14px;height:14px}
-
-/* ============ MEDIA GRID ============ */
-.media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4)}
-.media-card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;transition:border-color var(--transition-fast)}
-.media-card:hover{border-color:var(--border-default)}
-.media-thumb{height:120px}
-.media-info{padding:var(--space-2) var(--space-3)}
-.media-name{font-size:12px;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.media-meta{font-size:10px;color:var(--text-tertiary);margin-top:1px}
-
-/* ============ ANALYTICS ============ */
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:livePulse 2s ease-in-out infinite}
-@keyframes livePulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.hot-list{display:flex;flex-direction:column;gap:var(--space-2)}
-.hot-row{display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);padding:var(--space-1) 0}
-.hot-rank{font-family:var(--font-mono);font-size:12px;color:var(--text-tertiary);min-width:16px;text-align:right}
-.hot-views{font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary);margin-left:auto}
-
-/* ============ FRIENDS ============ */
-.friend-cards{display:flex;flex-direction:column;gap:var(--space-3)}
-.friend-card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-4);display:flex;align-items:center;gap:var(--space-4)}
-.fc-avatar{width:40px;height:40px;border-radius:var(--radius-md);flex-shrink:0}
-.fc-av-1{background:linear-gradient(135deg,#1f3d2a,#2a3d1f)}
-.fc-av-2{background:linear-gradient(135deg,#2a1f3d,#3d1f2a)}
-.fc-av-3{background:linear-gradient(135deg,#1f2a3d,#2a1f3d)}
-.fc-info{flex:1;min-width:0}
-.fc-name{font-size:13px;font-weight:500;color:var(--text-primary)}
-.fc-url{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono)}
-.fc-desc{font-size:12px;color:var(--text-tertiary);margin-top:2px}
-.fc-actions{display:flex;gap:var(--space-2);flex-shrink:0}
-
-/* ============ SHUOSHUO ============ */
-.shuoshuo-bar{display:flex;align-items:center;justify-content:space-between;margin-top:var(--space-2)}
-.char-count{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono)}
-.shuoshuo-list{display:flex;flex-direction:column;gap:var(--space-3)}
-.shuoshuo-card{background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);transition:border-color var(--transition-fast)}
-.shuoshuo-card:hover{border-color:var(--border-default)}
-.ss-meta{display:flex;justify-content:space-between;margin-bottom:var(--space-1)}
-.ss-time{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono)}
-.ss-likes{font-size:11px;color:var(--text-tertiary)}
-.ss-body{font-size:13px;color:var(--text-secondary);line-height:1.5}
-.ss-actions{margin-top:var(--space-2);display:flex;gap:var(--space-3)}
-
-/* ============ TOOLS ============ */
-.tool-actions{display:flex;flex-direction:column;gap:var(--space-2)}
-.deploy-info{display:flex;flex-direction:column;gap:var(--space-2)}
-.deploy-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-secondary)}
-.sys-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border-subtle);border-radius:var(--radius-md);overflow:hidden}
-.sys-cell{background:var(--bg-root);padding:var(--space-3) var(--space-4);display:flex;justify-content:space-between;align-items:center}
-.sys-k{font-size:12px;color:var(--text-tertiary)}
-.sys-v{font-size:12px;font-family:var(--font-mono);color:var(--text-primary);font-weight:500}
-
-/* ============ TOAST ============ */
-.toast{position:fixed;bottom:var(--space-8);left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:var(--space-2) var(--space-4);font-size:12px;color:var(--text-primary);box-shadow:var(--shadow-md);z-index:9999;opacity:0;transition:all 200ms ease-out;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ============ OVERLAY ============ */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99}
-
-/* ============ RESPONSIVE ============ */
-@media (max-width:1024px){
-  .sidebar{width:56px}
-  .sidebar .brand-name,.sidebar .brand-sub,.sidebar .nav-section-label,.nav-item span:not(.nav-badge),.sidebar .sidebar-user-info,.sidebar .btn-logout{display:none}
-  .nav-item{justify-content:center;padding:0}
-  .nav-badge{position:absolute;top:2px;right:2px;font-size:8px;padding:0 3px}
-  .main-area{margin-left:56px}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .grid-2col{grid-template-columns:1fr}
-  .theme-grid{grid-template-columns:repeat(2,1fr)}
-  .media-grid{grid-template-columns:repeat(2,1fr)}
-  .settings-row{flex-direction:column}
-  .sys-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media (max-width:768px){
-  .sidebar{transform:translateX(-100%);width:240px;transition:transform var(--transition-base)}
-  .sidebar.open{transform:translateX(0)}
-  .sidebar.open .brand-name,.sidebar.open .brand-sub,.sidebar.open .nav-section-label,.sidebar.open .nav-item span:not(.nav-badge),.sidebar.open .sidebar-user-info,.sidebar.open .btn-logout{display:initial}
-  .sidebar.open .nav-item{justify-content:flex-start;padding:0 var(--space-2)}
-  .sidebar.open .nav-badge{position:static;font-size:10px;padding:1px 5px}
-  .main-area{margin-left:0}
-  .btn-hamburger{display:flex}
-  .overlay.show{display:block}
-  .stats-grid{grid-template-columns:1fr}
-  .theme-grid{grid-template-columns:1fr}
-  .media-grid{grid-template-columns:1fr}
-  .table-wrap{overflow-x:auto}
-}
-</style>
-
-<script>
-// ============================================================
-// ALL 14 VIEW TEMPLATES (injected as JS template literals)
-// ============================================================
-const VIEWS = {
-  dashboard: `<div class="page-header"><h1 class="page-title">仪表板</h1><p class="page-desc">站点运营概览</p></div>
-<div class="stats-grid">
-  <div class="stat-card"><div class="stat-top"><span class="stat-label">文章</span><div class="stat-icon-box stat-icon-blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.5"/></svg></div></div><div class="stat-value">5</div><div class="stat-change positive">+1 本周</div></div>
-  <div class="stat-card"><div class="stat-top"><span class="stat-label">页面</span><div class="stat-icon-box stat-icon-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/></svg></div></div><div class="stat-value">2</div><div class="stat-change dimmed">全部已发布</div></div>
-  <div class="stat-card"><div class="stat-top"><span class="stat-label">评论</span><div class="stat-icon-box stat-icon-amber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" stroke="currentColor" stroke-width="1.5"/></svg></div></div><div class="stat-value">3</div><div class="stat-change positive">1 待审核</div></div>
-  <div class="stat-card"><div class="stat-top"><span class="stat-label">访客</span><div class="stat-icon-box stat-icon-purple"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg></div></div><div class="stat-value">128</div><div class="stat-change positive">+12% 较昨日</div></div>
-</div>
-<div class="grid-2col">
-  <div class="card chart-card"><div class="card-header-row"><h3 class="card-title">最近 7 天访客</h3><div class="pill-group"><button class="pill active" data-pills="chart">7d</button><button class="pill" data-pills="chart">30d</button></div></div><svg class="chart-svg" viewBox="0 0 400 140" preserveAspectRatio="none"><defs><linearGradient id="ch1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d4a853" stop-opacity="0.2"/><stop offset="100%" stop-color="#d4a853" stop-opacity="0"/></linearGradient></defs><polyline points="10,120 75,100 140,90 205,60 270,70 335,45 390,40" fill="none" stroke="#d4a853" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="10,140 10,120 75,100 140,90 205,60 270,70 335,45 390,40 390,140" fill="url(#ch1)"/></svg><div class="chart-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
-  <div class="card"><div class="card-header-row"><h3 class="card-title">快速草稿</h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="1.5"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="1.5"/></svg></div><input type="text" class="draft-input" placeholder="文章标题..." id="draft-title"/><textarea class="draft-textarea" placeholder="开始书写..." id="draft-content" rows="4"></textarea><button class="btn-accent-sm" onclick="toast('草稿已保存')">保存草稿</button></div>
-</div>
-<div class="grid-2col">
-  <div class="card"><h3 class="card-title" style="margin-bottom:16px">最近动态</h3><div class="timeline"><div class="tl-item"><div class="tl-dot tl-dot-blue"></div><div class="tl-time">10:24</div><div class="tl-text">发布文章 <span class="tl-link">First post</span></div></div><div class="tl-item"><div class="tl-dot tl-dot-green"></div><div class="tl-time">09:15</div><div class="tl-text">更新页面 <span class="tl-link">关于</span></div></div><div class="tl-item"><div class="tl-dot tl-dot-amber"></div><div class="tl-time">昨天</div><div class="tl-text">收到新评论 — <span class="tl-link">Markdown Style Guide</span></div></div><div class="tl-item"><div class="tl-dot tl-dot-purple"></div><div class="tl-time">6月13日</div><div class="tl-text">外观设置已更新</div></div><div class="tl-item"><div class="tl-dot"></div><div class="tl-time">6月12日</div><div class="tl-text">站点构建完成 <span class="tl-mono">#482</span></div></div></div></div>
-  <div class="card"><h3 class="card-title" style="margin-bottom:16px">站点健康</h3><div class="health-list"><div class="health-row"><span class="health-dot ok"></span>站点运行正常</div><div class="health-row"><span class="health-dot ok"></span>Astro 5.x</div><div class="health-row"><span class="health-dot ok"></span>GitHub Pages 部署</div><div class="health-row"><span class="health-dot ok"></span>HTTPS 已启用</div><div class="health-row"><span class="health-dot ok"></span>最后构建 2026-06-15</div></div></div>
-</div>`,
-
-  posts: `<div class="page-header"><h1 class="page-title">文章</h1><div class="page-header-right"><div class="input-search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input type="text" placeholder="搜索文章..." class="search-field"/></div><select class="select-sm"><option>全部分类</option><option>技术</option><option>教程</option><option>随笔</option></select><button class="btn-accent-sm">新建文章</button></div></div>
-<div class="table-wrap"><table class="data-table"><thead><tr><th class="col-check"><input type="checkbox"/></th><th>标题</th><th>作者</th><th>分类</th><th>日期</th><th>状态</th><th class="col-actions"></th></tr></thead><tbody>
-<tr><td><input type="checkbox"/></td><td><span class="row-title">First post</span><span class="row-slug">/first-post</span></td><td>管理员</td><td><span class="tag tag-blue">技术</span></td><td class="td-mono">2022-07-08</td><td><span class="status-dot status-published"></span>已发布</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs">快速编辑</button><button class="btn-ghost-xs btn-danger">回收站</button></td></tr>
-<tr><td><input type="checkbox"/></td><td><span class="row-title">Markdown Style Guide</span><span class="row-slug">/markdown-style-guide</span></td><td>管理员</td><td><span class="tag tag-blue">教程</span></td><td class="td-mono">2024-06-19</td><td><span class="status-dot status-published"></span>已发布</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs">快速编辑</button><button class="btn-ghost-xs btn-danger">回收站</button></td></tr>
-<tr><td><input type="checkbox"/></td><td><span class="row-title">Second post</span><span class="row-slug">/second-post</span></td><td>管理员</td><td><span class="tag tag-blue">技术</span></td><td class="td-mono">2022-07-15</td><td><span class="status-dot status-published"></span>已发布</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs">快速编辑</button><button class="btn-ghost-xs btn-danger">回收站</button></td></tr>
-<tr><td><input type="checkbox"/></td><td><span class="row-title">Third post</span><span class="row-slug">/third-post</span></td><td>管理员</td><td><span class="tag tag-purple">随笔</span></td><td class="td-mono">2022-07-22</td><td><span class="status-dot status-draft"></span>草稿</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs">快速编辑</button><button class="btn-ghost-xs btn-danger">回收站</button></td></tr>
-<tr><td><input type="checkbox"/></td><td><span class="row-title">Using MDX</span><span class="row-slug">/using-mdx</span></td><td>管理员</td><td><span class="tag tag-blue">教程</span></td><td class="td-mono">—</td><td><span class="status-dot status-draft"></span>草稿</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs">快速编辑</button><button class="btn-ghost-xs btn-danger">回收站</button></td></tr>
-</tbody></table></div>
-<div class="table-footer"><div class="batch-actions"><select class="select-sm"><option>批量操作</option><option>移至回收站</option></select><button class="btn-ghost-xs">应用</button></div><div class="pagination">共 5 篇</div></div>`,
-
-  pages: `<div class="page-header"><h1 class="page-title">页面</h1><button class="btn-accent-sm">新建页面</button></div>
-<div class="table-wrap"><table class="data-table"><thead><tr><th class="col-check"><input type="checkbox"/></th><th>标题</th><th>模板</th><th>日期</th><th>状态</th><th class="col-actions"></th></tr></thead><tbody>
-<tr><td><input type="checkbox"/></td><td><span class="row-title">关于</span><span class="row-slug">/about</span></td><td class="td-mono">about.astro</td><td class="td-mono">2026-01-01</td><td><span class="status-dot status-published"></span>已发布</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">回收站</button></td></tr>
-<tr><td><input type="checkbox"/></td><td><span class="row-title">留言板</span><span class="row-slug">/guestbook</span></td><td class="td-mono">guestbook.astro</td><td class="td-mono">2026-06-01</td><td><span class="status-dot status-published"></span>已发布</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">回收站</button></td></tr>
-</tbody></table></div>
-<div class="table-footer"><div></div><div class="pagination">共 2 页</div></div>`,
-
-  media: `<div class="page-header"><h1 class="page-title">媒体库</h1><div class="page-header-right"><button class="btn-ghost-xs active" data-media-view="grid">网格</button><button class="btn-ghost-xs" data-media-view="list">列表</button><button class="btn-accent-sm">上传媒体</button><button class="btn-ghost-sm">外部图床</button></div></div>
-<div class="media-grid" id="media-grid">${(()=>{let r='';const d=[['210','hero-banner.png','284 KB','2026-06-10'],['260','blog-placeholder-1.jpg','156 KB','2026-05-22'],['180','blog-placeholder-2.jpg','198 KB','2026-05-22'],['320','blog-placeholder-3.jpg','312 KB','2026-05-22'],['40','blog-placeholder-4.jpg','145 KB','2026-05-22'],['290','screenshot-2026.png','89 KB','2026-04-18'],['160','avatar-admin.png','24 KB','2026-03-01'],['350','site-logo.svg','12 KB','2026-01-15']];d.forEach(x=>{r+='<div class="media-card"><div class="media-thumb" style="background:linear-gradient(135deg,hsl('+x[0]+',20%,18%),hsl('+x[0]+',25%,12%))"></div><div class="media-info"><div class="media-name">'+x[1]+'</div><div class="media-meta">'+x[2]+' · '+x[3]+'</div></div></div>';});return r;})()}</div>`,
-
-  comments: `<div class="page-header"><h1 class="page-title">评论</h1></div>
-<div class="filter-pills"><button class="pill active" data-pills="comments">全部 <span class="pill-count">3</span></button><button class="pill" data-pills="comments">待审核 <span class="pill-count pill-count-amber">1</span></button><button class="pill" data-pills="comments">已批准 <span class="pill-count">2</span></button><button class="pill" data-pills="comments">垃圾 <span class="pill-count">0</span></button></div>
-<div class="comment-cards">
-  <div class="comment-card"><div class="comment-card-top"><div class="cc-avatar cc-av-1"></div><div class="cc-meta"><span class="cc-author">张三</span><span class="cc-time">2026-06-10</span><span class="cc-post">回复至 <a href="#">First post</a></span></div><span class="cc-status cc-approved">已批准</span></div><div class="cc-body">写得真好，学习了！</div><div class="cc-actions"><button class="btn-ghost-xs">批准</button><button class="btn-ghost-xs">驳回</button><button class="btn-ghost-xs">回复</button><button class="btn-ghost-xs">标记垃圾</button><button class="btn-ghost-xs btn-danger">删除</button></div></div>
-  <div class="comment-card"><div class="comment-card-top"><div class="cc-avatar cc-av-2"></div><div class="cc-meta"><span class="cc-author">李四</span><span class="cc-time">2026-06-12</span><span class="cc-post">回复至 <a href="#">Markdown Style Guide</a></span></div><span class="cc-status cc-pending">待审核</span></div><div class="cc-body">请问这个怎么配置？</div><div class="cc-actions"><button class="btn-ghost-xs">批准</button><button class="btn-ghost-xs">驳回</button><button class="btn-ghost-xs">回复</button><button class="btn-ghost-xs">标记垃圾</button><button class="btn-ghost-xs btn-danger">删除</button></div></div>
-  <div class="comment-card"><div class="comment-card-top"><div class="cc-avatar cc-av-3"></div><div class="cc-meta"><span class="cc-author">王五</span><span class="cc-time">2026-06-14</span><span class="cc-post">回复至 <a href="#">Second post</a></span></div><span class="cc-status cc-approved">已批准</span></div><div class="cc-body">感谢分享</div><div class="cc-actions"><button class="btn-ghost-xs">批准</button><button class="btn-ghost-xs">驳回</button><button class="btn-ghost-xs">回复</button><button class="btn-ghost-xs">标记垃圾</button><button class="btn-ghost-xs btn-danger">删除</button></div></div>
-</div>`,
-
-  appearance: `<div class="page-header"><h1 class="page-title">外观</h1></div>
-<div class="section-label-sm">主题</div>
-<div class="theme-grid">
-  <div class="theme-card theme-active"><div class="theme-preview" style="background:linear-gradient(135deg,#1a1a21,#252530)"></div><div class="theme-info"><div class="theme-name">墨影 Monoshade <span class="theme-current-tag">当前</span></div><div class="theme-desc">极简暗色主题</div></div><button class="btn-ghost-xs disabled">已启用</button></div>
-  <div class="theme-card"><div class="theme-preview" style="background:linear-gradient(135deg,#2a2318,#3d3424)"></div><div class="theme-info"><div class="theme-name">枕星·经典</div><div class="theme-desc">柔和暖色调</div></div><button class="btn-ghost-xs">启用</button></div>
-  <div class="theme-card"><div class="theme-preview" style="background:linear-gradient(135deg,#1e1828,#2d2240)"></div><div class="theme-info"><div class="theme-name">暗夜·紫韵</div><div class="theme-desc">深紫暗色风格</div></div><button class="btn-ghost-xs">启用</button></div>
-  <div class="theme-card"><div class="theme-preview" style="background:linear-gradient(135deg,#f8f8fa,#e8e8ec)"></div><div class="theme-info"><div class="theme-name">极白·轻量</div><div class="theme-desc">明亮极简设计</div></div><button class="btn-ghost-xs">启用</button></div>
-  <div class="theme-card"><div class="theme-preview" style="background:linear-gradient(135deg,#182418,#223828)"></div><div class="theme-info"><div class="theme-name">森林·绿意</div><div class="theme-desc">自然绿色调</div></div><button class="btn-ghost-xs">启用</button></div>
-  <div class="theme-card"><div class="theme-preview" style="background:linear-gradient(135deg,#141e28,#1e2e40)"></div><div class="theme-info"><div class="theme-name">海洋·蔚蓝</div><div class="theme-desc">深海蓝色主题</div></div><button class="btn-ghost-xs">启用</button></div>
-</div>
-<div class="section-label-sm" style="margin-top:var(--space-8)">站点自定义</div>
-<div class="card"><div class="settings-row"><div class="setting-group"><label class="field-label">站点图标 URL</label><input type="text" class="field-input" placeholder="/favicon.ico"/></div><div class="setting-group"><label class="field-label">站点标题</label><input type="text" class="field-input" value="枕星"/></div><div class="setting-group"><label class="field-label">副标题</label><input type="text" class="field-input" value="手工筛选，记录优质站点"/></div></div><div class="settings-row"><div class="setting-group"><label class="field-label">侧边栏位置</label><select class="field-input"><option>左侧</option><option>右侧</option></select></div><div class="setting-group"><label class="field-label">每页文章数</label><input type="number" class="field-input" value="10"/></div><div class="setting-group"><label class="field-label">主色调</label><input type="color" class="field-input field-color" value="#d4a853"/></div></div><button class="btn-accent-sm" style="margin-top:12px" onclick="toast('外观设置已保存')">保存更改</button></div>`,
-
-  users: `<div class="page-header"><h1 class="page-title">用户</h1><button class="btn-accent-sm">添加用户</button></div>
-<div class="table-wrap"><table class="data-table"><thead><tr><th>用户名</th><th>显示名称</th><th>邮箱</th><th>角色</th><th>文章数</th><th>最后登录</th><th class="col-actions"></th></tr></thead><tbody>
-<tr><td><span class="row-title">admin</span></td><td>管理员</td><td class="td-mono">admin@example.com</td><td><span class="tag tag-amber">管理员</span></td><td>5</td><td class="td-mono">2026-06-15</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button></td></tr>
-<tr><td><span class="row-title">editor</span></td><td>编辑小张</td><td class="td-mono">editor@example.com</td><td><span class="tag tag-blue">编辑</span></td><td>0</td><td class="td-mono">2026-06-10</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">删除</button></td></tr>
-</tbody></table></div>`,
-
-  analytics: `<div class="page-header"><h1 class="page-title">分析</h1></div>
-<div class="stats-grid"><div class="stat-card"><div class="stat-top"><span class="stat-label">实时访客</span><span class="live-dot"></span></div><div class="stat-value">3</div><div class="stat-change dimmed">当前在线</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">今日浏览</span></div><div class="stat-value">42</div><div class="stat-change positive">+8%</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">今日独立访客</span></div><div class="stat-value">28</div><div class="stat-change positive">+5%</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">跳出率</span></div><div class="stat-value">64<span style="font-size:14px">%</span></div><div class="stat-change negative">-3%</div></div></div>
-<div class="grid-2col" style="margin-top:var(--space-4)"><div class="card"><h3 class="card-title" style="margin-bottom:12px">浏览量趋势</h3><svg class="chart-svg" viewBox="0 0 400 120" preserveAspectRatio="none"><defs><linearGradient id="af" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5b9bd5" stop-opacity="0.18"/><stop offset="100%" stop-color="#5b9bd5" stop-opacity="0"/></linearGradient></defs><polyline points="10,110 75,95 140,80 205,65 270,58 335,42 390,30" fill="none" stroke="#5b9bd5" stroke-width="1.5" stroke-linecap="round"/><polygon points="10,120 10,110 75,95 140,80 205,65 270,58 335,42 390,30 390,120" fill="url(#af)"/></svg><div class="chart-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
-<div class="card"><h3 class="card-title" style="margin-bottom:12px">热门内容</h3><div class="hot-list"><div class="hot-row"><span class="hot-rank">1</span><span>First post</span><span class="hot-views">128 次</span></div><div class="hot-row"><span class="hot-rank">2</span><span>Markdown Style Guide</span><span class="hot-views">96 次</span></div><div class="hot-row"><span class="hot-rank">3</span><span>Second post</span><span class="hot-views">74 次</span></div><div class="hot-row"><span class="hot-rank">4</span><span>Third post</span><span class="hot-views">51 次</span></div><div class="hot-row"><span class="hot-rank">5</span><span>关于页面</span><span class="hot-views">38 次</span></div></div></div></div>`,
-
-  navlinks: `<div class="page-header"><h1 class="page-title">导航站</h1></div>
-<div class="stats-grid"><div class="stat-card"><div class="stat-top"><span class="stat-label">总站点</span></div><div class="stat-value">227</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">分类数</span></div><div class="stat-value">12</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">AI 工具·国内</span></div><div class="stat-value">136</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">AI 工具·国外</span></div><div class="stat-value">91</div></div></div>
-<div class="page-header" style="margin-top:var(--space-4)"><div></div><div class="page-header-right"><button class="btn-accent-sm">添加站点</button><button class="btn-ghost-sm">批量导入</button><button class="btn-ghost-sm">重新抓取</button><button class="btn-ghost-sm">导出 JSON</button></div></div>
-<div class="table-wrap"><table class="data-table"><thead><tr><th>分类名</th><th>站点数</th><th class="col-actions"></th></tr></thead><tbody>${(()=>{const c=[['AI 工具·国内',136],['AI 工具·国外',91],['开发技术',28],['设计创意',19],['常用工具',15],['学习资源',12],['阅读资讯',8],['开源项目',7],['影音娱乐',5],['效率办公',4],['生活服务',2],['主机服务',0]];return c.map(x=>'<tr><td>'+x[0]+'</td><td>'+x[1]+'</td><td class="td-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">删除</button></td></tr>').join('');})()}</tbody></table></div>`,
-
-  friends: `<div class="page-header"><h1 class="page-title">友链管理</h1></div>
-<div class="stats-grid"><div class="stat-card"><div class="stat-top"><span class="stat-label">待审核</span></div><div class="stat-value">3</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">已通过</span></div><div class="stat-value">12</div></div><div class="stat-card"><div class="stat-top"><span class="stat-label">已拒绝</span></div><div class="stat-value">1</div></div></div>
-<div class="section-label-sm" style="margin-top:var(--space-6)">待审核申请</div>
-<div class="friend-cards"><div class="friend-card"><div class="fc-avatar fc-av-1"></div><div class="fc-info"><div class="fc-name">TechBlog</div><div class="fc-url">https://techblog.example.com</div><div class="fc-desc">专注前端技术分享</div></div><div class="fc-actions"><button class="btn-accent-sm">通过</button><button class="btn-ghost-xs btn-danger">拒绝</button></div></div><div class="friend-card"><div class="fc-avatar fc-av-2"></div><div class="fc-info"><div class="fc-name">设计笔记</div><div class="fc-url">https://design.example.com</div><div class="fc-desc">UI/UX 设计灵感</div></div><div class="fc-actions"><button class="btn-accent-sm">通过</button><button class="btn-ghost-xs btn-danger">拒绝</button></div></div><div class="friend-card"><div class="fc-avatar fc-av-3"></div><div class="fc-info"><div class="fc-name">CodeLab</div><div class="fc-url">https://codelab.example.com</div><div class="fc-desc">开源项目与实验</div></div><div class="fc-actions"><button class="btn-accent-sm">通过</button><button class="btn-ghost-xs btn-danger">拒绝</button></div></div></div>`,
-
-  shuoshuo: `<div class="page-header"><h1 class="page-title">说说</h1></div>
-<div class="card" style="margin-bottom:var(--space-4)"><textarea class="draft-textarea" placeholder="此刻的想法..." rows="2" id="shuoshuo-input" maxlength="500"></textarea><div class="shuoshuo-bar"><span class="char-count" id="char-count">0/500</span><button class="btn-accent-sm" onclick="toast('说说已发布')">发布</button></div></div>
-<div class="shuoshuo-list"><div class="shuoshuo-card"><div class="ss-meta"><span class="ss-time">2026-06-15 09:42</span><span class="ss-likes">❤ 3</span></div><div class="ss-body">完成了管理后台 v2.0 的重构，这次的设计更加克制和专业。</div><div class="ss-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">删除</button></div></div><div class="shuoshuo-card"><div class="ss-meta"><span class="ss-time">2026-06-14 22:10</span><span class="ss-likes">❤ 7</span></div><div class="ss-body">今天把导航站的所有链接重新整理了一遍，移除了 15 个已失效的站点。</div><div class="ss-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">删除</button></div></div><div class="shuoshuo-card"><div class="ss-meta"><span class="ss-time">2026-06-12 16:30</span><span class="ss-likes">❤ 5</span></div><div class="ss-body">收到了友链申请，审核中。欢迎优质站点互链。</div><div class="ss-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">删除</button></div></div><div class="shuoshuo-card"><div class="ss-meta"><span class="ss-time">2026-06-10 08:15</span><span class="ss-likes">❤ 12</span></div><div class="ss-body">发布了新的技术文章：Markdown Style Guide，希望对大家有帮助。</div><div class="ss-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">删除</button></div></div><div class="shuoshuo-card"><div class="ss-meta"><span class="ss-time">2026-06-05 14:22</span><span class="ss-likes">❤ 2</span></div><div class="ss-body">持续优化网站的加载速度，Lighthouse 评分已经到 98 分了。</div><div class="ss-actions"><button class="btn-ghost-xs">编辑</button><button class="btn-ghost-xs btn-danger">删除</button></div></div></div>`,
-
-  tools: `<div class="page-header"><h1 class="page-title">工具</h1></div>
-<div class="grid-2col"><div class="card"><h3 class="card-title" style="margin-bottom:12px">内容工具</h3><div class="tool-actions"><button class="btn-ghost-sm" onclick="alert('导出功能：将所有文章/页面导出为 JSON 文件（即将支持）')">导出 JSON</button><button class="btn-ghost-sm">导入 JSON</button><button class="btn-ghost-sm">站点地图</button><button class="btn-ghost-sm">RSS Feed</button></div></div>
-<div class="card"><h3 class="card-title" style="margin-bottom:12px">部署</h3><div class="deploy-info"><div class="deploy-row"><span>上次构建</span><span class="td-mono">2026-06-15 10:42</span></div><div class="deploy-row"><span>构建状态</span><span class="tag tag-green">成功</span></div><div class="deploy-row"><span>构建耗时</span><span class="td-mono">18.3s</span></div></div><button class="btn-accent-sm" style="margin-top:12px">重新构建</button></div></div>
-<div class="card" style="margin-top:var(--space-4)"><h3 class="card-title" style="margin-bottom:12px">系统信息</h3><div class="sys-grid"><div class="sys-cell"><span class="sys-k">Astro</span><span class="sys-v">5.x</span></div><div class="sys-cell"><span class="sys-k">Node</span><span class="sys-v">22.x</span></div><div class="sys-cell"><span class="sys-k">部署</span><span class="sys-v">GitHub Pages</span></div><div class="sys-cell"><span class="sys-k">域名</span><span class="sys-v">msoceo.github.io</span></div><div class="sys-cell"><span class="sys-k">主题</span><span class="sys-v">墨影 Monoshade</span></div><div class="sys-cell"><span class="sys-k">存储</span><span class="sys-v">文件系统</span></div></div></div>`,
-
-  settings: `<div class="page-header"><h1 class="page-title">设置</h1></div>
-<div class="accordion">
-  <div class="acc-item open"><button class="acc-trigger">常规设置</button><div class="acc-panel"><div class="settings-row"><div class="setting-group"><label class="field-label">站点标题</label><input type="text" class="field-input" value="枕星"/></div><div class="setting-group"><label class="field-label">副标题</label><input type="text" class="field-input" value="手工筛选，记录优质站点"/></div><div class="setting-group"><label class="field-label">站点地址</label><input type="text" class="field-input" value="https://msoceo.github.io"/></div></div><div class="settings-row"><div class="setting-group"><label class="field-label">管理邮箱</label><input type="email" class="field-input" value="admin@example.com"/></div><div class="setting-group"><label class="field-label">时区</label><select class="field-input"><option>Asia/Shanghai</option></select></div><div class="setting-group"><label class="field-label">语言</label><select class="field-input"><option>简体中文</option></select></div></div></div></div>
-  <div class="acc-item open"><button class="acc-trigger">撰写设置</button><div class="acc-panel"><div class="settings-row"><div class="setting-group"><label class="field-label">默认分类</label><select class="field-input"><option>技术</option></select></div><div class="setting-group"><label class="field-label">默认文章格式</label><select class="field-input"><option>标准</option></select></div><div class="setting-group"><label class="field-label">Markdown 编辑器</label><label class="switch"><input type="checkbox" checked/><span class="switch-slider"></span></label></div></div></div></div>
-  <div class="acc-item open"><button class="acc-trigger">阅读设置</button><div class="acc-panel"><div class="settings-row"><div class="setting-group"><label class="field-label">首页显示</label><select class="field-input"><option>最新文章</option></select></div><div class="setting-group"><label class="field-label">每页文章数</label><input type="number" class="field-input" value="10"/></div><div class="setting-group"><label class="field-label">RSS 显示条数</label><input type="number" class="field-input" value="10"/></div></div><div class="settings-row"><div class="setting-group"><label class="field-label">搜索引擎可见性</label><select class="field-input"><option>允许</option></select></div></div></div></div>
-  <div class="acc-item open"><button class="acc-trigger">讨论设置</button><div class="acc-panel"><div class="settings-row"><div class="setting-group"><label class="field-label">启用评论</label><label class="switch"><input type="checkbox" checked/><span class="switch-slider"></span></label></div><div class="setting-group"><label class="field-label">评论需审核</label><label class="switch"><input type="checkbox" checked/><span class="switch-slider"></span></label></div><div class="setting-group"><label class="field-label">评论通知</label><label class="switch"><input type="checkbox" checked/><span class="switch-slider"></span></label></div></div></div></div>
-  <div class="acc-item open"><button class="acc-trigger">媒体设置</button><div class="acc-panel"><div class="settings-row"><div class="setting-group"><label class="field-label">缩略图宽度</label><input type="number" class="field-input" value="150"/></div><div class="setting-group"><label class="field-label">缩略图高度</label><input type="number" class="field-input" value="150"/></div><div class="setting-group"><label class="field-label">大图宽度</label><input type="number" class="field-input" value="1024"/></div></div><div class="settings-row"><div class="setting-group"><label class="field-label">大图高度</label><input type="number" class="field-input" value="1024"/></div><div class="setting-group"><label class="field-label">上传大小限制</label><select class="field-input"><option>10 MB</option></select></div></div></div></div>
-  <div class="acc-item open"><button class="acc-trigger">固定链接设置</button><div class="acc-panel"><div class="radio-list"><label class="radio-item"><input type="radio" name="permalink"/> 朴素型</label><label class="radio-item"><input type="radio" name="permalink"/> 日期和名称</label><label class="radio-item"><input type="radio" name="permalink" checked/> 文章名</label><label class="radio-item"><input type="radio" name="permalink"/> 自定义</label></div></div></div>
-</div>
-<button class="btn-accent-sm" style="margin-top:var(--space-4)" onclick="saveSettings()">保存设置</button>`
-};
-
-// ============================================================
-// ROUTER
-// ============================================================
-const pageNames = { dashboard:'仪表板',posts:'文章',pages:'页面',media:'媒体库',comments:'评论',appearance:'外观',users:'用户',analytics:'分析',navlinks:'导航站',friends:'友链管理',shuoshuo:'说说',tools:'工具',settings:'设置' };
-const mainArea = document.getElementById('main-area');
-let currentPage = null;
-
-function navigate(hash) {
-  const page = hash || 'dashboard';
-  if (currentPage === page) return;
-  currentPage = page;
-
-  // Update sidebar
-  document.querySelectorAll('[data-nav]').forEach(n => n.classList.toggle('active', n.dataset.nav === page));
-  document.getElementById('breadcrumb').textContent = '管理后台 / ' + (pageNames[page] || page);
-
-  // Render view
-  if (VIEWS[page]) {
-    mainArea.innerHTML = VIEWS[page];
-  }
-  mainArea.scrollTop = 0;
-
-  // Re-bind dynamic elements in the new view
-  bindViewEvents(page);
-}
-
-function bindViewEvents(page) {
-  // Pill groups
-  mainArea.querySelectorAll('.pill[data-pills]').forEach(p => {
-    p.addEventListener('click', function() {
-      const group = this.closest('.pill-group');
-      if (group) group.querySelectorAll('.pill').forEach(s => s.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-
-  // Accordion triggers
-  mainArea.querySelectorAll('.acc-trigger').forEach(btn => {
-    btn.addEventListener('click', function() {
-      this.parentElement.classList.toggle('open');
-    });
-  });
-
-  // Char count for shuoshuo
-  if (page === 'shuoshuo') {
-    const ssInput = document.getElementById('shuoshuo-input');
-    if (ssInput) {
-      ssInput.addEventListener('input', function() {
-        const cc = document.getElementById('char-count');
-        if (cc) cc.textContent = ssInput.value.length + '/500';
-      });
-    }
-  }
-}
-
-window.addEventListener('hashchange', () => navigate(location.hash.slice(1)));
-navigate(location.hash.slice(1));
-
-// Sidebar nav clicks
-document.querySelectorAll('[data-nav]').forEach(item => {
-  item.addEventListener('click', e => { e.preventDefault(); location.hash = item.dataset.nav; });
-});
-
-// Hamburger
-const hamburger = document.getElementById('hamburger');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-hamburger.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('show'); });
-overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); });
-
-// Toast
-function toast(msg) {
-  const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = msg;
-  document.body.appendChild(t);
-  requestAnimationFrame(() => t.classList.add('show'));
-  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 200); }, 2000);
-}
-
-// Settings save
-function saveSettings() {
-  const data = {};
-  mainArea.querySelectorAll('.field-input').forEach(el => {
-    if (el.type === 'checkbox') {
-      const label = el.closest('.setting-group')?.querySelector('.field-label');
-      if (label) data[label.textContent] = el.checked;
-    } else if (el.type === 'radio') {
-      if (el.checked) data['固定链接'] = el.parentElement?.textContent?.trim();
-    } else {
-      const label = el.closest('.setting-group')?.querySelector('.field-label');
-      if (label) data[label.textContent] = el.value;
-    }
-  });
-  localStorage.setItem('zhenxing_settings', JSON.stringify(data));
-  toast('设置已保存');
-}
-
-// Logout
-document.getElementById('btn-logout').addEventListener('click', () => {
-  localStorage.removeItem('zhenxing_auth');
-  location.href = '/login';
-});
-</script>

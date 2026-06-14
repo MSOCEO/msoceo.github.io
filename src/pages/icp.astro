@@ -1,643 +1,604 @@
----
-import Layout from '../layouts/Layout.astro';
----
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>星舟ICP备案 · StarArk ICP</title>
+<title>星舟ICP备案系统</title>
 <style>
   :root {
-    --bg: #0b0e14;
-    --bg-card: rgba(255,255,255,0.04);
-    --bg-input: rgba(255,255,255,0.06);
-    --text: #e2e8f0;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --accent: #818cf8;
-    --accent-glow: rgba(129,140,248,0.2);
-    --border: rgba(255,255,255,0.08);
-    --radius: 12px;
-    --font-mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    --bg: #f5f5f0;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --text-secondary: #555;
+    --text-muted: #888;
+    --border: #e0dcd5;
+    --border-focus: #b8860b;
+    --accent: #8b0000;
+    --accent-light: #d4a745;
+    --radius: 3px;
+    --font-sans: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-serif: "Noto Serif SC", "STSong", "Songti SC", serif;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
-    line-height: 1.6;
+    font-family: var(--font-sans);
+    line-height: 1.7;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
 
-  .container {
-    max-width: 900px;
+  /* Top bar */
+  .gov-topbar {
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 3px solid var(--accent-light);
+  }
+  .gov-topbar-inner {
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 24px;
-  }
-
-  /* ===== 顶栏 ===== */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(11,14,20,0.82);
-    backdrop-filter: saturate(180%) blur(16px);
-    -webkit-backdrop-filter: saturate(180%) blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
-  .topbar-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 24px;
-    height: 52px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 24px;
   }
-  .topbar-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: 0.02em;
-  }
-  .topbar-logo svg { flex-shrink: 0; }
-  .topbar-links {
-    margin-left: auto;
-    display: flex;
-    gap: 20px;
-  }
-  .topbar-links a {
-    color: var(--text-secondary);
+  .gov-topbar-inner a {
+    color: rgba(255,255,255,0.9);
     text-decoration: none;
     font-size: 13px;
-    transition: color 0.15s;
+    transition: opacity 0.15s;
   }
-  .topbar-links a:hover { color: var(--accent); }
+  .gov-topbar-inner a:hover { opacity: 0.75; }
+  .gov-topbar-home {
+    font-weight: 600;
+    margin-right: auto;
+    font-size: 14px;
+  }
 
-  /* ===== Hero ===== */
-  .hero {
-    text-align: center;
-    padding: 64px 0 36px;
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  .gov-header {
+    background: linear-gradient(135deg, #faf9f5 0%, #f0ede4 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 0;
   }
-  .hero-icon {
-    display: inline-flex;
+  .gov-header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .gov-emblem {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    background: var(--accent-glow);
-    margin-bottom: 20px;
   }
-  .hero-icon svg { width: 32px; height: 32px; color: var(--accent); }
-  .hero h1 {
-    font-size: 28px;
+  .gov-emblem svg { width: 64px; height: 64px; }
+  .gov-title h1 {
+    font-family: var(--font-serif);
+    font-size: 26px;
     font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
   }
-  .hero p {
+  .gov-title p {
+    font-size: 13px;
     color: var(--text-secondary);
-    font-size: 14px;
-    max-width: 480px;
-    margin: 0 auto;
+    letter-spacing: 0.02em;
   }
 
-  /* ===== 统计条 ===== */
-  .stats-bar {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    padding: 0 0 40px;
-    flex-wrap: wrap;
+  /* Nav */
+  .gov-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
   }
-  .stat-item {
+  .gov-nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+  }
+  .gov-nav a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .gov-nav a:hover, .gov-nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* Content */
+  .gov-content { padding: 32px 0 60px; }
+
+  /* Cards */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card h2 {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent-light);
+    letter-spacing: 0.03em;
+  }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
     text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
   .stat-value {
-    font-size: 22px;
+    font-family: var(--font-serif);
+    font-size: 32px;
     font-weight: 700;
-    font-family: var(--font-mono);
     color: var(--accent);
   }
   .stat-label {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-muted);
-    margin-top: 2px;
+    margin-top: 4px;
     letter-spacing: 0.05em;
-    text-transform: uppercase;
   }
 
-  /* ===== 表单卡片 ===== */
-  .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px;
-    margin-bottom: 24px;
-  }
-  .card h2 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card h2 .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-
-  .form-row {
+  /* Forms */
+  .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 14px;
+    gap: 16px;
   }
-  .form-row.full { grid-template-columns: 1fr; }
+  .form-grid.full { grid-template-columns: 1fr; }
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-secondary);
-  }
-  .form-group input, .form-group textarea, .form-group select {
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 9px 12px;
     font-size: 13px;
+    font-weight: 600;
     color: var(--text);
+  }
+  .form-group label .required { color: var(--accent); margin-left: 2px; }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
     font-family: inherit;
+    color: var(--text);
+    background: #fafaf8;
     transition: border-color 0.15s;
     outline: none;
   }
-  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-    border-color: var(--accent);
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--border-focus);
+    background: #fff;
   }
-  .form-group textarea { resize: vertical; min-height: 64px; }
-  .form-group select { appearance: none; cursor: pointer; }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+
+  .form-notice {
+    background: #fef9e7;
+    border: 1px solid #f0d77b;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #8a6d14;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
 
   .btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 9px 20px;
+    padding: 10px 24px;
     border: none;
-    border-radius: 8px;
-    font-size: 13px;
+    border-radius: var(--radius);
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s;
     font-family: inherit;
+    transition: all 0.15s;
   }
   .btn-primary {
     background: var(--accent);
     color: #fff;
+    letter-spacing: 0.03em;
   }
-  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:hover { background: #6b0000; }
   .btn-outline {
-    background: transparent;
+    background: #fff;
     border: 1px solid var(--border);
     color: var(--text-secondary);
   }
   .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
-  .form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
-  }
-
+  .form-actions { display: flex; gap: 10px; margin-top: 20px; }
   .form-msg {
     margin-top: 12px;
-    font-size: 13px;
     padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: var(--radius);
+    font-size: 13px;
     display: none;
   }
-  .form-msg.success { display: block; background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
-  .form-msg.error { display: block; background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+  .form-msg.success { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+  .form-msg.error { display: block; background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
 
-  /* ===== 查询 ===== */
+  /* Search */
   .search-row {
     display: flex;
     gap: 10px;
   }
   .search-row input {
     flex: 1;
-    background: var(--bg-input);
+    padding: 10px 14px;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 9px 14px;
-    font-size: 13px;
-    color: var(--text);
+    border-radius: var(--radius);
+    font-size: 14px;
     font-family: inherit;
+    color: var(--text);
+    background: #fafaf8;
     outline: none;
     transition: border-color 0.15s;
   }
-  .search-row input:focus { border-color: var(--accent); }
+  .search-row input:focus { border-color: var(--border-focus); background: #fff; }
 
-  /* ===== 列表 ===== */
-  .list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  .icp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
   }
-  .list-header h2 { margin-bottom: 0; }
-
-  .entry {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
-    border-radius: 10px;
-    transition: background 0.15s;
-    border: 1px solid transparent;
-  }
-  .entry:hover { background: var(--bg-card); border-color: var(--border); }
-  .entry-num {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text-muted);
-    min-width: 60px;
-    flex-shrink: 0;
-  }
-  .entry-info { flex: 1; min-width: 0; }
-  .entry-name {
-    font-size: 14px;
+  .icp-table th {
+    background: #fafaf8;
+    border-bottom: 2px solid var(--border);
+    padding: 12px 14px;
+    text-align: left;
     font-weight: 600;
     color: var(--text);
-    text-decoration: none;
-    transition: color 0.15s;
-    display: block;
+    font-size: 12px;
+    letter-spacing: 0.03em;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
-  .entry-name:hover { color: var(--accent); }
-  .entry-meta {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+  .icp-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
   }
-  .entry-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-  }
-  .entry-badge {
-    flex-shrink: 0;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 6px;
+  .icp-table tr:hover td { background: #fafaf8; }
+  .icp-table a {
+    color: var(--accent);
+    text-decoration: none;
     font-weight: 500;
+  }
+  .icp-table a:hover { text-decoration: underline; }
+  .icp-num {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .icp-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: 600;
     letter-spacing: 0.03em;
   }
-  .badge-personal { background: rgba(129,140,248,0.12); color: #818cf8; }
-  .badge-org { background: rgba(52,211,153,0.12); color: #34d399; }
-  .badge-project { background: rgba(251,191,36,0.12); color: #fbbf24; }
+  .badge-personal { background: #e8eaf6; color: #283593; }
+  .badge-project { background: #e0f2f1; color: #004d40; }
+  .badge-org { background: #fff3e0; color: #e65100; }
 
   .empty-state {
     text-align: center;
-    padding: 48px 20px;
+    padding: 40px;
     color: var(--text-muted);
+    font-size: 14px;
   }
-  .empty-state svg { margin-bottom: 12px; opacity: 0.3; }
 
-  /* ===== 页脚 ===== */
-  .footer {
-    text-align: center;
-    padding: 36px 20px;
-    border-top: 1px solid var(--border);
+  /* Footer */
+  .gov-footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.8);
+    padding: 24px 0;
     margin-top: 48px;
-  }
-  .footer p {
     font-size: 12px;
-    color: var(--text-muted);
+    text-align: center;
+    line-height: 2;
   }
-  .footer a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  .footer a:hover { color: var(--accent); }
+  .gov-footer a { color: rgba(255,255,255,0.9); }
 
-  @media (max-width: 600px) {
-    .form-row { grid-template-columns: 1fr; }
-    .stats-bar { gap: 20px; }
-    .hero h1 { font-size: 22px; }
+  @media (max-width: 700px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .card { padding: 20px; }
+    .gov-emblem { width: 48px; height: 48px; }
+    .gov-emblem svg { width: 42px; height: 42px; }
+    .gov-title h1 { font-size: 20px; }
   }
 </style>
 </head>
 <body>
-  <!-- 顶栏 -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="/links" class="topbar-logo">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-          <path d="M12 3l2.5 5.5L20 10l-4 4 1 5.5-5-2.8-5 2.8 1-5.5L4 10l5.5-1.5L12 3z" fill="currentColor" opacity="0.7"/>
-        </svg>
-        星舟导航
-      </a>
-      <nav class="topbar-links">
-        <a href="/icp">ICP备案</a>
-        <a href="#join">申请备案</a>
-        <a href="#query">查询备案</a>
-      </nav>
-    </div>
-  </header>
-
-  <div class="container">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-icon">
-        <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.2"/>
-          <path d="M12 3l2.5 5.5L20 10l-4 4 1 5.5-5-2.8-5 2.8 1-5.5L4 10l5.5-1.5L12 3z" fill="currentColor" opacity="0.8"/>
-        </svg>
-      </div>
-      <h1>星舟ICP备案</h1>
-      <p>星舟导航旗下站点备案与查询系统，为中文互联网独立站提供身份标识。</p>
-    </section>
-
-    <!-- 统计 -->
-    <div class="stats-bar" id="statsBar">
-      <div class="stat-item">
-        <div class="stat-value" id="statTotal">0</div>
-        <div class="stat-label">已备案站点</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="statToday">0</div>
-        <div class="stat-label">今日新增</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="statLatest">--</div>
-        <div class="stat-label">最新备案号</div>
-      </div>
-    </div>
-
-    <!-- 申请备案 -->
-    <div class="card" id="join">
-      <h2><span class="dot"></span>申请备案</h2>
-      <form id="joinForm" onsubmit="return false;">
-        <div class="form-row">
-          <div class="form-group">
-            <label>站点名称 *</label>
-            <input type="text" id="siteName" placeholder="我的博客" maxlength="60" required>
-          </div>
-          <div class="form-group">
-            <label>站点 URL *</label>
-            <input type="url" id="siteUrl" placeholder="https://example.com" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>站长 / 持有人 *</label>
-            <input type="text" id="siteOwner" placeholder="你的昵称" maxlength="30" required>
-          </div>
-          <div class="form-group">
-            <label>站点类型</label>
-            <select id="siteType">
-              <option value="personal">个人站点</option>
-              <option value="project">项目主页</option>
-              <option value="org">组织 / 企业</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row full">
-          <div class="form-group">
-            <label>站点描述</label>
-            <textarea id="siteDesc" placeholder="一句话介绍你的站点..." maxlength="120"></textarea>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary" id="submitBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            提交备案
-          </button>
-          <button type="button" class="btn btn-outline" onclick="clearForm()">清空</button>
-        </div>
-        <div class="form-msg" id="formMsg"></div>
-      </form>
-    </div>
-
-    <!-- 查询备案 -->
-    <div class="card" id="query">
-      <h2><span class="dot"></span>查询备案</h2>
-      <div class="search-row">
-        <input type="text" id="searchInput" placeholder="输入域名 / 站点名 / 备案号 / 站长名..." oninput="liveSearch()">
-        <button class="btn btn-outline" onclick="liveSearch()">查询</button>
-      </div>
-      <div id="searchResult" style="margin-top:16px;"></div>
-    </div>
-
-    <!-- 备案列表 -->
-    <div class="card">
-      <div class="list-header">
-        <h2><span class="dot"></span>备案列表</h2>
-        <button class="btn btn-outline" onclick="loadEntries()" style="font-size:12px;padding:6px 12px;">刷新</button>
-      </div>
-      <div id="entryList"></div>
-      <div class="empty-state" id="emptyState">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1"/><path d="M8 12h8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
-        <p>暂无备案记录，成为第一个备案的站点吧</p>
-      </div>
+  <!-- Government-style top bar -->
+  <div class="gov-topbar">
+    <div class="gov-topbar-inner">
+      <a href="/links" class="gov-topbar-home">星舟导航</a>
+      <span style="opacity:0.6">|</span>
+      <a href="/icp">备案系统</a>
+      <a href="#join">申请备案</a>
+      <a href="#query">查询备案</a>
+      <a href="#list">备案列表</a>
     </div>
   </div>
 
-  <footer class="footer">
-    <p>星舟ICP备案系统 · 非官方民间备案 · 仅供星舟导航生态使用</p>
-    <p style="margin-top:4px;"><a href="/links">返回导航</a></p>
+  <!-- Header -->
+  <header class="gov-header">
+    <div class="gov-header-inner">
+      <div class="gov-emblem">
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="28" stroke="#8b0000" stroke-width="2"/>
+          <circle cx="32" cy="32" r="22" stroke="#d4a745" stroke-width="1" stroke-dasharray="3 3"/>
+          <path d="M32 14l5 12 12 3-9 8 3 12-11-6-11 6 3-12-9-8 12-3 5-12z" fill="#8b0000" opacity="0.85"/>
+        </svg>
+      </div>
+      <div class="gov-title">
+        <h1>星舟ICP备案系统</h1>
+        <p>StarArk Internet Content Provider Registration</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="gov-nav">
+    <div class="gov-nav-inner">
+      <a href="#stats" class="active">首页</a>
+      <a href="#join">备案申请</a>
+      <a href="#query">备案查询</a>
+      <a href="#list">备案公示</a>
+    </div>
+  </nav>
+
+  <div class="container gov-content">
+    <!-- Statistics -->
+    <section id="stats" class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">已备案站点总数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statToday">0</div>
+        <div class="stat-label">今日新增备案</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statLatest">--</div>
+        <div class="stat-label">最新备案号</div>
+      </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section id="join" class="card">
+      <h2>备案申请</h2>
+      <div class="form-notice">
+        根据《星舟互联网信息服务管理办法》，在星舟导航收录的所有站点应当履行备案手续。备案信息将通过人工审核后公示，虚假信息将不予通过。
+      </div>
+      <form id="joinForm" onsubmit="return false;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>主办单位（个人）名称<span class="required">*</span></label>
+            <input type="text" id="siteOwner" placeholder="请填写真实姓名或机构全称" maxlength="40" required>
+          </div>
+          <div class="form-group">
+            <label>网站名称<span class="required">*</span></label>
+            <input type="text" id="siteName" placeholder="您的网站名称" maxlength="60" required>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>网站首页网址<span class="required">*</span></label>
+            <input type="url" id="siteUrl" placeholder="https://" required>
+          </div>
+          <div class="form-group">
+            <label>网站类别</label>
+            <select id="siteType">
+              <option value="personal">个人</option>
+              <option value="project">项目</option>
+              <option value="org">组织机构</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid full">
+          <div class="form-group">
+            <label>网站简介</label>
+            <textarea id="siteDesc" placeholder="请简要描述网站内容和用途……" maxlength="200"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">提交备案申请</button>
+          <button type="button" class="btn btn-outline" onclick="clearForm()">重置表单</button>
+        </div>
+        <div class="form-msg" id="formMsg"></div>
+      </form>
+    </section>
+
+    <!-- Search -->
+    <section id="query" class="card">
+      <h2>备案查询</h2>
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="输入备案号 / 域名 / 网站名称 / 主办单位名称……" oninput="liveSearch()">
+        <button class="btn btn-outline" onclick="liveSearch()">查询</button>
+      </div>
+      <div id="searchResult" style="margin-top:20px;"></div>
+    </section>
+
+    <!-- Listing -->
+    <section id="list" class="card">
+      <h2>备案公示</h2>
+      <div class="table-wrap">
+        <table class="icp-table" id="entryTable">
+          <thead>
+            <tr>
+              <th>备案号</th>
+              <th>网站名称</th>
+              <th>主办单位</th>
+              <th>网站类别</th>
+              <th>备案日期</th>
+            </tr>
+          </thead>
+          <tbody id="entryBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="emptyState">暂无备案信息。请先提交备案申请。</div>
+    </section>
+  </div>
+
+  <footer class="gov-footer">
+    <p>星舟导航 ICP 备案系统 · 非政府机构 · 仅供星舟导航收录站点使用</p>
+    <p><a href="/links">返回星舟导航</a></p>
   </footer>
 
   <script>
     const STORAGE_KEY = 'starark_icp_entries';
 
-    function loadEntries() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-      catch { return []; }
-    }
+    function load() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
+    function save(e) { localStorage.setItem(STORAGE_KEY, JSON.stringify(e)); }
 
-    function saveEntries(entries) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    }
-
-    function genId(length) {
-      const chars = '0123456789';
-      let id = '';
-      for (let i = 0; i < length; i++) id += chars[Math.floor(Math.random() * chars.length)];
-      return id;
+    function genId(len) {
+      let s = ''; for (let i = 0; i < len; i++) s += Math.floor(Math.random() * 10);
+      return s;
     }
 
     function showMsg(type, text) {
       const el = document.getElementById('formMsg');
-      el.className = 'form-msg ' + type;
-      el.textContent = text;
-      setTimeout(() => { el.className = 'form-msg'; }, 4000);
+      el.className = 'form-msg ' + type; el.textContent = text;
+      setTimeout(() => { el.className = 'form-msg'; }, 5000);
     }
 
-    function getTypeLabel(t) {
-      const map = { personal: '个人', project: '项目', org: '组织' };
-      return map[t] || t;
-    }
-
-    function getTypeBadgeClass(t) {
-      const map = { personal: 'badge-personal', project: 'badge-project', org: 'badge-org' };
-      return map[t] || 'badge-personal';
-    }
+    function getTypeLabel(t) { return { personal: '个人', project: '项目', org: '组织机构' }[t] || t; }
+    function getBadgeClass(t) { return { personal: 'badge-personal', project: 'badge-project', org: 'badge-org' }[t] || 'badge-personal'; }
 
     document.getElementById('joinForm').addEventListener('submit', () => {
+      const owner = document.getElementById('siteOwner').value.trim();
       const name = document.getElementById('siteName').value.trim();
       const url = document.getElementById('siteUrl').value.trim();
-      const owner = document.getElementById('siteOwner').value.trim();
       const type = document.getElementById('siteType').value;
       const desc = document.getElementById('siteDesc').value.trim();
 
-      if (!name || !url || !owner) {
-        showMsg('error', '请填写站点名称、URL 和持有人');
-        return;
-      }
+      if (!owner || !name || !url) { showMsg('error', '请完整填写主办单位、网站名称和网址。'); return; }
+      try { new URL(url); } catch { showMsg('error', '网址格式不正确，请以 http:// 或 https:// 开头。'); return; }
 
-      try { new URL(url); }
-      catch { showMsg('error', '请输入有效的站点 URL（以 http:// 或 https:// 开头）'); return; }
+      const entries = load();
+      if (entries.some(e => e.url === url)) { showMsg('error', '该网址已有备案记录。'); return; }
 
-      const entries = loadEntries();
-      // check duplicate url
-      if (entries.some(e => e.url === url)) {
-        showMsg('error', '该 URL 已有备案记录，请勿重复提交');
-        return;
-      }
-
-      const id = genId(8);
       const num = (entries.length + 1).toString().padStart(6, '0');
-      const entry = {
-        id,
-        num,
-        name,
-        url,
-        owner,
-        type,
-        desc,
-        date: new Date().toISOString().slice(0, 10),
-        timestamp: Date.now()
-      };
-      entries.push(entry);
-      saveEntries(entries);
-
-      showMsg('success', `备案成功！备案号：星舟ICP备${num}号`);
+      entries.push({ id: genId(8), num, owner, name, url, type, desc, date: new Date().toISOString().slice(0, 10), ts: Date.now() });
+      save(entries);
+      showMsg('success', `备案申请已提交。备案号：星舟ICP备${num}号`);
       clearForm();
-      updateStats();
-      renderList(entries);
+      refresh();
     });
 
     function clearForm() {
-      document.getElementById('siteName').value = '';
-      document.getElementById('siteUrl').value = '';
-      document.getElementById('siteOwner').value = '';
-      document.getElementById('siteDesc').value = '';
+      ['siteOwner','siteName','siteUrl','siteDesc'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('siteType').value = 'personal';
       document.getElementById('formMsg').className = 'form-msg';
     }
 
-    function renderList(entries) {
-      const el = document.getElementById('entryList');
+    function refresh() {
+      const entries = load();
+      document.getElementById('statTotal').textContent = entries.length;
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('statToday').textContent = entries.filter(e => e.date === today).length;
+      document.getElementById('statLatest').textContent = entries.length ? entries[entries.length - 1].num : '--';
+      renderTable(entries);
+    }
+
+    function renderTable(entries) {
+      const tbody = document.getElementById('entryBody');
       const empty = document.getElementById('emptyState');
-      if (!entries || entries.length === 0) {
-        el.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
+      if (!entries.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
       empty.style.display = 'none';
-      const sorted = [...entries].reverse();
-      el.innerHTML = sorted.map((e, i) => `
-        <div class="entry">
-          <span class="entry-num">${e.num}</span>
-          <div class="entry-info">
-            <a href="${e.url}" class="entry-name" target="_blank" rel="noopener">${escapeHtml(e.name)}</a>
-            <div class="entry-meta">
-              <span>${escapeHtml(e.owner)}</span>
-              <span>${e.date}</span>
-              ${e.desc ? `<span>${escapeHtml(e.desc)}</span>` : ''}
-            </div>
-          </div>
-          <span class="entry-badge ${getTypeBadgeClass(e.type)}">${getTypeLabel(e.type)}</span>
-        </div>
+      tbody.innerHTML = [...entries].reverse().map(e => `
+        <tr>
+          <td class="icp-num">星舟ICP备${e.num}号</td>
+          <td><a href="${escHtml(e.url)}" target="_blank" rel="noopener">${escHtml(e.name)}</a></td>
+          <td>${escHtml(e.owner)}</td>
+          <td><span class="icp-badge ${getBadgeClass(e.type)}">${getTypeLabel(e.type)}</span></td>
+          <td>${e.date}</td>
+        </tr>
       `).join('');
     }
 
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
+    function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
     function liveSearch() {
       const q = document.getElementById('searchInput').value.trim().toLowerCase();
-      const entries = loadEntries();
+      const entries = load();
       const resultEl = document.getElementById('searchResult');
-
-      if (!q) {
-        resultEl.innerHTML = '';
-        renderList(entries);
-        return;
-      }
-
+      if (!q) { resultEl.innerHTML = ''; renderTable(entries); return; }
       const filtered = entries.filter(e =>
-        e.name.toLowerCase().includes(q) ||
-        e.url.toLowerCase().includes(q) ||
-        e.owner.toLowerCase().includes(q) ||
-        e.num.includes(q) ||
-        e.id.includes(q) ||
+        e.name.toLowerCase().includes(q) || e.url.toLowerCase().includes(q) ||
+        e.owner.toLowerCase().includes(q) || e.num.includes(q) ||
         (e.desc && e.desc.toLowerCase().includes(q))
       );
-
-      if (filtered.length === 0) {
-        resultEl.innerHTML = '<div class="empty-state"><p>未找到匹配的备案记录</p></div>';
-      } else {
-        resultEl.innerHTML = '<p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">找到 ' + filtered.length + ' 条记录</p>';
-        const tempList = document.createElement('div');
-        tempList.id = 'entryList';
-        resultEl.appendChild(tempList);
-        renderList(filtered);
-      }
+      resultEl.innerHTML = `<p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">查询结果：找到 ${filtered.length} 条记录</p>`;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = `<table class="icp-table"><thead><tr><th>备案号</th><th>网站名称</th><th>主办单位</th><th>类别</th><th>日期</th></tr></thead><tbody></tbody></table>`;
+      const tbody = tempDiv.querySelector('tbody');
+      tbody.innerHTML = filtered.reverse().map(e => `
+        <tr>
+          <td class="icp-num">星舟ICP备${e.num}号</td>
+          <td><a href="${escHtml(e.url)}" target="_blank" rel="noopener">${escHtml(e.name)}</a></td>
+          <td>${escHtml(e.owner)}</td>
+          <td><span class="icp-badge ${getBadgeClass(e.type)}">${getTypeLabel(e.type)}</span></td>
+          <td>${e.date}</td>
+        </tr>
+      `).join('');
+      resultEl.appendChild(tempDiv.firstChild);
     }
 
-    function updateStats() {
-      const entries = loadEntries();
-      document.getElementById('statTotal').textContent = entries.length;
-      
-      const today = new Date().toISOString().slice(0, 10);
-      document.getElementById('statToday').textContent = entries.filter(e => e.date === today).length;
-      
-      if (entries.length > 0) {
-        const last = entries[entries.length - 1];
-        document.getElementById('statLatest').textContent = last.num;
-      } else {
-        document.getElementById('statLatest').textContent = '--';
-      }
-    }
-
-    // init
-    const entries = loadEntries();
-    updateStats();
-    renderList(entries);
+    refresh();
   </script>
 </body>
 </html>
