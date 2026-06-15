@@ -1,485 +1,475 @@
 ---
-import Page from '../../layouts/Page.astro';
 ---
 
-<Page title="控制台 · 云笺" description="用户仪表盘，管理你的博客和文章">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>控制台 · 云笺</title>
+<meta name="description" content="云笺博客控制台">
+</head>
+<body>
 <div class="db-root">
-  <!-- 顶部导航 -->
-  <header class="db-header">
-    <a href="/yunjian" class="db-logo">&#10236; 云笺</a>
+  <!-- 侧边栏 -->
+  <aside class="db-side">
+    <a href="/yunjian/dashboard" class="db-logo">&#10236; 云笺</a>
     <nav class="db-nav">
-      <a href="/yunjian/dashboard" class="db-nav-active">控制台</a>
-      <a href="/yunjian/editor">写文章</a>
-      <a href="/yunjian/settings">设置</a>
+      <a href="/yunjian/dashboard" class="db-nav-item active">&#9632; 仪表盘</a>
+      <a href="/yunjian/editor" class="db-nav-item">&#9997; 写文章</a>
+      <a href="/yunjian/dashboard#posts" class="db-nav-item">&#128196; 文章管理</a>
+      <a href="/yunjian/settings" class="db-nav-item">&#9881; 博客设置</a>
     </nav>
-    <div class="db-header-right">
-      <span class="db-user-name" id="dbUserName"></span>
-      <button class="db-btn-destroy" id="dbLogout">退出</button>
+    <div class="db-side-footer">
+      <a href="/yunjian" class="db-nav-item">&#8617; 返回首页</a>
     </div>
-  </header>
+  </aside>
 
-  <!-- 未登录提示 -->
-  <div class="db-section" id="dbNotLoggedIn">
-    <div class="db-container" style="text-align:center;padding:80px 20px">
-      <div style="font-size:48px;margin-bottom:16px">&#128274;</div>
-      <h2 style="margin-bottom:12px">请先登录</h2>
-      <p style="color:#8b949e;margin-bottom:20px">登录后即可管理你的博客和文章</p>
-      <a href="/yunjian/login" class="db-btn-primary">登录 / 注册</a>
+  <!-- 主内容 -->
+  <main class="db-main">
+    <!-- 无博客引导 -->
+    <div id="dbNoBlogBlock" style="display:none">
+      <div class="db-no-blog">
+        <div class="db-no-blog-icon">&#127881;</div>
+        <h1>欢迎来到云笺</h1>
+        <p class="db-no-blog-sub">三分钟拥有独立博客，基于 GitHub Pages，永久免费</p>
+        <div class="db-steps">
+          <div class="db-step"><div class="db-step-num">1</div><div class="db-step-text">用 GitHub 登录云笺</div></div>
+          <div class="db-step-arrow">&rarr;</div>
+          <div class="db-step"><div class="db-step-num">2</div><div class="db-step-text">一键创建仓库</div></div>
+          <div class="db-step-arrow">&rarr;</div>
+          <div class="db-step"><div class="db-step-num">3</div><div class="db-step-text">博客自动上线</div></div>
+        </div>
+        <button class="db-btn db-btn-lg db-btn-primary" id="dbCreateBlog">&#9889; 一键创建博客</button>
+        <div id="dbCreateProgress" style="display:none;margin-top:20px;max-width:400px;margin-left:auto;margin-right:auto">
+          <div class="db-progress-bar"><div class="db-progress-fill" id="dbProgressFill"></div></div>
+          <p class="db-progress-text" id="dbProgressText"></p>
+        </div>
+        <p class="db-no-blog-hint" id="dbNoBlogHint" style="display:none">你也可以 <a href="/yunjian/editor">直接开始写文章</a>，稍后再部署博客。</p>
+      </div>
     </div>
-  </div>
 
-  <!-- 已登录内容 -->
-  <div id="dbLoggedIn" style="display:none">
-    <div class="db-container">
+    <!-- 已有博客内容 -->
+    <div id="dbBlogContent" style="display:none">
+      <!-- 顶部状态栏 -->
+      <div class="db-topbar">
+        <div class="db-topbar-left">
+          <span class="db-status-dot" id="dbStatusDot"></span>
+          <span id="dbStatusText">加载中...</span>
+          <span class="db-topbar-sep">·</span>
+          <span id="dbLastDeploy">--</span>
+        </div>
+        <div class="db-topbar-right">
+          <input type="text" class="db-topbar-input" id="dbBlogUrlInput" readonly value="加载中..." onclick="this.select()">
+          <button class="db-btn db-btn-sm db-btn-ghost" id="dbCopyUrl">复制</button>
+          <button class="db-btn db-btn-sm" id="dbVisitBlog" onclick="window.open(document.getElementById('dbBlogUrlInput').value,'_blank')">访问</button>
+        </div>
+      </div>
 
-      <!-- 面板1: 博客概览 -->
-      <section class="db-section">
-        <h2 class="db-section-title">我的博客</h2>
+      <!-- 统计卡片 -->
+      <div class="db-stats-row">
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="dbStatTotal">0</div>
+          <div class="db-stat-label">文章总数</div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="dbStatPublished">0</div>
+          <div class="db-stat-label">已发布</div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="dbStatDrafts">0</div>
+          <div class="db-stat-label">草稿</div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="dbStatWords">0</div>
+          <div class="db-stat-label">总字数</div>
+        </div>
+      </div>
 
-        <!-- 未创建博客 -->
-        <div class="db-card" id="dbNoBlog">
-          <div class="db-create-hero">
-            <div style="font-size:56px;margin-bottom:12px">&#127881;</div>
-            <h3>你还没有博客</h3>
-            <p>一键创建 GitHub 仓库，自动部署到 GitHub Pages，永久免费</p>
-            <div class="db-steps">
-              <div class="db-step"><span class="db-step-num">1</span>授权 GitHub</div>
-              <div class="db-step-arrow">→</div>
-              <div class="db-step"><span class="db-step-num">2</span>创建仓库</div>
-              <div class="db-step-arrow">→</div>
-              <div class="db-step"><span class="db-step-num">3</span>推送模板</div>
-              <div class="db-step-arrow">→</div>
-              <div class="db-step"><span class="db-step-num">4</span>自动部署</div>
+      <!-- 双栏布局 -->
+      <div class="db-columns">
+        <!-- 左：文章表格 -->
+        <div class="db-col-main" id="posts">
+          <div class="db-panel">
+            <div class="db-panel-header">
+              <h2>文章管理</h2>
+              <div class="db-panel-actions">
+                <input type="text" class="db-search" id="dbSearchPosts" placeholder="搜索文章...">
+                <a href="/yunjian/editor" class="db-btn db-btn-sm db-btn-primary">新建</a>
+              </div>
             </div>
-            <button class="db-btn-primary db-btn-lg" id="dbCreateBlog">&#9889; 一键创建博客</button>
-            <div id="dbCreateProgress" style="display:none;margin-top:20px;max-width:500px;margin-left:auto;margin-right:auto">
-              <div class="db-progress-bar"><div class="db-progress-fill" id="dbProgressFill"></div></div>
-              <p class="db-progress-text" id="dbProgressText"></p>
-              <div class="db-progress-log" id="dbProgressLog"></div>
+            <div class="db-table-wrap">
+              <table class="db-table">
+                <thead><tr><th>标题</th><th>状态</th><th>日期</th><th>字数</th><th>操作</th></tr></thead>
+                <tbody id="dbPostsTable"><tr><td colspan="5" style="text-align:center;color:#484f58;padding:32px">加载中...</td></tr></tbody>
+              </table>
             </div>
+            <div class="db-pagination" id="dbPagination"></div>
+          </div>
+
+          <!-- 部署日志 -->
+          <div class="db-panel" style="margin-top:16px">
+            <div class="db-panel-header">
+              <h2>部署日志</h2>
+              <span style="font-size:12px;color:#484f58">最近 5 次</span>
+            </div>
+            <div id="dbDeployLogs"><p style="color:#484f58;font-size:13px;padding:16px">暂无部署记录</p></div>
           </div>
         </div>
 
-        <!-- 已有博客 -->
-        <div class="db-card" id="dbHasBlog" style="display:none">
-          <div class="db-blog-info">
-            <div class="db-blog-status">
-              <span class="db-status-dot" id="dbStatusDot"></span>
-              <span id="dbStatusText">在线</span>
+        <!-- 右：快捷面板 -->
+        <div class="db-col-side">
+          <div class="db-panel">
+            <div class="db-panel-header"><h2>快捷操作</h2></div>
+            <div class="db-quick-actions">
+              <a href="/yunjian/editor" class="db-quick-btn db-quick-btn-primary">&#9997; 写新文章</a>
+              <a href="/yunjian/settings" class="db-quick-btn">&#9881; 博客设置</a>
+              <a href="/yunjian/settings#theme" class="db-quick-btn">&#127912; 管理主题</a>
+              <a href="#posts" class="db-quick-btn">&#128196; 管理文章</a>
             </div>
-            <div class="db-blog-details">
-              <div class="db-blog-row">
-                <span class="db-label">博客地址</span>
-                <a id="dbBlogUrl" href="#" target="_blank" class="db-link"></a>
-              </div>
-              <div class="db-blog-row">
-                <span class="db-label">GitHub 仓库</span>
-                <a id="dbRepoUrl" href="#" target="_blank" class="db-link"></a>
-              </div>
-              <div class="db-blog-row">
-                <span class="db-label">当前主题</span>
-                <span id="dbTheme" class="db-tag"></span>
-              </div>
-              <div class="db-blog-row">
-                <span class="db-label">文章数</span>
-                <span id="dbPostCount">0</span>
-              </div>
-              <div class="db-blog-row">
-                <span class="db-label">最后部署</span>
-                <span id="dbLastDeploy" style="color:#8b949e">---</span>
-              </div>
-            </div>
-            <div class="db-blog-actions">
-              <a href="/yunjian/editor" class="db-btn-primary">写新文章</a>
-              <a href="/yunjian/settings" class="db-btn-ghost">博客设置</a>
+          </div>
+          <div class="db-panel" style="margin-top:16px">
+            <div class="db-panel-header"><h2>最近草稿</h2></div>
+            <div id="dbRecentDrafts"><p style="color:#484f58;font-size:13px;padding:16px">暂无草稿</p></div>
+          </div>
+          <div class="db-panel" style="margin-top:16px">
+            <div class="db-panel-header"><h2>博客信息</h2></div>
+            <div class="db-info-list" id="dbBlogInfo">
+              <div class="db-info-row"><span class="db-info-label">主题</span><span class="db-info-val" id="dbInfoTheme">--</span></div>
+              <div class="db-info-row"><span class="db-info-label">仓库</span><span class="db-info-val" id="dbInfoRepo">--</span></div>
+              <div class="db-info-row"><span class="db-info-label">语言</span><span class="db-info-val">zh-CN</span></div>
+              <div class="db-info-row"><span class="db-info-label">平台</span><span class="db-info-val">GitHub Pages</span></div>
             </div>
           </div>
         </div>
-      </section>
-
-      <!-- 面板2: 文章管理 -->
-      <section class="db-section">
-        <div class="db-section-header">
-          <h2 class="db-section-title">文章管理</h2>
-          <a href="/yunjian/editor" class="db-btn-primary">+ 新建文章</a>
-        </div>
-        <div class="db-card" id="dbPostsCard">
-          <div class="db-posts-toolbar">
-            <input type="text" class="db-search" id="dbPostSearch" placeholder="搜索文章...">
-            <select class="db-select" id="dbPostFilter">
-              <option value="all">全部状态</option>
-              <option value="draft">草稿</option>
-              <option value="published">已发布</option>
-            </select>
-          </div>
-          <div id="dbPostsLoading" style="text-align:center;padding:40px;color:#8b949e">加载中...</div>
-          <div id="dbPostsList"></div>
-          <div id="dbPostsEmpty" style="display:none;text-align:center;padding:40px;color:#8b949e">
-            <p>还没有文章，<a href="/yunjian/editor" style="color:#58a6ff">写一篇吧</a></p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 面板3: 快速操作 -->
-      <section class="db-section">
-        <h2 class="db-section-title">快速操作</h2>
-        <div class="db-quick-actions">
-          <a href="/yunjian/editor" class="db-quick-card">
-            <span style="font-size:28px">&#9997;</span>
-            <span>写新文章</span>
-          </a>
-          <a href="/yunjian/settings" class="db-quick-card">
-            <span style="font-size:28px">&#9881;</span>
-            <span>博客设置</span>
-          </a>
-          <a href="#" class="db-quick-card" id="dbViewStats">
-            <span style="font-size:28px">&#128200;</span>
-            <span>访问统计</span>
-          </a>
-          <a href="#" class="db-quick-card" id="dbManageTheme">
-            <span style="font-size:28px">&#127912;</span>
-            <span>管理主题</span>
-          </a>
-        </div>
-      </section>
-
+      </div>
     </div>
-  </div>
+  </main>
 </div>
-</Page>
+</body>
+</html>
 
 <style>
-  .db-root { min-height:100vh; background:#0d1117; color:#c9d1d9; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
-  .db-header { display:flex; align-items:center; padding:0 24px; height:56px; background:#161b22; border-bottom:1px solid #21262d; }
-  .db-logo { color:#58a6ff; text-decoration:none; font-weight:700; font-size:16px; margin-right:24px; }
-  .db-nav { display:flex; gap:4px; }
-  .db-nav a { padding:8px 16px; border-radius:6px; font-size:14px; color:#8b949e; text-decoration:none; transition:.15s; }
-  .db-nav a:hover { background:#21262d; color:#c9d1d9; }
-  .db-nav-active { background:#1f6feb22!important; color:#58a6ff!important; }
-  .db-header-right { margin-left:auto; display:flex; align-items:center; gap:12px; }
-  .db-user-name { font-size:13px; color:#8b949e; }
-  .db-btn-destroy{ padding:6px 12px; border-radius:6px; border:1px solid #da363330; background:transparent; color:#da3633; cursor:pointer; font-size:12px; }
-
-  .db-container { max-width:960px; margin:0 auto; padding:32px 20px; }
-  .db-section { margin-bottom:32px; }
-  .db-section-title { font-size:18px; font-weight:600; color:#f0f6fc; margin-bottom:16px; }
-  .db-section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-  .db-section-header .db-section-title { margin-bottom:0; }
-  .db-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:24px; }
-
-  .db-btn-primary { display:inline-block; padding:8px 20px; background:#238636; color:#fff; border:none; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; border:1px solid rgba(240,246,252,0.1); }
-  .db-btn-primary:hover { background:#2ea043; }
-  .db-btn-ghost { display:inline-block; padding:8px 20px; background:transparent; color:#c9d1d9; border:1px solid #30363d; border-radius:6px; font-size:14px; cursor:pointer; text-decoration:none; }
-  .db-btn-ghost:hover { background:#21262d; }
-  .db-btn-lg { padding:12px 32px; font-size:16px; }
+  :root { --db-bg:#0d1117; --db-card:#161b22; --db-border:#21262d; --db-text:#c9d1d9; --db-dim:#8b949e; --db-muted:#484f58; --db-accent:#58a6ff; --db-green:#238636; --db-green-light:#3fb950; --db-yellow:#d29922; --db-red:#da3633; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--db-bg); color:var(--db-text); }
+  .db-root { display:flex; min-height:100vh; }
+  /* 侧边栏 */
+  .db-side { width:220px; background:var(--db-card); border-right:1px solid var(--db-border); padding:20px 0; flex-shrink:0; display:flex; flex-direction:column; }
+  .db-logo { display:block; padding:0 20px 20px; color:var(--db-accent); text-decoration:none; font-weight:700; font-size:18px; border-bottom:1px solid var(--db-border); }
+  .db-nav { padding:12px 0; flex:1; }
+  .db-nav-item { display:block; padding:8px 20px; color:var(--db-dim); text-decoration:none; font-size:14px; transition:.15s; }
+  .db-nav-item:hover { color:var(--db-text); background:rgba(88,166,255,0.05); }
+  .db-nav-item.active { color:var(--db-accent); background:rgba(88,166,255,0.08); border-right:2px solid var(--db-accent); }
+  .db-side-footer { padding:12px 0; border-top:1px solid var(--db-border); }
+  /* 主区域 */
+  .db-main { flex:1; overflow-y:auto; padding:24px; }
+  /* 无博客 */
+  .db-no-blog { text-align:center; padding:80px 20px; max-width:560px; margin:0 auto; }
+  .db-no-blog-icon { font-size:64px; margin-bottom:16px; }
+  .db-no-blog h1 { font-size:1.8rem; font-weight:700; color:var(--db-text); margin-bottom:8px; }
+  .db-no-blog-sub { color:var(--db-dim); margin-bottom:32px; }
+  .db-no-blog-hint { color:var(--db-muted); font-size:13px; margin-top:16px; }
+  .db-no-blog-hint a { color:var(--db-accent); }
+  .db-steps { display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+  .db-step { display:flex; align-items:center; gap:8px; }
+  .db-step-num { width:32px; height:32px; border-radius:50%; background:var(--db-border); color:var(--db-dim); font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .db-step-text { color:var(--db-dim); font-size:14px; }
+  .db-step-arrow { color:var(--db-muted); font-size:18px; }
+  /* 按钮 */
+  .db-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid var(--db-border); background:var(--db-card); color:var(--db-text); text-decoration:none; transition:.15s; }
+  .db-btn:hover { background:#21262d; }
   .db-btn-sm { padding:4px 10px; font-size:12px; }
-  .db-btn-danger { background:transparent; border:1px solid #da3633; color:#da3633; border-radius:6px; cursor:pointer; padding:4px 10px; font-size:12px; }
-  .db-btn-danger:hover { background:#da363320; }
-  .db-link { color:#58a6ff; text-decoration:none; }
-  .db-link:hover { text-decoration:underline; }
-  .db-tag { display:inline-block; padding:2px 10px; border-radius:10px; font-size:11px; background:rgba(88,166,255,0.12); color:#58a6ff; }
+  .db-btn-lg { padding:12px 28px; font-size:15px; }
+  .db-btn-primary { background:var(--db-green); color:#fff; border-color:rgba(240,246,252,0.1); }
+  .db-btn-primary:hover { background:#2ea043; }
+  .db-btn-ghost { background:transparent; border-color:transparent; color:var(--db-dim); }
+  .db-btn-ghost:hover { background:var(--db-border); color:var(--db-text); }
+  .db-btn-danger { color:var(--db-red); border-color:rgba(218,54,51,0.3); }
+  .db-btn-danger:hover { background:rgba(218,54,51,0.1); }
+  /* 进度条 */
+  .db-progress-bar { width:100%; height:6px; background:var(--db-border); border-radius:3px; overflow:hidden; }
+  .db-progress-fill { height:100%; background:linear-gradient(90deg,var(--db-green-light),var(--db-accent)); border-radius:3px; transition:width .3s; width:0%; }
+  .db-progress-text { margin-top:6px; font-size:13px; color:var(--db-dim); }
+  /* 顶部栏 */
+  .db-topbar { display:flex; align-items:center; justify-content:space-between; background:var(--db-card); border:1px solid var(--db-border); border-radius:8px; padding:10px 16px; margin-bottom:20px; }
+  .db-topbar-left { display:flex; align-items:center; gap:8px; font-size:13px; }
+  .db-status-dot { width:8px; height:8px; border-radius:50%; background:var(--db-green-light); }
+  .db-status-dot.warn { background:var(--db-yellow); }
+  .db-status-dot.err { background:var(--db-red); }
+  .db-topbar-sep { color:var(--db-muted); }
+  .db-topbar-right { display:flex; align-items:center; gap:8px; }
+  .db-topbar-input { background:var(--db-bg); border:1px solid var(--db-border); border-radius:4px; padding:4px 10px; color:var(--db-accent); font-family:monospace; font-size:12px; width:260px; outline:none; }
+  /* 统计卡片 */
+  .db-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+  .db-stat-card { background:var(--db-card); border:1px solid var(--db-border); border-radius:8px; padding:20px; text-align:center; }
+  .db-stat-num { font-size:28px; font-weight:700; color:var(--db-text); }
+  .db-stat-label { font-size:12px; color:var(--db-muted); margin-top:4px; }
+  /* 双栏 */
+  .db-columns { display:flex; gap:16px; align-items:flex-start; }
+  .db-col-main { flex:1; min-width:0; }
+  .db-col-side { width:280px; flex-shrink:0; }
+  /* 面板 */
+  .db-panel { background:var(--db-card); border:1px solid var(--db-border); border-radius:8px; overflow:hidden; }
+  .db-panel-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--db-border); }
+  .db-panel-header h2 { font-size:14px; font-weight:600; }
+  .db-panel-actions { display:flex; align-items:center; gap:8px; }
+  .db-search { background:var(--db-bg); border:1px solid var(--db-border); border-radius:4px; padding:4px 10px; color:var(--db-text); font-size:12px; width:160px; outline:none; }
+  .db-search:focus { border-color:var(--db-accent); }
+  /* 表格 */
+  .db-table-wrap { overflow-x:auto; }
+  .db-table { width:100%; border-collapse:collapse; }
+  .db-table th { text-align:left; padding:10px 16px; font-size:11px; font-weight:600; color:var(--db-muted); text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid var(--db-border); }
+  .db-table td { padding:10px 16px; font-size:13px; border-bottom:1px solid var(--db-border); }
+  .db-table tr:hover td { background:rgba(88,166,255,0.03); }
+  .db-table tr:last-child td { border-bottom:none; }
+  .db-tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+  .db-tag-pub { background:rgba(35,134,54,0.12); color:var(--db-green-light); }
+  .db-tag-draft { background:rgba(88,166,255,0.12); color:var(--db-accent); }
+  .db-tag-err { background:rgba(218,54,51,0.1); color:var(--db-red); }
+  /* 快捷按钮 */
+  .db-quick-actions { padding:12px; display:flex; flex-direction:column; gap:8px; }
+  .db-quick-btn { display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:6px; color:var(--db-text); text-decoration:none; font-size:13px; border:1px solid var(--db-border); transition:.15s; }
+  .db-quick-btn:hover { background:var(--db-border); }
+  .db-quick-btn-primary { background:var(--db-green); color:#fff; border-color:rgba(240,246,252,0.1); }
+  .db-quick-btn-primary:hover { background:#2ea043; }
+  /* 信息列表 */
+  .db-info-list { padding:12px 16px; }
+  .db-info-row { display:flex; justify-content:space-between; padding:8px 0; font-size:13px; border-bottom:1px solid var(--db-border); }
+  .db-info-row:last-child { border-bottom:none; }
+  .db-info-label { color:var(--db-muted); }
+  .db-info-val { color:var(--db-text); }
+  /* 分页 */
+  .db-pagination { padding:12px 16px; display:flex; justify-content:center; gap:6px; }
+  .db-page-btn { padding:4px 10px; border-radius:4px; border:1px solid var(--db-border); background:var(--db-card); color:var(--db-dim); font-size:12px; cursor:pointer; }
+  .db-page-btn.active { background:var(--db-accent); border-color:var(--db-accent); color:#fff; }
+  /* 部署日志 */
+  .db-log-item { padding:10px 16px; border-bottom:1px solid var(--db-border); display:flex; align-items:center; gap:10px; font-size:13px; }
+  .db-log-item:last-child { border-bottom:none; }
+  .db-log-status { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .db-log-status.ok { background:var(--db-green-light); }
+  .db-log-status.fail { background:var(--db-red); }
+  .db-log-status.pending { background:var(--db-yellow); }
+  .db-log-time { color:var(--db-muted); margin-left:auto; font-size:12px; }
 
-  /* Blog info */
-  .db-create-hero { text-align:center; padding:40px 20px; }
-  .db-create-hero h3 { font-size:1.3rem; margin-bottom:8px; }
-  .db-create-hero p { color:#8b949e; margin-bottom:24px; font-size:14px; }
-  .db-steps { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:28px; flex-wrap:wrap; }
-  .db-step { display:flex; align-items:center; gap:6px; font-size:13px; color:#8b949e; }
-  .db-step-num { width:24px; height:24px; border-radius:50%; background:#21262d; display:inline-flex; align-items:center; justify-content:center; font-size:12px; color:#58a6ff; flex-shrink:0; }
-  .db-step-arrow { color:#30363d; }
-  .db-progress-bar { width:100%; height:6px; background:#21262d; border-radius:3px; overflow:hidden; }
-  .db-progress-fill { height:100%; background:linear-gradient(90deg,#238636,#58a6ff); border-radius:3px; transition:width .3s; width:0%; }
-  .db-progress-text { margin-top:8px; font-size:13px; color:#8b949e; }
-  .db-progress-log { margin-top:12px; font-family:monospace; font-size:12px; color:#484f58; text-align:left; max-height:200px; overflow-y:auto; background:#0d1117; border-radius:8px; padding:12px; }
-
-  /* Blog info card */
-  .db-blog-info {  }
-  .db-blog-status { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
-  .db-status-dot { width:10px; height:10px; border-radius:50%; background:#238636; flex-shrink:0; }
-  .db-blog-details { margin-bottom:20px; }
-  .db-blog-row { display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #21262d33; font-size:14px; }
-  .db-blog-row:last-child { border-bottom:none; }
-  .db-label { width:100px; color:#8b949e; flex-shrink:0; }
-  .db-blog-actions { display:flex; gap:10px; padding-top:16px; border-top:1px solid #21262d; }
-
-  /* Posts table */
-  .db-posts-toolbar { display:flex; gap:10px; margin-bottom:16px; }
-  .db-search { flex:1; padding:8px 12px; background:#0d1117; border:1px solid #21262d; border-radius:6px; color:#c9d1d9; font-size:13px; outline:none; }
-  .db-search:focus { border-color:#58a6ff; }
-  .db-select { padding:8px 12px; background:#0d1117; border:1px solid #21262d; border-radius:6px; color:#c9d1d9; font-size:13px; outline:none; }
-  .db-post-row { display:flex; align-items:center; padding:10px 0; border-bottom:1px solid #21262d44; font-size:14px; }
-  .db-post-row:last-child { border-bottom:none; }
-  .db-post-title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:16px; }
-  .db-post-title a { color:#c9d1d9; text-decoration:none; }
-  .db-post-title a:hover { color:#58a6ff; }
-  .db-post-status { padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; margin-right:12px; white-space:nowrap; }
-  .db-post-status.draft { background:rgba(210,153,34,0.15); color:#d29922; }
-  .db-post-status.published { background:rgba(35,134,54,0.15); color:#3fb950; }
-  .db-post-date { color:#484f58; font-size:12px; margin-right:12px; white-space:nowrap; }
-  .db-post-actions { display:flex; gap:6px; white-space:nowrap; }
-
-  /* Quick actions */
-  .db-quick-actions { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
-  .db-quick-card { background:#161b22; border:1px solid #21262d; border-radius:10px; padding:20px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px; color:#c9d1d9; text-decoration:none; font-size:14px; transition:.15s; }
-  .db-quick-card:hover { border-color:#30363d; background:#1c2129; }
-
-  .db-toast { position:fixed; bottom:24px; right:24px; padding:12px 20px; background:#161b22; border:1px solid #30363d; border-radius:8px; color:#c9d1d9; font-size:13px; z-index:100; box-shadow:0 4px 16px rgba(0,0,0,.4); transition:opacity .3s; }
-  .db-toast.success { border-color:#238636; }
-  .db-toast.error { border-color:#da3633; }
+  @media (max-width:900px) {
+    .db-side { display:none; }
+    .db-columns { flex-direction:column; }
+    .db-col-side { width:100%; }
+    .db-stats-row { grid-template-columns:repeat(2,1fr); }
+    .db-topbar { flex-direction:column; gap:10px; align-items:flex-start; }
+    .db-topbar-input { width:100%; }
+  }
 </style>
 
 <script>
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient('https://xwvkdluvixurvgvkhkfe.supabase.co','sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H');
 
-  const SUPABASE_URL = 'https://xwvkdluvixurvgvkhkfe.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H';
+  let currentUser = null, currentSession = null, currentProfile = null;
+  const POSTS_PER_PAGE = 10;
+  let allPosts = [];
 
-  (async function() {
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  // ===== 初始化 =====
+  (async function init() {
     const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) { window.location.href = '/yunjian/login'; return; }
+    currentUser = session.user;
+    currentSession = session;
+    const username = currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || '用户';
 
-    if (!session?.user) {
-      document.getElementById('dbNotLoggedIn') && (document.getElementById('dbNotLoggedIn').style.display = '');
+    // 加载 profile
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    currentProfile = profile;
+
+    if (profile?.blog_repo && profile?.blog_status === 'active') {
+      renderBlogView(profile, username);
+    } else {
+      renderNoBlogView(username);
+    }
+  })();
+
+  // ===== 无博客视图 =====
+  function renderNoBlogView(username) {
+    document.getElementById('dbNoBlogBlock').style.display = '';
+    const btn = document.getElementById('dbCreateBlog');
+    btn.addEventListener('click', () => createBlog());
+    // 显示提示
+    document.getElementById('dbNoBlogHint').style.display = '';
+  }
+
+  async function createBlog() {
+    const btn = document.getElementById('dbCreateBlog');
+    const progDiv = document.getElementById('dbCreateProgress');
+    const fill = document.getElementById('dbProgressFill');
+    const text = document.getElementById('dbProgressText');
+
+    btn.disabled = true; btn.textContent = '创建中...';
+    progDiv.style.display = '';
+    fill.style.width = '10%'; text.textContent = '检查 GitHub 授权...';
+
+    if (!currentSession?.provider_token) {
+      text.textContent = '需要 GitHub 授权，请先使用 GitHub 登录云笺。';
+      btn.textContent = '使用 GitHub 登录'; btn.disabled = false;
+      btn.onclick = () => { window.location.href = '/yunjian/login'; };
       return;
     }
 
-    const user = session.user;
-    document.getElementById('dbLoggedIn').style.display = '';
-    document.getElementById('dbNotLoggedIn') && (document.getElementById('dbNotLoggedIn').style.display = 'none');
-    document.getElementById('dbUserName').textContent = user.user_metadata?.username || user.email?.split('@')[0] || '用户';
+    const providerToken = currentSession.provider_token;
+    const githubUsername = currentUser.user_metadata?.github_username || currentUser.user_metadata?.user_name;
+    const repoName = 'yunjian-blog';
 
-    // 退出
-    document.getElementById('dbLogout').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = '/yunjian';
-    });
+    fill.style.width = '25%'; text.textContent = '创建 GitHub 仓库...';
 
-    // ===== 加载 Profile =====
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    try {
+      // 1. 创建仓库
+      let createResp = await fetch('https://api.github.com/user/repos', {
+        method:'POST',
+        headers:{ Authorization:`Bearer ${providerToken}`, Accept:'application/vnd.github+json', 'Content-Type':'application/json' },
+        body:JSON.stringify({ name:repoName, description:'Personal blog powered by YunJian', private:false, has_issues:false, has_projects:false, has_wiki:false, auto_init:true })
+      });
+      if (!createResp.ok) { const e=await createResp.json(); throw new Error(e.message); }
 
-    if (profile?.blog_repo && profile?.blog_status === 'active') {
-      showHasBlog(profile, user, supabase);
-    } else {
-      document.getElementById('dbNoBlog').style.display = '';
-    }
+      fill.style.width = '50%'; text.textContent = '推送配置文件...';
 
-    // ===== 加载文章 =====
-    await loadPosts(supabase, user);
+      // 2. 推送模板文件
+      const files = [
+        { path:'config.json', content:btoa(JSON.stringify({title:`${githubUsername}的博客`,subtitle:'',author:githubUsername,theme:'default',language:'zh-CN',posts_per_page:10,nav:[{label:'首页',url:'/'},{label:'归档',url:'/archive'}],social:{github:'',twitter:''}},null,2)) },
+        { path:'posts/hello-world.md', content:btoa('---\ntitle: "Hello World"\ndate: '+new Date().toISOString().split('T')[0]+'\ntags: []\ncategory: "未分类"\n---\n\n欢迎来到我的博客！这是第一篇文章。\n\n## 关于本博客\n\n本博客由**云笺**平台自动创建，基于 GitHub Pages 托管，永久免费。\n\n## 开始写作\n\n1. 登录云笺平台\n2. 使用在线编辑器写作\n3. 点击发布，自动部署上线\n') },
+        { path:'package.json', content:btoa(JSON.stringify({name:'yunjian-blog',private:true,scripts:{build:'node build.js'}},null,2)) },
+        { path:'.github/workflows/deploy.yml', content:btoa('name: Deploy Blog\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: |\n          mkdir -p public\n          echo "<!DOCTYPE html><html><head><meta charset=utf-8><title>Blog</title></head><body><h1>Blog Setup Complete</h1><p>Site is being deployed...</p></body></html>" > public/index.html\n      - uses: peaceiris/actions-gh-pages@v4\n        with:\n          github_token: ${{ secrets.GITHUB_TOKEN }}\n          publish_dir: ./public\n') }
+      ];
 
-    // ===== 一键创建博客 =====
-    document.getElementById('dbCreateBlog')?.addEventListener('click', () => createBlog(supabase, user, session));
-
-    // ===== 快速操作 =====
-    document.getElementById('dbViewStats')?.addEventListener('click', e => { e.preventDefault(); toast('访问统计功能开发中', 'success'); });
-    document.getElementById('dbManageTheme')?.addEventListener('click', e => { e.preventDefault(); window.location.href = '/yunjian/settings'; });
-
-    async function showHasBlog(profile, user, supabase) {
-      document.getElementById('dbHasBlog').style.display = '';
-      document.getElementById('dbNoBlog').style.display = 'none';
-      document.getElementById('dbBlogUrl').href = profile.blog_url || '#';
-      document.getElementById('dbBlogUrl').textContent = profile.blog_url || profile.blog_repo;
-      document.getElementById('dbRepoUrl').href = `https://github.com/${profile.blog_repo}`;
-      document.getElementById('dbRepoUrl').textContent = profile.blog_repo;
-      document.getElementById('dbTheme').textContent = profile.blog_theme || 'default';
-      document.getElementById('dbLastDeploy').textContent = profile.updated_at ? new Date(profile.updated_at).toLocaleString('zh-CN') : '未知';
-
-      // 状态指示灯
-      const dot = document.getElementById('dbStatusDot');
-      const statusText = document.getElementById('dbStatusText');
-      if (profile.blog_status === 'deploying') {
-        dot.style.background = '#d29922'; statusText.textContent = '部署中';
-      } else if (profile.blog_status === 'error') {
-        dot.style.background = '#da3633'; statusText.textContent = '异常';
-      } else {
-        dot.style.background = '#238636'; statusText.textContent = '在线';
-      }
-    }
-
-    async function loadPosts(supabase, user) {
-      const { data: posts, error } = await supabase.from('posts')
-        .select('*').eq('user_id', user.id).order('updated_at', { ascending: false });
-
-      document.getElementById('dbPostsLoading').style.display = 'none';
-      const list = document.getElementById('dbPostsList');
-      if (!posts || posts.length === 0) {
-        document.getElementById('dbPostsEmpty').style.display = '';
-        return;
+      for (const f of files) {
+        await fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/contents/${f.path}`, {
+          method:'PUT',
+          headers:{ Authorization:`Bearer ${providerToken}`, Accept:'application/vnd.github+json', 'Content-Type':'application/json' },
+          body:JSON.stringify({ message:`Add ${f.path}`, content:f.content })
+        });
       }
 
-      const filter = document.getElementById('dbPostFilter').value;
-      const search = document.getElementById('dbPostSearch').value.toLowerCase();
-      const filtered = posts.filter(p => {
-        if (filter !== 'all' && p.status !== filter) return false;
-        if (search && !p.title.toLowerCase().includes(search)) return false;
-        return true;
+      fill.style.width = '75%'; text.textContent = '开启 GitHub Pages...';
+
+      // 3. 开启 Pages
+      await fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/pages`, {
+        method:'POST',
+        headers:{ Authorization:`Bearer ${providerToken}`, Accept:'application/vnd.github+json', 'Content-Type':'application/json' },
+        body:JSON.stringify({ source:{ branch:'main', path:'/' } })
       });
 
-      if (filtered.length === 0) {
-        list.innerHTML = '<p style="text-align:center;padding:20px;color:#8b949e">没有匹配的文章</p>';
-        return;
-      }
+      fill.style.width = '90%'; text.textContent = '保存配置...';
 
-      list.innerHTML = filtered.map(p => `
-        <div class="db-post-row">
-          <span class="db-post-title">
-            <a href="/yunjian/editor?post=${encodeURIComponent(p.slug || '')}" title="${escapeHtml(p.title)}">${escapeHtml(p.title)}</a>
-          </span>
-          <span class="db-post-status ${p.status}">${p.status === 'published' ? '已发布' : '草稿'}</span>
-          <span class="db-post-date">${p.updated_at ? new Date(p.updated_at).toLocaleDateString('zh-CN') : '-'}</span>
-          <span class="db-post-actions">
-            <a href="/yunjian/editor?post=${encodeURIComponent(p.slug || '')}" class="db-btn-sm db-btn-ghost" style="text-decoration:none">编辑</a>
-            <button class="db-btn-danger db-del-post" data-id="${p.id}" data-slug="${p.slug}">删除</button>
-          </span>
+      // 4. 保存到 Supabase
+      const blogURL = `https://${githubUsername}.github.io/${repoName}`;
+      await supabase.from('profiles').upsert({
+        id: currentUser.id, blog_repo: `${githubUsername}/${repoName}`, blog_url: blogURL,
+        blog_status: 'active', blog_theme: 'default'
+      });
+
+      fill.style.width = '100%'; text.textContent = `博客创建成功！${blogURL}`;
+      btn.textContent = '前往博客'; btn.disabled = false;
+      btn.onclick = () => window.open(blogURL, '_blank');
+      setTimeout(() => location.reload(), 2500);
+
+    } catch(e) {
+      text.textContent = `创建失败: ${e.message}`;
+      btn.textContent = '重试'; btn.disabled = false;
+    }
+  }
+
+  // ===== 已有博客视图 =====
+  async function renderBlogView(profile, username) {
+    document.getElementById('dbBlogContent').style.display = '';
+
+    // 状态栏
+    document.getElementById('dbStatusText').textContent = '运行中';
+    document.getElementById('dbBlogUrlInput').value = profile.blog_url || '部署中...';
+
+    // 统计
+    const { data: posts } = await supabase.from('posts').select('*').eq('user_id', currentUser.id).order('updated_at', { ascending: false });
+    allPosts = posts || [];
+    const published = allPosts.filter(p=>p.status==='published');
+    const drafts = allPosts.filter(p=>p.status==='draft');
+    const totalWords = allPosts.reduce((sum,p)=>sum+(p.content?p.content.replace(/[#*`\[\]()!_~>|-\s]/g,'').length:0), 0);
+
+    document.getElementById('dbStatTotal').textContent = allPosts.length;
+    document.getElementById('dbStatPublished').textContent = published.length;
+    document.getElementById('dbStatDrafts').textContent = drafts.length;
+    document.getElementById('dbStatWords').textContent = totalWords.toLocaleString();
+
+    // 博客信息
+    document.getElementById('dbInfoTheme').textContent = profile.blog_theme || 'default';
+    document.getElementById('dbInfoRepo').textContent = profile.blog_repo || '--';
+
+    // 文章表格 - 第一页
+    renderPostsTable(1);
+
+    // 最近草稿
+    const recentDrafts = drafts.slice(0, 5);
+    const draftEl = document.getElementById('dbRecentDrafts');
+    if (recentDrafts.length === 0) { draftEl.innerHTML = '<p style="color:#484f58;font-size:13px;padding:16px">暂无草稿</p>'; }
+    else {
+      draftEl.innerHTML = recentDrafts.map(p => `
+        <div class="db-log-item" style="cursor:pointer" onclick="location.href='/yunjian/editor?post=${p.slug}'">
+          <span>${p.title || '未命名'}</span>
+          <span class="db-log-time">${new Date(p.updated_at).toLocaleDateString('zh-CN')}</span>
         </div>
       `).join('');
-
-      // 更新统计
-      document.getElementById('dbPostCount').textContent = posts.length;
-
-      // 搜索过滤
-      document.getElementById('dbPostSearch').addEventListener('input', () => loadPosts(supabase, user));
-      document.getElementById('dbPostFilter').addEventListener('change', () => loadPosts(supabase, user));
-
-      // 删除
-      document.querySelectorAll('.db-del-post').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if (!confirm(`确定删除「${btn.dataset.slug}」？此操作不可撤销。`)) return;
-          const { error } = await supabase.from('posts').delete().eq('id', btn.dataset.id);
-          if (error) { toast('删除失败: ' + error.message, 'error'); return; }
-          toast('已删除', 'success');
-          loadPosts(supabase, user);
-        });
-      });
     }
 
-    async function createBlog(supabase, user, session) {
-      const btn = document.getElementById('dbCreateBlog');
-      const progressDiv = document.getElementById('dbCreateProgress');
-      const progressFill = document.getElementById('dbProgressFill');
-      const progressText = document.getElementById('dbProgressText');
-      const progressLog = document.getElementById('dbProgressLog');
+    // 搜索
+    document.getElementById('dbSearchPosts').addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      const filtered = allPosts.filter(p => p.title?.toLowerCase().includes(q));
+      renderPostsTable(1, filtered);
+    });
 
-      function log(msg) { progressLog.innerHTML += `<div style="padding:2px 0">${msg}</div>`; progressLog.scrollTop = progressLog.scrollHeight; }
-      function setProgress(pct, msg) { progressFill.style.width = pct + '%'; progressText.textContent = msg; log(msg); }
+    // 复制 URL
+    document.getElementById('dbCopyUrl').addEventListener('click', () => {
+      const inp = document.getElementById('dbBlogUrlInput');
+      inp.select(); document.execCommand('copy');
+      const btn = document.getElementById('dbCopyUrl');
+      btn.textContent = '已复制';
+      setTimeout(()=>{ btn.textContent = '复制'; }, 2000);
+    });
+  }
 
-      btn.disabled = true; btn.textContent = '创建中...';
-      progressDiv.style.display = '';
-      setProgress(5, '检查 GitHub 授权...');
+  function renderPostsTable(page = 1, filteredPosts = null) {
+    const posts = filteredPosts || allPosts;
+    const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE) || 1;
+    const start = (page-1)*POSTS_PER_PAGE;
+    const pagePosts = posts.slice(start, start+POSTS_PER_PAGE);
 
-      const providerToken = session.provider_token;
-      if (!providerToken) {
-        setProgress(0, '需要 GitHub OAuth 授权。请退出后使用 GitHub 方式登录。');
-        btn.disabled = false; btn.textContent = '使用 GitHub 登录';
-        btn.onclick = () => window.location.href = '/yunjian/login';
-        return;
-      }
-
-      const githubUser = user.user_metadata?.user_name || user.user_metadata?.preferred_username || '';
-      const username = githubUser || user.user_metadata?.username || user.email?.split('@')[0] || 'user';
-      const repoName = `${username}.github.io`;
-
-      setProgress(15, `创建仓库 ${repoName}...`);
-
-      try {
-        // 步骤1: 检查仓库是否存在
-        let checkResp = await fetch(`https://api.github.com/repos/${username}/${repoName}`, {
-          headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json' }
-        });
-        if (checkResp.ok) {
-          setProgress(25, `仓库 ${repoName} 已存在，跳过创建`);
-        } else {
-          const createResp = await fetch('https://api.github.com/user/repos', {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: repoName, description: 'Blog powered by YunJian & HanBlog',
-              homepage: `https://${username}.github.io`, private: false,
-              has_issues: false, has_projects: false, has_wiki: false, auto_init: true
-            })
-          });
-          if (!createResp.ok) { const e = await createResp.json(); throw new Error(e.message || '创建仓库失败'); }
-          setProgress(25, '仓库创建成功');
-        }
-
-        // 步骤2: 推送模板文件
-        const templateFiles = {
-          'config.json': JSON.stringify({
-            title: `${username} 的博客`, subtitle: '', author: username,
-            theme: 'default', language: 'zh-CN', posts_per_page: 10,
-            nav: [{ label:'首页', url:'/' },{ label:'归档', url:'/archive' }],
-            social: { github: `https://github.com/${username}`, twitter: '' }
-          }, null, 2),
-          'posts/hello-world.md': `---\ntitle: "Hello World"\ndate: "${new Date().toISOString().split('T')[0]}"\ntags: [blog, 云笺]\ncategory: "随笔"\n---\n\n## 欢迎来到我的博客\n\n这是使用[云笺](https://yunjian.dev)创建的第一篇文章。\n\n- 支持 Markdown 写作\n- 自动部署到 GitHub Pages\n- 6套精美主题可切换\n\n祝你写作愉快！\n`,
-          'package.json': '{"name":"blog","private":true,"dependencies":{"hanblog-blog-engine":"latest"}}\n',
-          '.github/workflows/deploy.yml': `name: Deploy Blog\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\njobs:\n  build:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n      pages: write\n      id-token: write\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n      - run: npm install\n      - run: node node_modules/hanblog-blog-engine/build.js\n      - uses: actions/configure-pages@v4\n      - uses: actions/upload-pages-artifact@v3\n        with:\n          path: ./public\n      - uses: actions/deploy-pages@v4\n`
-        };
-
-        let fileIdx = 0;
-        const fileEntries = Object.entries(templateFiles);
-        for (const [path, content] of fileEntries) {
-          fileIdx++;
-          const pct = 25 + Math.floor((fileIdx / fileEntries.length) * 35);
-          setProgress(pct, `推送模板文件: ${path}`);
-          const encoded = btoa(unescape(encodeURIComponent(content)));
-          const resp = await fetch(`https://api.github.com/repos/${username}/${repoName}/contents/${path}`, {
-            method: 'PUT',
-            headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: `初始化: ${path}`, content: encoded })
-          });
-          if (!resp.ok) { const e = await resp.json(); log(`  ⚠ ${path}: ${e.message}`); }
-        }
-
-        // 步骤3: 开启 GitHub Pages
-        setProgress(65, '开启 GitHub Pages...');
-        await fetch(`https://api.github.com/repos/${username}/${repoName}/pages`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ source: { branch: 'main', path: '/' } })
-        });
-
-        setProgress(80, '等待部署...');
-        const blogURL = `https://${username}.github.io`;
-
-        // 步骤4: 保存到 Supabase
-        await supabase.from('profiles').upsert({
-          id: user.id,
-          blog_repo: `${username}/${repoName}`,
-          blog_url: blogURL,
-          blog_status: 'deploying',
-          blog_theme: 'default',
-          updated_at: new Date().toISOString()
-        });
-
-        setProgress(100, `博客创建成功！${blogURL}`);
-        btn.textContent = '前往博客';
-        btn.disabled = false;
-        btn.onclick = () => window.open(blogURL, '_blank');
-
-        // 30s 后刷新页面
-        setTimeout(async () => {
-          await supabase.from('profiles').upsert({ id: user.id, blog_status: 'active', updated_at: new Date().toISOString() });
-          window.location.reload();
-        }, 35000);
-
-      } catch(e) {
-        setProgress(0, `创建失败: ${e.message}`);
-        btn.textContent = '重试';
-        btn.disabled = false;
-      }
+    const tbody = document.getElementById('dbPostsTable');
+    if (pagePosts.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#484f58;padding:32px">暂无文章</td></tr>';
+    } else {
+      tbody.innerHTML = pagePosts.map(p => `
+        <tr>
+          <td><a href="/yunjian/editor?post=${p.slug}" style="color:var(--db-accent);text-decoration:none;font-weight:600">${p.title || '未命名'}</a></td>
+          <td><span class="db-tag ${p.status==='published'?'db-tag-pub':'db-tag-draft'}">${p.status==='published'?'已发布':'草稿'}</span></td>
+          <td style="color:var(--db-muted)">${p.published_at?new Date(p.published_at).toLocaleDateString('zh-CN'):'--'}</td>
+          <td style="color:var(--db-muted)">${p.content?p.content.replace(/[#*`\[\]()!_~>|-\s]/g,'').length:0}</td>
+          <td>
+            <a href="/yunjian/editor?post=${p.slug}" class="db-btn db-btn-sm" style="margin-right:4px">编辑</a>
+            <button class="db-btn db-btn-sm db-btn-danger" onclick="event.stopPropagation();deletePost('${p.slug}')">删除</button>
+          </td>
+        </tr>
+      `).join('');
     }
 
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str || '';
-      return div.innerHTML;
-    }
+    // 分页
+    const pagEl = document.getElementById('dbPagination');
+    if (totalPages <= 1) { pagEl.innerHTML = ''; return; }
+    pagEl.innerHTML = Array.from({length:totalPages}, (_,i) => i+1).map(i =>
+      `<button class="db-page-btn ${i===page?'active':''}" onclick="window._renderPage(${i})">${i}</button>`
+    ).join('');
+    window._renderPage = (p) => renderPostsTable(p, filteredPosts);
+  }
 
-    function toast(msg, type) {
-      const t = document.createElement('div');
-      t.className = `db-toast ${type}`;
-      t.textContent = msg;
-      document.body.appendChild(t);
-      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
-    }
-  })();
+  // ===== 删除文章 =====
+  window.deletePost = async function(slug) {
+    if (!confirm('确定删除这篇文章？')) return;
+    await supabase.from('posts').delete().eq('user_id', currentUser.id).eq('slug', slug);
+    location.reload();
+  };
 </script>

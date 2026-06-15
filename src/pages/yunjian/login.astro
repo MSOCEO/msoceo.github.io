@@ -1,18 +1,20 @@
 ---
-import Page from '../../layouts/Page.astro';
-
-const title = '登录 · 云笺';
-const description = '登录你的云笺账号';
 ---
 
-<Page {title} {description}>
-  <div class="auth-root">
-    <div class="auth-card">
-      <div class="auth-header">
-        <a href="/yunjian" class="auth-back">&larr; 返回云笺</a>
-        <h1>欢迎回来</h1>
-        <p>登录你的云笺账号</p>
-      </div>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>登录 · 云笺</title>
+</head>
+<body>
+<div class="auth-root">
+  <div class="auth-split">
+    <!-- 左：表单 -->
+    <div class="auth-form-side">
+      <a href="/yunjian" class="auth-back">&larr; 返回云笺</a>
+      <h1>欢迎回来</h1>
+      <p class="auth-sub">登录你的云笺账号</p>
 
       <div id="auth-msg" class="auth-msg" style="display:none"></div>
 
@@ -39,169 +41,94 @@ const description = '登录你的云笺账号';
         还没有账号？<a href="/yunjian/register">免费注册</a>
       </div>
     </div>
+
+    <!-- 右：欢迎信息 -->
+    <div class="auth-info-side">
+      <div class="auth-info-cta">
+        <h2>欢迎回到云笺</h2>
+        <div class="auth-reason-list">
+          <div class="auth-reason">
+            <div class="auth-reason-icon">&#9997;</div>
+            <div>
+              <strong>继续写作</strong>
+              <p>在线 Markdown 编辑器，实时预览，一键发布到 GitHub Pages。</p>
+            </div>
+          </div>
+          <div class="auth-reason">
+            <div class="auth-reason-icon">&#127912;</div>
+            <div>
+              <strong>管理博客</strong>
+              <p>切换 6 套主题，自定义导航，绑定独立域名。</p>
+            </div>
+          </div>
+          <div class="auth-reason">
+            <div class="auth-reason-icon">&#128200;</div>
+            <div>
+              <strong>查看数据</strong>
+              <p>文章统计、部署日志、博客运行状态，一切尽在掌握。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</Page>
+</div>
+</body>
+</html>
 
 <style>
-  .auth-root {
-    min-height: calc(100vh - var(--header-height));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--ink-10);
-    position: relative;
-    padding: var(--space-2xl) var(--space-xl);
-  }
-  .auth-root::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: var(--texture-noise);
-    pointer-events: none;
-  }
-  .auth-card {
-    position: relative;
-    z-index: 2;
-    background: #0f1a16;
-    border: 1px solid rgba(16,185,129,0.12);
-    border-radius: var(--radius-lg);
-    padding: 40px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: var(--shadow-card);
-  }
-  .auth-header { text-align: center; margin-bottom: 24px; }
-  .auth-back {
-    display: inline-block;
-    font-size: var(--text-xs);
-    color: var(--ink-50);
-    text-decoration: none;
-    margin-bottom: 20px;
-    transition: color 0.15s;
-  }
-  .auth-back:hover { color: #10b981; }
-  .auth-header h1 {
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: 700;
-    color: var(--ink-100);
-    margin-bottom: 8px;
-  }
-  .auth-header p {
-    font-size: var(--text-sm);
-    color: #6b8a7a;
-    margin: 0;
-  }
-
-  .auth-msg {
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
-    font-size: var(--text-xs);
-    margin-bottom: 18px;
-    text-align: center;
-  }
-  .auth-msg.error {
-    background: rgba(239,68,68,0.12);
-    border: 1px solid rgba(239,68,68,0.25);
-    color: #f87171;
-  }
-  .auth-msg.success {
-    background: rgba(16,185,129,0.12);
-    border: 1px solid rgba(16,185,129,0.25);
-    color: #34d399;
-  }
-
-  .auth-form { display: flex; flex-direction: column; gap: 18px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label {
-    font-size: var(--text-xs);
-    font-weight: 500;
-    color: var(--ink-50);
-  }
+  :root { --auth-bg:#ffffff; --auth-card:#ffffff; --auth-border:#e8ecf1; --auth-text:#1f2328; --auth-dim:#656d76; --auth-muted:#8b949e; --auth-accent:#0969da; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f6f8fa; color:var(--auth-text); }
+  .auth-root { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+  .auth-split { display:flex; max-width:920px; width:100%; background:var(--auth-card); border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.06); overflow:hidden; }
+  .auth-form-side { flex:1; padding:48px 40px; }
+  .auth-back { display:inline-block; color:var(--auth-dim); text-decoration:none; font-size:13px; margin-bottom:24px; }
+  .auth-back:hover { color:var(--auth-accent); }
+  .auth-form-side h1 { font-size:1.6rem; font-weight:800; color:var(--auth-text); margin-bottom:4px; }
+  .auth-sub { color:var(--auth-dim); font-size:0.95rem; margin-bottom:24px; }
+  .auth-msg { padding:10px 14px; border-radius:6px; font-size:13px; margin-bottom:18px; display:none; }
+  .auth-msg.error { display:block; background:#fff1f0; border:1px solid #ffccc7; color:#cf1322; }
+  .auth-msg.success { display:block; background:#f6ffed; border:1px solid #b7eb8f; color:#389e0d; }
+  .auth-form { display:flex; flex-direction:column; gap:16px; }
+  .form-group { display:flex; flex-direction:column; gap:6px; }
+  .form-group label { font-size:13px; font-weight:600; color:var(--auth-text); }
   .form-group input[type="text"],
   .form-group input[type="email"],
   .form-group input[type="password"] {
-    padding: 11px 14px;
-    background: #0a0f0c;
-    border: 1px solid rgba(16,185,129,0.15);
-    border-radius: var(--radius-sm);
-    font-size: var(--text-sm);
-    color: var(--ink-90);
-    outline: none;
-    transition: border-color 0.2s;
-    font-family: inherit;
+    padding:10px 14px; background:#f6f8fa; border:1px solid var(--auth-border); border-radius:6px; font-size:14px; color:var(--auth-text); outline:none; transition:.15s; font-family:inherit;
   }
-  .form-group input:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
-  }
-  .form-group input::placeholder { color: var(--ink-40); }
+  .form-group input:focus { border-color:var(--auth-accent); box-shadow:0 0 0 3px rgba(9,105,218,0.1); background:#fff; }
+  .form-group input::placeholder { color:var(--auth-muted); }
+  .forgot-link { align-self:flex-end; font-size:12px; color:var(--auth-dim); text-decoration:none; margin-top:2px; }
+  .forgot-link:hover { color:var(--auth-accent); }
+  .auth-btn-github { display:flex; align-items:center; justify-content:center; gap:10px; padding:12px; background:#24292e; border:1px solid #444d56; border-radius:6px; color:#fff; font-size:14px; font-weight:600; cursor:pointer; width:100%; font-family:inherit; }
+  .auth-btn-github:hover { background:#2f363d; }
+  .auth-btn-submit { padding:12px; background:var(--auth-accent); border:none; border-radius:6px; color:#fff; font-size:14px; font-weight:700; cursor:pointer; width:100%; font-family:inherit; }
+  .auth-btn-submit:hover { background:#0550ae; }
+  .auth-btn-submit:disabled { opacity:0.6; cursor:not-allowed; }
+  .auth-footer { text-align:center; margin-top:24px; font-size:13px; color:var(--auth-dim); }
+  .auth-footer a { color:var(--auth-accent); text-decoration:none; font-weight:600; }
 
-  .forgot-link {
-    align-self: flex-end;
-    font-size: var(--text-xs);
-    color: var(--ink-50);
-    text-decoration: none;
-    margin-top: 2px;
-  }
-  .forgot-link:hover { color: #10b981; }
+  .auth-info-side { width:380px; flex-shrink:0; background:linear-gradient(135deg, #1a7f37 0%, #116329 100%); padding:48px 36px; display:flex; align-items:center; }
+  .auth-info-cta { color:#fff; }
+  .auth-info-cta h2 { font-size:1.3rem; font-weight:700; margin-bottom:32px; }
+  .auth-reason-list { display:flex; flex-direction:column; gap:28px; }
+  .auth-reason { display:flex; gap:14px; align-items:flex-start; }
+  .auth-reason-icon { font-size:24px; width:40px; height:40px; background:rgba(255,255,255,0.15); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .auth-reason strong { display:block; font-size:1rem; margin-bottom:4px; }
+  .auth-reason p { font-size:0.85rem; opacity:0.85; line-height:1.6; margin:0; }
 
-  .auth-btn-github {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 13px;
-    background: #24292e;
-    border: 1px solid #444d56;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-family: inherit;
-    width: 100%;
+  @media (max-width:768px) {
+    .auth-split { flex-direction:column; }
+    .auth-info-side { width:100%; padding:32px 24px; }
+    .auth-form-side { padding:32px 24px; }
   }
-  .auth-btn-github:hover { background: #2f363d; }
-
-  .auth-btn-submit {
-    padding: 13px;
-    background: #10b981;
-    border: none;
-    border-radius: var(--radius-sm);
-    color: #0a0a0a;
-    font-size: var(--text-sm);
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
-  }
-  .auth-btn-submit:hover {
-    background: #059669;
-    box-shadow: 0 0 20px rgba(16,185,129,0.15);
-  }
-  .auth-btn-submit:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .auth-footer {
-    text-align: center;
-    margin-top: 24px;
-    font-size: var(--text-xs);
-    color: var(--ink-50);
-  }
-  .auth-footer a {
-    color: #10b981;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  .auth-footer a:hover { text-decoration: underline; }
 </style>
 
 <script>
-  import { supabase, signIn, signInWithGitHub } from '../../scripts/supabase.js';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient('https://xwvkdluvixurvgvkhkfe.supabase.co','sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H');
 
   const form = document.getElementById('login-form');
   const msgBox = document.getElementById('auth-msg');
@@ -210,52 +137,40 @@ const description = '登录你的云笺账号';
   function showMsg(text, type) {
     msgBox.textContent = text;
     msgBox.className = 'auth-msg ' + type;
-    msgBox.style.display = 'block';
   }
 
-  function hideMsg() {
-    msgBox.style.display = 'none';
-  }
-
-  // GitHub OAuth
   document.getElementById('btn-github').addEventListener('click', async () => {
-    hideMsg();
-    const { error } = await signInWithGitHub();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo: window.location.origin + '/yunjian/dashboard' }
+    });
     if (error) showMsg('GitHub 登录失败: ' + error.message, 'error');
   });
 
-  // 密码登录
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    hideMsg();
-
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
     if (!email) return showMsg('请输入邮箱', 'error');
     if (!password) return showMsg('请输入密码', 'error');
 
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = '登录中...';
+    btnSubmit.disabled = true; btnSubmit.textContent = '登录中...';
 
-    const { data, error } = await signIn(email, password);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      if (error.message.includes('Invalid login credentials') || error.message.includes('invalid')) {
+      if (error.message.includes('Invalid') || error.message.includes('invalid'))
         showMsg('邮箱或密码错误，请重试', 'error');
-      } else if (error.message.includes('Email not confirmed')) {
+      else if (error.message.includes('Email not confirmed'))
         showMsg('邮箱尚未验证，请先查收验证邮件', 'error');
-      } else {
+      else
         showMsg('登录失败: ' + error.message, 'error');
-      }
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = '登录';
+      btnSubmit.disabled = false; btnSubmit.textContent = '登录';
       return;
     }
 
     showMsg('登录成功！正在跳转...', 'success');
-    setTimeout(() => {
-      window.location.href = '/yunjian';
-    }, 800);
+    setTimeout(() => { window.location.href = '/yunjian/dashboard'; }, 800);
   });
 </script>

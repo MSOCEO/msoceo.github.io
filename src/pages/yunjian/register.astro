@@ -1,18 +1,20 @@
 ---
-import Page from '../../layouts/Page.astro';
-
-const title = '注册 · 云笺';
-const description = '三分钟拥有自己的独立博客';
 ---
 
-<Page {title} {description}>
-  <div class="auth-root">
-    <div class="auth-card">
-      <div class="auth-header">
-        <a href="/yunjian" class="auth-back">&larr; 返回云笺</a>
-        <h1>创建你的云笺账号</h1>
-        <p>三分钟拥有自己的独立博客</p>
-      </div>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>注册 · 云笺</title>
+</head>
+<body>
+<div class="auth-root">
+  <div class="auth-split">
+    <!-- 左：表单 -->
+    <div class="auth-form-side">
+      <a href="/yunjian" class="auth-back">&larr; 返回云笺</a>
+      <h1>创建你的云笺账号</h1>
+      <p class="auth-sub">三分钟拥有自己的独立博客</p>
 
       <div id="auth-msg" class="auth-msg" style="display:none"></div>
 
@@ -28,9 +30,7 @@ const description = '三分钟拥有自己的独立博客';
         <div class="form-group">
           <label for="password">密码</label>
           <input type="password" id="password" placeholder="至少 8 位字符" autocomplete="new-password" required />
-          <div class="pw-meter">
-            <div class="pw-bar" id="pw-bar"></div>
-          </div>
+          <div class="pw-meter"><div class="pw-bar" id="pw-bar"></div></div>
           <span class="pw-hint" id="pw-hint"></span>
         </div>
         <div class="form-group">
@@ -46,7 +46,7 @@ const description = '三分钟拥有自己的独立博客';
         <div class="form-group form-check">
           <label class="check-label">
             <input type="checkbox" id="agree" required />
-            <span>我已阅读并同意 <a href="/yunjian/terms">服务协议</a> 和 <a href="/yunjian/privacy">隐私政策</a></span>
+            <span>我已阅读并同意 <a href="/links/terms">服务协议</a> 和 <a href="/links/privacy">隐私政策</a></span>
           </label>
         </div>
 
@@ -57,191 +57,102 @@ const description = '三分钟拥有自己的独立博客';
         已有账号？<a href="/yunjian/login">立即登录</a>
       </div>
     </div>
+
+    <!-- 右：理由 -->
+    <div class="auth-info-side">
+      <div class="auth-info-cta">
+        <h2>为什么选择云笺</h2>
+        <div class="auth-reason-list">
+          <div class="auth-reason">
+            <div class="auth-reason-icon">&#9889;</div>
+            <div>
+              <strong>三分钟上线</strong>
+              <p>GitHub 授权后一键创建仓库，博客自动部署上线，无需配置服务器。</p>
+            </div>
+          </div>
+          <div class="auth-reason">
+            <div class="auth-reason-icon">&#127379;</div>
+            <div>
+              <strong>永久免费</strong>
+              <p>基于 GitHub Pages 托管，无流量限制，无隐藏费用。你的内容永远属于你。</p>
+            </div>
+          </div>
+          <div class="auth-reason">
+            <div class="auth-reason-icon">&#127760;</div>
+            <div>
+              <strong>独立域名</strong>
+              <p>默认 GitHub Pages 域名，支持绑定自定义域名，HTTPS 自动配置，全球 CDN 加速。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</Page>
+</div>
+</body>
+</html>
 
 <style>
-  .auth-root {
-    min-height: calc(100vh - var(--header-height));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--ink-10);
-    position: relative;
-    padding: var(--space-2xl) var(--space-xl);
-  }
-  .auth-root::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: var(--texture-noise);
-    pointer-events: none;
-  }
-  .auth-card {
-    position: relative;
-    z-index: 2;
-    background: #0f1a16;
-    border: 1px solid rgba(16,185,129,0.12);
-    border-radius: var(--radius-lg);
-    padding: 40px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: var(--shadow-card);
-  }
-  .auth-header { text-align: center; margin-bottom: 24px; }
-  .auth-back {
-    display: inline-block;
-    font-size: var(--text-xs);
-    color: var(--ink-50);
-    text-decoration: none;
-    margin-bottom: 20px;
-    transition: color 0.15s;
-  }
-  .auth-back:hover { color: #10b981; }
-  .auth-header h1 {
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: 700;
-    color: var(--ink-100);
-    margin-bottom: 8px;
-  }
-  .auth-header p {
-    font-size: var(--text-sm);
-    color: #6b8a7a;
-    margin: 0;
-  }
-
-  .auth-msg {
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
-    font-size: var(--text-xs);
-    margin-bottom: 18px;
-    text-align: center;
-  }
-  .auth-msg.error {
-    background: rgba(239,68,68,0.12);
-    border: 1px solid rgba(239,68,68,0.25);
-    color: #f87171;
-  }
-  .auth-msg.success {
-    background: rgba(16,185,129,0.12);
-    border: 1px solid rgba(16,185,129,0.25);
-    color: #34d399;
-  }
-
-  .auth-form { display: flex; flex-direction: column; gap: 18px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label {
-    font-size: var(--text-xs);
-    font-weight: 500;
-    color: var(--ink-50);
-  }
+  :root { --auth-bg:#ffffff; --auth-card:#ffffff; --auth-border:#e8ecf1; --auth-text:#1f2328; --auth-dim:#656d76; --auth-muted:#8b949e; --auth-accent:#0969da; --auth-green:#1a7f37; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f6f8fa; color:var(--auth-text); }
+  .auth-root { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+  .auth-split { display:flex; max-width:920px; width:100%; background:var(--auth-card); border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.06); overflow:hidden; }
+  /* 左侧表单 */
+  .auth-form-side { flex:1; padding:48px 40px; }
+  .auth-back { display:inline-block; color:var(--auth-dim); text-decoration:none; font-size:13px; margin-bottom:24px; }
+  .auth-back:hover { color:var(--auth-accent); }
+  .auth-form-side h1 { font-size:1.6rem; font-weight:800; color:var(--auth-text); margin-bottom:4px; }
+  .auth-sub { color:var(--auth-dim); font-size:0.95rem; margin-bottom:24px; }
+  .auth-msg { padding:10px 14px; border-radius:6px; font-size:13px; margin-bottom:18px; display:none; }
+  .auth-msg.error { display:block; background:#fff1f0; border:1px solid #ffccc7; color:#cf1322; }
+  .auth-msg.success { display:block; background:#f6ffed; border:1px solid #b7eb8f; color:#389e0d; }
+  .auth-form { display:flex; flex-direction:column; gap:16px; }
+  .form-group { display:flex; flex-direction:column; gap:6px; }
+  .form-group label { font-size:13px; font-weight:600; color:var(--auth-text); }
   .form-group input[type="text"],
   .form-group input[type="email"],
   .form-group input[type="password"] {
-    padding: 11px 14px;
-    background: #0a0f0c;
-    border: 1px solid rgba(16,185,129,0.15);
-    border-radius: var(--radius-sm);
-    font-size: var(--text-sm);
-    color: var(--ink-90);
-    outline: none;
-    transition: border-color 0.2s;
-    font-family: inherit;
+    padding:10px 14px; background:#f6f8fa; border:1px solid var(--auth-border); border-radius:6px; font-size:14px; color:var(--auth-text); outline:none; transition:.15s; font-family:inherit;
   }
-  .form-group input:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
-  }
-  .form-group input::placeholder { color: var(--ink-40); }
+  .form-group input:focus { border-color:var(--auth-accent); box-shadow:0 0 0 3px rgba(9,105,218,0.1); background:#fff; }
+  .form-group input::placeholder { color:var(--auth-muted); }
+  .pw-meter { height:3px; background:#e8ecf1; border-radius:2px; margin-top:4px; overflow:hidden; }
+  .pw-bar { height:100%; border-radius:2px; transition:width .3s; width:0; }
+  .pw-hint { font-size:11px; color:var(--auth-muted); }
+  .form-check { flex-direction:row; }
+  .check-label { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--auth-dim); cursor:pointer; }
+  .check-label input[type="checkbox"] { accent-color:var(--auth-accent); }
+  .check-label a { color:var(--auth-accent); text-decoration:none; }
+  .check-label a:hover { text-decoration:underline; }
+  .auth-btn-github { display:flex; align-items:center; justify-content:center; gap:10px; padding:12px; background:#24292e; border:1px solid #444d56; border-radius:6px; color:#fff; font-size:14px; font-weight:600; cursor:pointer; width:100%; font-family:inherit; }
+  .auth-btn-github:hover { background:#2f363d; }
+  .auth-btn-submit { padding:12px; background:var(--auth-accent); border:none; border-radius:6px; color:#fff; font-size:14px; font-weight:700; cursor:pointer; width:100%; font-family:inherit; }
+  .auth-btn-submit:hover { background:#0550ae; }
+  .auth-btn-submit:disabled { opacity:0.6; cursor:not-allowed; }
+  .auth-footer { text-align:center; margin-top:24px; font-size:13px; color:var(--auth-dim); }
+  .auth-footer a { color:var(--auth-accent); text-decoration:none; font-weight:600; }
 
-  .pw-meter {
-    height: 3px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 2px;
-    margin-top: 4px;
-    overflow: hidden;
-  }
-  .pw-bar {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.3s, background 0.3s;
-    width: 0;
-  }
-  .pw-hint {
-    font-size: 11px;
-    color: var(--ink-40);
-  }
+  /* 右侧信息 */
+  .auth-info-side { width:380px; flex-shrink:0; background:linear-gradient(135deg, #0969da 0%, #0550ae 100%); padding:48px 36px; display:flex; align-items:center; }
+  .auth-info-cta { color:#fff; }
+  .auth-info-cta h2 { font-size:1.3rem; font-weight:700; margin-bottom:32px; }
+  .auth-reason-list { display:flex; flex-direction:column; gap:28px; }
+  .auth-reason { display:flex; gap:14px; align-items:flex-start; }
+  .auth-reason-icon { font-size:24px; width:40px; height:40px; background:rgba(255,255,255,0.15); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .auth-reason strong { display:block; font-size:1rem; margin-bottom:4px; }
+  .auth-reason p { font-size:0.85rem; opacity:0.85; line-height:1.6; margin:0; }
 
-  .auth-btn-github {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 13px;
-    background: #24292e;
-    border: 1px solid #444d56;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-family: inherit;
-    width: 100%;
+  @media (max-width:768px) {
+    .auth-split { flex-direction:column; }
+    .auth-info-side { width:100%; padding:32px 24px; }
+    .auth-form-side { padding:32px 24px; }
   }
-  .auth-btn-github:hover { background: #2f363d; }
-
-  .form-check { flex-direction: row; }
-  .check-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: var(--text-xs);
-    color: var(--ink-50);
-    cursor: pointer;
-  }
-  .check-label input[type="checkbox"] { accent-color: #10b981; }
-  .check-label a { color: #10b981; text-decoration: none; }
-  .check-label a:hover { text-decoration: underline; }
-
-  .auth-btn-submit {
-    padding: 13px;
-    background: #10b981;
-    border: none;
-    border-radius: var(--radius-sm);
-    color: #0a0a0a;
-    font-size: var(--text-sm);
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
-  }
-  .auth-btn-submit:hover {
-    background: #059669;
-    box-shadow: 0 0 20px rgba(16,185,129,0.15);
-  }
-  .auth-btn-submit:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .auth-footer {
-    text-align: center;
-    margin-top: 24px;
-    font-size: var(--text-xs);
-    color: var(--ink-50);
-  }
-  .auth-footer a {
-    color: #10b981;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  .auth-footer a:hover { text-decoration: underline; }
 </style>
 
 <script>
-  import { supabase, signUp, signInWithGitHub } from '../../scripts/supabase.js';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient('https://xwvkdluvixurvgvkhkfe.supabase.co','sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H');
 
   const form = document.getElementById('register-form');
   const pwInput = document.getElementById('password');
@@ -253,14 +164,8 @@ const description = '三分钟拥有自己的独立博客';
   function showMsg(text, type) {
     msgBox.textContent = text;
     msgBox.className = 'auth-msg ' + type;
-    msgBox.style.display = 'block';
   }
 
-  function hideMsg() {
-    msgBox.style.display = 'none';
-  }
-
-  // 密码强度评估
   function assessPassword(pw) {
     let score = 0;
     if (pw.length >= 8) score++;
@@ -271,15 +176,14 @@ const description = '三分钟拥有自己的独立博客';
     if (/[^A-Za-z0-9]/.test(pw)) score++;
     const levels = [
       { w: 0,   color: 'transparent', text: '' },
-      { w: 16,  color: '#ef4444', text: '弱 — 太短了' },
-      { w: 33,  color: '#f97316', text: '较弱 — 增加大小写和数字' },
-      { w: 50,  color: '#eab308', text: '中等 — 还可更强' },
-      { w: 66,  color: '#84cc16', text: '较强' },
-      { w: 83,  color: '#22c55e', text: '强' },
-      { w: 100, color: '#10b981', text: '很强' }
+      { w: 16,  color: '#cf222e', text: '弱 — 太短了' },
+      { w: 33,  color: '#d1242f', text: '较弱 — 增加大小写和数字' },
+      { w: 50,  color: '#bf8700', text: '中等 — 还可更强' },
+      { w: 66,  color: '#1a7f37', text: '较强' },
+      { w: 83,  color: '#1a7f37', text: '强' },
+      { w: 100, color: '#1a7f37', text: '很强' }
     ];
-    const idx = Math.min(score, levels.length - 1);
-    return levels[idx];
+    return levels[Math.min(score, levels.length - 1)];
   }
 
   pwInput.addEventListener('input', () => {
@@ -289,18 +193,16 @@ const description = '三分钟拥有自己的独立博客';
     pwHint.textContent = r.text;
   });
 
-  // GitHub OAuth
   document.getElementById('btn-github').addEventListener('click', async () => {
-    hideMsg();
-    const { error } = await signInWithGitHub();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo: window.location.origin + '/yunjian/dashboard' }
+    });
     if (error) showMsg('GitHub 授权失败: ' + error.message, 'error');
   });
 
-  // 注册提交
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    hideMsg();
-
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
@@ -315,36 +217,29 @@ const description = '三分钟拥有自己的独立博客';
     if (password !== confirmPw) return showMsg('两次输入的密码不一致', 'error');
     if (!agreed) return showMsg('请先同意服务协议和隐私政策', 'error');
 
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = '注册中...';
+    btnSubmit.disabled = true; btnSubmit.textContent = '注册中...';
 
-    const { data, error } = await signUp(email, password, username);
+    const { data, error } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { username } }
+    });
 
     if (error) {
-      if (error.message.includes('already registered') || error.message.includes('already exists')) {
+      if (error.message.includes('registered') || error.message.includes('exists'))
         showMsg('该邮箱已被注册，请直接登录', 'error');
-      } else if (error.message.includes('password')) {
-        showMsg('密码强度不足: ' + error.message, 'error');
-      } else {
+      else
         showMsg('注册失败: ' + error.message, 'error');
-      }
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = '创建账号';
+      btnSubmit.disabled = false; btnSubmit.textContent = '创建账号';
       return;
     }
 
     if (data?.user?.identities?.length === 0) {
       showMsg('该邮箱已被注册，请直接登录', 'error');
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = '创建账号';
+      btnSubmit.disabled = false; btnSubmit.textContent = '创建账号';
       return;
     }
 
-    showMsg('注册成功！验证邮件已发送，请查收邮箱完成验证。', 'success');
-
-    // 如果未开启邮箱验证，用户可以直接登录
-    setTimeout(() => {
-      window.location.href = '/yunjian/login';
-    }, 3000);
+    showMsg('注册成功！正在跳转...', 'success');
+    setTimeout(() => { window.location.href = '/yunjian/dashboard'; }, 1500);
   });
 </script>
