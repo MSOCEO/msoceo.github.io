@@ -1,8 +1,8 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 
-const title = '星舟 | 导航';
-const description = '星辰为引，链接为舟。手工甄选优质站点，无广告、无套路、无投毒。';
+const title = '星迹 | 导航';
+const description = '星辰为引，链接为迹。手工甄选优质站点，无广告、无套路、无投毒。';
 
 const LINKS = [
   // ===== AI 工具 =====
@@ -417,7 +417,7 @@ const catsJson = JSON.stringify(CATS);
           <circle cx="32" cy="32" r="1" fill="currentColor" opacity="0.35"/>
         </svg>
       </div>
-      <h1 class="nav-hero-title">星舟</h1>
+      <h1 class="nav-hero-title">星迹</h1>
       <p class="nav-hero-desc">星辰为引 · 链接为舟 · 手工甄别 · 持续更新</p>
 
       <!-- 搜索 -->
@@ -480,9 +480,9 @@ const catsJson = JSON.stringify(CATS);
         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.2" opacity="0.45"/>
         <path d="M12 3l2.5 5.5L20 10l-4 4 1 5.5-5-2.8-5 2.8 1-5.5L4 10l5.5-1.5L12 3z" fill="currentColor" opacity="0.7"/>
       </svg>
-      <span>星舟ICP备000000号</span>
+      <span>星迹ICP备000000号</span>
     </a>
-    <p class="nav-footer-copy">&copy; 2026 星舟导航 · 保留所有权利</p>
+    <p class="nav-footer-copy">&copy; 2026 星迹导航 · 保留所有权利</p>
     <p class="nav-footer-icp">本站收录站点均来自公开互联网，版权归原作者所有</p>
     <p class="nav-footer-legal">
       <a href="/links/privacy">隐私政策</a>
@@ -838,9 +838,9 @@ const catsJson = JSON.stringify(CATS);
   document.getElementById('navAddBookmark').addEventListener('click', (e) => {
     e.preventDefault();
     if (window.external && window.external.addFavorite) {
-      window.external.addFavorite(location.href, '星舟导航');
+      window.external.addFavorite(location.href, '星迹导航');
     } else if (window.sidebar && window.sidebar.addPanel) {
-      window.sidebar.addPanel('星舟导航', location.href, '');
+      window.sidebar.addPanel('星迹导航', location.href, '');
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(location.href).then(() => {
         alert('链接已复制到剪贴板，请在浏览器中按 ' + (navigator.platform.includes('Mac') ? 'Cmd+D' : 'Ctrl+D') + ' 收藏本站。');
