@@ -472,6 +472,53 @@ const catsJson = JSON.stringify(CATS);
 
     <!-- 星图网格 -->
     <div class="nav-grid" id="navGrid"></div>
+
+    <!-- 操作工具栏 -->
+    <div class="nav-toolbar" id="navToolbar">
+      <button class="nav-tool-btn" id="btnFavView" onclick="toggleFavorites()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        我的收藏 (<span id="favCount">0</span>)
+      </button>
+      <button class="nav-tool-btn" id="btnSubmit" onclick="toggleSubmitForm()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        提交站点
+      </button>
+      <span class="nav-tool-info" id="navUpdateTime"></span>
+    </div>
+
+    <!-- 提交表单 -->
+    <div class="nav-submit-panel" id="submitPanel" style="display:none">
+      <h3>提交新站点</h3>
+      <div class="nav-submit-form">
+        <input type="text" id="subName" placeholder="站点名称 *" />
+        <input type="url" id="subUrl" placeholder="站点 URL *" />
+        <input type="text" id="subDesc" placeholder="简短描述" />
+        <select id="subCat">
+          <option value="">选择分类</option>
+        </select>
+        <div class="nav-submit-actions">
+          <button class="nav-tool-btn" onclick="submitSite()">提交</button>
+          <button class="nav-tool-btn" onclick="toggleSubmitForm()">取消</button>
+        </div>
+      </div>
+      <p class="nav-submit-note">提交后存入本地收藏夹，刷新不丢失</p>
+    </div>
+
+    <!-- 收藏视图 -->
+    <div class="nav-fav-view" id="favView" style="display:none">
+      <h3>我的收藏</h3>
+      <div id="favGrid" class="nav-section-grid"></div>
+      <div class="nav-fav-empty" id="favEmpty" style="display:none">暂无收藏，点击星标收藏喜欢的站点</div>
+    </div>
+
+    <!-- 底部统计 -->
+    <div class="nav-footer-stats">
+      <span>收录 <strong id="footerSiteCount">0</strong> 个站点</span>
+      <span class="nav-stats-dot">·</span>
+      <span>今日访问 <strong id="footerVisits">—</strong></span>
+      <span class="nav-stats-dot">·</span>
+      <span>更新于 <strong id="footerUpdated">—</strong></span>
+    </div>
   </main>
 
   <footer class="nav-footer">
@@ -587,9 +634,12 @@ const catsJson = JSON.stringify(CATS);
     const badge = l.badge || '';
     const badgeHtml = badge ? `<span class="nav-card-badge badge-${badge}">${badge === 'hot' ? '热门' : badge === 'new' ? '新上' : badge === 'rec' ? '推荐' : badge}</span>` : '';
     return `
-      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card${badge ? ' nav-card-' + badge : ''}" style="--card-delay:${i * 20}ms;--card-accent:${accent}">
+      <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="nav-card${badge ? ' nav-card-' + badge : ''}" style="--card-delay:${i * 20}ms;--card-accent:${accent}" data-url="${esc(l.url)}" data-name="${esc(l.name)}" data-cat="${esc(l.cat)}">
         ${badgeHtml}
         ${faviconHtml}
+        <button class="nav-card-fav" data-url="${esc(l.url)}" data-name="${esc(l.name)}" data-cat="${esc(l.cat)}" onclick="event.preventDefault(); event.stopPropagation(); toggleFav(this)" title="收藏">
+          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </button>
         <span class="nav-card-name">${esc(l.name)}</span>
         ${l.desc ? `<span class="nav-card-tip" style="background:${accent}">${esc(l.desc)}</span>` : ''}
       </a>
@@ -1598,6 +1648,128 @@ const catsJson = JSON.stringify(CATS);
     .nav-search-engine { padding: 6px 12px; }
     .nav-engine-label { font-size: 11px; padding: 2px 8px; }
   }
+
+  /* ===== 工具栏 ===== */
+  .nav-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px auto 16px;
+    max-width: var(--nav-max-width);
+    padding: 0 4px;
+    flex-wrap: wrap;
+  }
+  .nav-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--nav-border);
+    background: var(--nav-surface);
+    color: var(--nav-text-secondary);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-tool-btn:hover {
+    color: var(--nav-text);
+    border-color: var(--nav-border-hover);
+    background: var(--nav-card-bg);
+  }
+  .nav-tool-info {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--nav-text-dim);
+  }
+
+  /* ===== 收藏星标 ===== */
+  .nav-card-fav {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    color: #f59e0b;
+    z-index: 2;
+    font-size: 14px;
+  }
+  .nav-card:hover .nav-card-fav,
+  .nav-card-fav.active { opacity: 1; }
+  .nav-card-fav.active svg { fill: #f59e0b; }
+
+  /* ===== 提交面板 ===== */
+  .nav-submit-panel {
+    max-width: 600px;
+    margin: 16px auto 0;
+    padding: 24px;
+    background: var(--nav-surface);
+    border: 1px solid var(--nav-border);
+    border-radius: 12px;
+  }
+  .nav-submit-panel h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--nav-text);
+    margin: 0 0 16px;
+  }
+  .nav-submit-form { display: flex; flex-direction: column; gap: 10px; }
+  .nav-submit-form input,
+  .nav-submit-form select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--nav-border);
+    background: var(--nav-card-bg);
+    color: var(--nav-text);
+    font-size: var(--text-xs);
+  }
+  .nav-submit-form input:focus,
+  .nav-submit-form select:focus { border-color: var(--nav-accent); outline: none; }
+  .nav-submit-actions { display: flex; gap: 8px; }
+  .nav-submit-note { font-size: 11px; color: var(--nav-text-dim); margin: 10px 0 0; }
+
+  /* ===== 收藏视图 ===== */
+  .nav-fav-view {
+    max-width: var(--nav-max-width);
+    margin: 16px auto 0;
+    padding: 24px;
+    background: var(--nav-surface);
+    border: 1px solid var(--nav-border);
+    border-radius: 12px;
+  }
+  .nav-fav-view h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--nav-text);
+    margin: 0 0 16px;
+  }
+  .nav-fav-empty {
+    text-align: center;
+    color: var(--nav-text-dim);
+    font-size: var(--text-xs);
+    padding: 24px;
+  }
+
+  /* ===== 底部统计 ===== */
+  .nav-footer-stats {
+    max-width: var(--nav-max-width);
+    margin: 32px auto 0;
+    padding: 16px 0;
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--nav-text-dim);
+    border-top: 1px solid var(--nav-border);
+  }
+  .nav-footer-stats strong { color: var(--nav-text-secondary); }
+  .nav-stats-dot { margin: 0 8px; opacity: 0.4; }
 </style>
 
 <script>
@@ -1696,4 +1868,100 @@ const catsJson = JSON.stringify(CATS);
       localStorage.setItem('star-theme', next);
     });
   })();
+
+  // ===== 收藏功能 =====
+  const FAV_KEY = 'star-nav-favorites';
+  function getFavorites() {
+    try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; }
+  }
+  function saveFavorites(favs) { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); }
+  function isFav(url) { return getFavorites().some(f => f.url === url); }
+  function updateAllFavStars() {
+    const favs = getFavorites();
+    document.querySelectorAll('.nav-card-fav').forEach(btn => {
+      const url = btn.dataset.url;
+      btn.classList.toggle('active', favs.some(f => f.url === url));
+    });
+    document.getElementById('favCount').textContent = favs.length;
+  }
+  window.toggleFav = function(btn) {
+    const item = { url: btn.dataset.url, name: btn.dataset.name, cat: btn.dataset.cat || '' };
+    let favs = getFavorites();
+    const idx = favs.findIndex(f => f.url === item.url);
+    if (idx > -1) { favs.splice(idx, 1); } else { favs.push(item); }
+    saveFavorites(favs);
+    updateAllFavStars();
+  };
+  window.toggleFavorites = function() {
+    const view = document.getElementById('favView');
+    const grid = document.getElementById('favGrid');
+    const empty = document.getElementById('favEmpty');
+    const isVisible = view.style.display !== 'none';
+    if (isVisible) {
+      view.style.display = 'none';
+      document.getElementById('navGrid').style.display = '';
+      return;
+    }
+    const favs = getFavorites();
+    if (favs.length === 0) {
+      view.style.display = 'block';
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      document.getElementById('navGrid').style.display = 'none';
+    } else {
+      view.style.display = 'block';
+      empty.style.display = 'none';
+      document.getElementById('navGrid').style.display = 'none';
+      grid.innerHTML = favs.map((f, i) => renderCardHTML({url: f.url, name: f.name, cat: f.cat, desc: ''}, i)).join('');
+      updateAllFavStars();
+    }
+  };
+
+  // ===== 提交站点 =====
+  window.toggleSubmitForm = function() {
+    const panel = document.getElementById('submitPanel');
+    const isVisible = panel.style.display !== 'none';
+    panel.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+      const sel = document.getElementById('subCat');
+      if (sel.children.length <= 1) {
+        CATS.filter(c => c !== '全部').forEach(c => {
+          const o = document.createElement('option');
+          o.value = c; o.textContent = c; sel.appendChild(o);
+        });
+      }
+    }
+  };
+  window.submitSite = function() {
+    const name = document.getElementById('subName').value.trim();
+    const url = document.getElementById('subUrl').value.trim();
+    const desc = document.getElementById('subDesc').value.trim();
+    const cat = document.getElementById('subCat').value;
+    if (!name || !url || !cat) { alert('请填写名称、URL和分类'); return; }
+    let favs = getFavorites();
+    if (favs.some(f => f.url === url)) { alert('该站点已在收藏中'); return; }
+    favs.push({ url, name, cat, desc });
+    saveFavorites(favs);
+    document.getElementById('subName').value = '';
+    document.getElementById('subUrl').value = '';
+    document.getElementById('subDesc').value = '';
+    toggleSubmitForm();
+    updateAllFavStars();
+    alert('站点已添加到收藏夹！');
+  };
+
+  // ===== 底部统计 =====
+  document.getElementById('footerSiteCount').textContent = LINKS.length;
+  (function() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth()+1).padStart(2,'0');
+    const d = String(now.getDate()).padStart(2,'0');
+    document.getElementById('footerUpdated').textContent = y + '-' + m + '-' + d;
+    const visitsKey = 'star-nav-visits-' + y + '-' + m + '-' + d;
+    let visits = parseInt(localStorage.getItem(visitsKey) || '0', 10) + 1;
+    localStorage.setItem(visitsKey, visits);
+    document.getElementById('footerVisits').textContent = visits;
+  })();
+  updateAllFavStars();
 </script>

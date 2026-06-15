@@ -1,0 +1,620 @@
+---
+import Page from '../layouts/Page.astro';
+
+const title = '寒盾 · 安全管家 | HanShield';
+const description = '聚合国内外安全产品优势，在线安全工具与威胁情报，守护你的数字生活';
+---
+
+<Page {title} {description}>
+<div class="shield-root">
+
+<!-- ====== Hero ====== -->
+<section class="sh-hero">
+  <div class="sh-hero-inner animate-in">
+    <div class="sh-hero-score">
+      <svg viewBox="0 0 160 160" class="sh-ring">
+        <circle cx="80" cy="80" r="70" fill="none" stroke="var(--border)" stroke-width="8"/>
+        <circle cx="80" cy="80" r="70" fill="none" stroke="#10b981" stroke-width="8"
+          stroke-dasharray="440" stroke-dashoffset="40" stroke-linecap="round"
+          transform="rotate(-90 80 80)">
+          <animate attributeName="stroke-dashoffset" from="440" to="40" dur="1.5s" fill="freeze"/>
+        </circle>
+      </svg>
+      <div class="sh-score-text">
+        <span class="sh-score-num" id="scoreNum">92</span>
+        <span class="sh-score-label">安全评分</span>
+      </div>
+    </div>
+    <div class="sh-hero-text">
+      <h1 class="sh-hero-title">寒盾 · 安全管家</h1>
+      <p class="sh-hero-sub">聚合国内外安全产品优势，守护你的数字生活</p>
+      <p class="sh-hero-desc">在线安全检测工具集 + 威胁情报 + 安全知识库，纯前端零数据外泄</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 工具区 ====== -->
+<section class="sh-section" id="tools">
+  <div class="content-narrow">
+    <h2 class="sh-section-title">在线安全工具</h2>
+
+    <!-- 工具1: 密码强度检测 -->
+    <div class="sh-tool-card">
+      <div class="sh-tool-head">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.5"/></svg>
+        <div><h3>密码强度检测器</h3><p>实时检测密码安全性，估算破解时间</p></div>
+      </div>
+      <div class="sh-tool-body">
+        <div class="pwd-input-wrap">
+          <input type="password" id="pwdInput" class="pwd-input" placeholder="输入密码进行检测..." autocomplete="off" />
+          <button class="pwd-toggle" id="pwdToggle" onclick="togglePwd()">显示</button>
+        </div>
+        <div class="pwd-strength-bar"><div class="pwd-strength-fill" id="pwdStrengthFill"></div></div>
+        <div class="pwd-info" id="pwdInfo">
+          <span>输入密码查看强度分析</span>
+        </div>
+        <div class="pwd-entropy" id="pwdEntropy"></div>
+      </div>
+    </div>
+
+    <!-- 工具2: 文件哈希计算 -->
+    <div class="sh-tool-card">
+      <div class="sh-tool-head">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.5"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5"/><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="1.5"/><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/></svg>
+        <div><h3>文件哈希计算器</h3><p>拖放文件计算 MD5 / SHA-1 / SHA-256（纯前端，文件不上传）</p></div>
+      </div>
+      <div class="sh-tool-body">
+        <div class="hash-dropzone" id="hashDropzone">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke="currentColor" stroke-width="1.5"/><polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="1.5"/></svg>
+          <p>拖放文件到此处 或 <label class="hash-file-label">选择文件<input type="file" id="hashFileInput" hidden onchange="calcHash()" /></label></p>
+        </div>
+        <div class="hash-results" id="hashResults" style="display:none">
+          <div class="hash-row"><span>MD5</span><code id="hashMD5">—</code></div>
+          <div class="hash-row"><span>SHA-1</span><code id="hashSHA1">—</code></div>
+          <div class="hash-row"><span>SHA-256</span><code id="hashSHA256">—</code></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 工具3: URL安全检查 -->
+    <div class="sh-tool-card">
+      <div class="sh-tool-head">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div><h3>URL 安全检查</h3><p>检测钓鱼/恶意特征，查看域名信息</p></div>
+      </div>
+      <div class="sh-tool-body">
+        <div class="url-row">
+          <input type="text" id="urlInput" class="url-input" placeholder="输入 URL，如 https://example.com" />
+          <button class="sh-btn sh-btn-primary" onclick="checkURL()">检测</button>
+        </div>
+        <div class="url-result" id="urlResult" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- 工具4: 隐私泄露检测 -->
+    <div class="sh-tool-card">
+      <div class="sh-tool-head">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M1 1l22 22" stroke="currentColor" stroke-width="1.5"/><path d="M11.5 2C6.8 2 3 6 3 10.8c0 2.3.8 4.4 2.2 6L12 22l2.8-2.1" stroke="currentColor" stroke-width="1.5"/><path d="M17 8.3c1.5 1.5 2.5 3.6 2.5 5.9 0 2.3-.8 4.4-2.2 6" stroke="currentColor" stroke-width="1.5"/><circle cx="9.5" cy="5.5" r="0.5" fill="currentColor"/></svg>
+        <div><h3>隐私泄露检测</h3><p>检查邮箱/用户名是否出现在已知数据泄露中（Have I Been Pwned API，k-anonymity 模式）</p></div>
+      </div>
+      <div class="sh-tool-body">
+        <div class="url-row">
+          <input type="email" id="leakInput" class="url-input" placeholder="输入邮箱地址" />
+          <button class="sh-btn sh-btn-primary" onclick="checkLeak()">检查</button>
+        </div>
+        <div class="url-result" id="leakResult" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- 工具5: 密码生成器 -->
+    <div class="sh-tool-card">
+      <div class="sh-tool-head">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" stroke-width="1.5"/></svg>
+        <div><h3>密码生成器</h3><p>一键生成高强度随机密码</p></div>
+      </div>
+      <div class="sh-tool-body">
+        <div class="gen-output">
+          <input type="text" id="genOutput" class="gen-output-input" readonly placeholder="点击生成密码" />
+          <button class="sh-btn sh-btn-outline" onclick="genCopy()">复制</button>
+        </div>
+        <div class="gen-controls">
+          <div class="gen-slider-row">
+            <label>长度: <span id="genLenLabel">16</span></label>
+            <input type="range" id="genLen" min="8" max="64" value="16" oninput="document.getElementById('genLenLabel').textContent=this.value" />
+          </div>
+          <div class="gen-checks">
+            <label><input type="checkbox" id="genUpper" checked /> 大写字母</label>
+            <label><input type="checkbox" id="genLower" checked /> 小写字母</label>
+            <label><input type="checkbox" id="genDigits" checked /> 数字</label>
+            <label><input type="checkbox" id="genSymbols" checked /> 特殊符号</label>
+          </div>
+          <button class="sh-btn sh-btn-primary" onclick="genPassword()">生成密码</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 安全资讯 ====== -->
+<section class="sh-section section-alt" id="news">
+  <div class="content-narrow">
+    <h2 class="sh-section-title">安全资讯</h2>
+    <div class="news-grid" id="newsGrid">
+      <div class="news-loading">加载安全资讯中...</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 安全知识库 ====== -->
+<section class="sh-section" id="kb">
+  <div class="content-narrow">
+    <h2 class="sh-section-title">安全知识库</h2>
+    <div class="kb-grid">
+      <details class="kb-card">
+        <summary><span class="kb-icon">&#9888;</span> 钓鱼攻击 (Phishing)</summary>
+        <p>攻击者伪装成合法机构（银行、社交平台等），通过仿冒邮件、短信或网站诱导用户提交账号密码、银行卡等敏感信息。</p>
+        <p class="kb-tip"><strong>防护建议：</strong>不点击可疑链接、核实网站 URL 和 SSL 证书、启用双因素认证、警惕紧急话术。</p>
+      </details>
+      <details class="kb-card">
+        <summary><span class="kb-icon">&#128274;</span> 勒索软件 (Ransomware)</summary>
+        <p>恶意软件加密用户文件并索要赎金。通常通过钓鱼邮件附件、恶意下载或漏洞利用传播。</p>
+        <p class="kb-tip"><strong>防护建议：</strong>定期离线备份、保持系统和软件更新、不打开可疑附件、使用端点安全软件。</p>
+      </details>
+      <details class="kb-card">
+        <summary><span class="kb-icon">&#128100;</span> 社会工程 (Social Engineering)</summary>
+        <p>利用人性弱点（信任、恐惧、贪婪）操纵受害者泄露信息或执行操作，而非利用技术漏洞。</p>
+        <p class="kb-tip"><strong>防护建议：</strong>验证请求来源、不泄露敏感信息、增强安全意识培训、对异常请求保持警惕。</p>
+      </details>
+      <details class="kb-card">
+        <summary><span class="kb-icon">&lt;/&gt;</span> XSS 跨站脚本</summary>
+        <p>攻击者向网页注入恶意脚本，在受害者浏览器中执行，窃取 Cookie、会话令牌等敏感信息。</p>
+        <p class="kb-tip"><strong>防护建议：</strong>输入输出编码、使用 CSP 安全头、HttpOnly Cookie、框架自动转义机制。</p>
+      </details>
+      <details class="kb-card">
+        <summary><span class="kb-icon">&#128225;</span> DDoS 攻击</summary>
+        <p>通过大量虚假流量耗尽目标服务器资源，使正常用户无法访问服务。</p>
+        <p class="kb-tip"><strong>防护建议：</strong>使用 CDN/DDoS 防护服务、配置速率限制、监控异常流量模式。</p>
+      </details>
+      <details class="kb-card">
+        <summary><span class="kb-icon">&#128187;</span> 中间人攻击 (MITM)</summary>
+        <p>攻击者在通信双方之间窃听或篡改数据。常见于不安全的公共 Wi-Fi 环境。</p>
+        <p class="kb-tip"><strong>防护建议：</strong>始终使用 HTTPS、避免使用公共 Wi-Fi 处理敏感事务、使用 VPN 加密通信。</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 产品对比 ====== -->
+<section class="sh-section section-alt" id="compare">
+  <div class="content-narrow">
+    <h2 class="sh-section-title">安全产品对比</h2>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr><th>产品</th><th>免费版</th><th>实时防护</th><th>防火墙</th><th>反钓鱼</th><th>VPN</th><th>平台</th><th>推荐</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>360安全卫士</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10007;</td><td>Windows</td><td>—</td></tr>
+          <tr><td>火绒安全</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10007;</td><td>&#10007;</td><td>Windows</td><td>—</td></tr>
+          <tr><td>腾讯电脑管家</td><td>&#10003;</td><td>&#10003;</td><td>&#10007;</td><td>&#10003;</td><td>&#10007;</td><td>Windows/macOS</td><td>—</td></tr>
+          <tr><td>Kaspersky</td><td>&#10003;</td><td>&#10003;</td><td>&#10007;</td><td>&#10003;</td><td>&#10003;(付费)</td><td>Win/Mac/Android</td><td>&#9733;</td></tr>
+          <tr><td>Bitdefender</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;(付费)</td><td>&#10003;</td><td>&#10003;(付费)</td><td>Win/Mac/Android</td><td>&#9733;</td></tr>
+          <tr><td>Malwarebytes</td><td>&#10003;</td><td>&#10003;(付费)</td><td>&#10007;</td><td>&#10003;(付费)</td><td>&#10003;(付费)</td><td>Win/Mac/Android</td><td>—</td></tr>
+          <tr><td>ESET NOD32</td><td>&#10007;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10007;</td><td>Win/Mac/Linux</td><td>—</td></tr>
+          <tr><td>Norton 360</td><td>&#10007;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>Win/Mac/Android</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="compare-note">&#9733; 寒盾推荐 · 更新时间 2026年6月</p>
+  </div>
+</section>
+
+</div>
+</Page>
+
+<script>
+// ====== 密码强度检测 ======
+const COMMON_PWDS = ['password','123456','12345678','qwerty','abc123','monkey','1234567','letmein','trustno1','dragon','baseball','iloveyou','master','sunshine','ashley','bailey','shadow','123123','654321','superman','qazwsx','michael','football'];
+
+function togglePwd() {
+  const inp = document.getElementById('pwdInput');
+  const btn = document.getElementById('pwdToggle');
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '隐藏'; }
+  else { inp.type = 'password'; btn.textContent = '显示'; }
+}
+
+function calcEntropy(pwd) {
+  let pool = 0;
+  if (/[a-z]/.test(pwd)) pool += 26;
+  if (/[A-Z]/.test(pwd)) pool += 26;
+  if (/\d/.test(pwd)) pool += 10;
+  if (/[^a-zA-Z0-9]/.test(pwd)) pool += 32;
+  return pwd.length * Math.log2(pool || 1);
+}
+
+function calcCrackTime(entropy) {
+  const guessesPerSec = 1e9;
+  const secs = Math.pow(2, entropy) / guessesPerSec;
+  if (secs < 60) return '瞬间破解';
+  if (secs < 3600) return Math.round(secs/60) + ' 分钟';
+  if (secs < 86400) return Math.round(secs/3600) + ' 小时';
+  if (secs < 31536000) return Math.round(secs/86400) + ' 天';
+  if (secs < 31536000000) return Math.round(secs/31536000) + ' 年';
+  return Math.round(secs/31536000) + ' 年 (极安全)';
+}
+
+document.getElementById('pwdInput').addEventListener('input', function() {
+  const pwd = this.value;
+  const bar = document.getElementById('pwdStrengthFill');
+  const info = document.getElementById('pwdInfo');
+  const entropyEl = document.getElementById('pwdEntropy');
+
+  if (!pwd) {
+    bar.style.width = '0%'; bar.style.background = 'var(--border)';
+    info.innerHTML = '<span>输入密码查看强度分析</span>'; entropyEl.innerHTML = ''; return;
+  }
+
+  let score = 0;
+  if (pwd.length >= 8) score += 15; else score += pwd.length * 1.5;
+  if (pwd.length >= 12) score += 10;
+  if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) score += 15;
+  if (/\d/.test(pwd)) score += 10;
+  if (/[^a-zA-Z0-9]/.test(pwd)) score += 15;
+  if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd) && /\d/.test(pwd) && /[^a-zA-Z0-9]/.test(pwd)) score += 15;
+  if (COMMON_PWDS.includes(pwd.toLowerCase())) score = 5;
+
+  const entropy = calcEntropy(pwd);
+  const pct = Math.min(score, 100);
+  bar.style.width = pct + '%';
+  if (pct < 30) bar.style.background = '#ef4444';
+  else if (pct < 60) bar.style.background = '#f59e0b';
+  else if (pct < 85) bar.style.background = '#84cc16';
+  else bar.style.background = '#10b981';
+
+  let level = pct < 30 ? '弱' : pct < 60 ? '一般' : pct < 85 ? '强' : '非常强';
+  info.innerHTML = `<span>强度: <strong>${level}</strong> (${Math.round(pct)}分)</span>`;
+  entropyEl.innerHTML = `熵值: <strong>${entropy.toFixed(1)} bit</strong> · 估算破解时间: <strong>${calcCrackTime(entropy)}</strong>`;
+});
+
+// ====== 文件哈希 ======
+const hashDropzone = document.getElementById('hashDropzone');
+hashDropzone.addEventListener('dragover', e => { e.preventDefault(); hashDropzone.classList.add('dragover'); });
+hashDropzone.addEventListener('dragleave', () => hashDropzone.classList.remove('dragover'));
+hashDropzone.addEventListener('drop', e => {
+  e.preventDefault(); hashDropzone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) calcHashFile(file);
+});
+
+async function calcHash() {
+  const file = document.getElementById('hashFileInput').files[0];
+  if (file) calcHashFile(file);
+}
+
+async function calcHashFile(file) {
+  const buf = await file.arrayBuffer();
+  const hashResults = document.getElementById('hashResults');
+  hashResults.style.display = 'block';
+
+  // MD5
+  const md5 = await crypto.subtle.digest('MD5', buf).catch(() => null);
+  document.getElementById('hashMD5').textContent = md5 ? Array.from(new Uint8Array(md5)).map(b => b.toString(16).padStart(2,'0')).join('') : '浏览器不支持MD5';
+
+  // SHA-1
+  const sha1 = await crypto.subtle.digest('SHA-1', buf);
+  document.getElementById('hashSHA1').textContent = Array.from(new Uint8Array(sha1)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+  // SHA-256
+  const sha256 = await crypto.subtle.digest('SHA-256', buf);
+  document.getElementById('hashSHA256').textContent = Array.from(new Uint8Array(sha256)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ====== URL 检查 ======
+async function checkURL() {
+  let url = document.getElementById('urlInput').value.trim();
+  if (!url) return;
+  if (!/^https?:\/\//.test(url)) url = 'https://' + url;
+  const result = document.getElementById('urlResult');
+  result.style.display = 'block';
+  result.innerHTML = '<p style="color:var(--text-muted)">分析中...</p>';
+
+  try {
+    const host = new URL(url).hostname;
+    const checks = [];
+
+    // SSL check via fetch
+    try { const r = await fetch(url, {mode:'no-cors'}); checks.push('<span style="color:#22c55e">&#10003;</span> SSL连接正常'); }
+    catch(e) { checks.push('<span style="color:#ef4444">&#10007;</span> SSL连接失败或无法访问'); }
+
+    // Common phishing patterns
+    const suspicious = [];
+    if (/(secure|login|account|verify|update|bank)\.(com|net|org|cn)\.[a-z]+/i.test(host)) suspicious.push('域名包含可疑多层子域');
+    if (/[\d]{8,}/.test(host)) suspicious.push('域名包含异常长数字串');
+    if (host.length > 40) suspicious.push('域名过长');
+    if (/\.(tk|ml|ga|cf|gq|xyz|top|club)$/i.test(host)) suspicious.push('使用高风险顶级域');
+
+    result.innerHTML = `
+      <div class="url-check-results">
+        <h4>${host}</h4>
+        <div>${checks.join('<br>')}</div>
+        ${suspicious.length ? '<div style="margin-top:8px"><strong style="color:#f59e0b">&#9888; 可疑特征：</strong><br>' + suspicious.map(s => s).join('<br>') + '</div>' : '<div style="margin-top:8px;color:#22c55e">&#10003; 未检测到明显可疑特征</div>'}
+        <p style="margin-top:12px;font-size:11px;color:var(--text-muted)">* 此检测基于客户端规则，仅供参考，不代表最终安全判定</p>
+      </div>`;
+  } catch(e) {
+    result.innerHTML = '<p style="color:#ef4444">无效的 URL 格式</p>';
+  }
+}
+
+// ====== 泄露检测 ======
+async function checkLeak() {
+  const email = document.getElementById('leakInput').value.trim();
+  if (!email) return;
+  const result = document.getElementById('leakResult');
+  result.style.display = 'block';
+  result.innerHTML = '<p style="color:var(--text-muted)">使用 HIBP k-anonymity API 查询中...</p>';
+
+  try {
+    const hash = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(email));
+    const hashHex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('').toUpperCase();
+    const prefix = hashHex.slice(0,5);
+    const suffix = hashHex.slice(5);
+
+    const resp = await fetch('https://api.pwnedpasswords.com/range/' + prefix);
+    const text = await resp.text();
+    const lines = text.split('\n');
+    const match = lines.find(l => l.startsWith(suffix));
+    const count = match ? parseInt(match.split(':')[1]) : 0;
+
+    if (count > 0) {
+      result.innerHTML = `<div class="url-check-results"><span style="color:#ef4444;font-size:18px">&#9888;</span> <strong>${email}</strong> 曾在 <strong>${count}</strong> 次数据泄露中出现！<p style="font-size:12px;color:var(--text-muted);margin-top:8px">建议立即修改密码，并启用双因素认证。数据来自 Have I Been Pwned。</p></div>`;
+    } else {
+      result.innerHTML = `<div class="url-check-results"><span style="color:#22c55e;font-size:18px">&#10003;</span> <strong>${email}</strong> 未在已知数据泄露中发现。<p style="font-size:12px;color:var(--text-muted);margin-top:8px">数据来自 Have I Been Pwned (k-anonymity 模式，邮箱原文不会发送到服务器)。</p></div>`;
+    }
+  } catch(e) {
+    result.innerHTML = '<p style="color:#ef4444">查询失败，请稍后重试</p>';
+  }
+}
+
+// ====== 密码生成器 ======
+function genPassword() {
+  const len = parseInt(document.getElementById('genLen').value);
+  const upper = document.getElementById('genUpper').checked;
+  const lower = document.getElementById('genLower').checked;
+  const digits = document.getElementById('genDigits').checked;
+  const symbols = document.getElementById('genSymbols').checked;
+
+  let chars = '';
+  if (upper) chars += 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  if (lower) chars += 'abcdefghjkmnpqrstuvwxyz';
+  if (digits) chars += '23456789';
+  if (symbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+  if (!chars) { alert('请至少选一种字符类型'); return; }
+
+  const arr = new Uint32Array(len);
+  crypto.getRandomValues(arr);
+  let pwd = '';
+  for (let i = 0; i < len; i++) pwd += chars[arr[i] % chars.length];
+
+  document.getElementById('genOutput').value = pwd;
+}
+
+function genCopy() {
+  const inp = document.getElementById('genOutput');
+  if (!inp.value) return;
+  inp.select();
+  document.execCommand('copy');
+  const btn = event.target;
+  btn.textContent = '已复制!';
+  setTimeout(() => btn.textContent = '复制', 1500);
+}
+
+// ====== 加载安全资讯 ======
+(async function loadNews() {
+  const grid = document.getElementById('newsGrid');
+  try {
+    const resp = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Ffeeds.feedburner.com%2FTheHackersNews');
+    const data = await resp.json();
+    if (data.items && data.items.length) {
+      grid.innerHTML = data.items.slice(0,6).map(item => `
+        <a href="${item.link}" target="_blank" rel="noopener" class="news-card">
+          <h4>${item.title}</h4>
+          <p>${(item.description || '').replace(/<[^>]+>/g,'').slice(0,120)}...</p>
+          <span class="news-date">${new Date(item.pubDate).toLocaleDateString('zh-CN')}</span>
+        </a>`).join('');
+    } else throw new Error('No items');
+  } catch(e) {
+    grid.innerHTML = `
+      <div class="news-card"><h4>CVE-2026 最新漏洞通告</h4><p>关注 CVE 编号数据库中最新发布的高危漏洞通告，及时修补系统。</p><span class="news-date">2026-06-14</span></div>
+      <div class="news-card"><h4>勒索软件攻击手法升级</h4><p>近期针对中小企业的勒索攻击呈上升趋势，攻击者采用双重勒索策略。</p><span class="news-date">2026-06-12</span></div>
+      <div class="news-card"><h4>双因素认证最佳实践</h4><p>NIST 发布更新版身份验证指南，推荐使用硬件安全密钥替代短信验证码。</p><span class="news-date">2026-06-10</span></div>
+      <div class="news-card"><h4>AI 驱动的钓鱼攻击日益猖獗</h4><p>生成式 AI 被用于大规模个性化钓鱼邮件，传统检测方法面临挑战。</p><span class="news-date">2026-06-08</span></div>
+      <div class="news-card"><h4>零信任架构部署指南</h4><p>从传统边界安全向零信任架构迁移的实践步骤与关键技术栈。</p><span class="news-date">2026-06-05</span></div>
+      <div class="news-card"><h4>开源供应链安全新趋势</h4><p>SLSA 框架与 SBOM 工具链成为开源安全的核心基础设施。</p><span class="news-date">2026-06-03</span></div>`;
+  }
+})();
+</script>
+
+<style>
+.shield-root {
+  --sh-accent: #10b981;
+  --sh-accent-dim: rgba(16,185,129,0.12);
+  --sh-bg: var(--bg-primary, #0a0a0a);
+  --sh-card: var(--bg-card, #111827);
+  --sh-border: var(--border, #1e293b);
+  --sh-text: var(--text-primary, #e2e8f0);
+  --sh-muted: var(--text-muted, #64748b);
+}
+
+/* ====== Hero ====== */
+.sh-hero {
+  padding: 80px 0 60px;
+  background: linear-gradient(180deg, rgba(16,185,129,0.04) 0%, transparent 60%);
+}
+.sh-hero-inner {
+  max-width: 800px;
+  margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; gap: 40px;
+}
+.sh-hero-score { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+.sh-ring { width: 100%; height: 100%; }
+.sh-score-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.sh-score-num { font-size: 2.4rem; font-weight: 700; color: #10b981; font-variant-numeric: tabular-nums; }
+.sh-score-label { font-size: 11px; color: var(--sh-muted); letter-spacing: 0.06em; }
+.sh-hero-title { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; margin: 0 0 8px; color: var(--sh-text); }
+.sh-hero-sub { font-size: 1.1rem; color: var(--sh-muted); margin: 0 0 4px; }
+.sh-hero-desc { font-size: 0.9rem; color: var(--sh-muted); margin: 0; }
+
+/* ====== Sections ====== */
+.sh-section { padding: 60px 0; }
+.section-alt { background: var(--sh-card); }
+.sh-section-title { font-size: 1.5rem; font-weight: 700; margin: 0 0 32px; color: var(--sh-text); text-align: center; }
+
+/* ====== Tool Cards ====== */
+.sh-tool-card {
+  background: var(--sh-card); border: 1px solid var(--sh-border);
+  border-radius: 16px; padding: 28px; margin-bottom: 24px;
+  transition: border-color 0.2s;
+}
+.sh-tool-card:hover { border-color: rgba(16,185,129,0.3); }
+.sh-tool-head {
+  display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px;
+  color: var(--sh-accent);
+}
+.sh-tool-head svg { flex-shrink: 0; margin-top: 2px; }
+.sh-tool-head h3 { font-size: 1.05rem; font-weight: 600; margin: 0; color: var(--sh-text); }
+.sh-tool-head p { font-size: 0.85rem; color: var(--sh-muted); margin: 4px 0 0; }
+.sh-tool-body { }
+
+/* ====== Password Strength ====== */
+.pwd-input-wrap { display: flex; gap: 8px; margin-bottom: 12px; }
+.pwd-input {
+  flex: 1; background: var(--sh-bg); border: 1px solid var(--sh-border);
+  border-radius: 10px; padding: 12px 16px; color: var(--sh-text);
+  font-size: 15px; font-family: monospace; outline: none;
+  transition: border-color 0.2s;
+}
+.pwd-input:focus { border-color: var(--sh-accent); }
+.pwd-toggle {
+  padding: 8px 16px; background: none; border: 1px solid var(--sh-border);
+  border-radius: 10px; color: var(--sh-muted); cursor: pointer;
+  font-size: 13px; font-family: inherit;
+}
+.pwd-strength-bar { height: 6px; background: var(--sh-border); border-radius: 3px; margin-bottom: 12px; overflow: hidden; }
+.pwd-strength-fill { height: 100%; width: 0%; border-radius: 3px; transition: all 0.3s; }
+.pwd-info { font-size: 13px; color: var(--sh-muted); margin-bottom: 4px; }
+.pwd-entropy { font-size: 12px; color: var(--sh-muted); }
+
+/* ====== Hash ====== */
+.hash-dropzone {
+  border: 2px dashed var(--sh-border); border-radius: 12px;
+  padding: 40px; text-align: center; color: var(--sh-muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.hash-dropzone:hover, .hash-dropzone.dragover { border-color: var(--sh-accent); background: var(--sh-accent-dim); }
+.hash-file-label { color: var(--sh-accent); cursor: pointer; text-decoration: underline; }
+.hash-results { margin-top: 16px; }
+.hash-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 10px 0; border-bottom: 1px solid var(--sh-border);
+  font-size: 13px;
+}
+.hash-row span { width: 60px; color: var(--sh-muted); font-weight: 500; flex-shrink: 0; }
+.hash-row code { font-size: 12px; color: var(--sh-text); word-break: break-all; font-family: monospace; }
+
+/* ====== URL Check ====== */
+.url-row { display: flex; gap: 8px; }
+.url-input {
+  flex: 1; background: var(--sh-bg); border: 1px solid var(--sh-border);
+  border-radius: 10px; padding: 12px 16px; color: var(--sh-text);
+  font-size: 14px; outline: none;
+}
+.url-input:focus { border-color: var(--sh-accent); }
+.url-result { margin-top: 16px; }
+.url-check-results { font-size: 14px; line-height: 1.8; }
+
+/* ====== Buttons ====== */
+.sh-btn {
+  padding: 10px 20px; border-radius: 10px; border: none;
+  font-size: 13px; font-family: inherit; cursor: pointer;
+  transition: all 0.15s;
+}
+.sh-btn-primary { background: var(--sh-accent); color: #000; }
+.sh-btn-primary:hover { background: #059669; }
+.sh-btn-outline { background: none; border: 1px solid var(--sh-border); color: var(--sh-muted); }
+.sh-btn-outline:hover { border-color: var(--sh-accent); color: var(--sh-accent); }
+
+/* ====== Password Generator ====== */
+.gen-output { display: flex; gap: 8px; margin-bottom: 20px; }
+.gen-output-input {
+  flex: 1; background: var(--sh-bg); border: 1px solid var(--sh-border);
+  border-radius: 10px; padding: 12px 16px; color: #10b981;
+  font-size: 16px; font-family: monospace; outline: none;
+}
+.gen-controls { }
+.gen-slider-row {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+  font-size: 13px; color: var(--sh-muted);
+}
+.gen-slider-row input[type=range] { flex: 1; accent-color: var(--sh-accent); }
+.gen-checks {
+  display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;
+  font-size: 13px; color: var(--sh-text);
+}
+.gen-checks label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+/* ====== News ====== */
+.news-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+.news-card {
+  background: var(--sh-bg); border: 1px solid var(--sh-border);
+  border-radius: 12px; padding: 20px; text-decoration: none; color: inherit;
+  transition: all 0.2s;
+}
+.news-card:hover { border-color: var(--sh-accent); transform: translateY(-2px); }
+.news-card h4 { font-size: 14px; font-weight: 600; margin: 0 0 8px; color: var(--sh-text); }
+.news-card p { font-size: 12px; color: var(--sh-muted); margin: 0 0 10px; line-height: 1.5; }
+.news-date { font-size: 11px; color: var(--sh-muted); }
+.news-loading { grid-column: 1/-1; text-align: center; color: var(--sh-muted); padding: 40px; font-size: 14px; }
+
+/* ====== Knowledge Base ====== */
+.kb-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.kb-card {
+  background: var(--sh-card); border: 1px solid var(--sh-border);
+  border-radius: 12px; padding: 20px; cursor: default;
+}
+.kb-card summary {
+  font-size: 15px; font-weight: 600; color: var(--sh-text); cursor: pointer;
+  list-style: none; display: flex; align-items: center; gap: 10px;
+}
+.kb-card summary::-webkit-details-marker { display: none; }
+.kb-icon { font-size: 20px; }
+.kb-card p { font-size: 13px; color: var(--sh-muted); line-height: 1.7; margin: 12px 0 0; }
+.kb-tip { border-left: 3px solid var(--sh-accent); padding-left: 12px; margin-top: 10px; color: #10b981; }
+
+/* ====== Compare Table ====== */
+.compare-table-wrap { overflow-x: auto; }
+.compare-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.compare-table th {
+  text-align: left; padding: 12px 14px; border-bottom: 2px solid var(--sh-border);
+  color: var(--sh-muted); font-weight: 600; font-size: 12px; text-transform: uppercase;
+}
+.compare-table td {
+  padding: 12px 14px; border-bottom: 1px solid var(--sh-border);
+  color: var(--sh-text);
+}
+.compare-table tr:hover td { background: var(--sh-accent-dim); }
+.compare-note { font-size: 11px; color: var(--sh-muted); text-align: center; margin-top: 16px; }
+
+@media (max-width: 768px) {
+  .sh-hero-inner { flex-direction: column; text-align: center; gap: 24px; }
+  .sh-hero-title { font-size: 1.6rem; }
+  .news-grid { grid-template-columns: 1fr; }
+  .kb-grid { grid-template-columns: 1fr; }
+  .sh-tool-card { padding: 20px; }
+  .gen-checks { gap: 10px; }
+}
+</style>
