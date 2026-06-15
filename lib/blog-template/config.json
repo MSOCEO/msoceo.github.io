@@ -1,0 +1,26 @@
+{
+  "title": "我的博客",
+  "subtitle": "用心写作，分享思考",
+  "author": "",
+  "language": "zh-CN",
+  "theme": "default",
+  "postsPerPage": 10,
+  "baseURL": "",
+  "nav": [
+    { "label": "首页", "url": "/" },
+    { "label": "归档", "url": "/archive" }
+  ],
+  "social": {
+    "github": "",
+    "twitter": ""
+  },
+  "search": {
+    "enabled": true
+  },
+  "comments": {
+    "provider": ""
+  },
+  "analytics": {
+    "provider": ""
+  }
+}

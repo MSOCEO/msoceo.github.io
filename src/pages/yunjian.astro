@@ -41,6 +41,55 @@ const description = '三分钟拥有自己的独立博客，基于 GitHub Pages�
       <div class="yj-hero-bg" aria-hidden="true"></div>
     </section>
 
+    <!-- ===== Dashboard (仅登录后可见) ===== -->
+    <section class="yj-section" id="yjDashboard" style="display:none">
+      <div class="yj-container">
+        <h2 class="yj-section-title" id="yjDashGreeting">你好</h2>
+        <!-- 未创建博客 -->
+        <div id="yjNoBlog" style="display:none">
+          <div class="yj-dash-card yj-dash-cta" style="text-align:center;padding:48px 24px">
+            <div style="font-size:48px;margin-bottom:16px">&#127881;</div>
+            <h3 style="font-size:1.3rem;margin-bottom:8px">你还没有博客</h3>
+            <p style="color:var(--yj-text-dim);margin-bottom:20px">一键创建 GitHub 仓库，自动部署到 GitHub Pages</p>
+            <button class="yj-btn yj-btn-primary yj-btn-lg" id="yjCreateBlog">&#9889; 一键创建博客</button>
+            <div id="yjCreateProgress" style="display:none;margin-top:16px">
+              <div class="yj-progress-bar"><div class="yj-progress-fill" id="yjProgressFill"></div></div>
+              <p class="yj-progress-text" id="yjProgressText" style="color:var(--yj-text-dim);font-size:13px;margin-top:8px">准备中...</p>
+            </div>
+          </div>
+        </div>
+        <!-- 已有博客 -->
+        <div id="yjHasBlog" style="display:none">
+          <div class="yj-dash-grid">
+            <div class="yj-dash-card" style="text-align:center">
+              <div style="font-size:36px;margin-bottom:8px">&#127760;</div>
+              <h3>我的博客</h3>
+              <p><a id="yjBlogUrl" href="#" target="_blank" style="color:var(--yj-accent)">加载中...</a></p>
+              <span class="yj-badge" id="yjBlogStatus">在线</span>
+            </div>
+            <div class="yj-dash-card" style="text-align:center">
+              <div style="font-size:36px;margin-bottom:8px">&#9997;</div>
+              <h3>写文章</h3>
+              <p style="color:var(--yj-text-dim);margin-bottom:12px">在线编辑，实时预览</p>
+              <a href="/yunjian/editor" class="yj-btn yj-btn-primary">开始写作</a>
+            </div>
+            <div class="yj-dash-card" style="text-align:center">
+              <div style="font-size:36px;margin-bottom:8px">&#128196;</div>
+              <h3>管理文章</h3>
+              <p id="yjPostCount" style="color:var(--yj-text-dim);margin-bottom:12px">加载中...</p>
+              <a href="/yunjian/dashboard" class="yj-btn yj-btn-outline">查看文章</a>
+            </div>
+            <div class="yj-dash-card" style="text-align:center">
+              <div style="font-size:36px;margin-bottom:8px">&#9881;</div>
+              <h3>博客设置</h3>
+              <p style="color:var(--yj-text-dim);margin-bottom:12px">修改主题、域名等</p>
+              <a href="/yunjian/dashboard" class="yj-btn yj-btn-ghost">设置</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Features -->
     <section class="yj-section" id="features">
       <div class="yj-container">
@@ -843,6 +892,14 @@ const description = '三分钟拥有自己的独立博客，基于 GitHub Pages�
     font-weight: 600;
   }
 
+  /* Dashboard */
+  .yj-dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .yj-dash-card { background: var(--yj-bg-card); border: 1px solid var(--yj-border); border-radius: 12px; padding: 24px 20px; }
+  .yj-dash-card h3 { font-size: var(--text-base); color: var(--ink-90); margin: 0 0 8px; }
+  .yj-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; background: rgba(16,185,129,0.12); color: var(--yj-accent); }
+  .yj-progress-bar { width: 100%; height: 6px; background: var(--yj-border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .yj-progress-fill { height: 100%; background: linear-gradient(90deg, var(--yj-accent), #3b82f6); border-radius: 3px; transition: width .3s; width: 0%; }
+
   /* Responsive */
   @media (max-width: 900px) {
     .yj-hero-inner { grid-template-columns: 1fr; }
@@ -856,6 +913,7 @@ const description = '三分钟拥有自己的独立博客，基于 GitHub Pages�
     .yj-features-grid { grid-template-columns: 1fr; }
     .yj-demo-grid { grid-template-columns: 1fr; }
     .yj-status-inner { gap: 12px; }
+    .yj-dash-grid { grid-template-columns: 1fr; }
   }
 </style>
 
@@ -880,7 +938,7 @@ const description = '三分钟拥有自己的独立博客，基于 GitHub Pages�
     if (elDeploy) setInterval(() => { elDeploy.textContent = Math.floor(30 + Math.random() * 30); }, 10000);
   })();
 
-  // ===== Supabase Auth 状态检测 =====
+  // ===== Supabase Auth 状态检测 + 仪表盘 =====
   (async function() {
     const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
     const supabase = createClient(
@@ -893,15 +951,132 @@ const description = '三分钟拥有自己的独立博客，基于 GitHub Pages�
     if (!heroActions) return;
 
     if (session?.user) {
-      const username = session.user.user_metadata?.username || session.user.email?.split('@')[0] || '用户';
+      const user = session.user;
+      const username = user.user_metadata?.username || user.email?.split('@')[0] || '用户';
+
+      // 替换 Hero 按钮为控制面板入口
       heroActions.innerHTML = `
         <span class="yj-user-greeting">你好，${escapeHtml(username)}</span>
-        <a href="/yunjian/dashboard" class="yj-btn yj-btn-primary">进入控制台 &rarr;</a>
+        <a href="#yjDashboard" class="yj-btn yj-btn-primary">进入控制台 &rarr;</a>
         <button class="yj-btn yj-btn-ghost" id="yj-logout-btn">退出登录</button>
       `;
       document.getElementById('yj-logout-btn')?.addEventListener('click', async () => {
         await supabase.auth.signOut();
         window.location.reload();
+      });
+
+      // 显示仪表盘
+      const dash = document.getElementById('yjDashboard');
+      if (dash) dash.style.display = '';
+      document.getElementById('yjDashGreeting').textContent = `你好，${escapeHtml(username)}`;
+
+      // 加载 profile 信息
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+
+      if (profile?.blog_repo && profile?.blog_status === 'active') {
+        document.getElementById('yjHasBlog').style.display = '';
+        document.getElementById('yjBlogUrl').href = profile.blog_url || '#';
+        document.getElementById('yjBlogUrl').textContent = profile.blog_url || profile.blog_repo;
+      } else {
+        document.getElementById('yjNoBlog').style.display = '';
+      }
+
+      // 加载文章统计
+      const { count } = await supabase.from('posts').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
+      document.getElementById('yjPostCount').textContent = `共 ${count || 0} 篇文章`;
+
+      // 一键创建博客
+      document.getElementById('yjCreateBlog')?.addEventListener('click', async () => {
+        const btn = document.getElementById('yjCreateBlog');
+        const progressDiv = document.getElementById('yjCreateProgress');
+        const progressFill = document.getElementById('yjProgressFill');
+        const progressText = document.getElementById('yjProgressText');
+
+        btn.disabled = true;
+        btn.textContent = '创建中...';
+        progressDiv.style.display = '';
+        progressFill.style.width = '10%';
+        progressText.textContent = '检查 GitHub 授权...';
+
+        // 如果有 GitHub token (OAuth)，创建仓库
+        const providerToken = session.provider_token;
+        if (!providerToken) {
+          progressText.textContent = '需要 GitHub OAuth 授权，请先退出并使用 GitHub 登录';
+          btn.disabled = false;
+          btn.textContent = '使用 GitHub 登录';
+          return;
+        }
+
+        progressFill.style.width = '30%';
+        progressText.textContent = '创建 GitHub 仓库...';
+
+        try {
+          const repoName = `${username}.github.io`;
+          // 检查仓库是否存在
+          let checkResp = await fetch(`https://api.github.com/repos/${username}/${repoName}`, {
+            headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json' }
+          });
+          if (checkResp.ok) {
+            progressText.textContent = `仓库 ${repoName} 已存在，跳过创建`;
+          } else {
+            // 创建仓库
+            const createResp = await fetch('https://api.github.com/user/repos', {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: repoName,
+                description: 'Personal blog powered by HanBlog & YunJian',
+                homepage: `https://${username}.github.io`,
+                private: false,
+                has_issues: false,
+                has_projects: false,
+                has_wiki: false,
+                auto_init: true
+              })
+            });
+            if (!createResp.ok) {
+              const err = await createResp.json();
+              throw new Error(err.message || '创建仓库失败');
+            }
+          }
+
+          progressFill.style.width = '60%';
+          progressText.textContent = '开启 GitHub Pages...';
+
+          // 开启 Pages
+          await fetch(`https://api.github.com/repos/${username}/${repoName}/pages`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ source: { branch: 'main', path: '/' } })
+          });
+
+          progressFill.style.width = '85%';
+          progressText.textContent = '保存配置...';
+
+          // 保存到 Supabase
+          const blogURL = `https://${username}.github.io`;
+          await supabase.from('profiles').upsert({
+            id: user.id,
+            blog_repo: repoName,
+            blog_url: blogURL,
+            blog_status: 'active',
+            blog_theme: 'default'
+          });
+
+          progressFill.style.width = '100%';
+          progressText.textContent = `博客创建成功！${blogURL}`;
+          btn.textContent = '前往博客';
+          btn.disabled = false;
+          btn.onclick = () => window.open(blogURL, '_blank');
+
+          // 刷新页面以显示已创建状态
+          setTimeout(() => window.location.reload(), 2000);
+
+        } catch(e) {
+          progressText.textContent = `创建失败: ${e.message}`;
+          btn.textContent = '重试';
+          btn.disabled = false;
+        }
       });
     }
 

@@ -1,0 +1,15 @@
+{
+  "name": "my-hanblog",
+  "version": "1.0.0",
+  "description": "由寒影博客引擎驱动的个人博客",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch",
+    "serve": "npx serve public"
+  },
+  "dependencies": {
+    "hanhub-blog-engine": "file:../lib/blog-engine"
+  },
+  "license": "MIT"
+}

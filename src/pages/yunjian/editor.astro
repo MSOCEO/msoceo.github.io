@@ -1,0 +1,412 @@
+---
+---
+
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>编辑器 · 云笺</title>
+<meta name="description" content="在线 Markdown 编辑，实时预览">
+</head>
+<body>
+<div class="editor-root">
+  <!-- 顶部工具栏 -->
+  <header class="ed-header">
+    <a href="/yunjian" class="ed-logo">&#10236; 云笺</a>
+    <div class="ed-toolbar">
+      <button class="ed-tb-btn" data-action="bold" title="粗体 Ctrl+B">B</button>
+      <button class="ed-tb-btn" data-action="italic" title="斜体 Ctrl+I"><em>I</em></button>
+      <button class="ed-tb-btn" data-action="heading" title="标题">H</button>
+      <button class="ed-tb-btn" data-action="link" title="链接 Ctrl+K">&#128279;</button>
+      <button class="ed-tb-btn" data-action="image" title="图片">&#128247;</button>
+      <button class="ed-tb-btn" data-action="code" title="代码块">&lt;/&gt;</button>
+      <button class="ed-tb-btn" data-action="table" title="表格">&#9638;</button>
+      <button class="ed-tb-btn" data-action="quote" title="引用">&#8220;</button>
+      <span class="ed-tb-sep"></span>
+      <button class="ed-tb-btn" data-action="undo" title="撤销">&#8630;</button>
+      <button class="ed-tb-btn" data-action="redo" title="重做">&#8631;</button>
+    </div>
+    <div class="ed-header-right">
+      <span class="ed-stats" id="edStats">0 字 · 阅读约 0 分钟</span>
+      <button class="ed-btn ed-btn-ghost" id="edSaveDraft">保存草稿</button>
+      <button class="ed-btn ed-btn-primary" id="edPublish">发布</button>
+    </div>
+  </header>
+
+  <!-- 文章元信息 -->
+  <div class="ed-meta" id="edMeta">
+    <input type="text" class="ed-meta-title" id="edTitle" placeholder="文章标题" autofocus>
+    <div class="ed-meta-row">
+      <input type="text" class="ed-meta-input" id="edCategory" placeholder="分类（可选）">
+      <input type="text" class="ed-meta-input" id="edTags" placeholder="标签，逗号分隔（可选）">
+      <input type="date" class="ed-meta-input" id="edDate">
+    </div>
+    <div class="ed-meta-row" id="edSlugRow">
+      <span class="ed-slug-label">固定链接: /posts/</span>
+      <span class="ed-slug-val" id="edSlugPreview">---</span>
+    </div>
+  </div>
+
+  <!-- 编辑区 -->
+  <div class="ed-main">
+    <div class="ed-pane ed-pane-left">
+      <div class="ed-pane-label">Markdown</div>
+      <textarea class="ed-textarea" id="edEditor" placeholder="开始写作...&#10;&#10;Markdown 语法全支持，右侧实时预览"></textarea>
+      <!-- 图片拖拽上传区域 -->
+      <div class="ed-dropzone" id="edDropzone">拖拽图片到此上传</div>
+      <input type="file" id="edImageInput" accept="image/*" style="display:none" multiple>
+    </div>
+    <div class="ed-pane ed-pane-right">
+      <div class="ed-pane-label">预览</div>
+      <div class="ed-preview" id="edPreview"></div>
+    </div>
+  </div>
+
+  <!-- 发布弹窗 -->
+  <div class="ed-modal" id="edPublishModal" hidden>
+    <div class="ed-modal-card">
+      <h2>发布文章</h2>
+      <p>文章将通过 GitHub API 提交到你的博客仓库，自动触发构建部署。</p>
+      <div class="ed-modal-actions">
+        <button class="ed-btn ed-btn-ghost" id="edCancelPublish">取消</button>
+        <button class="ed-btn ed-btn-primary" id="edConfirmPublish">确认发布</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+<style>
+  .editor-root { display:flex; flex-direction:column; height:100vh; background: #0f1117; color: #c9d1d9; font-family: -apple-system,BlinkMacSystemFont,sans-serif; }
+  .ed-header { display:flex; align-items:center; padding: 0 16px; height: 48px; background: #161b22; border-bottom: 1px solid #21262d; flex-shrink:0; }
+  .ed-logo { color: #58a6ff; text-decoration:none; font-weight:700; font-size:15px; margin-right:16px; }
+  .ed-toolbar { display:flex; align-items:center; gap:2px; }
+  .ed-tb-btn { width:32px; height:32px; border:none; background:transparent; color:#8b949e; cursor:pointer; border-radius:6px; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .ed-tb-btn:hover { background:#21262d; color:#c9d1d9; }
+  .ed-tb-sep { width:1px; height:20px; background:#21262d; margin:0 6px; }
+  .ed-header-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+  .ed-stats { font-size:12px; color:#484f58; }
+  .ed-btn { padding:6px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid #30363d; transition:.15s; }
+  .ed-btn-ghost { background:transparent; color:#c9d1d9; }
+  .ed-btn-ghost:hover { background:#21262d; }
+  .ed-btn-primary { background:#238636; color:#fff; border-color:rgba(240,246,252,0.1); }
+  .ed-btn-primary:hover { background:#2ea043; }
+  .ed-btn-danger { background:#da3633; color:#fff; border-color:rgba(240,246,252,0.1); }
+
+  .ed-meta { padding:12px 24px; background:#0d1117; border-bottom:1px solid #21262d; flex-shrink:0; }
+  .ed-meta-title { width:100%; font-size:22px; font-weight:700; background:transparent; border:none; color:#c9d1d9; padding:4px 0; outline:none; }
+  .ed-meta-title::placeholder { color:#30363d; }
+  .ed-meta-row { display:flex; gap:10px; margin-top:8px; align-items:center; }
+  .ed-meta-input { background:#161b22; border:1px solid #21262d; border-radius:6px; padding:4px 10px; color:#c9d1d9; font-size:13px; outline:none; flex:1; }
+  .ed-meta-input:focus { border-color:#58a6ff; }
+  .ed-slug-label { color:#484f58; font-size:12px; }
+  .ed-slug-val { color:#58a6ff; font-size:12px; }
+
+  .ed-main { display:flex; flex:1; overflow:hidden; }
+  .ed-pane { flex:1; display:flex; flex-direction:column; border-right:1px solid #21262d; position:relative; }
+  .ed-pane:last-child { border-right:none; }
+  .ed-pane-label { padding:6px 16px; font-size:11px; color:#484f58; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid #21262d; background:#0d1117; }
+  .ed-textarea { flex:1; background:transparent; border:none; color:#c9d1d9; padding:16px 24px; font-family:"JetBrains Mono","SF Mono",Consolas,monospace; font-size:14px; line-height:1.7; resize:none; outline:none; tab-size:2; }
+  .ed-preview { flex:1; padding:16px 24px; overflow-y:auto; line-height:1.8; font-size:15px; }
+  .ed-preview h1 { font-size:1.8em; border-bottom:1px solid #21262d; padding-bottom:.3em; }
+  .ed-preview h2 { font-size:1.4em; margin-top:1.2em; }
+  .ed-preview pre { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:16px; overflow-x:auto; }
+  .ed-preview code { font-family:"JetBrains Mono",monospace; font-size:.9em; background:rgba(110,118,129,0.2); padding:2px 5px; border-radius:4px; }
+  .ed-preview pre code { background:transparent; padding:0; }
+  .ed-preview blockquote { border-left:3px solid #30363d; padding:0 1em; color:#8b949e; }
+  .ed-preview table { border-collapse:collapse; width:100%; }
+  .ed-preview th, .ed-preview td { border:1px solid #30363d; padding:6px 13px; }
+  .ed-preview img { max-width:100%; border-radius:6px; }
+  .ed-preview a { color:#58a6ff; }
+
+  .ed-dropzone { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); padding:8px 24px; background:rgba(88,166,255,0.08); border:1px dashed #30363d; border-radius:8px; color:#484f58; font-size:12px; pointer-events:none; opacity:0; transition:.2s; }
+  .ed-dropzone.active { opacity:1; border-color:#58a6ff; color:#58a6ff; }
+
+  .ed-modal { position:fixed; inset:0; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:100; }
+  .ed-modal-card { background:#161b22; border:1px solid #30363d; border-radius:12px; padding:32px; max-width:420px; width:90%; }
+  .ed-modal-card h2 { color:#c9d1d9; margin-bottom:12px; }
+  .ed-modal-card p { color:#8b949e; font-size:14px; margin-bottom:20px; }
+  .ed-modal-actions { display:flex; gap:10px; justify-content:flex-end; }
+
+  @media (max-width:768px) {
+    .ed-main { flex-direction:column; }
+    .ed-toolbar { display:none; }
+    .ed-stats { display:none; }
+  }
+</style>
+
+<script>
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://xwvkdluvixurvgvkhkfe.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H';
+
+  // ===== Supabase 初始化 =====
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  let currentUser = null;
+  let currentPostId = null;
+
+  // ===== DOM 元素 =====
+  const editor = document.getElementById('edEditor');
+  const preview = document.getElementById('edPreview');
+  const titleInput = document.getElementById('edTitle');
+  const categoryInput = document.getElementById('edCategory');
+  const tagsInput = document.getElementById('edTags');
+  const dateInput = document.getElementById('edDate');
+  const statsEl = document.getElementById('edStats');
+  const slugPreview = document.getElementById('edSlugPreview');
+  const dropzone = document.getElementById('edDropzone');
+  const imageInput = document.getElementById('edImageInput');
+  const publishModal = document.getElementById('edPublishModal');
+
+  // ===== 简易 Markdown → HTML =====
+  function renderPreview(md) {
+    if (!md) return '<p style="color:#30363d">预览区域</p>';
+    let html = md
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+      .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+      .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+      .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1" loading="lazy">')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>')
+      .replace(/^> (.+)$/gm,'<blockquote><p>$1</p></blockquote>');
+    // code blocks
+    html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_,lang,code) => {
+      code = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return `<pre><code>${code}</code></pre>`;
+    });
+    const paras = html.split(/\n\n+/);
+    html = paras.map(p => { p=p.trim(); if(!p)return''; if(p.startsWith('<'))return p; return `<p>${p.replace(/\n/g,'<br>')}</p>`; }).join('\n');
+    return html;
+  }
+
+  function updatePreview() {
+    preview.innerHTML = renderPreview(editor.value);
+    updateStats();
+  }
+
+  function updateStats() {
+    const text = editor.value.replace(/[^\u4e00-\u9fff\w]/g,'');
+    const count = text.length;
+    const minutes = Math.max(1, Math.ceil(count / 400));
+    statsEl.textContent = `${count} 字 · 阅读约 ${minutes} 分钟`;
+    const slug = titleInput.value
+      ? titleInput.value.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g,'-').replace(/(^-|-$)/g,'') || 'untitled'
+      : 'untitled';
+    slugPreview.textContent = slug;
+  }
+
+  // ===== 初始化 =====
+  editor.addEventListener('input', updatePreview);
+  titleInput.addEventListener('input', updatePreview);
+  dateInput.value = new Date().toISOString().split('T')[0];
+  updatePreview();
+
+  // ===== 工具栏 =====
+  document.querySelectorAll('.ed-tb-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      const ta = editor;
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const sel = ta.value.substring(start, end);
+
+      const actions = {
+        bold: () => insertFormat(ta, `**${sel || '粗体文字'}**`, start, end, 2, sel ? 2+sel.length : 6),
+        italic: () => insertFormat(ta, `*${sel || '斜体文字'}*`, start, end, 1, sel ? 1+sel.length : 5),
+        heading: () => { const line = ta.value.substring(0, start).lastIndexOf('\n')+1; ta.setRangeText('## ', line, line, 'end'); ta.focus(); },
+        link: () => insertFormat(ta, `[${sel || '链接文字'}](url)`, start, end, sel ? 1 : 0, sel ? sel.length+1 : 4),
+        image: () => insertFormat(ta, `![${sel || '图片描述'}](url)`, start, end, sel ? 2 : 0, sel ? sel.length+2 : 3),
+        code: () => insertFormat(ta, `\`\`\`\n${sel || '代码'}\n\`\`\``, start, end, 4, sel ? 0 : 2),
+        table: () => { ta.setRangeText('\n| 列1 | 列2 | 列3 |\n|:---|:---:|:---|\n| 内容 | 内容 | 内容 |\n', start, end, 'end'); ta.focus(); },
+        quote: () => { const line = ta.value.substring(0, start).lastIndexOf('\n')+1; ta.setRangeText('> ', line, line, 'end'); ta.focus(); },
+        undo: () => document.execCommand('undo'),
+        redo: () => document.execCommand('redo')
+      };
+      if (actions[action]) actions[action]();
+      ta.focus();
+      updatePreview();
+    });
+  });
+
+  function insertFormat(ta, text, start, end, selStartOffset, selEndOffset) {
+    ta.setRangeText(text, start, end, 'end');
+    const newStart = start + selStartOffset;
+    ta.setSelectionRange(newStart, newStart + (end - start) + selEndOffset);
+  }
+
+  // ===== 图片拖拽上传 =====
+  editor.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('active'); });
+  editor.addEventListener('dragleave', () => dropzone.classList.remove('active'));
+  editor.addEventListener('drop', async e => {
+    e.preventDefault();
+    dropzone.classList.remove('active');
+    const files = e.dataTransfer.files;
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const start = editor.selectionStart;
+        editor.setRangeText(`\n![${file.name}](${ev.target.result})\n`, start, start, 'end');
+        updatePreview();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // 点击 dropzone 选择图片
+  dropzone.addEventListener('click', () => imageInput.click());
+  imageInput.addEventListener('change', () => {
+    for (const file of imageInput.files) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        editor.setRangeText(`\n![${file.name}](${ev.target.result})\n`, editor.selectionStart, editor.selectionStart, 'end');
+        updatePreview();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // ===== 自动保存（30秒） =====
+  let autoSaveTimer;
+  editor.addEventListener('input', () => {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(saveDraft, 30000);
+  });
+  titleInput.addEventListener('input', () => {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(saveDraft, 30000);
+  });
+
+  function saveDraft() {
+    const draft = {
+      title: titleInput.value,
+      category: categoryInput.value,
+      tags: tagsInput.value,
+      content: editor.value,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem('yunjian_draft', JSON.stringify(draft));
+    const saveBtn = document.getElementById('edSaveDraft');
+    saveBtn.textContent = '已保存';
+    setTimeout(() => { saveBtn.textContent = '保存草稿'; }, 2000);
+  }
+
+  document.getElementById('edSaveDraft').addEventListener('click', saveDraft);
+
+  // ===== 恢复草稿 =====
+  function restoreDraft() {
+    const raw = localStorage.getItem('yunjian_draft');
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw);
+      if (draft.title) titleInput.value = draft.title;
+      if (draft.category) categoryInput.value = draft.category;
+      if (draft.tags) tagsInput.value = draft.tags;
+      if (draft.content) editor.value = draft.content;
+      updatePreview();
+    } catch(e) {}
+  }
+
+  // ===== 发布流程 =====
+  document.getElementById('edPublish').addEventListener('click', () => {
+    const title = titleInput.value.trim();
+    if (!title) { alert('请输入文章标题'); return; }
+    if (!editor.value.trim()) { alert('请输入文章内容'); return; }
+    publishModal.hidden = false;
+  });
+
+  document.getElementById('edCancelPublish').addEventListener('click', () => {
+    publishModal.hidden = true;
+  });
+
+  document.getElementById('edConfirmPublish').addEventListener('click', async () => {
+    publishModal.hidden = true;
+    const btn = document.getElementById('edPublish');
+    btn.textContent = '发布中...';
+    btn.disabled = true;
+
+    try {
+      const title = titleInput.value.trim();
+      const slug = title.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g,'-').replace(/(^-|-$)/g,'');
+      const tags = tagsInput.value.split(',').map(t=>t.trim()).filter(Boolean);
+      const date = dateInput.value || new Date().toISOString().split('T')[0];
+      const frontMatter = `---
+title: "${title}"
+date: ${date}
+tags: [${tags.join(', ')}]
+category: "${categoryInput.value || '未分类'}"
+---`;
+
+      const content = `${frontMatter}\n\n${editor.value}`;
+
+      // 保存到 Supabase (备份)
+      if (currentUser) {
+        const { error } = await supabase.from('posts').upsert({
+          id: currentPostId,
+          user_id: currentUser.id,
+          title,
+          slug,
+          content,
+          excerpt: editor.value.replace(/[#*`\[\]()!_~>|-]/g,'').slice(0,200),
+          tags,
+          category: categoryInput.value || '未分类',
+          status: 'published',
+          published_at: new Date().toISOString()
+        }, { onConflict: 'user_id,slug' });
+        if (error) console.error('Supabase save error:', error);
+      }
+
+      // 下载为 .md 文件（用户可手动提交到 GitHub）
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${slug}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      // 清除草稿
+      localStorage.removeItem('yunjian_draft');
+
+      btn.textContent = '已发布 ✓';
+      setTimeout(() => { btn.textContent = '发布'; btn.disabled = false; }, 3000);
+    } catch(e) {
+      console.error('Publish error:', e);
+      btn.textContent = '发布失败';
+      setTimeout(() => { btn.textContent = '发布'; btn.disabled = false; }, 3000);
+    }
+  });
+
+  // ===== 鉴权 =====
+  (async function init() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      currentUser = session.user;
+    }
+    dateInput.value = new Date().toISOString().split('T')[0];
+    restoreDraft();
+    updatePreview();
+  })();
+
+  // ===== 快捷键 =====
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      saveDraft();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+      e.preventDefault();
+      document.querySelector('[data-action="bold"]').click();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+      e.preventDefault();
+      document.querySelector('[data-action="italic"]').click();
+    }
+  });
+</script>
