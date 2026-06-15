@@ -1,0 +1,69 @@
+backend:
+  name: git-gateway
+  branch: master
+
+site_url: ''
+display_url: ''
+logo_url: /logo.svg
+
+locale: zh_Hans
+
+publish_mode: editorial_workflow
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: blog
+    label: 博客文章
+    label_singular: 文章
+    folder: src/content/blog
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    extension: md
+    format: frontmatter
+    editor:
+      preview: true
+    fields:
+      - { label: 标题, name: title, widget: string, required: true, pattern: ['.{2,120}', '标题至少2个字符，最多120个字符'] }
+      - { label: 发布日期, name: date, widget: datetime, default: '{{now}}', format: 'YYYY-MM-DDTHH:mm:ssZ' }
+      - { label: 标签, name: tags, widget: list, default: [], hint: '用逗号分隔的标签列表，如：技术,前端,教程' }
+      - { label: 分类, name: category, widget: select, options: ['技术', '生活', '写作', '设计', '产品', '其他'], default: '技术' }
+      - { label: 描述, name: description, widget: text, required: false, hint: '文章简短描述，用于列表和SEO' }
+      - { label: 封面图, name: cover, widget: image, required: false }
+      - { label: 草稿, name: draft, widget: boolean, default: false }
+      - { label: 正文, name: body, widget: markdown }
+
+  - name: nav
+    label: 导航站点
+    label_singular: 站点
+    file: src/data/nav-sites.json
+    format: json
+    fields:
+      - label: 站点列表
+        name: sites
+        widget: list
+        collapsed: true
+        summary: '{{fields.name}} — {{fields.url}}'
+        fields:
+          - { label: 分类, name: cat, widget: select, options: ['AI 工具', '设计资源', '开发工具', '效率工具', '学习资源', '社区论坛', '博客', '其他'] }
+          - { label: 名称, name: name, widget: string, required: true }
+          - { label: 链接, name: url, widget: string, required: true, pattern: ['^https?://.+', '请输入完整URL（含 http/https）'] }
+          - { label: 描述, name: desc, widget: text, required: false }
+          - { label: 图标, name: icon, widget: string, required: false, hint: '可选：Emoji 或图标名称' }
+          - { label: 标记, name: badge, widget: select, options: ['', 'hot', 'rec', 'new'], default: '', required: false }
+
+  - name: pages
+    label: 独立页面
+    label_singular: 页面
+    folder: src/content/pages
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    editor:
+      preview: true
+    fields:
+      - { label: 标题, name: title, widget: string, required: true }
+      - { label: 页面路径, name: slug, widget: string, required: true, hint: 'URL 路径，如 about、contact、privacy' }
+      - { label: 正文, name: body, widget: markdown }

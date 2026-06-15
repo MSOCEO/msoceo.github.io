@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>寒影 · 内容管理</title>
+  <style>
+    :root {
+      --bg: #080b12;
+      --surface: #111827;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --dim: #9ca3af;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --red: #ef4444;
+      --green: #22c55e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* CMS 面板覆盖 */
+    .css-1o4b91j-Card, [class*="Card"], [class*="card"] {
+      background: var(--surface) !important;
+      border-color: var(--border) !important;
+    }
+    .css-1ncyift-Toolbar, [class*="Toolbar"], [class*="toolbar"] {
+      background: var(--surface) !important;
+      border-color: var(--border) !important;
+    }
+    .css-11b7x9l-ToolbarButton, [class*="ToolbarButton"] {
+      color: var(--dim) !important;
+    }
+    .css-11b7x9l-ToolbarButton:hover { color: var(--text) !important; }
+    .css-5qysid-Button, [class*="PublishButton"], button[class*="Button"] {
+      background: var(--accent) !important;
+      color: #fff !important;
+      border-color: var(--accent) !important;
+    }
+    .css-5qysid-Button:hover { background: var(--accent-hover) !important; }
+    .css-12gtors-Sidebar, [class*="Sidebar"] {
+      background: var(--surface) !important;
+    }
+    .css-1s2m7tr-Link, [class*="NavLink"], a[class*="Link"] {
+      color: var(--dim) !important;
+    }
+    .css-1s2m7tr-Link:hover, a[class*="Link"]:hover, .css-1s2m7tr-Link[class*="active"] {
+      color: var(--text) !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+    }
+    .css-mycyb9-EditorFrameBody, [class*="Frame"], [class*="editor"] {
+      color: var(--text) !important;
+    }
+    input, textarea, select {
+      background: var(--bg) !important;
+      color: var(--text) !important;
+      border-color: var(--border) !important;
+    }
+    .css-mycyb9-EditorFrameBody h1,
+    .css-mycyb9-EditorFrameBody h2,
+    .css-mycyb9-EditorFrameBody h3 {
+      color: #f0f6fc !important;
+    }
+
+    /* 自定义加载屏幕 */
+    #nc-root { min-height: 100vh; }
+    .cm-loading {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; background: var(--bg);
+    }
+    .cm-loading svg { width: 48px; height: 48px; margin-bottom: 24px; animation: cm-spin 1s linear infinite; color: var(--accent); }
+    @keyframes cm-spin { to { transform: rotate(360deg); } }
+    .cm-loading p { color: var(--dim); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div id="nc-root"></div>
+
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <script>
+    // 自定义预览样式注入
+    CMS.registerPreviewStyle(`
+      :root {
+        --bg: #080b12; --surface: #111827; --border: #1f2937;
+        --text: #e5e7eb; --dim: #9ca3af; --accent: #6366f1;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: var(--bg); color: var(--text);
+        max-width: 720px; margin: 0 auto; padding: 40px 24px; line-height: 1.8;
+      }
+      h1 { font-size: 2rem; color: #f0f6fc; margin-bottom: 8px; }
+      h2 { font-size: 1.5rem; color: #f0f6fc; margin-top: 32px; }
+      h3 { font-size: 1.2rem; color: #f0f6fc; }
+      p { margin: 16px 0; color: var(--text); }
+      a { color: var(--accent); }
+      code { background: #1f2937; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+      pre { background: #111827; padding: 16px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border); }
+      blockquote { border-left: 3px solid var(--accent); padding-left: 16px; color: var(--dim); margin: 16px 0; }
+      img { max-width: 100%; border-radius: 8px; }
+      .post-meta { color: var(--dim); font-size: 0.9rem; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+      .post-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+      .post-tag { background: rgba(99,102,241,0.15); color: var(--accent); padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; }
+    `);
+
+    // 博客文章预览组件
+    CMS.registerPreviewTemplate('blog', createClass({
+      render() {
+        const entry = this.props.entry;
+        const title = entry.getIn(['data', 'title']);
+        const date = entry.getIn(['data', 'date']);
+        const tags = entry.getIn(['data', 'tags']);
+        const body = this.props.widgetFor('body');
+
+        return h('div', {},
+          h('h1', {}, title),
+          h('div', { className: 'post-meta' },
+            date && h('span', {}, `发布于 ${String(date).slice(0,10)}`),
+            tags && tags.size > 0 && h('div', { className: 'post-tags' },
+              tags.map(tag => h('span', { className: 'post-tag' }, tag))
+            )
+          ),
+          h('article', {}, body)
+        );
+      }
+    }));
+
+    // 页面预览组件
+    CMS.registerPreviewTemplate('pages', createClass({
+      render() {
+        const entry = this.props.entry;
+        const title = entry.getIn(['data', 'title']);
+        const body = this.props.widgetFor('body');
+        return h('div', {},
+          h('h1', {}, title),
+          h('article', {}, body)
+        );
+      }
+    }));
+
+    // 初始化
+    CMS.init();
+
+    // Netlify Identity 重定向
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', function(user) {
+        if (!user) {
+          window.netlifyIdentity.on('login', function() {
+            document.location.href = '/admin/';
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>
