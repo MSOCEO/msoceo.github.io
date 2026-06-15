@@ -1,0 +1,365 @@
+---
+import Page from '../../layouts/Page.astro';
+---
+
+<Page title="博客设置 · 云笺" description="修改博客配置，切换主题，管理导航">
+<div class="st-root">
+  <header class="st-header">
+    <a href="/yunjian" class="st-logo">&#10236; 云笺</a>
+    <nav class="st-nav">
+      <a href="/yunjian/dashboard">控制台</a>
+      <a href="/yunjian/editor">写文章</a>
+      <a href="/yunjian/settings" class="st-nav-active">设置</a>
+    </nav>
+    <div class="st-header-right">
+      <span id="stUserName" style="font-size:13px;color:#8b949e"></span>
+      <button class="st-btn-destroy" id="stLogout">退出</button>
+    </div>
+  </header>
+
+  <div class="st-container" id="stNotLoggedIn" style="text-align:center;padding:80px 20px">
+    <div style="font-size:48px;margin-bottom:16px">&#128274;</div>
+    <h2>请先登录</h2>
+    <p style="color:#8b949e;margin-bottom:20px">登录后即可管理博客设置</p>
+    <a href="/yunjian/login" class="st-btn-primary">登录 / 注册</a>
+  </div>
+
+  <div class="st-container" id="stLoggedIn" style="display:none">
+
+    <div class="st-card">
+      <h2 class="st-section-title">基本信息</h2>
+      <div class="st-form">
+        <label class="st-field">
+          <span class="st-field-label">博客标题</span>
+          <input type="text" class="st-input" id="stTitle" placeholder="我的博客">
+        </label>
+        <label class="st-field">
+          <span class="st-field-label">副标题</span>
+          <input type="text" class="st-input" id="stSubtitle" placeholder="记录生活与思考">
+        </label>
+        <label class="st-field">
+          <span class="st-field-label">作者名称</span>
+          <input type="text" class="st-input" id="stAuthor" placeholder="你的名字">
+        </label>
+        <label class="st-field">
+          <span class="st-field-label">每页文章数</span>
+          <select class="st-input" id="stPostsPerPage">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="st-card">
+      <h2 class="st-section-title">主题切换</h2>
+      <p style="color:#8b949e;font-size:13px;margin-bottom:16px">选择一套主题，提交后将重新构建博客</p>
+      <div class="st-theme-grid" id="stThemeGrid">
+        <!-- 动态生成 -->
+      </div>
+    </div>
+
+    <div class="st-card">
+      <h2 class="st-section-title">导航菜单</h2>
+      <p style="color:#8b949e;font-size:13px;margin-bottom:12px">管理博客顶部导航链接</p>
+      <div id="stNavList"></div>
+      <button class="st-btn-ghost" id="stAddNav" style="margin-top:12px">+ 添加链接</button>
+    </div>
+
+    <div class="st-card">
+      <h2 class="st-section-title">社交链接</h2>
+      <div class="st-form">
+        <label class="st-field">
+          <span class="st-field-label">GitHub</span>
+          <input type="text" class="st-input" id="stSocialGithub" placeholder="https://github.com/yourname">
+        </label>
+        <label class="st-field">
+          <span class="st-field-label">Twitter / X</span>
+          <input type="text" class="st-input" id="stSocialTwitter" placeholder="https://twitter.com/yourname">
+        </label>
+      </div>
+    </div>
+
+    <div class="st-card" style="text-align:center;padding:32px">
+      <button class="st-btn-primary st-btn-lg" id="stSave" disabled>保存设置并重新部署</button>
+      <div id="stSaveProgress" style="display:none;margin-top:16px"></div>
+    </div>
+
+  </div>
+</div>
+</Page>
+
+<style>
+  .st-root { min-height:100vh; background:#0d1117; color:#c9d1d9; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
+  .st-header { display:flex; align-items:center; padding:0 24px; height:56px; background:#161b22; border-bottom:1px solid #21262d; }
+  .st-logo { color:#58a6ff; text-decoration:none; font-weight:700; font-size:16px; margin-right:24px; }
+  .st-nav { display:flex; gap:4px; }
+  .st-nav a { padding:8px 16px; border-radius:6px; font-size:14px; color:#8b949e; text-decoration:none; transition:.15s; }
+  .st-nav a:hover { background:#21262d; color:#c9d1d9; }
+  .st-nav-active { background:#1f6feb22!important; color:#58a6ff!important; }
+  .st-header-right { margin-left:auto; display:flex; align-items:center; gap:12px; }
+  .st-btn-destroy { padding:6px 12px; border-radius:6px; border:1px solid #da363330; background:transparent; color:#da3633; cursor:pointer; font-size:12px; }
+
+  .st-container { max-width:720px; margin:0 auto; padding:32px 20px; }
+  .st-card { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:24px; margin-bottom:24px; }
+  .st-section-title { font-size:16px; font-weight:600; color:#f0f6fc; margin:0 0 16px; }
+  .st-form { display:flex; flex-direction:column; gap:16px; }
+  .st-field { display:flex; flex-direction:column; gap:6px; }
+  .st-field-label { font-size:13px; color:#8b949e; }
+  .st-input { padding:8px 12px; background:#0d1117; border:1px solid #21262d; border-radius:6px; color:#c9d1d9; font-size:14px; outline:none; }
+  .st-input:focus { border-color:#58a6ff; }
+  select.st-input { cursor:pointer; }
+
+  .st-btn-primary { display:inline-block; padding:8px 20px; background:#238636; color:#fff; border:none; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; border:1px solid rgba(240,246,252,0.1); }
+  .st-btn-primary:hover { background:#2ea043; }
+  .st-btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+  .st-btn-ghost { display:inline-block; padding:8px 16px; background:transparent; color:#c9d1d9; border:1px solid #30363d; border-radius:6px; font-size:14px; cursor:pointer; }
+  .st-btn-ghost:hover { background:#21262d; }
+  .st-btn-lg { padding:12px 32px; font-size:16px; }
+  .st-btn-sm { padding:4px 10px; font-size:12px; }
+
+  /* Theme grid */
+  .st-theme-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+  .st-theme-card { background:#0d1117; border:2px solid #21262d; border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:.15s; }
+  .st-theme-card:hover { border-color:#58a6ff44; }
+  .st-theme-card.active { border-color:#58a6ff!important; }
+  .st-theme-swatch { height:60px; border-radius:8px; margin-bottom:10px; }
+  .st-theme-name { font-size:13px; font-weight:600; }
+  .st-theme-desc { font-size:11px; color:#8b949e; margin-top:4px; }
+
+  /* Nav items */
+  .st-nav-item { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid #21262d44; }
+  .st-nav-item input { flex:1; padding:6px 10px; background:#0d1117; border:1px solid #21262d; border-radius:6px; color:#c9d1d9; font-size:13px; outline:none; }
+  .st-nav-item input:focus { border-color:#58a6ff; }
+  .st-nav-item .st-btn-sm {  }
+  .st-nav-item .st-btn-danger { background:transparent; border:1px solid #da3633; color:#da3633; border-radius:6px; cursor:pointer; padding:4px 10px; font-size:12px; }
+  .st-nav-item .st-btn-danger:hover { background:#da363320; }
+
+  .st-toast { position:fixed; bottom:24px; right:24px; padding:12px 20px; background:#161b22; border:1px solid #30363d; border-radius:8px; color:#c9d1d9; font-size:13px; z-index:100; box-shadow:0 4px 16px rgba(0,0,0,.4); transition:opacity .3s; }
+  .st-toast.success { border-color:#238636; }
+  .st-toast.error { border-color:#da3633; }
+</style>
+
+<script>
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://xwvkdluvixurvgvkhkfe.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H';
+
+  const themes = [
+    { id:'default', name:'极简', desc:'白底黑字 · Bear Blog风格', colors:['#fafafa','#222'] },
+    { id:'ink', name:'墨迹', desc:'水墨风格 · 东方美学', colors:['#f5f0e8','#1a1a1a'] },
+    { id:'glass', name:'玻璃', desc:'玻璃态 · 深色毛玻璃', colors:['#1e1e2e','#cdd6f4'] },
+    { id:'paper', name:'纸张', desc:'纸张纹理 · 暖色阅读', colors:['#fdf6e3','#586e75'] },
+    { id:'mono', name:'等宽', desc:'等宽字体 · 极客风', colors:['#1a1a1a','#e0e0e0'] },
+    { id:'aurora', name:'极光', desc:'渐变炫彩 · 视觉冲击', colors:['#0f0c29','#f0f0f0'] }
+  ];
+
+  (async function() {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session?.user) return;
+    const user = session.user;
+    document.getElementById('stLoggedIn').style.display = '';
+    document.getElementById('stNotLoggedIn').style.display = 'none';
+    document.getElementById('stUserName').textContent = user.user_metadata?.username || user.email?.split('@')[0] || '用户';
+
+    document.getElementById('stLogout').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/yunjian';
+    });
+
+    // ===== 加载 Profile =====
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    const currentTheme = profile?.blog_theme || 'default';
+
+    // ===== 从 GitHub 加载 config.json（如果有仓库） =====
+    async function loadConfig() {
+      if (!profile?.blog_repo) return;
+      const [owner, repo] = profile.blog_repo.split('/');
+      try {
+        // 使用 raw URL
+        const resp = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/main/config.json`);
+        if (resp.ok) {
+          const config = await resp.json();
+          document.getElementById('stTitle').value = config.title || '';
+          document.getElementById('stSubtitle').value = config.subtitle || '';
+          document.getElementById('stAuthor').value = config.author || '';
+          document.getElementById('stPostsPerPage').value = config.posts_per_page || 10;
+          if (config.social) {
+            document.getElementById('stSocialGithub').value = config.social.github || '';
+            document.getElementById('stSocialTwitter').value = config.social.twitter || '';
+          }
+          if (config.nav) {
+            navItems = config.nav.map(n => ({ label: n.label, url: n.url }));
+            renderNavItems();
+          }
+          document.getElementById('stSave').disabled = false;
+        }
+      } catch(e) { toast('无法加载配置: ' + e.message, 'error'); }
+    }
+
+    // ===== 主题选择器 =====
+    const themeGrid = document.getElementById('stThemeGrid');
+    themes.forEach(t => {
+      const card = document.createElement('div');
+      card.className = `st-theme-card${t.id === currentTheme ? ' active' : ''}`;
+      card.dataset.theme = t.id;
+      card.innerHTML = `
+        <div class="st-theme-swatch" style="background:linear-gradient(135deg, ${t.colors[0]}, ${t.colors[1]})"></div>
+        <div class="st-theme-name">${t.name}</div>
+        <div class="st-theme-desc">${t.desc}</div>
+      `;
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.st-theme-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        document.getElementById('stSave').disabled = false;
+      });
+      themeGrid.appendChild(card);
+    });
+
+    // ===== 导航管理 =====
+    let navItems = [{ label:'首页', url:'/' }, { label:'归档', url:'/archive' }];
+
+    function renderNavItems() {
+      const container = document.getElementById('stNavList');
+      container.innerHTML = navItems.map((item, idx) => `
+        <div class="st-nav-item">
+          <input type="text" value="${escapeHtml(item.label)}" placeholder="名称" data-idx="${idx}" data-field="label">
+          <input type="text" value="${escapeHtml(item.url)}" placeholder="链接" data-idx="${idx}" data-field="url">
+          <button class="st-btn-ghost st-btn-sm st-nav-up" data-idx="${idx}" ${idx===0?'disabled':''}>&uarr;</button>
+          <button class="st-btn-ghost st-btn-sm st-nav-down" data-idx="${idx}" ${idx===navItems.length-1?'disabled':''}>&darr;</button>
+          <button class="st-btn-danger st-btn-sm st-nav-del" data-idx="${idx}">删除</button>
+        </div>
+      `).join('');
+
+      // 事件绑定
+      container.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', () => {
+          const idx = parseInt(input.dataset.idx);
+          const field = input.dataset.field;
+          navItems[idx][field] = input.value;
+          document.getElementById('stSave').disabled = false;
+        });
+      });
+      container.querySelectorAll('.st-nav-up').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx);
+          if (idx > 0) { [navItems[idx], navItems[idx-1]] = [navItems[idx-1], navItems[idx]]; renderNavItems(); document.getElementById('stSave').disabled = false; }
+        });
+      });
+      container.querySelectorAll('.st-nav-down').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx);
+          if (idx < navItems.length - 1) { [navItems[idx], navItems[idx+1]] = [navItems[idx+1], navItems[idx]]; renderNavItems(); document.getElementById('stSave').disabled = false; }
+        });
+      });
+      container.querySelectorAll('.st-nav-del').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx);
+          navItems.splice(idx, 1);
+          renderNavItems();
+          document.getElementById('stSave').disabled = false;
+        });
+      });
+    }
+
+    document.getElementById('stAddNav').addEventListener('click', () => {
+      navItems.push({ label:'新链接', url:'/new' });
+      renderNavItems();
+      document.getElementById('stSave').disabled = false;
+    });
+
+    // 监听表单变化
+    document.querySelectorAll('.st-input').forEach(input => {
+      input.addEventListener('input', () => { document.getElementById('stSave').disabled = false; });
+    });
+
+    // ===== 保存设置 =====
+    document.getElementById('stSave').addEventListener('click', async () => {
+      if (!profile?.blog_repo) { toast('请先创建博客', 'error'); return; }
+
+      const btn = document.getElementById('stSave');
+      const progress = document.getElementById('stSaveProgress');
+      const activeTheme = document.querySelector('.st-theme-card.active')?.dataset?.theme || currentTheme;
+
+      btn.disabled = true; btn.textContent = '保存中...';
+      progress.style.display = '';
+      progress.innerHTML = '<p style="color:#8b949e">更新配置并推送至 GitHub...</p>';
+
+      try {
+        const config = {
+          title: document.getElementById('stTitle').value || '我的博客',
+          subtitle: document.getElementById('stSubtitle').value || '',
+          author: document.getElementById('stAuthor').value || '',
+          theme: activeTheme,
+          language: 'zh-CN',
+          posts_per_page: parseInt(document.getElementById('stPostsPerPage').value) || 10,
+          nav: navItems,
+          social: {
+            github: document.getElementById('stSocialGithub').value || '',
+            twitter: document.getElementById('stSocialTwitter').value || ''
+          }
+        };
+
+        const [owner, repo] = profile.blog_repo.split('/');
+        const providerToken = session.provider_token;
+        if (!providerToken) { toast('需要 GitHub OAuth 授权', 'error'); btn.disabled = false; return; }
+
+        // 获取当前 config.json 的 SHA（需要更新文件）
+        let sha = '';
+        const getResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/config.json`, {
+          headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json' }
+        });
+        if (getResp.ok) { const data = await getResp.json(); sha = data.sha; }
+
+        const content = JSON.stringify(config, null, 2);
+        const encoded = btoa(unescape(encodeURIComponent(content)));
+        const putResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/config.json`, {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${providerToken}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: '更新博客配置', content: encoded, sha: sha || undefined })
+        });
+
+        if (!putResp.ok) { const e = await putResp.json(); throw new Error(e.message); }
+
+        // 更新 Supabase
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          blog_theme: activeTheme,
+          blog_status: 'deploying',
+          updated_at: new Date().toISOString()
+        });
+
+        progress.innerHTML = '<p style="color:#3fb950">配置已提交，GitHub Actions 正在构建部署中...</p>';
+        btn.textContent = '已保存';
+        setTimeout(() => { btn.textContent = '保存设置并重新部署'; btn.disabled = false; }, 3000);
+
+      } catch(e) {
+        progress.innerHTML = `<p style="color:#da3633">保存失败: ${e.message}</p>`;
+        btn.disabled = false;
+      }
+    });
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function toast(msg, type) {
+      const t = document.createElement('div');
+      t.className = `st-toast ${type}`;
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    // 初始化
+    renderNavItems();
+    await loadConfig();
+  })();
+</script>
