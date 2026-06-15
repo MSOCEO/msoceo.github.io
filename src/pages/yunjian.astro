@@ -1,0 +1,639 @@
+---
+import Page from '../layouts/Page.astro';
+
+const title = '云笺 · 博客托管平台';
+const description = '三分钟拥有自己的独立博客，基于 GitHub Pages，永久免费';
+---
+
+<Page {title} {description}>
+  <div class="yunjian-root">
+
+    <!-- Hero -->
+    <section class="yj-hero">
+      <div class="yj-hero-inner">
+        <div class="yj-hero-text animate-in">
+          <div class="yj-hero-accent" aria-hidden="true"></div>
+          <h1 class="yj-hero-title">云笺 · 博客托管平台</h1>
+          <p class="yj-hero-subtitle">三分钟拥有自己的独立博客</p>
+          <p class="yj-hero-desc">基于 GitHub Pages 自动构建，自定义域名、在线写作、主题市场，永久免费。</p>
+          <div class="yj-hero-actions">
+            <a href="/yunjian/register" class="yj-btn yj-btn-primary">免费开始 &rarr;</a>
+            <a href="#features" class="yj-btn yj-btn-outline">了解更多</a>
+          </div>
+        </div>
+        <div class="yj-hero-code animate-in" style="animation-delay:0.2s">
+          <div class="yj-code-block">
+            <div class="yj-code-header">
+              <span class="yj-code-dot yj-cd-1"></span>
+              <span class="yj-code-dot yj-cd-2"></span>
+              <span class="yj-code-dot yj-cd-3"></span>
+              <span class="yj-code-filename">_config.yml</span>
+            </div>
+            <pre class="yj-code-body"><code><span class="yj-k">title:</span> <span class="yj-v">我的博客</span>
+<span class="yj-k">theme:</span> <span class="yj-v">hexo-theme-next</span>
+<span class="yj-k">domain:</span> <span class="yj-v">blog.example.com</span>
+<span class="yj-k">deploy:</span>
+  <span class="yj-k">type:</span> <span class="yj-v">github-pages</span>
+  <span class="yj-k">branch:</span> <span class="yj-v">main</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="yj-hero-bg" aria-hidden="true"></div>
+    </section>
+
+    <!-- Features -->
+    <section class="yj-section" id="features">
+      <div class="yj-container">
+        <h2 class="yj-section-title">为什么选择云笺</h2>
+        <div class="yj-features-grid">
+          <div class="yj-feature-card">
+            <div class="yj-feat-icon">&#9889;</div>
+            <h3>一键部署</h3>
+            <p>连接 GitHub 账号，自动创建仓库并配置 GitHub Actions，无需手动操作服务器。</p>
+          </div>
+          <div class="yj-feature-card">
+            <div class="yj-feat-icon">&#127760;</div>
+            <h3>自定义域名</h3>
+            <p>绑定你自己的域名，自动生成 SSL 证书，HTTPS 全程加密访问。</p>
+          </div>
+          <div class="yj-feature-card">
+            <div class="yj-feat-icon">&#9997;</div>
+            <h3>Web 编辑器</h3>
+            <p>浏览器内 Markdown 写作，实时预览，图片拖拽上传，支持 Front Matter。</p>
+          </div>
+          <div class="yj-feature-card">
+            <div class="yj-feat-icon">&#127912;</div>
+            <h3>主题市场</h3>
+            <p>Hexo / Hugo / Next 等数十套主题一键切换，无需修改配置文件。</p>
+          </div>
+          <div class="yj-feature-card">
+            <div class="yj-feat-icon">&#128200;</div>
+            <h3>数据统计</h3>
+            <p>内置访问量分析面板，页面 PV / UV、来源渠道、热门文章一目了然。</p>
+          </div>
+          <div class="yj-feature-card">
+            <div class="yj-feat-icon">&#127873;</div>
+            <h3>完全免费</h3>
+            <p>零服务器成本，基于 GitHub Pages 免费托管，CDN 全球加速，永久免费。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="yj-section yj-section-alt">
+      <div class="yj-container">
+        <h2 class="yj-section-title">三步上线</h2>
+        <div class="yj-steps">
+          <div class="yj-step">
+            <div class="yj-step-num">01</div>
+            <div class="yj-step-card">
+              <h3>注册授权</h3>
+              <p>使用 GitHub 账号一键登录，授权云笺创建仓库权限。</p>
+            </div>
+          </div>
+          <div class="yj-step-arrow">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="yj-step">
+            <div class="yj-step-num">02</div>
+            <div class="yj-step-card">
+              <h3>自动创建仓库</h3>
+              <p>系统自动在 GitHub 创建博客仓库，配置 Actions 构建流水线。</p>
+            </div>
+          </div>
+          <div class="yj-step-arrow">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="yj-step">
+            <div class="yj-step-num">03</div>
+            <div class="yj-step-card">
+              <h3>发布上线</h3>
+              <p>写完第一篇文章，推送即上线。全球 CDN 加速，毫秒级访问。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="yj-section">
+      <div class="yj-container">
+        <h2 class="yj-section-title">价格方案</h2>
+        <div class="yj-pricing-grid">
+          <div class="yj-price-card">
+            <div class="yj-price-header">
+              <h3>免费版</h3>
+              <div class="yj-price-amount"><span class="yj-currency">¥</span>0<span class="yj-period">/月</span></div>
+            </div>
+            <ul class="yj-price-features">
+              <li>500MB 存储空间</li>
+              <li>基础主题模板</li>
+              <li>社区支持</li>
+              <li>GitHub Pages 托管</li>
+              <li>基础访问统计</li>
+            </ul>
+            <a href="/yunjian/register" class="yj-btn yj-btn-outline yj-btn-block">开始使用</a>
+          </div>
+          <div class="yj-price-card yj-price-popular">
+            <div class="yj-price-badge">推荐</div>
+            <div class="yj-price-header">
+              <h3>Pro 版</h3>
+              <div class="yj-price-amount"><span class="yj-currency">¥</span>29<span class="yj-period">/月</span></div>
+            </div>
+            <ul class="yj-price-features">
+              <li>2GB 存储空间</li>
+              <li>自定义域名绑定</li>
+              <li>全部高级主题</li>
+              <li>优先技术支持</li>
+              <li>高级访问分析</li>
+              <li>SEO 优化工具</li>
+            </ul>
+            <a href="/yunjian/register?plan=pro" class="yj-btn yj-btn-primary yj-btn-block">升级 Pro</a>
+          </div>
+          <div class="yj-price-card">
+            <div class="yj-price-header">
+              <h3>企业版</h3>
+              <div class="yj-price-amount"><span class="yj-currency">¥</span>99<span class="yj-period">/月</span></div>
+            </div>
+            <ul class="yj-price-features">
+              <li>无限存储空间</li>
+              <li>团队协作管理</li>
+              <li>API 完全访问</li>
+              <li>白标定制</li>
+              <li>SLA 99.9% 保障</li>
+              <li>专属客户经理</li>
+            </ul>
+            <a href="/yunjian/register?plan=enterprise" class="yj-btn yj-btn-outline yj-btn-block">联系销售</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="yj-section yj-section-alt">
+      <div class="yj-container yj-container-narrow">
+        <h2 class="yj-section-title">常见问题</h2>
+        <div class="yj-faq-list">
+          <details class="yj-faq-item">
+            <summary>如何绑定自定义域名？</summary>
+            <p>在云笺控制台的「域名设置」中添加你的域名，然后在 DNS 服务商处添加一条 CNAME 记录指向 <code>&lt;username&gt;.github.io</code>，系统会自动申请并续签 SSL 证书。</p>
+          </details>
+          <details class="yj-faq-item">
+            <summary>支持哪些静态站点生成器？</summary>
+            <p>目前支持 Hexo、Hugo、Jekyll、Gatsby、Next.js 静态导出等主流生成器。你可以随时在控制台切换生成器框架。</p>
+          </details>
+          <details class="yj-faq-item">
+            <summary>我的数据安全吗？</summary>
+            <p>所有博客源文件存储在你自己的 GitHub 仓库中，云笺只保留必要的配置信息和访问统计。你随时可以断开云笺，博客仍然正常运行。</p>
+          </details>
+          <details class="yj-faq-item">
+            <summary>可以从其他平台迁移吗？</summary>
+            <p>支持从 WordPress、Hexo、Hugo、Ghost、Halo、Typecho 等主流平台一键导入文章和配置。详情见后台「数据迁移」模块。</p>
+          </details>
+          <details class="yj-faq-item">
+            <summary>免费版有广告吗？</summary>
+            <p>没有。免费版与付费版仅在功能上限上有区别，所有版本均无广告，不插入任何第三方推广内容。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="yj-cta">
+      <div class="yj-container yj-cta-inner">
+        <h2>开始你的独立博客之旅</h2>
+        <p>三分钟上线，永久免费。已有 2,000+ 博主选择云笺。</p>
+        <a href="/yunjian/register" class="yj-btn yj-btn-primary yj-btn-lg">免费注册 &rarr;</a>
+      </div>
+    </section>
+
+  </div>
+</Page>
+
+<style>
+  .yunjian-root {
+    --yj-accent: #10b981;
+    --yj-accent-hover: #059669;
+    --yj-accent-glow: rgba(16,185,129,0.15);
+    --yj-bg-card: #0f1a16;
+    --yj-border: rgba(16,185,129,0.12);
+    --yj-text-dim: #6b8a7a;
+  }
+
+  /* ---- Hero ---- */
+  .yj-hero {
+    position: relative;
+    min-height: calc(100vh - var(--header-height));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--ink-10);
+    border-bottom: 1px solid var(--yj-border);
+  }
+  .yj-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--texture-noise);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .yj-hero-inner {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+    max-width: var(--max-width);
+    padding: var(--space-3xl) var(--space-xl);
+  }
+  .yj-hero-accent {
+    width: 36px;
+    height: 2px;
+    background: var(--yj-accent);
+    border-radius: 1px;
+    margin-bottom: var(--space-lg);
+  }
+  .yj-hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: var(--weight-medium);
+    color: var(--ink-100);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
+  }
+  .yj-hero-subtitle {
+    font-size: var(--text-lg);
+    color: var(--yj-accent);
+    font-weight: 500;
+    margin-bottom: var(--space-md);
+  }
+  .yj-hero-desc {
+    font-size: var(--text-base);
+    color: var(--ink-50);
+    line-height: var(--leading-relaxed);
+    max-width: 400px;
+    margin-bottom: var(--space-2xl);
+  }
+  .yj-hero-actions {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  /* Buttons */
+  .yj-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 26px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    text-decoration: none;
+    font-family: inherit;
+    border: none;
+  }
+  .yj-btn-primary {
+    background: var(--yj-accent);
+    color: #0a0a0a;
+  }
+  .yj-btn-primary:hover {
+    background: var(--yj-accent-hover);
+    box-shadow: 0 0 30px var(--yj-accent-glow);
+  }
+  .yj-btn-outline {
+    background: transparent;
+    border: 1px solid var(--yj-border);
+    color: var(--yj-accent);
+  }
+  .yj-btn-outline:hover {
+    border-color: var(--yj-accent);
+    background: rgba(16,185,129,0.06);
+  }
+  .yj-btn-lg { padding: 14px 32px; font-size: var(--text-base); }
+  .yj-btn-block { width: 100%; justify-content: center; }
+
+  /* Code Block */
+  .yj-code-block {
+    background: #0a0f0c;
+    border: 1px solid var(--yj-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+  .yj-code-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(16,185,129,0.04);
+    border-bottom: 1px solid var(--yj-border);
+  }
+  .yj-code-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .yj-cd-1 { background: #ff5f56; }
+  .yj-cd-2 { background: #ffbd2e; }
+  .yj-cd-3 { background: #27c93f; }
+  .yj-code-filename {
+    margin-left: 8px;
+    font-size: 11px;
+    color: var(--ink-40);
+    font-family: var(--font-mono);
+  }
+  .yj-code-body {
+    padding: 20px;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ink-60);
+    overflow-x: auto;
+  }
+  .yj-k { color: #60a5fa; }
+  .yj-v { color: var(--yj-accent); }
+
+  .yj-hero-bg {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--yj-accent-glow), transparent);
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.5;
+    top: -20%; right: -10%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Sections */
+  .yj-section {
+    padding: var(--space-5xl) 0;
+    border-bottom: 1px solid var(--ink-20);
+  }
+  .yj-section-alt {
+    background: var(--ink-10);
+  }
+  .yj-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+  }
+  .yj-container-narrow { max-width: 720px; }
+  .yj-section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--ink-100);
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+    letter-spacing: 0.04em;
+  }
+
+  /* Features Grid */
+  .yj-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .yj-feature-card {
+    background: var(--yj-bg-card);
+    border: 1px solid var(--yj-border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+  .yj-feature-card:hover {
+    border-color: var(--yj-accent);
+    box-shadow: 0 0 30px var(--yj-accent-glow);
+    transform: translateY(-2px);
+  }
+  .yj-feat-icon { font-size: 28px; margin-bottom: 14px; }
+  .yj-feature-card h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--ink-90);
+    margin-bottom: 8px;
+  }
+  .yj-feature-card p {
+    font-size: var(--text-sm);
+    color: var(--yj-text-dim);
+    line-height: var(--leading-relaxed);
+    margin: 0;
+  }
+
+  /* Steps */
+  .yj-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xl);
+    flex-wrap: wrap;
+  }
+  .yj-step {
+    text-align: center;
+    flex: 0 0 220px;
+  }
+  .yj-step-num {
+    font-family: var(--font-mono);
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--yj-accent);
+    opacity: 0.3;
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.02em;
+  }
+  .yj-step-card {
+    background: var(--yj-bg-card);
+    border: 1px solid var(--yj-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+  .yj-step-card:hover {
+    border-color: var(--yj-accent);
+    box-shadow: 0 0 20px var(--yj-accent-glow);
+  }
+  .yj-step-card h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--ink-90);
+    margin-bottom: 6px;
+  }
+  .yj-step-card p {
+    font-size: var(--text-sm);
+    color: var(--yj-text-dim);
+    margin: 0;
+  }
+  .yj-step-arrow {
+    color: var(--yj-accent);
+    opacity: 0.4;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  /* Pricing */
+  .yj-pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: stretch;
+  }
+  .yj-price-card {
+    background: var(--yj-bg-card);
+    border: 1px solid var(--yj-border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all var(--duration-fast) var(--ease-out);
+    position: relative;
+  }
+  .yj-price-card:hover { border-color: var(--yj-accent); }
+  .yj-price-popular {
+    border-color: var(--yj-accent);
+    box-shadow: 0 0 40px var(--yj-accent-glow);
+    transform: scale(1.03);
+  }
+  .yj-price-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--yj-accent);
+    color: #0a0a0a;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.04em;
+  }
+  .yj-price-header h3 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--ink-90);
+    margin-bottom: 12px;
+  }
+  .yj-price-amount {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--ink-100);
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .yj-currency { font-size: 20px; font-weight: 500; }
+  .yj-period { font-size: 14px; color: var(--yj-text-dim); font-weight: 400; }
+  .yj-price-features {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .yj-price-features li {
+    font-size: var(--text-sm);
+    color: var(--ink-50);
+    padding-left: 22px;
+    position: relative;
+  }
+  .yj-price-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--yj-accent);
+    font-weight: 700;
+  }
+
+  /* FAQ */
+  .yj-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .yj-faq-item {
+    background: var(--yj-bg-card);
+    border: 1px solid var(--yj-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .yj-faq-item summary {
+    padding: 18px 24px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-70);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .yj-faq-item summary::after {
+    content: '+';
+    font-size: 18px;
+    color: var(--yj-accent);
+    transition: transform var(--duration-fast);
+  }
+  .yj-faq-item[open] summary::after {
+    content: '−';
+  }
+  .yj-faq-item p {
+    padding: 0 24px 18px;
+    font-size: var(--text-sm);
+    color: var(--yj-text-dim);
+    line-height: var(--leading-relaxed);
+    margin: 0;
+  }
+  .yj-faq-item code {
+    background: rgba(16,185,129,0.08);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--yj-accent);
+  }
+
+  /* CTA */
+  .yj-cta {
+    padding: var(--space-5xl) 0;
+    background: var(--ink-15);
+  }
+  .yj-cta-inner {
+    text-align: center;
+    max-width: 560px;
+  }
+  .yj-cta-inner h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--ink-100);
+    margin-bottom: var(--space-md);
+  }
+  .yj-cta-inner p {
+    font-size: var(--text-base);
+    color: var(--ink-50);
+    margin-bottom: var(--space-2xl);
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .yj-hero-inner { grid-template-columns: 1fr; }
+    .yj-features-grid { grid-template-columns: repeat(2, 1fr); }
+    .yj-pricing-grid { grid-template-columns: 1fr; }
+    .yj-price-popular { transform: none; }
+    .yj-steps { flex-direction: column; }
+    .yj-step-arrow { transform: rotate(90deg); }
+  }
+  @media (max-width: 640px) {
+    .yj-features-grid { grid-template-columns: 1fr; }
+  }
+</style>

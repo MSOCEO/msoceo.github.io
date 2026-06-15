@@ -16,23 +16,50 @@
   --ink-90:   #e8e8e8;   /* 标题 */
   --ink-100:  #ffffff;   /* 强调 */
 
-  /* 强调色 — 琥珀金 */
-  --amber-400: #d4a574;
-  --amber-500: #c49563;
+  /* 5 站差异化强调色（深底 #0a0a0a 统一） */
+  /* 主站：靛蓝 */
+  --accent-indigo-400: #6366f1;
+  --accent-indigo-500: #4f46e5;
+  --accent-indigo-200: #a5b4fc;
+  --accent-indigo-50:  #eef2ff;
+  /* 博客 / 墨迹：暖橙 */
+  --accent-blog-400: #f59e0b;
+  --accent-blog-500: #d97706;
+  --accent-blog-200: #fde68a;
+  /* 导航站 / 星轨：冷紫 */
+  --accent-links-400: #8b5cf6;
+  --accent-links-500: #7c3aed;
+  --accent-links-200: #c4b5fd;
+  /* 云笺平台：青绿 */
+  --accent-yunjian-400: #10b981;
+  --accent-yunjian-500: #059669;
+  --accent-yunjian-200: #a7f3d0;
+  /* 后台 / 墨韵：琥珀 */
+  --accent-admin-400: #f97316;
+  --accent-admin-500: #ea580c;
+  --accent-admin-200: #fed7aa;
+
+  /* 强调色 — 琥珀金（保持向后兼容） */
+  --amber-400: var(--accent-indigo-400);
+  --amber-500: var(--accent-indigo-500);
   --amber-600: #b08452;
-  --amber-200: #e8cdb0;
-  --amber-50:  #faf3eb;
+  --amber-200: var(--accent-indigo-200);
+  --amber-50:  var(--accent-indigo-50);
 
   /* 语义色 */
   --success: #3dba82;
   --error:   #e5484d;
   --warn:    #f5a623;
 
+  /* ---- 纹理 ---- */
+  --texture-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+
   /* ---- 字体 ---- */
   --font-display: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', serif;
   --font-body:    system-ui, -apple-system, 'PingFang SC', 'SF Pro Text', sans-serif;
   --font-mono:    'SF Mono', 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
   --font-en:      'Inter', 'SF Pro Display', system-ui, sans-serif;
+  --font-serif:   'Georgia', 'Noto Serif SC', serif;
 
   /* ---- 字号 ---- */
   --text-xs:   0.75rem;    /* 12px */
@@ -77,11 +104,14 @@
   --radius-xl:  24px;
   --radius-full:9999px;
 
-  /* ---- 阴影 ---- */
-  --shadow-sm:  0 1px 2px rgba(0,0,0,0.4);
-  --shadow-md:  0 4px 12px rgba(0,0,0,0.5);
+  /* ---- 阴影（双层系统，非AI感的关键） ---- */
+  --shadow-card:    0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3);
+  --shadow-elevated:0 2px 4px rgba(0,0,0,0.5), 0 16px 48px rgba(0,0,0,0.4);
+  --shadow-glow:    0 0 40px rgba(99,102,241,0.15);
+  /* 保持向后兼容 */
+  --shadow-sm:  var(--shadow-card);
+  --shadow-md:  var(--shadow-elevated);
   --shadow-lg:  0 8px 30px rgba(0,0,0,0.6);
-  --shadow-glow:0 0 20px rgba(212,165,116,0.08);
 
   /* ---- 动效 ---- */
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
