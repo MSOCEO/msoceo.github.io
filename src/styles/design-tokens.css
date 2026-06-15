@@ -129,13 +129,13 @@ body {
 /* ---- 排版 ---- */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-regular);
   color: var(--ink-90);
-  line-height: var(--leading-tight);
-  letter-spacing: 0.04em;
+  line-height: var(--leading-loose);
+  letter-spacing: 0.06em;
 }
 
-h1 { font-size: var(--text-5xl); font-weight: var(--weight-bold); letter-spacing: 0.02em; }
+h1 { font-size: var(--text-5xl); font-weight: var(--weight-medium); letter-spacing: 0.05em; }
 h2 { font-size: var(--text-3xl); }
 h3 { font-size: var(--text-2xl); }
 h4 { font-size: var(--text-xl); }
