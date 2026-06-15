@@ -1,0 +1,156 @@
+---
+import Page from '../../layouts/Page.astro';
+
+const title = '隐私政策 | 星舟导航';
+const description = '星舟导航隐私政策，说明我们如何收集、使用和保护您的个人信息。';
+---
+
+<Page title={title} description={description}>
+  <article class="legal-content">
+    <h1>隐私政策</h1>
+    <p class="legal-updated">最后更新日期：2026 年 6 月 15 日</p>
+
+    <section>
+      <h2>引言</h2>
+      <p>星舟导航（以下简称"本站"）高度重视您的隐私保护。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。使用本站服务即表示您同意本隐私政策所述条款。</p>
+    </section>
+
+    <section>
+      <h2>信息收集</h2>
+      <p>本站仅收集以下有限信息：</p>
+      <ul>
+        <li><strong>浏览器类型与版本</strong>：用于优化页面兼容性与展示效果；</li>
+        <li><strong>访问时间与页面浏览记录</strong>：用于分析流量趋势，改进服务质量；</li>
+        <li><strong>IP 地址</strong>：用于地域统计与安全防护，以匿名化方式处理；</li>
+        <li><strong>Cookies 及类似技术</strong>：用于记住您的主题偏好（深色/浅色模式）等基本设置。</li>
+      </ul>
+      <p>本站不要求注册账号，不收集姓名、邮箱、电话等个人身份信息。</p>
+    </section>
+
+    <section>
+      <h2>信息使用</h2>
+      <p>我们收集的信息仅用于以下目的：</p>
+      <ul>
+        <li>改善与优化本站的服务体验与页面性能；</li>
+        <li>分析访问流量与用户行为趋势，以指导内容与功能迭代；</li>
+        <li>为用户提供个性化体验（如记住主题偏好）；</li>
+        <li>保障本站安全，防范恶意攻击与滥用行为。</li>
+      </ul>
+      <p>我们不会将您的信息用于任何与上述目的无关的用途，亦不会出售、出租或交易您的信息。</p>
+    </section>
+
+    <section>
+      <h2>Cookie 政策</h2>
+      <p>Cookie 是网站在您的浏览器中存储的小型文本文件。本站使用以下类型的 Cookie：</p>
+      <ul>
+        <li><strong>必要 Cookie</strong>：用于保存您的主题偏好等基本设置，确保网站正常运行；</li>
+        <li><strong>分析 Cookie</strong>：通过第三方统计工具（如 Google Analytics）收集匿名的访问数据，帮助我们了解网站使用情况。</li>
+      </ul>
+      <p>您可以通过浏览器设置禁用 Cookie，但这可能影响本站部分功能的正常使用。大多数浏览器允许您清除 Cookie 或设置为拒绝所有 Cookie，请查阅您所用浏览器的帮助文档了解具体操作方法。</p>
+    </section>
+
+    <section>
+      <h2>第三方服务</h2>
+      <p>本站可能使用以下第三方服务，其各自的隐私政策独立于本政策：</p>
+      <ul>
+        <li><strong>Google Analytics</strong>：用于匿名流量分析，Google 可能通过 Cookie 收集访问数据。详情请参阅 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google 隐私政策</a>；</li>
+        <li><strong>CDN 与字体服务</strong>：本站使用 Google Fonts 提供字体资源，访问时可能向 Google 服务器发送请求；</li>
+        <li><strong>Favicon 服务</strong>：本站通过 Google Favicon 服务获取收录站点的图标，访问时可能向 Google 服务器发送请求。</li>
+      </ul>
+      <p>我们不对第三方服务的隐私行为负责，建议您查阅相关服务的隐私政策。</p>
+    </section>
+
+    <section>
+      <h2>数据安全</h2>
+      <p>我们采取合理的技术与管理措施保护您的信息安全，包括但不限于 HTTPS 加密传输、访问控制等。但请注意，互联网上不存在绝对安全的传输方式，我们无法保证信息在传输过程中的绝对安全。</p>
+      <p>本站为静态站点，不存储用户提交的个人数据，亦不维护用户数据库。</p>
+    </section>
+
+    <section>
+      <h2>未成年人保护</h2>
+      <p>本站不针对未成年人设计或营销。我们不会故意收集 14 岁以下儿童的个人信息。如您为监护人并发现您的子女向我们提供了个人信息，请通过下方联系方式联系我们，我们将及时删除相关信息。</p>
+    </section>
+
+    <section>
+      <h2>政策更新</h2>
+      <p>我们可能不时更新本隐私政策。更新后的政策将在本页面发布，并在顶部注明更新日期。重大变更可能通过网站公告方式通知。建议您定期查阅本页面以了解最新政策。</p>
+    </section>
+
+    <section>
+      <h2>联系方式</h2>
+      <p>如您对本隐私政策有任何疑问、意见或建议，请通过以下方式联系我们：</p>
+      <ul>
+        <li>网站：<a href="/guestbook">留言板</a></li>
+      </ul>
+    </section>
+  </article>
+</Page>
+
+<style>
+  .legal-content {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl) var(--space-5xl);
+    color: var(--ink-70);
+    line-height: var(--leading-relaxed);
+  }
+
+  .legal-content h1 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-sm);
+    color: var(--ink-90);
+  }
+
+  .legal-updated {
+    font-size: var(--text-sm);
+    color: var(--ink-40);
+    margin-bottom: var(--space-3xl);
+  }
+
+  .legal-content section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .legal-content h2 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-md);
+    color: var(--ink-90);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--ink-20);
+  }
+
+  .legal-content h3 {
+    font-size: var(--text-lg);
+    margin: var(--space-lg) 0 var(--space-sm);
+    color: var(--ink-90);
+  }
+
+  .legal-content p {
+    color: var(--ink-50);
+    margin-bottom: var(--space-md);
+    max-width: none;
+  }
+
+  .legal-content ul {
+    padding-left: var(--space-lg);
+    margin-bottom: var(--space-md);
+    color: var(--ink-50);
+  }
+
+  .legal-content li {
+    margin-bottom: var(--space-xs);
+  }
+
+  .legal-content strong {
+    color: var(--ink-90);
+    font-weight: var(--weight-semibold);
+  }
+
+  .legal-content a {
+    color: var(--amber-400);
+  }
+
+  .legal-content a:hover {
+    color: var(--amber-500);
+  }
+</style>
