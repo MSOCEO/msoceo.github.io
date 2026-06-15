@@ -14,33 +14,43 @@ const description = '三分钟拥有自己的独立博客';
         <p>三分钟拥有自己的独立博客</p>
       </div>
 
-      <form class="auth-form">
+      <div id="auth-msg" class="auth-msg" style="display:none"></div>
+
+      <form class="auth-form" id="register-form">
         <div class="form-group">
           <label for="username">用户名</label>
-          <input type="text" id="username" placeholder="你的用户名" autocomplete="username" />
+          <input type="text" id="username" placeholder="你的用户名" autocomplete="username" required />
         </div>
         <div class="form-group">
           <label for="email">邮箱</label>
-          <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required />
         </div>
         <div class="form-group">
           <label for="password">密码</label>
-          <input type="password" id="password" placeholder="至少 8 位字符" autocomplete="new-password" />
+          <input type="password" id="password" placeholder="至少 8 位字符" autocomplete="new-password" required />
+          <div class="pw-meter">
+            <div class="pw-bar" id="pw-bar"></div>
+          </div>
+          <span class="pw-hint" id="pw-hint"></span>
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">确认密码</label>
+          <input type="password" id="confirm-password" placeholder="再次输入密码" autocomplete="new-password" required />
         </div>
 
-        <button type="button" class="auth-btn-github">
+        <button type="button" class="auth-btn-github" id="btn-github">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          使用 GitHub 授权登录
+          使用 GitHub 注册
         </button>
 
         <div class="form-group form-check">
           <label class="check-label">
-            <input type="checkbox" id="agree" />
+            <input type="checkbox" id="agree" required />
             <span>我已阅读并同意 <a href="/yunjian/terms">服务协议</a> 和 <a href="/yunjian/privacy">隐私政策</a></span>
           </label>
         </div>
 
-        <button type="submit" class="auth-btn-submit">创建账号</button>
+        <button type="submit" class="auth-btn-submit" id="btn-submit">创建账号</button>
       </form>
 
       <div class="auth-footer">
@@ -78,7 +88,7 @@ const description = '三分钟拥有自己的独立博客';
     max-width: 440px;
     box-shadow: var(--shadow-card);
   }
-  .auth-header { text-align: center; margin-bottom: 32px; }
+  .auth-header { text-align: center; margin-bottom: 24px; }
   .auth-back {
     display: inline-block;
     font-size: var(--text-xs);
@@ -99,6 +109,24 @@ const description = '三分钟拥有自己的独立博客';
     font-size: var(--text-sm);
     color: #6b8a7a;
     margin: 0;
+  }
+
+  .auth-msg {
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .auth-msg.error {
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #f87171;
+  }
+  .auth-msg.success {
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #34d399;
   }
 
   .auth-form { display: flex; flex-direction: column; gap: 18px; }
@@ -126,6 +154,24 @@ const description = '三分钟拥有自己的独立博客';
     box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
   }
   .form-group input::placeholder { color: var(--ink-40); }
+
+  .pw-meter {
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .pw-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s, background 0.3s;
+    width: 0;
+  }
+  .pw-hint {
+    font-size: 11px;
+    color: var(--ink-40);
+  }
 
   .auth-btn-github {
     display: flex;
@@ -175,6 +221,10 @@ const description = '三分钟拥有自己的独立博客';
     background: #059669;
     box-shadow: 0 0 20px rgba(16,185,129,0.15);
   }
+  .auth-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
   .auth-footer {
     text-align: center;
@@ -189,3 +239,112 @@ const description = '三分钟拥有自己的独立博客';
   }
   .auth-footer a:hover { text-decoration: underline; }
 </style>
+
+<script>
+  import { supabase, signUp, signInWithGitHub } from '../../scripts/supabase.js';
+
+  const form = document.getElementById('register-form');
+  const pwInput = document.getElementById('password');
+  const pwBar = document.getElementById('pw-bar');
+  const pwHint = document.getElementById('pw-hint');
+  const msgBox = document.getElementById('auth-msg');
+  const btnSubmit = document.getElementById('btn-submit');
+
+  function showMsg(text, type) {
+    msgBox.textContent = text;
+    msgBox.className = 'auth-msg ' + type;
+    msgBox.style.display = 'block';
+  }
+
+  function hideMsg() {
+    msgBox.style.display = 'none';
+  }
+
+  // 密码强度评估
+  function assessPassword(pw) {
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (pw.length >= 12) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[a-z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    const levels = [
+      { w: 0,   color: 'transparent', text: '' },
+      { w: 16,  color: '#ef4444', text: '弱 — 太短了' },
+      { w: 33,  color: '#f97316', text: '较弱 — 增加大小写和数字' },
+      { w: 50,  color: '#eab308', text: '中等 — 还可更强' },
+      { w: 66,  color: '#84cc16', text: '较强' },
+      { w: 83,  color: '#22c55e', text: '强' },
+      { w: 100, color: '#10b981', text: '很强' }
+    ];
+    const idx = Math.min(score, levels.length - 1);
+    return levels[idx];
+  }
+
+  pwInput.addEventListener('input', () => {
+    const r = assessPassword(pwInput.value);
+    pwBar.style.width = r.w + '%';
+    pwBar.style.background = r.color;
+    pwHint.textContent = r.text;
+  });
+
+  // GitHub OAuth
+  document.getElementById('btn-github').addEventListener('click', async () => {
+    hideMsg();
+    const { error } = await signInWithGitHub();
+    if (error) showMsg('GitHub 授权失败: ' + error.message, 'error');
+  });
+
+  // 注册提交
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideMsg();
+
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPw = document.getElementById('confirm-password').value;
+    const agreed = document.getElementById('agree').checked;
+
+    if (!username) return showMsg('请输入用户名', 'error');
+    if (username.length < 2) return showMsg('用户名至少 2 个字符', 'error');
+    if (!email) return showMsg('请输入邮箱', 'error');
+    if (!password) return showMsg('请输入密码', 'error');
+    if (password.length < 8) return showMsg('密码至少 8 位字符', 'error');
+    if (password !== confirmPw) return showMsg('两次输入的密码不一致', 'error');
+    if (!agreed) return showMsg('请先同意服务协议和隐私政策', 'error');
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = '注册中...';
+
+    const { data, error } = await signUp(email, password, username);
+
+    if (error) {
+      if (error.message.includes('already registered') || error.message.includes('already exists')) {
+        showMsg('该邮箱已被注册，请直接登录', 'error');
+      } else if (error.message.includes('password')) {
+        showMsg('密码强度不足: ' + error.message, 'error');
+      } else {
+        showMsg('注册失败: ' + error.message, 'error');
+      }
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = '创建账号';
+      return;
+    }
+
+    if (data?.user?.identities?.length === 0) {
+      showMsg('该邮箱已被注册，请直接登录', 'error');
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = '创建账号';
+      return;
+    }
+
+    showMsg('注册成功！验证邮件已发送，请查收邮箱完成验证。', 'success');
+
+    // 如果未开启邮箱验证，用户可以直接登录
+    setTimeout(() => {
+      window.location.href = '/yunjian/login';
+    }, 3000);
+  });
+</script>

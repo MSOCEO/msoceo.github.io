@@ -382,6 +382,23 @@ const description = '三分钟拥有自己的独立博客，基于 GitHub Pages�
     border-color: var(--yj-accent);
     background: rgba(16,185,129,0.06);
   }
+  .yj-btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--ink-50);
+    cursor: pointer;
+  }
+  .yj-btn-ghost:hover {
+    border-color: rgba(239,68,68,0.4);
+    color: #f87171;
+  }
+  .yj-user-greeting {
+    font-size: var(--text-sm);
+    color: var(--ink-70);
+    display: inline-flex;
+    align-items: center;
+    padding: 11px 0;
+  }
   .yj-btn-lg { padding: 14px 32px; font-size: var(--text-base); }
   .yj-btn-block { width: 100%; justify-content: center; }
 
@@ -863,50 +880,35 @@ const description = '三分钟拥有自己的独立博客，基于 GitHub Pages�
     if (elDeploy) setInterval(() => { elDeploy.textContent = Math.floor(30 + Math.random() * 30); }, 10000);
   })();
 
-  // ===== localStorage Auth Mock =====
-  (function() {
-    const USERS_KEY = 'yunjian-users';
-    const SESSION_KEY = 'yunjian-session';
-    const isLoginPage = location.pathname.includes('/yunjian/login');
-    const isRegisterPage = location.pathname.includes('/yunjian/register');
+  // ===== Supabase Auth 状态检测 =====
+  (async function() {
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const supabase = createClient(
+      'https://xwvkdluvixurvgvkhkfe.supabase.co',
+      'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H'
+    );
+    const { data: { session } } = await supabase.auth.getSession();
 
-    function getUsers() {
-      try { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch { return {}; }
-    }
-    function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+    const heroActions = document.querySelector('.yj-hero-actions');
+    if (!heroActions) return;
 
-    if (isRegisterPage) {
-      const form = document.querySelector('form');
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const email = form.querySelector('input[type="email"]')?.value?.trim();
-          const pwd = form.querySelector('input[type="password"]')?.value?.trim();
-          if (!email || !pwd) { alert('请填写邮箱和密码'); return; }
-          const users = getUsers();
-          if (users[email]) { alert('该邮箱已注册'); return; }
-          users[email] = { password: pwd, createdAt: new Date().toISOString() };
-          saveUsers(users);
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify({ email, loginAt: new Date().toISOString() }));
-          window.location.href = '/yunjian/dashboard';
-        });
-      }
+    if (session?.user) {
+      const username = session.user.user_metadata?.username || session.user.email?.split('@')[0] || '用户';
+      heroActions.innerHTML = `
+        <span class="yj-user-greeting">你好，${escapeHtml(username)}</span>
+        <a href="/yunjian/dashboard" class="yj-btn yj-btn-primary">进入控制台 &rarr;</a>
+        <button class="yj-btn yj-btn-ghost" id="yj-logout-btn">退出登录</button>
+      `;
+      document.getElementById('yj-logout-btn')?.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.reload();
+      });
     }
 
-    if (isLoginPage) {
-      const form = document.querySelector('form');
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const email = form.querySelector('input[type="email"]')?.value?.trim();
-          const pwd = form.querySelector('input[type="password"]')?.value?.trim();
-          if (!email || !pwd) { alert('请填写邮箱和密码'); return; }
-          const users = getUsers();
-          if (!users[email] || users[email].password !== pwd) { alert('邮箱或密码错误'); return; }
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify({ email, loginAt: new Date().toISOString() }));
-          window.location.href = '/yunjian/dashboard';
-        });
-      }
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
     }
   })();
 </script>
