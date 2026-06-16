@@ -50,7 +50,7 @@ const posts = (await getCollection('blog'))
       posts.map((post, i) => (
         <BlogCard
           title={post.data.title}
-          slug={post.id}
+          slug={post.slug}
           date={post.data.pubDate}
           description={post.data.description}
           category={post.data.category}
