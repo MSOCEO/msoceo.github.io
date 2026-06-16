@@ -19,7 +19,6 @@ const topTags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
 const navLinks = [
   { href: '/', label: '首页' },
   { href: '/about', label: '关于博客' },
-  { href: 'https://www.travellings.cn/go.html', label: '开往', external: true },
 ];
 ---
 
@@ -104,6 +103,35 @@ const navLinks = [
               </a>
             ))}
           </div>
+        </div>
+      </div>
+
+      <!-- 友链接力 Dropdown -->
+      <div class="nav-dropdown-group relative">
+        <button class="nav-link nav-dropdown-trigger px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-300 flex items-center gap-1"
+                data-dropdown="friends">
+          友链接力
+          <svg class="dropdown-chevron w-3 h-3 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute left-1/2 -translate-x-1/2 top-full mt-1 w-44 py-2 rounded-xl bg-white dark:bg-[#18171d] shadow-xl border border-gray-100 dark:border-gray-800
+                    invisible opacity-0 translate-y-2 transition-all duration-300 ease-out"
+             data-dropdown-menu="friends">
+          <a href="https://www.travellings.cn/go.html" target="_blank" rel="noopener" class="nav-dropdown-item flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-[var(--accent)] transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            开往
+          </a>
+          <a href="https://foreverblog.cn/go.html" target="_blank" rel="noopener" class="nav-dropdown-item flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-[var(--accent)] transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            虫洞
+          </a>
+          <a href="https://zhblogs.ohyee.cc/go" target="_blank" rel="noopener" class="nav-dropdown-item flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-[var(--accent)] transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            博客导航
+          </a>
+          <a href="https://blog-daohang.vercel.app/go.html" target="_blank" rel="noopener" class="nav-dropdown-item flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-[var(--accent)] transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            中文博客列表
+          </a>
         </div>
       </div>
 
@@ -207,6 +235,21 @@ const navLinks = [
             </a>
           ))}
         </div>
+      </div>
+    </div>
+
+    <!-- Mobile 友链接力 submenu -->
+    <div>
+      <button class="mobile-submenu-toggle w-full flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              data-mobile-sub="friends">
+        友链接力
+        <svg class="mobile-chevron w-4 h-4 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="mobile-submenu hidden ml-3 border-l border-gray-200 dark:border-gray-700" data-mobile-sub-menu="friends">
+        <a href="https://www.travellings.cn/go.html" target="_blank" rel="noopener" class="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-[var(--accent)] transition-colors">开往</a>
+        <a href="https://foreverblog.cn/go.html" target="_blank" rel="noopener" class="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-[var(--accent)] transition-colors">虫洞</a>
+        <a href="https://zhblogs.ohyee.cc/go" target="_blank" rel="noopener" class="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-[var(--accent)] transition-colors">博客导航</a>
+        <a href="https://blog-daohang.vercel.app/go.html" target="_blank" rel="noopener" class="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-[var(--accent)] transition-colors">中文博客列表</a>
       </div>
     </div>
   </div>
