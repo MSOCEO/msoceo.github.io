@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && bash scripts/postbuild.sh",
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "npm run build && echo 'Built successfully'"

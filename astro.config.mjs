@@ -7,7 +7,7 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
 	site: 'https://msoceo.github.io',
-	base: '/',
+	base: '/blog/',
 	integrations: [mdx(), sitemap()],
 	vite: {
 		plugins: [tailwindcss()],
