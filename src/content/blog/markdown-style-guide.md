@@ -4,7 +4,7 @@ description: '测试寒影主题中各种 Markdown 元素的渲染效果。'
 pubDate: 2026-06-10
 category: '技术'
 tags: ['Markdown', '博客']
-heroImage: '/images/cover-sunset.jpg'
+heroImage: '/blog/images/cover-sunset.jpg'
 ---
 
 ## 标题
