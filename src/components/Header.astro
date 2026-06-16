@@ -18,9 +18,7 @@ const topTags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
 
 const navLinks = [
   { href: '/', label: '首页' },
-  { href: '/archive', label: '归档' },
-  { href: '/about', label: '关于' },
-  { href: '/guestbook', label: '留言板' },
+  { href: '/about', label: '关于博客' },
 ];
 ---
 
@@ -46,10 +44,10 @@ const navLinks = [
       <div class="nav-dropdown-group relative">
         <button class="nav-link nav-dropdown-trigger px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-300 flex items-center gap-1"
                 data-dropdown="posts">
-          文章
+          全部文章
           <svg class="dropdown-chevron w-3 h-3 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="nav-dropdown-menu absolute left-0 top-full mt-1 w-44 py-2 rounded-xl bg-white dark:bg-[#18171d] shadow-xl border border-gray-100 dark:border-gray-800
+        <div class="nav-dropdown-menu absolute left-3 top-full mt-1 w-44 py-2 rounded-xl bg-white dark:bg-[#18171d] shadow-xl border border-gray-100 dark:border-gray-800
                     invisible opacity-0 translate-y-2 transition-all duration-300 ease-out"
              data-dropdown-menu="posts">
           <a href="/" class="nav-dropdown-item flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-[var(--accent)] transition-colors">
@@ -71,10 +69,10 @@ const navLinks = [
       <div class="nav-dropdown-group relative">
         <button class="nav-link nav-dropdown-trigger px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-300 flex items-center gap-1"
                 data-dropdown="categories">
-          分类
+          文章分类
           <svg class="dropdown-chevron w-3 h-3 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="nav-dropdown-menu absolute left-0 top-full mt-1 w-36 py-2 rounded-xl bg-white dark:bg-[#18171d] shadow-xl border border-gray-100 dark:border-gray-800
+        <div class="nav-dropdown-menu absolute left-3 top-full mt-1 w-36 py-2 rounded-xl bg-white dark:bg-[#18171d] shadow-xl border border-gray-100 dark:border-gray-800
                     invisible opacity-0 translate-y-2 transition-all duration-300 ease-out"
              data-dropdown-menu="categories">
           {categories.map(([cat, count]) => (
@@ -91,10 +89,10 @@ const navLinks = [
       <div class="nav-dropdown-group relative">
         <button class="nav-link nav-dropdown-trigger px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-300 flex items-center gap-1"
                 data-dropdown="tags">
-          标签
+          文章标签
           <svg class="dropdown-chevron w-3 h-3 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="nav-dropdown-menu absolute left-0 top-full mt-1 w-44 py-2 rounded-xl bg-white dark:bg-[#18171d] shadow-xl border border-gray-100 dark:border-gray-800
+        <div class="nav-dropdown-menu absolute left-3 top-full mt-1 w-44 py-2 rounded-xl bg-white dark:bg-[#18171d] shadow-xl border border-gray-100 dark:border-gray-800
                     invisible opacity-0 translate-y-2 transition-all duration-300 ease-out"
              data-dropdown-menu="tags">
           <div class="flex flex-wrap gap-2 px-4 py-2">
@@ -167,7 +165,7 @@ const navLinks = [
     <div>
       <button class="mobile-submenu-toggle w-full flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               data-mobile-sub="posts">
-        文章
+        全部文章
         <svg class="mobile-chevron w-4 h-4 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="mobile-submenu hidden ml-3 border-l border-gray-200 dark:border-gray-700" data-mobile-sub-menu="posts">
@@ -181,7 +179,7 @@ const navLinks = [
     <div>
       <button class="mobile-submenu-toggle w-full flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               data-mobile-sub="categories">
-        分类
+        文章分类
         <svg class="mobile-chevron w-4 h-4 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="mobile-submenu hidden ml-3 border-l border-gray-200 dark:border-gray-700" data-mobile-sub-menu="categories">
@@ -195,7 +193,7 @@ const navLinks = [
     <div>
       <button class="mobile-submenu-toggle w-full flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               data-mobile-sub="tags">
-        标签
+        文章标签
         <svg class="mobile-chevron w-4 h-4 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="mobile-submenu hidden ml-3 border-l border-gray-200 dark:border-gray-700" data-mobile-sub-menu="tags">
