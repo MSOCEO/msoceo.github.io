@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>星迹互联 StarTrails — 独立博客的星际网络</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ===== SPA 路由：所有视图默认隐藏 ===== */
+    .view { display: none; }
+    .view--active { display: block; }
+
+    /* ===== 星际穿越专属（复用 go.html 逻辑） ===== */
+    .view[data-view="go"] {
+      display: none;
+      align-items: center; justify-content: center;
+      min-height: calc(100vh - 80px); text-align: center;
+    }
+    .view--active[data-view="go"] { display: flex; }
+
+    .go-container {
+      z-index: 1;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .go-logo {
+      width: 100px; height: 100px;
+      margin: 0 auto 32px;
+      background: linear-gradient(135deg, var(--color-brand), #8b5cf6);
+      border-radius: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      box-shadow: 0 0 60px rgba(99,102,241,0.4);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    .go-title {
+      font-family: var(--font-display);
+      font-size: 2.4rem; font-weight: 700; margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .go-subtitle {
+      color: var(--color-text-secondary); font-size: 1.05rem; margin-bottom: 40px;
+    }
+
+    .go-btn {
+      padding: 18px 48px;
+      background: linear-gradient(135deg, var(--color-brand), #8b5cf6);
+      color: white; border: none; border-radius: var(--radius-full);
+      font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;
+      cursor: pointer; transition: all 0.3s ease;
+      position: relative; overflow: hidden; letter-spacing: 0.02em;
+    }
+
+    .go-btn:hover {
+      box-shadow: 0 0 48px rgba(99,102,241,0.6); transform: scale(1.04);
+    }
+
+    .go-btn::after {
+      content: ''; position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+
+    .go-btn:hover::after { opacity: 1; }
+
+    .go-destination {
+      margin-top: 16px; font-size: 0.85rem; color: var(--color-text-muted);
+      font-family: var(--font-mono); min-height: 1.5em; transition: all 0.3s;
+    }
+
+    /* 曲速动画覆盖层 */
+    .warp-overlay {
+      position: fixed; inset: 0; z-index: 1000; background: #000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+
+    .warp-overlay--active { opacity: 1; pointer-events: all; }
+
+    .warp-stars { position: absolute; inset: 0; overflow: hidden; }
+
+    .warp-star {
+      position: absolute; background: white; border-radius: 50%;
+      animation: warpFly linear forwards;
+    }
+
+    @keyframes warpFly {
+      0%   { transform: translateZ(0) scale(0); opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translateZ(800px) scale(3); opacity: 1; }
+    }
+
+    .warp-text {
+      position: relative; z-index: 1;
+      font-family: var(--font-display); font-size: 2rem; font-weight: 700;
+      color: white; text-align: center;
+      animation: warpTextPulse 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes warpTextPulse {
+      0%   { opacity: 0.6; letter-spacing: 0.05em; }
+      100% { opacity: 1; letter-spacing: 0.15em; }
+    }
+
+    .warp-ring {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px; height: 200px;
+      border: 2px solid rgba(99,102,241,0.3); border-radius: 50%;
+      animation: warpRing 1s ease-out forwards;
+    }
+
+    @keyframes warpRing {
+      0%   { width: 50px; height: 50px; opacity: 1; }
+      100% { width: 600px; height: 600px; opacity: 0; }
+    }
+
+    /* ===== 成员目录 ===== */
+    .members-controls {
+      display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; align-items: center;
+    }
+
+    .members-search {
+      flex: 1; min-width: 240px; position: relative;
+    }
+
+    .members-search .input { padding-left: 40px; }
+
+    .members-search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--color-text-muted);
+      font-size: 1rem; pointer-events: none;
+    }
+
+    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .filter-chip {
+      padding: 6px 14px; border-radius: var(--radius-full);
+      font-size: 0.8rem; font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: var(--color-text-secondary);
+      cursor: pointer; transition: all 0.2s ease; font-family: var(--font-body);
+    }
+
+    .filter-chip:hover { border-color: rgba(255,255,255,0.2); color: var(--color-text-primary); }
+
+    .filter-chip--active {
+      background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.4); color: #c7d2fe;
+    }
+
+    .members-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px; margin-bottom: 40px;
+    }
+
+    .member-card {
+      padding: 24px; animation: fadeInUp 0.4s ease both;
+    }
+
+    .member-card__header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+    }
+
+    .member-card__avatar {
+      width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-family: var(--font-display);
+      font-weight: 700; font-size: 1.2rem;
+    }
+
+    .member-card__avatar img {
+      width: 48px; height: 48px; border-radius: 12px; object-fit: cover;
+    }
+
+    .member-card__name {
+      font-family: var(--font-display); font-size: 1.05rem; font-weight: 600;
+    }
+
+    .member-card__url {
+      font-size: 0.8rem; color: var(--color-text-muted);
+      font-family: var(--font-mono); margin-top: 2px; word-break: break-all;
+    }
+
+    .member-card__desc {
+      color: var(--color-text-secondary); font-size: 0.85rem;
+      line-height: 1.5; margin-bottom: 14px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .member-card__tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+
+    .member-card__footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .member-card__date { font-size: 0.75rem; color: var(--color-text-muted); }
+
+    .members-empty {
+      grid-column: 1 / -1; text-align: center; padding: 60px 0;
+      color: var(--color-text-muted);
+    }
+
+    .members-count { font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 24px; }
+
+    /* ===== 文章聚合 ===== */
+    .feed-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .feed-item {
+      padding: 24px; cursor: pointer; text-decoration: none;
+      color: inherit; display: block; animation: fadeInUp 0.4s ease both;
+    }
+
+    .feed-item__source {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+
+    .feed-item__source-icon {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.65rem; font-weight: 700;
+    }
+
+    .feed-item__source-name { font-size: 0.8rem; color: var(--color-text-muted); font-weight: 500; }
+
+    .feed-item__title {
+      font-family: var(--font-display); font-size: 1.15rem; font-weight: 600;
+      margin-bottom: 8px; line-height: 1.4; transition: color 0.2s;
+    }
+
+    .feed-item:hover .feed-item__title { color: var(--color-brand); }
+
+    .feed-item__summary {
+      color: var(--color-text-secondary); font-size: 0.88rem; line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; margin-bottom: 14px;
+    }
+
+    .feed-item__meta {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.78rem; color: var(--color-text-muted);
+    }
+
+    .feed-item__tags { display: flex; gap: 6px; }
+
+    .feed-empty {
+      text-align: center; padding: 80px 0; color: var(--color-text-muted);
+    }
+
+    .feed-empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.3; }
+
+    /* ===== 加入表单 ===== */
+    .join-layout {
+      display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start;
+    }
+
+    @media (max-width: 900px) { .join-layout { grid-template-columns: 1fr; } }
+
+    .join-form { display: flex; flex-direction: column; gap: 20px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-label {
+      font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary);
+      font-family: var(--font-display);
+    }
+
+    .form-hint { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 2px; }
+
+    textarea.input { resize: vertical; min-height: 100px; }
+
+    .join-sidebar { position: sticky; top: 100px; }
+
+    .requirements-card { padding: 24px; margin-bottom: 20px; }
+
+    .requirements-card h3 {
+      font-family: var(--font-display); font-size: 1rem; margin-bottom: 16px;
+    }
+
+    .requirement-item {
+      display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px;
+      font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5;
+    }
+
+    .requirement-icon {
+      flex-shrink: 0; margin-top: 2px; width: 20px; height: 20px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;
+    }
+
+    .requirement-icon--check { background: rgba(16,185,129,0.15); color: var(--color-accent); }
+    .requirement-icon--info  { background: rgba(99,102,241,0.15); color: var(--color-brand); }
+
+    .process-steps { list-style: none; padding: 0; }
+
+    .process-step {
+      display: flex; gap: 12px; margin-bottom: 16px;
+      font-size: 0.85rem; color: var(--color-text-secondary);
+    }
+
+    .process-step__num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 0.75rem; font-weight: 600;
+      color: var(--color-brand); flex-shrink: 0;
+    }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 300; padding: 14px 28px; border-radius: var(--radius-md);
+      font-size: 0.9rem; font-weight: 500;
+      animation: fadeIn 0.3s ease; backdrop-filter: blur(20px);
+    }
+
+    .toast--success { background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
+    .toast--error   { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+
+    /* ===== 博客详情 ===== */
+    .blog-header { padding: 0 0 40px; }
+
+    .blog-header__main { display: flex; align-items: center; gap: 24px; margin-bottom: 24px; }
+
+    .blog-header__avatar {
+      width: 80px; height: 80px; border-radius: 20px; flex-shrink: 0;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-family: var(--font-display);
+      font-weight: 700; font-size: 2rem;
+    }
+
+    .blog-header__avatar img { width: 80px; height: 80px; border-radius: 20px; object-fit: cover; }
+
+    .blog-header__name { font-family: var(--font-display); font-size: 2rem; font-weight: 700; }
+    .blog-header__url  { color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.9rem; margin-top: 4px; }
+
+    .blog-header__status {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 8px; font-size: 0.85rem;
+    }
+
+    .blog-header__desc { color: var(--color-text-secondary); font-size: 1rem; line-height: 1.7; margin-bottom: 20px; }
+
+    .blog-stats {
+      display: flex; gap: 32px; margin-bottom: 40px; padding: 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .blog-stat { text-align: center; }
+
+    .blog-stat__value { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; }
+    .blog-stat__label { font-size: 0.78rem; color: var(--color-text-muted); margin-top: 4px; }
+
+    .blog-posts { display: flex; flex-direction: column; gap: 12px; }
+
+    .blog-post-item {
+      padding: 20px 24px; text-decoration: none;
+      color: inherit; display: block; cursor: pointer;
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    .blog-post-item__title {
+      font-family: var(--font-display); font-size: 1.05rem;
+      font-weight: 600; margin-bottom: 8px; transition: color 0.2s;
+    }
+
+    .blog-post-item:hover .blog-post-item__title { color: var(--color-brand); }
+
+    .blog-post-item__summary {
+      color: var(--color-text-secondary); font-size: 0.85rem; line-height: 1.6;
+      margin-bottom: 12px; display: -webkit-box;
+      -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .blog-post-item__meta {
+      display: flex; align-items: center; gap: 16px;
+      font-size: 0.78rem; color: var(--color-text-muted);
+    }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--color-text-secondary); text-decoration: none;
+      font-size: 0.9rem; margin-bottom: 24px; cursor: pointer; transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--color-brand); }
+
+    .loading-state { text-align: center; padding: 80px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- 轨道光晕 -->
+  <div class="orb orb--brand"></div>
+  <div class="orb orb--accent"></div>
+
+  <!-- 粒子背景 -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- 导航栏 -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="#home" class="nav__logo" data-nav="home">
+        <div class="nav__logo-icon">✦</div>
+        <span>星迹互联</span>
+      </a>
+      <div class="nav__links">
+        <a href="#home" class="nav__link" data-nav="home">首页</a>
+        <a href="#members" class="nav__link" data-nav="members">星图</a>
+        <a href="#feed" class="nav__link" data-nav="feed">文章</a>
+        <a href="#join" class="nav__link" data-nav="join">加入</a>
+        <a href="#go" class="nav__cta" data-nav="go">随机探索</a>
+      </div>
+      <button class="nav__hamburger" aria-label="菜单" onclick="toggleMobileMenu()">☰</button>
+    </div>
+  </nav>
+
+  <!-- 移动端菜单 -->
+  <div class="nav__overlay" id="nav-overlay" onclick="closeMobileMenu()"></div>
+  <div class="nav__mobile" id="nav-mobile">
+    <a href="#home" class="nav__link" data-nav="home" onclick="closeMobileMenu()">首页</a>
+    <a href="#members" class="nav__link" data-nav="members" onclick="closeMobileMenu()">星图</a>
+    <a href="#feed" class="nav__link" data-nav="feed" onclick="closeMobileMenu()">文章</a>
+    <a href="#join" class="nav__link" data-nav="join" onclick="closeMobileMenu()">加入</a>
+    <a href="#go" class="nav__cta" data-nav="go" onclick="closeMobileMenu()">随机探索</a>
+  </div>
+
+  <!-- ==================== 视图容器 ==================== -->
+
+  <!-- 首页 Home -->
+  <main class="content view view--active" data-view="home">
+
+    <section class="section" style="text-align:center; padding-top:40px;">
+      <span class="section__label">Beta</span>
+      <h1 class="page-hero__title" style="font-size:3.5rem; line-height:1.15;">
+        每一篇博客<br />都是一颗星
+      </h1>
+      <p class="page-hero__subtitle" style="font-size:1.15rem; margin-top:20px;">
+        星迹互联连接中文独立博客，让每颗星彼此照亮。随机穿梭、发现同好、聚合好文。
+      </p>
+      <div style="margin-top:36px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+        <a href="#go" class="btn btn--primary btn--lg">开始星际穿越</a>
+        <a href="#members" class="btn btn--secondary btn--lg">浏览星图</a>
+      </div>
+    </section>
+
+    <section class="section" style="text-align:center;">
+      <div style="display:flex; justify-content:center; gap:64px; flex-wrap:wrap;">
+        <div>
+          <div class="stat-number" id="stat-members">128</div>
+          <div class="stat-label">收录博客</div>
+        </div>
+        <div>
+          <div class="stat-number" id="stat-posts">3,847</div>
+          <div class="stat-label">聚合文章</div>
+        </div>
+        <div>
+          <div class="stat-number" id="stat-online">96</div>
+          <div class="stat-label">在线运行</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__header" style="text-align:center;">
+        <span class="section__label">核心能力</span>
+        <h2 class="section__title" style="font-size:2.2rem;">三大引擎驱动</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:20px;">
+        <div class="card">
+          <div style="width:48px;height:48px;background:rgba(99,102,241,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;">🚀</div>
+          <h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px;">随机穿梭</h3>
+          <p style="color:var(--color-text-secondary);font-size:0.9rem;line-height:1.6;">一键随机跳转至任意成员博客。星际穿越动画 + 丝滑过渡，每次都是未知的邂逅。</p>
+          <div style="margin-top:16px;"><span class="tag">随机发现</span><span class="tag">全屏动画</span></div>
+        </div>
+        <div class="card">
+          <div style="width:48px;height:48px;background:rgba(16,185,129,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;">🌐</div>
+          <h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px;">社区收录</h3>
+          <p style="color:var(--color-text-secondary);font-size:0.9rem;line-height:1.6;">审核收录优质独立博客，多维度分类标签，在线状态实时监控。打造可信赖的博客黄页。</p>
+          <div style="margin-top:16px;"><span class="tag">审核收录</span><span class="tag">状态监控</span><span class="tag">标签分类</span></div>
+        </div>
+        <div class="card">
+          <div style="width:48px;height:48px;background:rgba(245,158,11,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;">📡</div>
+          <h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px;">文章聚合</h3>
+          <p style="color:var(--color-text-secondary);font-size:0.9rem;line-height:1.6;">RSS 自动抓取成员博客最新文章，按时间线聚合展示。跨博客发现好内容，不必逐个打开。</p>
+          <div style="margin-top:16px;"><span class="tag">RSS抓取</span><span class="tag">时间线</span><span class="tag">每日更新</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__header" style="text-align:center;">
+        <span class="section__label">近期新星</span>
+        <h2 class="section__title" style="font-size:2.2rem;">最新收录博客</h2>
+      </div>
+      <div id="latest-members" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;"></div>
+      <div style="text-align:center; margin-top:32px;">
+        <a href="#members" class="btn btn--secondary">查看全部星图 →</a>
+      </div>
+    </section>
+
+    <section class="section" style="text-align:center;">
+      <div class="card" style="max-width:600px;margin:0 auto;padding:48px;text-align:center;">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--color-brand),#8b5cf6);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 24px;">✦</div>
+        <h2 style="font-family:var(--font-display);font-size:1.6rem;margin-bottom:12px;">拥有独立博客？</h2>
+        <p style="color:var(--color-text-secondary);margin-bottom:28px;line-height:1.6;">加入星迹互联，让你的博客与其他创作者互联。免费收录，审核通过后即可出现在星图中。</p>
+        <a href="#join" class="btn btn--primary btn--lg">申请加入</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>星迹互联 StarTrails &copy; 2026 — 连接每一颗独立之星</p>
+      <p style="margin-top:8px;font-size:0.8rem;">由 Supabase + GitHub Pages 驱动 · 零服务器架构</p>
+    </footer>
+  </main>
+
+  <!-- 星际穿越 Go -->
+  <main class="view" data-view="go" id="go-view">
+    <div class="go-container">
+      <div class="go-logo">✦</div>
+      <h1 class="go-title">星际穿越</h1>
+      <p class="go-subtitle">点击按钮随机跳转至一个独立博客<br />每一次点击都是未知的探索</p>
+      <button class="go-btn" onclick="initiateWarp()">启动曲速引擎</button>
+      <div class="go-destination" id="destination"></div>
+    </div>
+  </main>
+
+  <!-- 星图 Members -->
+  <main class="content view" data-view="members">
+    <div class="page-hero">
+      <span class="section__label">星图</span>
+      <h1 class="page-hero__title">成员目录</h1>
+      <p class="page-hero__subtitle">浏览所有已收录的独立博客，按状态和标签筛选</p>
+    </div>
+
+    <div class="members-controls">
+      <div class="members-search">
+        <span class="members-search-icon">⌕</span>
+        <input type="text" class="input" id="members-search-input" placeholder="搜索博客名称或描述..." />
+      </div>
+      <div class="filter-group" id="status-filters">
+        <button class="filter-chip filter-chip--active" data-status="all">全部</button>
+        <button class="filter-chip" data-status="online">在线</button>
+        <button class="filter-chip" data-status="offline">离线</button>
+        <button class="filter-chip" data-status="pending">待审核</button>
+      </div>
+    </div>
+
+    <div class="members-count" id="members-count"></div>
+    <div class="members-grid" id="members-grid"></div>
+
+    <footer class="footer"><p>星迹互联 StarTrails &copy; 2026</p></footer>
+  </main>
+
+  <!-- 文章聚合 Feed -->
+  <main class="content view" data-view="feed">
+    <div class="page-hero">
+      <span class="section__label">信息流</span>
+      <h1 class="page-hero__title">文章聚合</h1>
+      <p class="page-hero__subtitle">RSS 自动抓取成员博客最新文章，一站浏览所有好内容</p>
+    </div>
+
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px;" id="tag-filters">
+      <button class="filter-chip filter-chip--active" data-tag="all">全部</button>
+      <button class="filter-chip" data-tag="技术">技术</button>
+      <button class="filter-chip" data-tag="前端">前端</button>
+      <button class="filter-chip" data-tag="后端">后端</button>
+      <button class="filter-chip" data-tag="设计">设计</button>
+      <button class="filter-chip" data-tag="生活">生活</button>
+    </div>
+
+    <div id="feed-list" class="feed-list"></div>
+    <footer class="footer"><p>星迹互联 StarTrails &copy; 2026 — 文章由 RSS 自动聚合，每日更新</p></footer>
+  </main>
+
+  <!-- 申请加入 Join -->
+  <main class="content view" data-view="join">
+    <div class="page-hero">
+      <span class="section__label">加入星图</span>
+      <h1 class="page-hero__title">申请加入</h1>
+      <p class="page-hero__subtitle">提交你的博客信息，审核通过后即可成为星图中的一员</p>
+    </div>
+
+    <div class="join-layout">
+      <form class="join-form" id="join-form" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">博客名称 *</label>
+          <input type="text" class="input" id="blog-name" placeholder="你的博客名称" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">博客地址 *</label>
+          <input type="url" class="input" id="blog-url" placeholder="https://your-blog.com" required />
+          <span class="form-hint">必须以 https:// 开头</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">博客简介 *</label>
+          <textarea class="input" id="blog-desc" placeholder="简要描述你的博客内容和方向..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">标签</label>
+          <input type="text" class="input" id="blog-tags" placeholder="技术, 前端, 生活 (逗号分隔)" />
+          <span class="form-hint">最多 5 个标签，帮助他人快速发现你的博客</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">RSS 地址</label>
+          <input type="url" class="input" id="blog-rss" placeholder="https://your-blog.com/rss.xml (选填)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">联系邮箱 *</label>
+          <input type="email" class="input" id="blog-email" placeholder="your@email.com" required />
+          <span class="form-hint">仅用于审核通知，不会公开</span>
+        </div>
+        <button type="submit" class="btn btn--primary btn--lg" style="margin-top:8px;align-self:flex-start;" id="submit-btn">提交申请</button>
+      </form>
+
+      <aside class="join-sidebar">
+        <div class="card requirements-card">
+          <h3>收录标准</h3>
+          <div class="requirement-item"><span class="requirement-icon requirement-icon--check">✓</span><span>独立域名或个人子域名</span></div>
+          <div class="requirement-item"><span class="requirement-icon requirement-icon--check">✓</span><span>持续运营 2 个月以上</span></div>
+          <div class="requirement-item"><span class="requirement-icon requirement-icon--check">✓</span><span>至少 10 篇原创文章</span></div>
+          <div class="requirement-item"><span class="requirement-icon requirement-icon--check">✓</span><span>HTTPS 加密访问</span></div>
+          <div class="requirement-item"><span class="requirement-icon requirement-icon--check">✓</span><span>内容原创、非商业推广</span></div>
+        </div>
+        <div class="card requirements-card">
+          <h3>审核流程</h3>
+          <ol class="process-steps">
+            <li class="process-step"><span class="process-step__num">1</span><span>提交申请表单，系统自动记录</span></li>
+            <li class="process-step"><span class="process-step__num">2</span><span>人工审核博客内容与质量</span></li>
+            <li class="process-step"><span class="process-step__num">3</span><span>审核通过后邮件通知，博客上线</span></li>
+            <li class="process-step"><span class="process-step__num">4</span><span>在你的博客添加星迹互联链接</span></li>
+          </ol>
+          <p style="font-size:0.8rem;color:var(--color-text-muted);margin-top:12px;">审核通常在 1-3 个工作日内完成</p>
+        </div>
+      </aside>
+    </div>
+    <footer class="footer"><p>星迹互联 StarTrails &copy; 2026</p></footer>
+  </main>
+
+  <!-- 博客详情 Blog -->
+  <main class="content view" data-view="blog">
+    <span class="back-link" onclick="navigateTo('members')">← 返回星图</span>
+    <div id="blog-content"></div>
+    <footer class="footer"><p>星迹互联 StarTrails &copy; 2026</p></footer>
+  </main>
+
+  <!-- 曲速动画覆盖层 -->
+  <div class="warp-overlay" id="warp-overlay">
+    <div class="warp-stars" id="warp-stars"></div>
+    <div class="warp-ring" id="warp-ring"></div>
+    <div class="warp-text">ENTERING WARP</div>
+  </div>
+
+  <script>var supabaseClient = window.supabase;</script>
+  <script>
+
+    /* ========== 全局 SPA 路由 ========== */
+
+    function navigateTo(viewName, params) {
+      if (params) window._navParams = params;
+      else delete window._navParams;
+      window.location.hash = viewName;
+    }
+
+    function getCurrentView() {
+      return window.location.hash.replace('#', '') || 'home';
+    }
+
+    function switchView(viewName, params) {
+      // 隐藏所有视图
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('view--active'));
+
+      // 显示目标视图
+      const target = document.querySelector(`.view[data-view="${viewName}"]`);
+      if (target) {
+        target.classList.add('view--active');
+
+        // go 视图不计入 content padding
+        if (viewName === 'go') {
+          target.style.display = 'flex';
+        }
+      }
+
+      // 更新导航高亮
+      document.querySelectorAll('[data-nav]').forEach(el => {
+        el.classList.toggle('nav__link--active', el.dataset.nav === viewName);
+      });
+
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'instant' });
+
+      // 视图初始化
+      if (viewName === 'home') initHome();
+      if (viewName === 'members') initMembers();
+      if (viewName === 'feed') initFeed();
+      if (viewName === 'blog') initBlog(params);
+    }
+
+    window.addEventListener('hashchange', () => {
+      switchView(getCurrentView(), window._navParams);
+    });
+
+    // 拦截所有内部链接
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const hash = link.getAttribute('href').replace('#', '');
+      if (['home', 'go', 'members', 'feed', 'join', 'blog'].includes(hash)) {
+        e.preventDefault();
+        navigateTo(hash);
+      }
+    });
+
+    /* ========== 移动端菜单 ========== */
+    function toggleMobileMenu() {
+      document.getElementById('nav-mobile').classList.toggle('nav__mobile--open');
+      document.getElementById('nav-overlay').classList.toggle('nav__overlay--visible');
+      document.body.style.overflow = document.body.style.overflow ? '' : 'hidden';
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('nav-mobile').classList.remove('nav__mobile--open');
+      document.getElementById('nav-overlay').classList.remove('nav__overlay--visible');
+      document.body.style.overflow = '';
+    }
+
+    /* ========== 全局 Supabase 辅助 ========== */
+    let supabase = null;
+    if (typeof supabaseClient !== 'undefined') {
+      supabase = supabaseClient.createClient(
+        'https://xwvkdluvixurvgvkhkfe.supabase.co',
+        'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H'
+      );
+    }
+
+    const DEMO_MEMBERS = [
+      { id:'m1', name:'静默之森', url:'https://example.com', description:'技术与生活的交叉观察', tags:['技术','生活','前端'], status:'online', joined_at:'2026-03-15' },
+      { id:'m2', name:'代码札记', url:'https://example.org', description:'全栈开发实战笔记', tags:['前端','后端','全栈'], status:'online', joined_at:'2026-02-20' },
+      { id:'m3', name:'算法之美', url:'https://algo.example.com', description:'算法与数据结构深度解析', tags:['算法','数学','Python'], status:'online', joined_at:'2026-04-01' },
+      { id:'m4', name:'云端漫步', url:'https://cloud.example.com', description:'云原生架构与 DevOps 实践', tags:['DevOps','云原生','K8s'], status:'online', joined_at:'2026-01-10' },
+      { id:'m5', name:'设计诗', url:'https://design.example.com', description:'UI/UX 设计思考与案例分享', tags:['设计','UI','UX'], status:'offline', joined_at:'2025-11-05' },
+      { id:'m6', name:'数据茶馆', url:'https://data.example.com', description:'数据科学与机器学习的下午茶', tags:['数据科学','机器学习','Python'], status:'online', joined_at:'2026-05-12' },
+      { id:'m7', name:'老派游戏', url:'https://game.example.com', description:'复古游戏研究与开发', tags:['游戏','C++','复古'], status:'pending', joined_at:'2026-06-01' },
+      { id:'m8', name:'开源之道', url:'https://oss.example.com', description:'开源社区参与与项目维护经验', tags:['开源','社区','GitHub'], status:'online', joined_at:'2025-12-20' },
+    ];
+
+    const DEMO_POSTS = [
+      { title:'Rust 异步编程深度解析', summary:'深入探讨 Rust 异步编程的核心概念，从 Future trait 到 Tokio 运行时的实际应用。', published_at:'2026-06-15T10:30:00Z', url:'#', members:{name:'代码札记'}, tags:['后端','Rust'] },
+      { title:'React Server Components 实战指南', summary:'RSC 改变了我们构建 React 应用的方式。本文通过完整电商项目展示如何正确使用。', published_at:'2026-06-14T08:00:00Z', url:'#', members:{name:'静默之森'}, tags:['前端','React'] },
+      { title:'Kubernetes 集群成本优化实践', summary:'管理 200+ 节点集群总结的成本优化经验，包括资源配额和自动扩缩容策略。', published_at:'2026-06-13T14:20:00Z', url:'#', members:{name:'云端漫步'}, tags:['后端','DevOps'] },
+      { title:'设计系统的颜色语义化', summary:'如何为大型产品构建设计系统的颜色令牌体系，从品牌色到语义化映射。', published_at:'2026-06-12T09:15:00Z', url:'#', members:{name:'设计诗'}, tags:['设计','前端'] },
+      { title:'图神经网络在推荐系统中的应用', summary:'综述 GNN 在工业级推荐系统中的最新进展，包括 GraphSAGE 和 PinSAGE。', published_at:'2026-06-11T16:00:00Z', url:'#', members:{name:'数据茶馆'}, tags:['机器学习','Python'] },
+      { title:'从零实现一个微型数据库', summary:'用 500 行 Go 代码实现一个支持 SQL 子集的嵌入式数据库，涵盖词法分析和执行引擎。', published_at:'2026-06-10T11:45:00Z', url:'#', members:{name:'算法之美'}, tags:['后端','数据库'] },
+      { title:'CSS Container Queries 完全指南', summary:'Container Queries 终于在所有主流浏览器中可用。从基础语法到实战案例。', published_at:'2026-06-09T07:30:00Z', url:'#', members:{name:'静默之森'}, tags:['前端','CSS'] },
+    ];
+
+    /* ========== 粒子背景 ========== */
+    function initParticles() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      const COUNT = 80;
+
+      function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+
+      function create() {
+        particles = Array.from({length:COUNT}, () => ({
+          x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+          r: Math.random()*1.5+0.3, sx: (Math.random()-0.5)*0.3, sy: (Math.random()-0.5)*0.3,
+          o: Math.random()*0.5+0.2,
+        }));
+      }
+
+      function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        particles.forEach(p => {
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle=`rgba(255,255,255,${p.o})`; ctx.fill();
+          p.x+=p.sx; p.y+=p.sy;
+          if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
+          if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+        });
+        for(let i=0;i<particles.length;i++){
+          for(let j=i+1;j<particles.length;j++){
+            const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+            const d=Math.sqrt(dx*dx+dy*dy);
+            if(d<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(99,102,241,${0.06*(1-d/120)})`;ctx.lineWidth=0.5;ctx.stroke();}
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+
+      resize(); create(); draw();
+      window.addEventListener('resize', ()=>{resize();create();});
+    }
+
+    /* ========== 导航滚动效果 ========== */
+    function initNavScroll() {
+      const nav = document.querySelector('.nav');
+      window.addEventListener('scroll', () => {
+        nav.classList.toggle('nav--scrolled', window.scrollY > 50);
+      });
+    }
+
+    /* ========== 数字递增动画 ========== */
+    function animateNumber(el, target) {
+      const dur = 1500, start = performance.now();
+      function update(now) {
+        const p = Math.min((now-start)/dur, 1);
+        const v = Math.floor(target * (1 - Math.pow(2, -10 * p)));
+        el.textContent = target > 1000 ? v.toLocaleString() : v;
+        if(p < 1) requestAnimationFrame(update);
+        else el.textContent = target > 1000 ? target.toLocaleString() : target;
+      }
+      requestAnimationFrame(update);
+    }
+
+    /* ========== 首页初始化 ========== */
+    function initHome() {
+      animateNumber(document.getElementById('stat-members'), 128);
+      animateNumber(document.getElementById('stat-posts'), 3847);
+      animateNumber(document.getElementById('stat-online'), 96);
+
+      const container = document.getElementById('latest-members');
+      if (!container.hasChildNodes()) {
+        const demos = DEMO_MEMBERS.filter(m => m.status === 'online').slice(0, 6);
+        container.innerHTML = demos.map(m => `
+          <div class="card" style="cursor:pointer;" onclick="navigateTo('blog', {id:'${m.id}'})">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:white;font-family:var(--font-display);font-weight:700;font-size:1rem;">${m.name[0]}</div>
+              <div>
+                <h4 style="font-family:var(--font-display);font-size:1rem;font-weight:600;">${m.name}</h4>
+                <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                  <span class="status-dot status-dot--${m.status}"></span>
+                  <span style="font-size:0.75rem;color:var(--color-accent);">在线</span>
+                </div>
+              </div>
+            </div>
+            <p style="color:var(--color-text-secondary);font-size:0.85rem;line-height:1.5;">${m.description}</p>
+            <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">${(m.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    /* ========== 星图初始化 ========== */
+    let membersFilter = { status: 'all', search: '' };
+
+    function initMembers() {
+      const searchEl = document.getElementById('members-search-input');
+      const filterBtns = document.querySelectorAll('#status-filters .filter-chip');
+
+      if (!searchEl.dataset.bound) {
+        searchEl.dataset.bound = '1';
+        searchEl.addEventListener('input', e => {
+          membersFilter.search = e.target.value.toLowerCase();
+          renderMembers();
+        });
+        filterBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('filter-chip--active'));
+            btn.classList.add('filter-chip--active');
+            membersFilter.status = btn.dataset.status;
+            renderMembers();
+          });
+        });
+      }
+
+      renderMembers();
+    }
+
+    function renderMembers() {
+      const filtered = DEMO_MEMBERS.filter(m => {
+        const ms = membersFilter.status === 'all' || m.status === membersFilter.status;
+        const mm = !membersFilter.search || m.name.toLowerCase().includes(membersFilter.search) || m.description.toLowerCase().includes(membersFilter.search) || (m.tags||[]).some(t=>t.toLowerCase().includes(membersFilter.search));
+        return ms && mm;
+      });
+
+      document.getElementById('members-count').textContent = `共 ${filtered.length} 个博客`;
+      const grid = document.getElementById('members-grid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="members-empty">没有找到匹配的博客</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map((m,i) => `
+        <div class="card member-card" style="cursor:pointer;animation-delay:${i*0.04}s;" onclick="navigateTo('blog',{id:'${m.id}'})">
+          <div class="member-card__header">
+            <div class="member-card__avatar">${m.name[0]}</div>
+            <div>
+              <div class="member-card__name">${m.name}</div>
+              <div class="member-card__url">${m.url}</div>
+            </div>
+          </div>
+          <p class="member-card__desc">${m.description}</p>
+          <div class="member-card__tags">${(m.tags||[]).slice(0,4).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          <div class="member-card__footer">
+            <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;">
+              <span class="status-dot status-dot--${m.status}"></span>
+              <span style="color:${m.status==='online'?'var(--color-accent)':m.status==='offline'?'#ef4444':'#f59e0b'};">${m.status==='online'?'在线':m.status==='offline'?'离线':'待审核'}</span>
+            </span>
+            <span class="member-card__date">${new Date(m.joined_at).toLocaleDateString('zh-CN')}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ========== 文章聚合初始化 ========== */
+    let feedTag = 'all';
+
+    function initFeed() {
+      const tagBtns = document.querySelectorAll('#tag-filters .filter-chip');
+      if (!tagBtns[0].dataset.bound) {
+        tagBtns.forEach(btn => {
+          btn.dataset.bound = '1';
+          btn.addEventListener('click', () => {
+            tagBtns.forEach(b => b.classList.remove('filter-chip--active'));
+            btn.classList.add('filter-chip--active');
+            feedTag = btn.dataset.tag;
+            renderFeed();
+          });
+        });
+      }
+      renderFeed();
+    }
+
+    function renderFeed() {
+      const filtered = feedTag === 'all' ? DEMO_POSTS : DEMO_POSTS.filter(p => (p.tags||[]).includes(feedTag));
+      const container = document.getElementById('feed-list');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">📡</div><p>暂无文章</p></div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map((p,i) => {
+        const t = new Date(p.published_at);
+        const ts = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+        return `
+          <a href="${p.url}" target="_blank" class="card feed-item" style="animation-delay:${i*0.05}s;">
+            <div class="feed-item__source">
+              <div class="feed-item__source-icon">${p.members.name[0]}</div>
+              <span class="feed-item__source-name">${p.members.name}</span>
+            </div>
+            <h3 class="feed-item__title">${p.title}</h3>
+            <p class="feed-item__summary">${p.summary}</p>
+            <div class="feed-item__meta">
+              <span>${ts}</span>
+              <div class="feed-item__tags">${(p.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    /* ========== 提交申请 ========== */
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true; btn.textContent = '提交中...';
+
+      await new Promise(r => setTimeout(r, 800));
+
+      showToast('申请提交成功！我们会在 1-3 个工作日内审核并邮件通知你。', 'success');
+      document.getElementById('join-form').reset();
+
+      btn.disabled = false; btn.textContent = '提交申请';
+    }
+
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `toast toast--${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(),300); }, 4000);
+    }
+
+    /* ========== 博客详情 ========== */
+    function initBlog(params) {
+      if (!params || !params.id) {
+        document.getElementById('blog-content').innerHTML = '<div class="loading-state"><p style="color:var(--color-text-muted);">未指定博客 ID</p></div>';
+        return;
+      }
+
+      const member = DEMO_MEMBERS.find(m => m.id === params.id);
+      if (!member) {
+        document.getElementById('blog-content').innerHTML = '<div class="loading-state"><p style="color:var(--color-text-muted);">博客未找到</p></div>';
+        return;
+      }
+
+      const posts = DEMO_POSTS.filter(p => Math.random() > 0.4).slice(0, 4); // 模拟关联文章
+      const statusMap = { online:'在线', offline:'离线', pending:'待审核' };
+      const statusColor = { online:'var(--color-accent)', offline:'#ef4444', pending:'#f59e0b' };
+
+      document.getElementById('blog-content').innerHTML = `
+        <div class="blog-header">
+          <div class="blog-header__main">
+            <div class="blog-header__avatar">${member.name[0]}</div>
+            <div>
+              <h1 class="blog-header__name">${member.name}</h1>
+              <div class="blog-header__url">${member.url}</div>
+              <div class="blog-header__status">
+                <span class="status-dot status-dot--${member.status}"></span>
+                <span style="color:${statusColor[member.status]};">${statusMap[member.status]}</span>
+                <span style="color:var(--color-text-muted);font-size:0.8rem;">· 加入于 ${new Date(member.joined_at).toLocaleDateString('zh-CN')}</span>
+              </div>
+            </div>
+          </div>
+          <p class="blog-header__desc">${member.description}</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">${(member.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        </div>
+
+        <div class="blog-stats">
+          <div class="blog-stat"><div class="blog-stat__value">${posts.length}</div><div class="blog-stat__label">聚合文章</div></div>
+          <div class="blog-stat"><div class="blog-stat__value">${member.status==='online'?'✓':'✗'}</div><div class="blog-stat__label">当前状态</div></div>
+          <div class="blog-stat"><div class="blog-stat__value">2026-06-16</div><div class="blog-stat__label">最后检测</div></div>
+        </div>
+
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;margin-bottom:20px;">最新文章</h2>
+        <div class="blog-posts">
+          ${posts.length === 0 ? '<p style="color:var(--color-text-muted);text-align:center;padding:40px;">暂无文章</p>' :
+            posts.map((p,i) => `
+              <a href="${p.url}" target="_blank" class="card blog-post-item" style="animation-delay:${i*0.08}s;">
+                <h3 class="blog-post-item__title">${p.title}</h3>
+                <p class="blog-post-item__summary">${p.summary}</p>
+                <div class="blog-post-item__meta"><span>${new Date(p.published_at).toLocaleDateString('zh-CN')}</span></div>
+              </a>
+            `).join('')
+          }
+        </div>
+      `;
+    }
+
+    /* ========== 星际穿越 ========== */
+    const WARP_MEMBERS = DEMO_MEMBERS.filter(m => m.status === 'online');
+
+    function initiateWarp() {
+      if (WARP_MEMBERS.length === 0) {
+        document.getElementById('destination').textContent = '星图中暂无在线成员';
+        return;
+      }
+
+      const target = WARP_MEMBERS[Math.floor(Math.random() * WARP_MEMBERS.length)];
+      document.getElementById('destination').textContent = `即将前往：${target.url}`;
+
+      const overlay = document.getElementById('warp-overlay');
+      const starsContainer = document.getElementById('warp-stars');
+
+      starsContainer.innerHTML = '';
+      for (let i = 0; i < 120; i++) {
+        const star = document.createElement('div');
+        star.className = 'warp-star';
+        star.style.left = Math.random()*100+'%';
+        star.style.top = Math.random()*100+'%';
+        star.style.width = star.style.height = (Math.random()*3+1)+'px';
+        star.style.animationDuration = (Math.random()*1.5+0.5)+'s';
+        star.style.animationDelay = Math.random()*0.5+'s';
+        starsContainer.appendChild(star);
+      }
+
+      overlay.classList.add('warp-overlay--active');
+
+      const ring = document.getElementById('warp-ring');
+      ring.style.animation = 'none'; ring.offsetHeight;
+      ring.style.animation = 'warpRing 1s ease-out forwards';
+
+      setTimeout(() => {
+        window.open(target.url, '_blank');
+        setTimeout(() => {
+          overlay.classList.remove('warp-overlay--active');
+          document.getElementById('destination').textContent = '';
+        }, 500);
+      }, 1800);
+    }
+
+    /* ========== 启动 ========== */
+    document.addEventListener('DOMContentLoaded', () => {
+      initParticles();
+      initNavScroll();
+
+      // 初始路由
+      const initialView = getCurrentView();
+      switchView(initialView);
+    });
+
+  </script>
+</body>
+</html>
