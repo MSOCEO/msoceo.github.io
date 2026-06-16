@@ -1,0 +1,176 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'blog'>;
+}
+
+const { entry } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await entry.render();
+const { title, pubDate, category, tags } = entry.data;
+const readingMinutes = Math.max(1, Math.ceil((entry.body?.length || 0) / 500));
+---
+
+<BaseLayout title={title} description={entry.data.description} showReadingProgress={true}>
+  <article class="max-w-3xl mx-auto">
+    <!-- 文章头 -->
+    <header class="mb-10">
+      <div class="flex items-center gap-3 mb-4 text-sm">
+        {category && <a href={`/categories/${category}`} class="tag-pill">{category}</a>}
+        <FormattedDate date={pubDate} />
+        <span class="text-[var(--text-tertiary)]">·</span>
+        <span class="text-[var(--text-tertiary)]">阅读约 {readingMinutes} 分钟</span>
+      </div>
+      <h1 class="font-serif font-black text-3xl md:text-4xl leading-tight">{title}</h1>
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {tags.map(tag => (
+            <a href={`/tags/${tag}`} class="tag-pill">{tag}</a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <!-- 正文 -->
+    <div class="prose-custom drop-cap">
+      <Content />
+    </div>
+
+    <!-- 版权声明 -->
+    <div class="mt-12 p-5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-sm text-[var(--text-tertiary)]">
+      <p class="font-serif font-bold text-[var(--text-secondary)] mb-1">版权声明</p>
+      <p>本文由寒影原创，采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener" class="underline">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处。</p>
+    </div>
+
+    <!-- 点赞（前端） -->
+    <div class="flex justify-center mt-8">
+      <button id="like-btn" class="flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] transition-all text-sm">
+        <svg id="like-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span id="like-count">点赞</span>
+      </button>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  const likeBtn = document.getElementById('like-btn');
+  const likeIcon = document.getElementById('like-icon');
+  const likeCount = document.getElementById('like-count');
+  const slug = window.location.pathname;
+  const key = `like-${slug}`;
+
+  function getLikes(): number {
+    try {
+      return parseInt(localStorage.getItem(key) || '0', 10) || 0;
+    } catch { return 0; }
+  }
+
+  const likes = getLikes();
+  if (likes > 0 && likeCount) likeCount.textContent = `${likes} 赞`;
+  if (likes > 0 && likeIcon) { likeIcon.setAttribute('fill', 'var(--accent)'); likeIcon.setAttribute('stroke', 'var(--accent)'); }
+
+  likeBtn?.addEventListener('click', () => {
+    const newLikes = getLikes() + 1;
+    try { localStorage.setItem(key, String(newLikes)); } catch {}
+    if (likeCount) likeCount.textContent = `${newLikes} 赞`;
+    if (likeIcon) { likeIcon.setAttribute('fill', 'var(--accent)'); likeIcon.setAttribute('stroke', 'var(--accent)'); }
+    (window as any).showToast?.('感谢点赞');
+  });
+</script>
+
+<style>
+  .prose-custom {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--text-primary);
+  }
+  .prose-custom h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .prose-custom h3 {
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose-custom p {
+    margin: 1.25rem 0;
+  }
+  .prose-custom ul, .prose-custom ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  .prose-custom li {
+    margin: 0.35rem 0;
+  }
+  .prose-custom img {
+    border-radius: 8px;
+    max-width: 100%;
+    margin: 1.5rem auto;
+    cursor: zoom-in;
+    transition: box-shadow var(--transition-base);
+  }
+  .prose-custom img:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  .prose-custom hr {
+    border: none;
+    border-top: 1px dashed var(--border-color);
+    margin: 2.5rem 0;
+  }
+  .prose-custom table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  .prose-custom th, .prose-custom td {
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border-color);
+    text-align: left;
+  }
+  .prose-custom th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+  }
+  .prose-custom a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
+
+<script>
+  // 代码复制按钮
+  document.querySelectorAll('pre').forEach(pre => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block-wrapper';
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    wrapper.appendChild(btn);
+
+    btn.addEventListener('click', async () => {
+      const code = pre.querySelector('code');
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code.textContent || '');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 2000);
+      } catch {
+        btn.textContent = 'Failed';
+        setTimeout(() => { btn.textContent = '复制'; }, 2000);
+      }
+    });
+  });
+</script>

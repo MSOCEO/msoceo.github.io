@@ -1,495 +1,119 @@
 ---
-// 墨影 Header — 三段式布局：左Logo / 中菜单图标 / 右搜索
+import ThemeToggle from './ThemeToggle.astro';
+import { SITE_TITLE } from '../consts';
+
+const navLinks = [
+  { href: '/', label: '首页' },
+  { href: '/archive', label: '归档' },
+  { href: '/about', label: '关于' },
+  { href: '/guestbook', label: '留言板' },
+];
 ---
 
-<header class="site-header" id="site-header">
-  <div class="header-inner">
-    <!-- 左侧：Logo + 汉堡 -->
-    <div class="header-left">
-      <button class="mobile-toggle" id="mobile-toggle" aria-label="菜单">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="logo" aria-label="寒影首页">
-        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="40" height="40" rx="8" fill="#0030B8"/>
-          <polygon points="20,10 28,20 20,30 12,20" fill="white"/>
-          <line x1="20" y1="5" x2="20" y2="9" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <line x1="20" y1="31" x2="20" y2="35" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <line x1="10" y1="20" x2="7" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <line x1="30" y1="20" x2="33" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span class="logo-text">寒影</span>
-      </a>
-    </div>
-
-    <!-- 中间：导航菜单 -->
-    <nav class="nav-center" aria-label="主导航">
-      <ul class="nav-list">
-        <li>
-          <a href="/" class="nav-item active">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>首页</span>
-          </a>
-        </li>
-        <li>
-          <a href="/blog" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>博客</span>
-          </a>
-        </li>
-        <li>
-          <a href="/links" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>星迹</span>
-          </a>
-        </li>
-        <li>
-          <a href="/yunjian" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>云笺</span>
-          </a>
-        </li>
-        <li>
-          <a href="/search" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>搜索</span>
-          </a>
-        </li>
-        <li>
-          <a href="/security" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>安全</span>
-          </a>
-        </li>
-        <li>
-          <a href="/guestbook" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>留言</span>
-          </a>
-        </li>
-        <li>
-          <a href="/about" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>关于</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin" class="nav-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>管理</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- 右侧：搜索 + 认证 -->
-    <div class="header-right">
-      <button class="search-btn" id="search-btn" aria-label="搜索">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <a href="/yunjian/login" class="nav-item nav-auth" id="nav-auth-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>登录</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- 搜索遮罩层 -->
-  <div class="search-overlay" id="search-overlay">
-    <div class="search-modal">
-      <div class="search-input-wrap">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <input type="text" id="search-input" class="search-input" placeholder="搜索文章..." autocomplete="off" />
-        <kbd>ESC</kbd>
+<header class="sticky top-0 z-50 bg-[var(--bg-primary)]/90 backdrop-blur-md border-b border-[var(--border-color)] transition-colors">
+  <!-- 顶部状态栏 -->
+  <div class="status-bar">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <time id="status-time" datetime="" class="tabular-nums">
+        <span id="status-date"></span> <span id="status-clock"></span>
+      </time>
+      <div class="flex items-center gap-3">
+        <a href="/rss.xml" class="text-xs opacity-60 hover:opacity-100 transition-opacity" title="RSS 订阅">RSS</a>
+        <ThemeToggle />
       </div>
-      <div class="search-results" id="search-results"></div>
     </div>
   </div>
+
+  <!-- 导航栏 -->
+  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-serif font-bold text-xl tracking-tight">
+        <span class="text-[var(--accent)]">寒</span>影
+      </a>
+
+      <!-- 桌面导航 -->
+      <div class="hidden md:flex items-center gap-1">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class="link-underline px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            {link.label}
+          </a>
+        ))}
+        <button
+          id="search-trigger"
+          class="flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--border-color)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-all ml-2"
+          aria-label="搜索"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 移动端菜单按钮 -->
+      <div class="flex md:hidden items-center gap-2">
+        <button id="search-trigger-mobile" class="flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--border-color)] text-[var(--text-tertiary)]" aria-label="搜索">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+        </button>
+        <button id="mobile-menu-btn" class="flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--border-color)] text-[var(--text-secondary)]" aria-label="菜单">
+          <svg id="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 移动端折叠菜单 -->
+    <div id="mobile-menu" class="md:hidden overflow-hidden transition-all duration-300" style="max-height:0">
+      <div class="flex flex-col gap-1 pb-4 pt-1">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class="link-underline px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors rounded-lg hover:bg-[var(--bg-secondary)]"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </nav>
 </header>
 
 <script>
-  const header = document.getElementById('site-header');
-  const toggle = document.getElementById('mobile-toggle');
-  const searchBtn = document.getElementById('search-btn');
-  const searchOverlay = document.getElementById('search-overlay');
-  const searchInput = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
-
-  // === 滚动效果 ===
-  let lastScroll = 0;
-  let scrollTimer;
-  window.addEventListener('scroll', () => {
-    const now = window.scrollY;
-    if (now > 80 && now > lastScroll + 10) {
-      header.classList.add('head-hidden');
-    } else if (now < lastScroll - 10 || now < 30) {
-      header.classList.remove('head-hidden');
-    }
-    lastScroll = now;
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => { lastScroll = window.scrollY; }, 100);
-  }, { passive: true });
-
-  // === 移动端菜单 ===
-  let menuOpen = false;
-  toggle.addEventListener('click', () => {
-    menuOpen = !menuOpen;
-    document.body.classList.toggle('nav-open', menuOpen);
-    toggle.classList.toggle('active', menuOpen);
-  });
-
-  // === 搜索 ===
-  let searchOpen = false;
-  const openSearch = () => {
-    searchOpen = true;
-    searchOverlay.classList.add('visible');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => searchInput.focus(), 150);
-  };
-  const closeSearch = () => {
-    searchOpen = false;
-    searchOverlay.classList.remove('visible');
-    document.body.style.overflow = '';
-    searchInput.value = '';
-    searchResults.innerHTML = '';
-  };
-
-  searchBtn.addEventListener('click', openSearch);
-  searchOverlay.addEventListener('click', (e) => {
-    if (e.target === searchOverlay) closeSearch();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && searchOpen) closeSearch();
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
-  });
-
-  // === 客户端搜索 (从 RSS/JSON 索引) ===
-  let postsIndex = [];
-  fetch('/rss.xml').then(r => r.text()).then(xml => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xml, 'text/xml');
-    doc.querySelectorAll('item').forEach(item => {
-      postsIndex.push({
-        title: item.querySelector('title')?.textContent || '',
-        link: item.querySelector('link')?.textContent || '',
-        desc: item.querySelector('description')?.textContent?.slice(0, 120) || ''
+  // 状态栏时间
+  function updateTime() {
+    const now = new Date();
+    const dateEl = document.getElementById('status-date');
+    const clockEl = document.getElementById('status-clock');
+    if (dateEl) {
+      dateEl.textContent = now.toLocaleDateString('zh-CN', {
+        year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
       });
+    }
+    if (clockEl) {
+      clockEl.textContent = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+  updateTime();
+  setInterval(updateTime, 30000);
+
+  // 移动端菜单
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+  if (menuBtn && menu) {
+    menuBtn.addEventListener('click', () => {
+      const isOpen = menu.style.maxHeight !== '0px';
+      menu.style.maxHeight = isOpen ? '0px' : '300px';
+      if (menuIcon) {
+        menuIcon.innerHTML = isOpen
+          ? '<line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>'
+          : '<line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/>';
+      }
     });
-  }).catch(() => {});
-
-  searchInput.addEventListener('input', () => {
-    const q = searchInput.value.toLowerCase().trim();
-    if (!q || postsIndex.length === 0) { searchResults.innerHTML = ''; return; }
-    const hits = postsIndex.filter(p =>
-      p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
-    ).slice(0, 8);
-
-    searchResults.innerHTML = hits.length
-      ? hits.map(p => `
-        <a href="${p.link}" class="search-hit">
-          <span class="hit-title">${p.title}</span>
-          <span class="hit-desc">${p.desc}</span>
-        </a>`).join('')
-      : '<div class="search-empty">未找到相关文章</div>';
-  });
+  }
 </script>
-
-<style>
-  .site-header { z-index: 100; }
-
-  .header-inner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(10,10,10,0.88);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 100;
-    padding: 0 var(--space-xl);
-  }
-
-  .head-hidden .header-inner { transform: translateY(-100%); }
-
-  /* === 三段布局 === */
-  .header-left {
-    position: absolute;
-    left: var(--space-xl);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-  }
-
-  .header-right {
-    position: absolute;
-    right: var(--space-xl);
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-  }
-
-  /* === Logo === */
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: var(--amber-400);
-    transition: opacity var(--duration-fast) var(--ease-out);
-  }
-  .logo:hover { opacity: 0.8; }
-  .logo-text {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: var(--weight-bold);
-    color: var(--ink-90);
-    letter-spacing: 0.08em;
-  }
-
-  /* === 导航列表 === */
-  .nav-center {
-    display: flex;
-    justify-content: center;
-  }
-
-  .nav-list {
-    display: flex;
-    list-style: none;
-    gap: 2px;
-  }
-
-  .nav-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
-    color: var(--ink-50);
-    text-decoration: none;
-    transition: all 0.2s var(--ease-out);
-    white-space: nowrap;
-  }
-
-  .nav-item svg { flex-shrink: 0; transition: color 0.2s; }
-
-  .nav-item:hover {
-    color: var(--amber-400);
-    background: rgba(212,165,116,0.06);
-  }
-
-  .nav-item.active {
-    color: var(--amber-400);
-    background: rgba(212,165,116,0.08);
-  }
-
-  .nav-logout-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px; height: 36px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: var(--ink-50);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .nav-logout-btn:hover {
-    color: #f87171;
-    background: rgba(239,68,68,0.08);
-  }
-
-  /* === 搜索按钮 === */
-  .search-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px; height: 36px;
-    border: none;
-    background: transparent;
-    color: var(--ink-50);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .search-btn:hover {
-    color: var(--amber-400);
-    background: rgba(212,165,116,0.06);
-  }
-
-  /* === 搜索遮罩 === */
-  .search-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 20vh;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s var(--ease-out);
-  }
-  .search-overlay.visible { opacity: 1; pointer-events: auto; }
-
-  .search-modal {
-    width: 560px;
-    max-width: 90vw;
-    animation: modalIn 0.25s var(--ease-out);
-  }
-  @keyframes modalIn {
-    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .search-input-wrap {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    background: var(--ink-10);
-    border: 1px solid var(--ink-20);
-    border-radius: var(--radius-lg);
-    padding: var(--space-md) var(--space-lg);
-    box-shadow: var(--shadow-lg);
-    color: var(--ink-50);
-  }
-
-  .search-input {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--ink-90);
-    font-size: var(--text-lg);
-    font-family: var(--font-body);
-  }
-  .search-input::placeholder { color: var(--ink-40); }
-
-  .search-input-wrap kbd {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    background: var(--ink-15);
-    border: 1px solid var(--ink-20);
-    color: var(--ink-40);
-    white-space: nowrap;
-  }
-
-  .search-results {
-    margin-top: var(--space-sm);
-    background: var(--ink-10);
-    border: 1px solid var(--ink-20);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-    max-height: 420px;
-    overflow-y: auto;
-  }
-
-  .search-hit {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-md) var(--space-lg);
-    text-decoration: none;
-    border-bottom: 1px solid var(--ink-20);
-    transition: background 0.15s;
-  }
-  .search-hit:last-child { border-bottom: none; }
-  .search-hit:hover { background: var(--ink-15); }
-
-  .hit-title {
-    font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
-    color: var(--ink-90);
-    margin-bottom: 2px;
-  }
-  .hit-desc {
-    font-size: var(--text-xs);
-    color: var(--ink-40);
-    line-height: 1.5;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .search-empty {
-    padding: var(--space-xl) var(--space-lg);
-    text-align: center;
-    color: var(--ink-40);
-    font-size: var(--text-sm);
-  }
-
-  /* === 汉堡按钮 === */
-  .mobile-toggle {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    z-index: 101;
-  }
-  .mobile-toggle span {
-    display: block;
-    width: 20px; height: 1.5px;
-    background: var(--ink-70);
-    border-radius: 1px;
-    transition: all 0.2s var(--ease-out);
-  }
-  .mobile-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-  .mobile-toggle.active span:nth-child(2) { opacity: 0; }
-  .mobile-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-
-  /* === 响应式 === */
-  @media (max-width: 860px) {
-    .nav-center { display: none; }
-    .nav-auth span { display: none; }
-    .mobile-toggle { display: flex; }
-
-    body.nav-open .nav-center {
-      display: flex;
-      position: fixed;
-      inset: 0;
-      z-index: 99;
-      background: rgba(10,10,10,0.95);
-      backdrop-filter: blur(20px);
-      align-items: center;
-      justify-content: center;
-    }
-
-    body.nav-open .nav-list {
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    body.nav-open .nav-item {
-      font-size: var(--text-lg);
-      padding: var(--space-sm) var(--space-lg);
-    }
-
-    .search-modal { max-width: 95vw; }
-    .search-input { font-size: var(--text-base); }
-  }
-
-  @media (max-width: 480px) {
-    .header-inner { padding: 0 var(--space-md); height: 64px; }
-    .header-left { left: var(--space-md); }
-    .header-right { right: var(--space-md); }
-    .logo-text { font-size: 1rem; }
-    .logo svg { width: 24px; height: 24px; }
-  }
-</style>

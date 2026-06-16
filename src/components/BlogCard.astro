@@ -1,0 +1,69 @@
+---
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+  title: string;
+  slug: string;
+  date: Date;
+  description?: string;
+  category?: string;
+  tags?: string[];
+  image?: string;
+  even?: boolean;
+}
+
+const { title, slug, date, description, category, tags, image, even = false } = Astro.props;
+
+function hash(str: string): number {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+const bgColor = `hsl(${hash(title) % 360}, 20%, 90%)`;
+const darkBgColor = `hsl(${hash(title) % 360}, 15%, 18%)`;
+---
+
+<a
+  href={`/blog/${slug}`}
+  class={`ink-card group flex flex-col ${even ? 'md:flex-row-reverse' : 'md:flex-row'} gap-0 overflow-hidden`}
+>
+  <div class={`${image ? 'md:w-2/5' : ''} overflow-hidden`}>
+    {image ? (
+      <img
+        src={image}
+        alt={title}
+        class="blog-card-image w-full h-48 md:h-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div
+        class="w-full h-48 md:h-full min-h-[180px] flex items-center justify-center"
+        style={`background: ${bgColor}; --dark-bg: ${darkBgColor}`}
+      >
+        <span class="text-4xl font-serif opacity-30">{title.charAt(0)}</span>
+      </div>
+    )}
+  </div>
+  <div class="flex-1 p-5 flex flex-col justify-center">
+    <div class="flex items-center gap-2 mb-2">
+      {category && <span class="tag-pill">{category}</span>}
+      <FormattedDate date={date} />
+    </div>
+    <h2 class="font-serif font-bold text-xl leading-snug group-hover:text-[var(--accent)] transition-colors line-clamp-2">
+      {title}
+    </h2>
+    {description && (
+      <p class="text-sm text-[var(--text-tertiary)] mt-2 line-clamp-2">{description}</p>
+    )}
+    <div class="flex items-center mt-3">
+      <span class="text-sm font-medium text-[var(--link-color)] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+        阅读全文
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </span>
+    </div>
+  </div>
+</a>

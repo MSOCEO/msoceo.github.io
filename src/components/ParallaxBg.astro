@@ -1,0 +1,26 @@
+<!-- 视差背景装饰元素 -->
+<div
+  class="parallax-bg"
+  id="parallax-bg"
+  style="top: 10%; right: 5%; width: 300px; height: 300px;"
+>
+  <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="150" cy="150" r="120" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3" />
+    <circle cx="150" cy="150" r="90" fill="none" stroke="currentColor" stroke-width="0.3" opacity="0.2" />
+    <circle cx="100" cy="100" r="4" fill="currentColor" opacity="0.4" />
+    <circle cx="200" cy="120" r="3" fill="currentColor" opacity="0.3" />
+    <circle cx="130" cy="210" r="2.5" fill="currentColor" opacity="0.35" />
+    <circle cx="220" cy="190" r="3.5" fill="currentColor" opacity="0.25" />
+    <circle cx="80" cy="180" r="2" fill="currentColor" opacity="0.3" />
+  </svg>
+</div>
+
+<script>
+  const bg = document.getElementById('parallax-bg');
+  if (bg) {
+    window.addEventListener('scroll', () => {
+      const scroll = window.scrollY;
+      bg.style.transform = `translateY(${scroll * 0.08}px)`;
+    });
+  }
+</script>

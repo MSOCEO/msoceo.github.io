@@ -1,0 +1,72 @@
+<!-- 搜索弹窗 -->
+<div class="search-overlay" id="search-overlay">
+  <div class="search-modal" role="dialog" aria-label="搜索文章">
+    <input
+      type="text"
+      class="search-input"
+      id="search-input"
+      placeholder="搜索文章..."
+      autocomplete="off"
+    />
+    <div class="search-results" id="search-results">
+      <div class="px-5 py-8 text-center text-sm text-[var(--text-tertiary)]">
+        输入关键词开始搜索
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('search-overlay');
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const results = document.getElementById('search-results');
+
+  const triggers = document.querySelectorAll('#search-trigger, #search-trigger-mobile');
+  triggers.forEach(t => t?.addEventListener('click', () => {
+    overlay?.classList.add('active');
+    setTimeout(() => input?.focus(), 100);
+  }));
+
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+      if (input) input.value = '';
+      if (results) results.innerHTML = '<div class="px-5 py-8 text-center text-sm text-[var(--text-tertiary)]">输入关键词开始搜索</div>';
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay?.classList.contains('active')) {
+      overlay.classList.remove('active');
+      if (input) input.value = '';
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      overlay?.classList.add('active');
+      setTimeout(() => input?.focus(), 100);
+    }
+  });
+
+  // 简单前端搜索 - 基于已生成的搜索结果页
+  input?.addEventListener('input', async () => {
+    const query = input.value.trim().toLowerCase();
+    if (!query) {
+      if (results) results.innerHTML = '<div class="px-5 py-8 text-center text-sm text-[var(--text-tertiary)]">输入关键词开始搜索</div>';
+      return;
+    }
+    // 跳转到搜索结果页
+    if (results) {
+      results.innerHTML = `
+        <a href="/search?q=${encodeURIComponent(query)}" class="search-result-item block">
+          在搜索页查看 "<mark>${query}</mark>" 的完整结果
+        </a>
+      `;
+    }
+  });
+
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && input.value.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(input.value.trim())}`;
+    }
+  });
+</script>

@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 按年份分组
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.pubDate.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+const years = Array.from(byYear.entries()).sort((a, b) => b[0] - a[0]);
+---
+
+<BaseLayout title="归档">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="font-serif font-black text-3xl mb-2">归档</h1>
+    <p class="text-sm text-[var(--text-tertiary)] mb-8">共 {posts.length} 篇文章</p>
+
+    {years.length === 0 ? (
+      <div class="ink-card p-12 text-center text-[var(--text-tertiary)]">
+        <p>暂无归档</p>
+      </div>
+    ) : (
+      <div class="space-y-4">
+        {years.map(([year, yearPosts]) => (
+          <div class="archive-year-group">
+            <button
+              class="archive-year open w-full flex items-center font-serif font-bold text-xl py-2 border-b border-[var(--border-color)]"
+              data-year={year}
+            >
+              <span class="indicator">&#9654;</span>
+              {year}
+              <span class="ml-auto text-sm font-normal text-[var(--text-tertiary)]">{yearPosts.length} 篇</span>
+            </button>
+            <div class="archive-month-list open">
+              <div class="py-3 space-y-1">
+                {yearPosts.map(post => (
+                  <a
+                    href={`/blog/${post.id}`}
+                    class="flex items-center gap-4 px-4 py-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors group"
+                  >
+                    <FormattedDate date={post.data.pubDate} />
+                    <span class="flex-1 group-hover:text-[var(--accent)] transition-colors truncate">{post.data.title}</span>
+                    {post.data.category && (
+                      <span class="tag-pill hidden sm:inline-flex">{post.data.category}</span>
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('.archive-year').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.parentElement;
+      const list = group?.querySelector('.archive-month-list');
+      const isOpen = btn.classList.contains('open');
+      btn.classList.toggle('open');
+      list?.classList.toggle('open');
+    });
+  });
+</script>

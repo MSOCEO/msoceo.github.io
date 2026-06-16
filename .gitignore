@@ -22,7 +22,3 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-public/music/
-
-# Local Netlify folder
-.netlify

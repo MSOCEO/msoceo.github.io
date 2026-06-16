@@ -1,0 +1,20 @@
+---
+interface Props { show?: boolean }
+const { show = false } = Astro.props;
+---
+
+{show && (
+  <div class="reading-progress" id="reading-progress" style="width: 0%"></div>
+)}
+
+<script>
+  const bar = document.getElementById('reading-progress');
+  if (bar) {
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = Math.min((scrollTop / docHeight) * 100, 100);
+      bar.style.width = `${progress}%`;
+    });
+  }
+</script>

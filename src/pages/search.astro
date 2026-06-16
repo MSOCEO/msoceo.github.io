@@ -1,593 +1,73 @@
 ---
-import Page from '../layouts/Page.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogCard from '../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
 
-const title = '寒搜 · HanSearch';
-const description = '多引擎聚合搜索 — DuckDuckGo + SearXNG + Wikipedia 实时结果，不追踪 · 无广告';
+const query = Astro.url.searchParams.get('q')?.toLowerCase().trim() || '';
+
+let results: typeof allPosts = [];
+if (query) {
+  const allPosts = (await getCollection('blog')).filter(p => !p.data.draft);
+  results = allPosts.filter(post => {
+    const title = post.data.title.toLowerCase();
+    const desc = post.data.description?.toLowerCase() || '';
+    const tags = post.data.tags?.join(' ').toLowerCase() || '';
+    const cat = post.data.category?.toLowerCase() || '';
+    return title.includes(query) || desc.includes(query) || tags.includes(query) || cat.includes(query);
+  });
+}
 ---
 
-<Page {title} {description}>
-<div class="sr">
+<BaseLayout title={`搜索: ${query || '搜索'}`}>
+  <div class="max-w-2xl mx-auto">
+    <h1 class="font-serif font-black text-3xl mb-6">搜索</h1>
 
-<!-- HOME -->
-<section class="sr-home" id="srHome">
-  <div class="sr-h-inner">
-    <h1 class="sr-h-title">HanSearch<span class="sr-h-cn"> · 寒搜</span></h1>
-    <p class="sr-h-desc">多引擎聚合搜索，DuckDuckGo + SearXNG + Wikipedia 实时结果</p>
-
-    <div class="sr-box-w">
-      <div class="sr-box">
-        <svg class="sr-box-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5"/></svg>
-        <input class="sr-box-in" id="srInput" placeholder="输入关键词搜索..." autocomplete="off" autofocus />
-        <button class="sr-box-clear" id="srClear" style="display:none">&times;</button>
+    <form class="mb-8" method="get" action="/search">
+      <div class="flex gap-2">
+        <input
+          type="text"
+          name="q"
+          value={query}
+          placeholder="输入关键词搜索文章..."
+          class="flex-1 px-4 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] outline-none focus:border-[var(--accent)] transition-colors text-sm"
+          autofocus
+        />
+        <button
+          type="submit"
+          class="px-6 py-3 rounded-lg bg-[var(--accent)] text-white font-medium text-sm hover:bg-[var(--accent-hover)] transition-colors"
+        >
+          搜索
+        </button>
       </div>
-      <div class="sr-suggest" id="srSuggest" style="display:none"></div>
-      <div class="sr-history" id="srHistory" style="display:none"></div>
-    </div>
+    </form>
 
-    <div class="sr-engines" id="srEngines">
-      <span class="sr-eng" id="eng-ddg"><span class="sr-eng-dot"></span>DuckDuckGo</span>
-      <span class="sr-eng" id="eng-sx"><span class="sr-eng-dot"></span>SearXNG</span>
-      <span class="sr-eng" id="eng-wiki"><span class="sr-eng-dot"></span>Wikipedia</span>
-    </div>
-
-    <div class="sr-btns">
-      <button class="sr-btn sr-btn-accent" id="srSearchBtn">搜索</button>
-      <button class="sr-btn sr-btn-ghost" id="srLuckyBtn">手气不错</button>
-      <button class="sr-safety-toggle" id="srSafeToggle" title="安全搜索切换">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span id="srSafeLabel">中等</span>
-      </button>
-    </div>
-
-    <div class="sr-quick">
-      <span class="sr-chip" data-q="1+1">!calc 1+1</span>
-      <span class="sr-chip" data-q="!ip">!ip</span>
-      <span class="sr-chip" data-q="!rate 100 USD CNY">!rate</span>
-      <span class="sr-chip" data-q="!wiki 量子计算">!wiki</span>
-      <span class="sr-chip" data-q="!gh astro">!gh</span>
-    </div>
+    {!query ? (
+      <div class="ink-card p-12 text-center text-[var(--text-tertiary)]">
+        <p class="text-lg font-serif mb-2">输入关键词，搜寻墨痕</p>
+        <p class="text-sm">试试 "Astro"、"前端"、"Linux" 等关键词</p>
+      </div>
+    ) : results.length === 0 ? (
+      <div class="ink-card p-12 text-center text-[var(--text-tertiary)]">
+        <p class="text-lg font-serif mb-2">未找到 "{query}" 相关文章</p>
+        <p class="text-sm">试试其他关键词</p>
+      </div>
+    ) : (
+      <div>
+        <p class="text-sm text-[var(--text-tertiary)] mb-4">找到 {results.length} 篇相关文章</p>
+        <div class="space-y-4">
+          {results.map(post => (
+            <BlogCard
+              title={post.data.title}
+              slug={post.id}
+              date={post.data.pubDate}
+              description={post.data.description}
+              category={post.data.category}
+              tags={post.data.tags}
+              image={post.data.heroImage}
+            />
+          ))}
+        </div>
+      </div>
+    )}
   </div>
-</section>
-
-<!-- RESULTS -->
-<section class="sr-results" id="srResults" style="display:none">
-  <div class="sr-r-top">
-    <a href="/search" class="sr-r-logo" onclick="resetSearch()">HanSearch</a>
-    <div class="sr-r-box">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5"/></svg>
-      <input class="sr-r-in" id="srRInput" autocomplete="off" />
-    </div>
-    <div class="sr-r-meta">
-      <span class="sr-r-time" id="srRTime"></span>
-      <span class="sr-r-safe" id="srRSafe"></span>
-    </div>
-  </div>
-
-  <div class="sr-r-body">
-    <div class="sr-r-side">
-      <div class="sr-r-filters">
-        <button class="srf active" data-src="all">全部</button>
-        <button class="srf" data-src="ddg">DuckDuckGo</button>
-        <button class="srf" data-src="searxng">SearXNG</button>
-        <button class="srf" data-src="wiki">Wikipedia</button>
-      </div>
-      <div class="sr-r-card" id="srCard" style="display:none"></div>
-      <div class="sr-r-related" id="srRelated"></div>
-    </div>
-    <div class="sr-r-main">
-      <div class="sr-r-stats" id="srRStats"></div>
-      <div class="sr-r-list" id="srRList"></div>
-      <div class="sr-r-more" id="srRMore" style="display:none">
-        <button class="sr-more-btn" id="srMoreBtn">加载更多</button>
-      </div>
-      <div class="sr-r-fallback" id="srRFallback" style="display:none"></div>
-    </div>
-  </div>
-</section>
-
-</div>
-</Page>
-
-<script>
-// ===== STATE =====
-let allResults = [];
-let currentPage = 1;
-let currentSource = 'all';
-let currentQuery = '';
-let safeLevel = 2; // 0=off, 1=moderate, 2=strict
-let engineStatus = { ddg: 'unknown', searxng: 'unknown', wiki: 'unknown' };
-
-// ===== NSFW BLACKLIST =====
-const NSFW_DOMAINS = ['pornhub.com','xvideos.com','xnxx.com','redtube.com','youporn.com','onlyfans.com','chaturbate.com'];
-const NSFW_KEYWORDS = ['porn','xxx','sex','nude','nsfw','adult','erotic','escort','gambling','casino','betting'];
-
-function isNSFW(text, url) {
-  if (safeLevel === 0) return false;
-  const lowered = (text + ' ' + url).toLowerCase();
-  if (NSFW_DOMAINS.some(d => url.toLowerCase().includes(d))) return true;
-  if (safeLevel === 2 && NSFW_KEYWORDS.some(w => lowered.includes(w))) return true;
-  return false;
-}
-
-// ===== HISTORY =====
-function getHistory() { try { return JSON.parse(localStorage.getItem('hs_history') || '[]'); } catch { return []; } }
-function addHistory(q) {
-  let h = getHistory().filter(x => x !== q);
-  h.unshift(q); h = h.slice(0, 10);
-  localStorage.setItem('hs_history', JSON.stringify(h));
-}
-function clearHistory() { localStorage.removeItem('hs_history'); renderHistory(); }
-function renderHistory() {
-  const c = document.getElementById('srHistory');
-  const h = getHistory();
-  if (!h.length) { c.style.display = 'none'; return; }
-  c.style.display = 'block';
-  c.innerHTML = '<div class="srh-head">最近搜索 <button class="srh-clear" onclick="clearHistory()">清空</button></div>' +
-    h.map(q => `<div class="srh-item" data-q="${esc(q)}">${q}</div>`).join('');
-  c.querySelectorAll('.srh-item').forEach(el => el.addEventListener('click', () => {
-    document.getElementById('srInput').value = el.dataset.q;
-    doSearch(el.dataset.q);
-  }));
-}
-
-// Init
-(function() {
-  safeLevel = parseInt(localStorage.getItem('hs_safeLevel') || '2');
-  updateSafeBadge();
-  document.getElementById('srInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
-  document.getElementById('srInput').addEventListener('input', onInput);
-  document.getElementById('srInput').addEventListener('focus', () => { renderHistory(); document.getElementById('srSuggest').style.display = 'none'; });
-  document.getElementById('srRInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
-  document.getElementById('srSearchBtn').addEventListener('click', () => doSearch());
-  document.getElementById('srLuckyBtn').addEventListener('click', () => {
-    const q = document.getElementById('srInput').value.trim();
-    if (q) window.open('https://duckduckgo.com/?q=' + encodeURIComponent(q), '_blank');
-  });
-  document.getElementById('srSafeToggle').addEventListener('click', () => {
-    safeLevel = (safeLevel + 1) % 3; localStorage.setItem('hs_safeLevel', safeLevel); updateSafeBadge();
-  });
-  document.getElementById('srClear').addEventListener('click', () => {
-    document.getElementById('srInput').value = '';
-    onInput();
-    document.getElementById('srInput').focus();
-  });
-  document.querySelectorAll('.sr-chip').forEach(c => c.addEventListener('click', () => {
-    document.getElementById('srInput').value = c.dataset.q; doSearch(c.dataset.q);
-  }));
-  document.querySelectorAll('.srf').forEach(b => b.addEventListener('click', () => {
-    document.querySelectorAll('.srf').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    currentSource = b.dataset.src;
-    renderResults(1);
-  }));
-})();
-
-function onInput() {
-  const v = document.getElementById('srInput').value;
-  document.getElementById('srClear').style.display = v ? 'flex' : 'none';
-  document.getElementById('srSuggest').style.display = 'none';
-  document.getElementById('srHistory').style.display = v ? 'none' : (getHistory().length ? 'block' : 'none');
-  if (v.length < 2) return;
-  // DuckDuckGo autocomplete
-  fetch('https://duckduckgo.com/ac/?q=' + encodeURIComponent(v) + '&type=list')
-    .then(r => r.json()).then(d => {
-      if (!d[1] || !d[1].length) return;
-      const sug = document.getElementById('srSuggest');
-      sug.style.display = 'block';
-      sug.innerHTML = d[1].map(s => `<div class="srs-item">${s}</div>`).join('');
-      sug.querySelectorAll('.srs-item').forEach(el => el.addEventListener('click', () => {
-        document.getElementById('srInput').value = el.textContent;
-        sug.style.display = 'none';
-        doSearch(el.textContent);
-      }));
-    }).catch(() => {});
-}
-
-function updateSafeBadge() {
-  const labels = ['关闭', '中等', '严格'];
-  const colors = ['#ef4444', '#f59e0b', '#22c55e'];
-  document.getElementById('srSafeLabel').textContent = labels[safeLevel];
-  document.getElementById('srSafeToggle').querySelector('svg path').setAttribute('stroke', colors[safeLevel]);
-  document.getElementById('srSafeLabel').style.color = colors[safeLevel];
-}
-
-async function doSearch(q) {
-  q = q || document.getElementById('srInput').value.trim();
-  if (!q) return;
-  currentQuery = q;
-  currentPage = 1;
-  addHistory(q);
-
-  // Quick commands
-  if (q.startsWith('!')) {
-    const handled = handleQuickCmd(q);
-    if (handled) return;
-  }
-
-  document.getElementById('srHome').style.display = 'none';
-  document.getElementById('srResults').style.display = 'block';
-  document.getElementById('srRInput').value = q;
-  document.getElementById('srRList').innerHTML = '<div class="sr-load">搜索中...</div>';
-  document.getElementById('srRStats').textContent = '';
-  document.getElementById('srRTime').textContent = '';
-  document.getElementById('srRMore').style.display = 'none';
-  document.getElementById('srRFallback').style.display = 'none';
-  document.getElementById('srCard').style.display = 'none';
-  document.getElementById('srRelated').innerHTML = '';
-
-  const startTime = performance.now();
-  allResults = [];
-
-  // Run all engines in parallel
-  const [ddgR, sxR, wikiR] = await Promise.allSettled([
-    fetchDDG(q),
-    fetchSearXNG(q),
-    fetchWiki(q)
-  ]);
-
-  if (ddgR.status === 'fulfilled') { allResults.push(...ddgR.value); engineStatus.ddg = 'online'; }
-  else { engineStatus.ddg = 'offline'; }
-  if (sxR.status === 'fulfilled') { allResults.push(...sxR.value); engineStatus.searxng = 'online'; }
-  else { engineStatus.searxng = 'offline'; }
-  if (wikiR.status === 'fulfilled') { allResults.push(...wikiR.value); engineStatus.wiki = 'online'; }
-  else { engineStatus.wiki = 'offline'; }
-
-  // Dedup
-  const seen = new Set();
-  allResults = allResults.filter(r => {
-    const key = r.url.toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return !isNSFW(r.title + r.snippet, r.url);
-  });
-
-  const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
-  document.getElementById('srRTime').textContent = elapsed + 's';
-
-  updateEngineDots();
-  renderResults(1);
-}
-
-async function fetchDDG(q) {
-  const resp = await fetch('https://api.duckduckgo.com/?q=' + encodeURIComponent(q) + '&format=json&no_html=1&skip_disambig=1');
-  if (!resp.ok) throw new Error('DDG failed');
-  const data = await resp.json();
-  const results = [];
-  if (data.AbstractURL && data.AbstractText) {
-    results.push({ title: data.Heading || q, url: data.AbstractURL, host: new URL(data.AbstractURL).hostname, snippet: data.AbstractText, source: 'ddg', isCard: true, abstract: data.AbstractText, image: data.Image || '' });
-  }
-  if (data.RelatedTopics) {
-    for (const t of data.RelatedTopics) {
-      if (t.Text && t.FirstURL) {
-        results.push({ title: t.Text.split(' - ')[0], url: t.FirstURL, host: new URL(t.FirstURL).hostname, snippet: t.Result || t.Text, source: 'ddg' });
-      }
-    }
-  }
-  return results;
-}
-
-async function fetchSearXNG(q) {
-  const instances = ['https://search.sapti.me', 'https://searx.be', 'https://search.bus-hit.me'];
-  for (const inst of instances) {
-    try {
-      const resp = await fetch(inst + '/search?q=' + encodeURIComponent(q) + '&format=json&categories=general&language=zh-CN', { signal: AbortSignal.timeout(8000) });
-      if (!resp.ok) continue;
-      const data = await resp.json();
-      if (!data.results) continue;
-      return data.results.map(r => ({
-        title: r.title || '',
-        url: r.url,
-        host: new URL(r.url).hostname,
-        snippet: r.content || r.snippet || '',
-        source: 'searxng'
-      }));
-    } catch { continue; }
-  }
-  throw new Error('All SearXNG instances failed');
-}
-
-async function fetchWiki(q) {
-  const resp = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(q) + '&format=json&origin=*&srlimit=15');
-  if (!resp.ok) throw new Error('Wiki failed');
-  const data = await resp.json();
-  return (data.query?.search || []).map(r => ({
-    title: r.title,
-    url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(r.title.replace(/ /g, '_')),
-    host: 'en.wikipedia.org',
-    snippet: r.snippet ? r.snippet.replace(/<[^>]*>/g, '') : '',
-    source: 'wiki'
-  }));
-}
-
-function renderResults(page) {
-  const perPage = 10;
-  let filtered = currentSource === 'all' ? allResults : allResults.filter(r => r.source === currentSource);
-  const cardItem = filtered.find(r => r.isCard);
-  const hasCard = cardItem && currentSource === 'all';
-
-  if (hasCard) {
-    filtered = filtered.filter(r => r !== cardItem);
-    filtered.unshift(cardItem);
-  }
-
-  const total = filtered.length;
-  const totalPages = Math.ceil(total / perPage);
-  const start = (page - 1) * perPage;
-  const pageResults = filtered.slice(start, start + perPage);
-
-  if (total === 0) {
-    document.getElementById('srRStats').textContent = '';
-    document.getElementById('srRList').innerHTML = '<div class="sr-empty">未找到相关结果，试试其他关键词</div>';
-    document.getElementById('srRMore').style.display = 'none';
-    showFallback();
-    return;
-  }
-
-  document.getElementById('srRStats').textContent = '约 ' + total + ' 个结果（' + allResults.length + ' 原始命中）';
-  document.getElementById('srRList').innerHTML = pageResults.map(r => `
-    <div class="sr-item">
-      <div class="sr-item-head">
-        <span class="sr-item-fav">${r.host[0]?.toUpperCase() || '?'}</span>
-        <span class="sr-item-host">${r.host}</span>
-        <span class="sr-item-tag sr-tag-${r.source}">${r.source === 'searxng' ? 'SearXNG' : r.source === 'wiki' ? 'Wikipedia' : 'DuckDuckGo'}</span>
-      </div>
-      <a class="sr-item-title" href="${r.url}" target="_blank" rel="noopener">${r.title}</a>
-      <p class="sr-item-snip">${r.snippet}</p>
-    </div>
-  `).join('');
-
-  if (totalPages > page) {
-    document.getElementById('srRMore').style.display = 'block';
-    document.getElementById('srMoreBtn').onclick = () => renderResults(page + 1);
-  } else {
-    document.getElementById('srRMore').style.display = 'none';
-    if (totalPages > 1) renderPaginated(page, totalPages);
-  }
-
-  // Card
-  if (hasCard && page === 1) {
-    document.getElementById('srCard').style.display = 'block';
-    document.getElementById('srCard').innerHTML = `
-      <div class="src-label">百科知识</div>
-      ${cardItem.image ? '<img class="src-img" src="https://duckduckgo.com' + cardItem.image + '" style="max-width:100%;border-radius:8px;margin-bottom:8px" />' : ''}
-      <p class="src-text">${cardItem.abstract}</p>
-    `;
-  }
-
-  // Related
-  const ddgData = allResults.filter(r => r.source === 'ddg' && !r.isCard).slice(0, 6);
-  if (ddgData.length) {
-    document.getElementById('srRelated').innerHTML = '<div class="sr-rel-title">相关搜索</div>' +
-      ddgData.map(r => `<a class="sr-rel-item" href="${r.url}" target="_blank">${r.title}</a>`).join('');
-  }
-
-  function renderPaginated(p, tp) {
-    const c = document.getElementById('srRMore');
-    let html = '';
-    for (let i = 1; i <= tp; i++) {
-      html += `<button class="sr-pg ${i===p?'active':''}" onclick="renderResults(${i})">${i}</button>`;
-    }
-    c.style.display = 'block';
-    c.innerHTML = html;
-  }
-}
-
-function showFallback() {
-  const c = document.getElementById('srRFallback');
-  c.style.display = 'block';
-  c.innerHTML = `
-    <div class="srf-box">
-      <p class="srf-title">所有搜索引擎均无响应</p>
-      <p class="srf-sub">以下是外部搜索链接：</p>
-      <div class="srf-links">
-        <a href="https://www.google.com/search?q=${encodeURIComponent(currentQuery)}" target="_blank" class="srf-link">Google</a>
-        <a href="https://www.bing.com/search?q=${encodeURIComponent(currentQuery)}" target="_blank" class="srf-link">Bing</a>
-        <a href="https://duckduckgo.com/?q=${encodeURIComponent(currentQuery)}" target="_blank" class="srf-link">DuckDuckGo</a>
-      </div>
-    </div>`;
-}
-
-function updateEngineDots() {
-  ['ddg','searxng','wiki'].forEach(id => {
-    const el = document.getElementById('eng-' + id);
-    const dot = el.querySelector('.sr-eng-dot');
-    const status = engineStatus[id];
-    dot.style.background = status === 'online' ? '#22c55e' : '#ef4444';
-    el.classList.toggle('off', status === 'offline');
-  });
-}
-
-async function handleQuickCmd(q) {
-  const input = document.getElementById('srInput');
-
-  // !calc
-  if (q.startsWith('!calc ')) {
-    const expr = q.slice(6).trim();
-    try {
-      const result = Function('"use strict"; return (' + expr + ')')();
-      showQuickResult('计算器', expr + ' = <strong>' + result + '</strong>');
-    } catch { showQuickResult('计算器', '无法计算: ' + expr); }
-    return true;
-  }
-
-  // !ip
-  if (q.startsWith('!ip')) {
-    showQuickResult('IP 查询', '<span id="qrip">查询中...</span>');
-    try {
-      const r = await fetch('https://api.ipify.org?format=json');
-      const d = await r.json();
-      document.getElementById('qrip').textContent = d.ip;
-    } catch { document.getElementById('qrip').textContent = '查询失败'; }
-    return true;
-  }
-
-  // !rate
-  if (q.startsWith('!rate ')) {
-    const parts = q.slice(6).trim().split(/\s+/);
-    if (parts.length >= 3) {
-      const amt = parseFloat(parts[0]);
-      const from = parts[1].toUpperCase();
-      const to = parts[2].toUpperCase();
-      showQuickResult('汇率换算', '<span id="qrrate">查询中...</span>');
-      try {
-        const r = await fetch('https://api.exchangerate-api.com/v4/latest/' + from);
-        const d = await r.json();
-        const result = (amt * d.rates[to]).toFixed(2);
-        document.getElementById('qrrate').innerHTML = amt + ' ' + from + ' = <strong>' + result + ' ' + to + '</strong>';
-      } catch { document.getElementById('qrrate').textContent = '查询失败'; }
-      return true;
-    }
-  }
-
-  // !wiki
-  if (q.startsWith('!wiki ')) {
-    const kw = q.slice(6).trim();
-    window.open('https://en.wikipedia.org/wiki/' + encodeURIComponent(kw.replace(/ /g, '_')), '_blank');
-    return true;
-  }
-
-  // !gh
-  if (q.startsWith('!gh ')) {
-    const kw = q.slice(4).trim();
-    window.open('https://github.com/search?q=' + encodeURIComponent(kw), '_blank');
-    return true;
-  }
-
-  return false;
-}
-
-function showQuickResult(label, html) {
-  document.getElementById('srHome').style.display = 'none';
-  document.getElementById('srResults').style.display = 'block';
-  document.getElementById('srRInput').value = currentQuery || '';
-  document.getElementById('srRList').innerHTML = '';
-  document.getElementById('srRStats').textContent = '';
-  document.getElementById('srRMore').style.display = 'none';
-  document.getElementById('srCard').style.display = 'block';
-  document.getElementById('srCard').innerHTML = '<div class="src-label">' + label + '</div><div class="src-text">' + html + '</div>';
-}
-
-function resetSearch() {
-  document.getElementById('srHome').style.display = 'flex';
-  document.getElementById('srResults').style.display = 'none';
-  document.getElementById('srInput').value = '';
-  document.getElementById('srInput').focus();
-  currentQuery = ''; currentPage = 1; allResults = [];
-}
-
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-</script>
-
-<style>
-.sr { min-height:100vh; background:var(--bg-primary,#0a0a0a); color:var(--text-primary,#e2e8f0); font-family:var(--font-body,system-ui,sans-serif); }
-
-/* HOME */
-.sr-home { min-height:85vh; display:flex; align-items:center; justify-content:center; padding:40px 24px; }
-.sr-h-inner { text-align:center; max-width:680px; width:100%; animation:fadeIn .6s; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.sr-h-title { font-size:2.6rem; font-weight:800; margin-bottom:8px; background:linear-gradient(135deg,#6366f1,#8b5cf6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.sr-h-cn { font-size:1.3rem; -webkit-text-fill-color:var(--text-secondary,#94a3b8); }
-.sr-h-desc { font-size:14px; color:var(--text-secondary,#94a3b8); margin-bottom:32px; }
-
-.sr-box-w { position:relative; margin-bottom:12px; }
-.sr-box { display:flex; align-items:center; background:var(--bg-card,#1a1a2e); border:1px solid var(--border,#2a2a3e); border-radius:28px; padding:14px 20px; transition:.2s; }
-.sr-box:focus-within { border-color:#6366f1; box-shadow:0 0 20px rgba(99,102,241,.12); }
-.sr-box-icon { color:var(--text-muted,#64748b); flex-shrink:0; }
-.sr-box-in { flex:1; background:none; border:none; outline:none; color:var(--text-primary); font-size:16px; padding:0 12px; font-family:inherit; }
-.sr-box-in::placeholder { color:var(--text-muted); }
-.sr-box-clear { width:28px; height:28px; border:none; background:none; color:var(--text-muted); cursor:pointer; font-size:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-.sr-box-clear:hover { background:rgba(99,102,241,.08); }
-
-.sr-suggest, .sr-history { position:absolute; left:0; right:0; top:100%; margin-top:4px; background:var(--bg-card,#1a1a2e); border:1px solid var(--border); border-radius:12px; overflow:hidden; z-index:20; }
-.srs-item { padding:10px 20px; font-size:14px; cursor:pointer; color:var(--text-primary); transition:.1s; }
-.srs-item:hover { background:rgba(99,102,241,.08); }
-.srh-head { padding:8px 16px; font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between; }
-.srh-clear { cursor:pointer; background:none; border:none; color:#ef4444; font-size:11px; padding:0; }
-.srh-item { padding:8px 16px; font-size:14px; cursor:pointer; color:var(--text-primary); }
-.srh-item:hover { background:rgba(99,102,241,.08); }
-
-.sr-engines { display:flex; justify-content:center; gap:20px; margin-bottom:24px; }
-.sr-eng { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:6px; }
-.sr-eng-dot { width:6px; height:6px; border-radius:50%; background:#334155; }
-.sr-eng.off { opacity:0.4; }
-
-.sr-btns { display:flex; gap:10px; justify-content:center; margin-bottom:32px; align-items:center; }
-.sr-btn { padding:10px 28px; border-radius:8px; font-size:14px; cursor:pointer; font-family:inherit; border:none; transition:.15s; }
-.sr-btn-accent { background:#6366f1; color:#fff; }
-.sr-btn-accent:hover { background:#4f46e5; }
-.sr-btn-ghost { background:var(--bg-card); color:var(--text-secondary); border:1px solid var(--border); }
-.sr-btn-ghost:hover { border-color:#6366f1; }
-.sr-safety-toggle { display:flex; align-items:center; gap:4px; padding:6px 12px; border:1px solid var(--border); border-radius:8px; background:var(--bg-card); color:var(--text-secondary); cursor:pointer; font-size:12px; font-family:inherit; margin-left:8px; }
-
-.sr-quick { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
-.sr-chip { font-size:12px; padding:4px 14px; border-radius:14px; background:var(--bg-card); color:var(--text-secondary); border:1px solid var(--border); cursor:pointer; transition:.15s; }
-.sr-chip:hover { border-color:#6366f1; color:#6366f1; }
-
-/* RESULTS */
-.sr-results { min-height:100vh; }
-.sr-r-top { display:flex; align-items:center; gap:16px; padding:14px 24px; border-bottom:1px solid var(--border); background:var(--bg-primary); position:sticky; top:0; z-index:10; }
-.sr-r-logo { color:#6366f1; font-weight:700; font-size:16px; text-decoration:none; flex-shrink:0; }
-.sr-r-box { flex:1; display:flex; align-items:center; gap:8px; background:var(--bg-card); border:1px solid var(--border); border-radius:22px; padding:8px 16px; max-width:480px; color:var(--text-muted); }
-.sr-r-in { flex:1; background:none; border:none; outline:none; color:var(--text-primary); font-size:14px; font-family:inherit; }
-.sr-r-meta { display:flex; gap:12px; align-items:center; flex-shrink:0; }
-.sr-r-time { font-size:12px; color:var(--text-muted); }
-.sr-r-safe { font-size:11px; color:#22c55e; display:flex; align-items:center; gap:4px; }
-
-.sr-r-body { display:flex; max-width:1100px; margin:0 auto; }
-.sr-r-side { width:200px; flex-shrink:0; padding:20px 16px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:20px; }
-.sr-r-filters { display:flex; flex-direction:column; gap:4px; }
-.srf { text-align:left; padding:8px 12px; border:none; background:none; color:var(--text-secondary); font-size:13px; cursor:pointer; border-radius:6px; font-family:inherit; transition:.15s; }
-.srf:hover { background:var(--bg-card); }
-.srf.active { background:rgba(99,102,241,.1); color:#6366f1; font-weight:600; }
-
-.sr-r-card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px; }
-.src-label { font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
-.src-text { font-size:13px; color:var(--text-primary); line-height:1.7; }
-
-.sr-rel-title { font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600; }
-.sr-rel-item { display:block; font-size:13px; color:var(--accent,#818cf8); text-decoration:none; padding:5px 0; }
-.sr-rel-item:hover { text-decoration:underline; }
-
-.sr-r-main { flex:1; padding:24px 28px; min-width:0; }
-.sr-r-stats { font-size:12px; color:var(--text-muted); margin-bottom:16px; }
-.sr-r-list { display:flex; flex-direction:column; gap:24px; }
-
-.sr-item {}
-.sr-item-head { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
-.sr-item-fav { width:20px; height:20px; border-radius:50%; background:var(--bg-card); border:1px solid var(--border); font-size:10px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-weight:700; }
-.sr-item-host { font-size:12px; color:var(--text-muted); }
-.sr-item-tag { font-size:10px; padding:1px 8px; border-radius:8px; }
-.sr-tag-ddg { background:rgba(245,158,11,.12); color:#f59e0b; }
-.sr-tag-searxng { background:rgba(99,102,241,.12); color:#818cf8; }
-.sr-tag-wiki { background:rgba(34,197,94,.12); color:#22c55e; }
-
-.sr-item-title { font-size:18px; color:#818cf8; text-decoration:none; font-weight:500; display:block; margin-bottom:4px; line-height:1.3; }
-.sr-item-title:hover { text-decoration:underline; }
-.sr-item-snip { font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0; }
-
-.sr-load { padding:60px 0; text-align:center; color:var(--text-muted); }
-.sr-empty { padding:40px 0; text-align:center; color:var(--text-muted); font-size:15px; }
-
-.sr-r-more { display:flex; justify-content:center; gap:6px; margin-top:32px; }
-.sr-more-btn { padding:10px 32px; background:var(--bg-card); color:#818cf8; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-family:inherit; font-size:14px; }
-.sr-more-btn:hover { border-color:#6366f1; }
-.sr-pg { padding:6px 14px; border:1px solid var(--border); border-radius:6px; background:none; color:var(--text-secondary); cursor:pointer; font-family:inherit; font-size:13px; }
-.sr-pg:hover { border-color:#6366f1; }
-.sr-pg.active { background:#6366f1; color:#fff; border-color:#6366f1; }
-
-.sr-r-fallback { margin-top:40px; }
-.srf-box { background:#161b22; border:1px solid #21262d; border-radius:12px; padding:32px; text-align:center; }
-.srf-title { font-size:16px; color:#f0f6fc; margin-bottom:8px; }
-.srf-sub { font-size:13px; color:#8b949e; margin-bottom:16px; }
-.srf-links { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-.srf-link { padding:8px 20px; background:#6366f1; color:#fff; border-radius:8px; text-decoration:none; font-size:14px; font-weight:500; }
-.srf-link:hover { background:#4f46e5; }
-
-@media (max-width:768px) {
-  .sr-r-body { flex-direction:column; }
-  .sr-r-side { width:auto; border-right:none; border-bottom:1px solid var(--border); flex-direction:row; gap:8px; padding:12px 16px; flex-wrap:wrap; }
-  .sr-r-filters { flex-direction:row; }
-  .sr-r-box { max-width:none; }
-  .sr-r-meta { display:none; }
-}
-</style>
+</BaseLayout>

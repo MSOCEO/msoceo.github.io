@@ -1,57 +1,30 @@
 ---
-// src/pages/guestbook.astro — 留言板
-import Page from '../layouts/Page.astro';
-import Comments from '../components/Comments.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<Page title="留言板 | 拾光" description="留下你的足迹，分享你的声音">
-  <main class="guestbook-main">
-    <section class="guestbook-hero">
-      <h1 class="guestbook-title">留言板</h1>
-      <p class="guestbook-desc">每一条留言，都是夜空中一颗独一无二的星</p>
-    </section>
-    <Comments />
-  </main>
-</Page>
+<BaseLayout title="留言板">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="font-serif font-black text-3xl mb-2">留言板</h1>
+    <p class="text-sm text-[var(--text-tertiary)] mb-8">笔墨留痕，说点什么吧。</p>
 
-<style>
-.guestbook-main {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg);
-}
+    <div class="ink-card ink-card-alt p-6 mb-8">
+      <p class="text-sm text-[var(--text-tertiary)] leading-relaxed mb-4">
+        留言板使用 GitHub Discussions 驱动，请前往
+        <a href="https://github.com/msoceo/msoceo.github.io/discussions" target="_blank" rel="noopener" class="underline">
+          GitHub Discussions
+        </a>
+        留言。
+      </p>
+      <p class="text-sm text-[var(--text-tertiary)]">
+        也可以使用 Giscus 评论系统（待配置后启用）。
+      </p>
+    </div>
 
-.guestbook-hero {
-  text-align: center;
-  padding: var(--space-2xl) 0 var(--space-xl);
-}
-
-.guestbook-title {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  margin-bottom: var(--space-sm);
-  background: linear-gradient(135deg, var(--star-warm), var(--lantern-warm), var(--tech-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.guestbook-desc {
-  font-size: var(--text-base);
-  color: var(--text-secondary);
-  font-weight: 300;
-  line-height: var(--leading-relaxed);
-}
-
-@media (max-width: 640px) {
-  .guestbook-main {
-    padding: var(--space-md);
-  }
-
-  .guestbook-title {
-    font-size: var(--text-xl);
-  }
-}
-</style>
+    <!-- Giscus 评论区（待启用） -->
+    <div class="ink-card ink-card-alt p-6">
+      <div id="giscus-container" class="min-h-[200px] flex items-center justify-center text-sm text-[var(--text-tertiary)]">
+        <p>评论区待配置 Giscus 后启用</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
