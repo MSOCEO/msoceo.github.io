@@ -9,6 +9,14 @@ if [ -f dist/portal-index.html ]; then
   cp dist/portal-index.html /tmp/portal-index.html
 fi
 
+# Save existing dist/blog/ contents to avoid being overwritten by dist/* → dist/blog/ move.
+# This preserves pages like src/pages/blog/index.astro (→ dist/blog/index.html)
+# which would otherwise be clobbered by dist/index.html (the site root page).
+BLOG_SAVE=$(mktemp -d)
+if [ -d dist/blog ] && [ "$(ls -A dist/blog 2>/dev/null)" ]; then
+  cp -a dist/blog/ "$BLOG_SAVE/"
+fi
+
 # Move all dist contents into dist/blog/
 mkdir -p dist/blog
 for item in dist/*; do
@@ -16,6 +24,14 @@ for item in dist/*; do
     mv "$item" dist/blog/ 2>/dev/null || true
   fi
 done
+
+# Restore previously saved dist/blog/ contents, overwriting conflicts.
+# This ensures pages like blog/index.html (built by Astro) take precedence over
+# the root index.html that was moved into dist/blog/ by the mass move above.
+if [ -d "$BLOG_SAVE/blog" ] || [ "$(ls -A "$BLOG_SAVE" 2>/dev/null)" ]; then
+  cp -af "$BLOG_SAVE"/* dist/blog/ 2>/dev/null || true
+fi
+rm -rf "$BLOG_SAVE"
 
 # Restore portal as root index
 if [ -f /tmp/portal-index.html ]; then

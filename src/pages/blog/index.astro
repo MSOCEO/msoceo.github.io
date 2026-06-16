@@ -7,7 +7,7 @@ const allPosts = allPostsUnsorted.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 3;
 const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
 
 // Tag cloud from ALL posts
@@ -105,7 +105,7 @@ const description = '探索关于技术、生活与发现的文字记录';
 </Page>
 
 <script>
-  const PAGE_SIZE = 8;
+  const PAGE_SIZE = 3;
   const grid = document.getElementById('postGrid');
   const searchCount = document.getElementById('blogSearchCount');
   const noResult = document.getElementById('blogNoResult');
