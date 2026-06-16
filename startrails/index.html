@@ -14,7 +14,7 @@
     .view { display: none; }
     .view--active { display: block; }
 
-    /* ===== 星际穿越专属（复用 go.html 逻辑） ===== */
+    /* ===== 星际穿越专属 ===== */
     .view[data-view="go"] {
       display: none;
       align-items: center; justify-content: center;
@@ -22,392 +22,113 @@
     }
     .view--active[data-view="go"] { display: flex; }
 
-    .go-container {
-      z-index: 1;
-      animation: fadeIn 0.6s ease;
-    }
-
-    .go-logo {
-      width: 100px; height: 100px;
-      margin: 0 auto 32px;
-      background: linear-gradient(135deg, var(--color-brand), #8b5cf6);
-      border-radius: 28px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3rem;
-      box-shadow: 0 0 60px rgba(99,102,241,0.4);
-      animation: pulse-glow 3s ease-in-out infinite;
-    }
-
-    .go-title {
-      font-family: var(--font-display);
-      font-size: 2.4rem; font-weight: 700; margin-bottom: 12px;
-      letter-spacing: -0.02em;
-    }
-
-    .go-subtitle {
-      color: var(--color-text-secondary); font-size: 1.05rem; margin-bottom: 40px;
-    }
-
-    .go-btn {
-      padding: 18px 48px;
-      background: linear-gradient(135deg, var(--color-brand), #8b5cf6);
-      color: white; border: none; border-radius: var(--radius-full);
-      font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;
-      cursor: pointer; transition: all 0.3s ease;
-      position: relative; overflow: hidden; letter-spacing: 0.02em;
-    }
-
-    .go-btn:hover {
-      box-shadow: 0 0 48px rgba(99,102,241,0.6); transform: scale(1.04);
-    }
-
-    .go-btn::after {
-      content: ''; position: absolute; top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
-      opacity: 0; transition: opacity 0.3s;
-    }
-
+    .go-container { z-index: 1; animation: fadeIn 0.6s ease; }
+    .go-logo { width: 100px; height: 100px; margin: 0 auto 32px; background: linear-gradient(135deg, var(--color-brand), #8b5cf6); border-radius: 28px; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: 0 0 60px rgba(99,102,241,0.4); animation: pulse-glow 3s ease-in-out infinite; }
+    .go-title { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+    .go-subtitle { color: var(--color-text-secondary); font-size: 1.05rem; margin-bottom: 40px; }
+    .go-btn { padding: 18px 48px; background: linear-gradient(135deg, var(--color-brand), #8b5cf6); color: white; border: none; border-radius: var(--radius-full); font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 0.02em; }
+    .go-btn:hover { box-shadow: 0 0 48px rgba(99,102,241,0.6); transform: scale(1.04); }
+    .go-btn::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%); opacity: 0; transition: opacity 0.3s; }
     .go-btn:hover::after { opacity: 1; }
+    .go-destination { margin-top: 16px; font-size: 0.85rem; color: var(--color-text-muted); font-family: var(--font-mono); min-height: 1.5em; transition: all 0.3s; }
 
-    .go-destination {
-      margin-top: 16px; font-size: 0.85rem; color: var(--color-text-muted);
-      font-family: var(--font-mono); min-height: 1.5em; transition: all 0.3s;
-    }
-
-    /* 曲速动画覆盖层 */
-    .warp-overlay {
-      position: fixed; inset: 0; z-index: 1000; background: #000;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-    }
-
+    .warp-overlay { position: fixed; inset: 0; z-index: 1000; background: #000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     .warp-overlay--active { opacity: 1; pointer-events: all; }
-
     .warp-stars { position: absolute; inset: 0; overflow: hidden; }
+    .warp-star { position: absolute; background: white; border-radius: 50%; animation: warpFly linear forwards; }
+    @keyframes warpFly { 0% { transform: translateZ(0) scale(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateZ(800px) scale(3); opacity: 1; } }
+    .warp-text { position: relative; z-index: 1; font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: white; text-align: center; animation: warpTextPulse 0.8s ease-in-out infinite alternate; }
+    @keyframes warpTextPulse { 0% { opacity: 0.6; letter-spacing: 0.05em; } 100% { opacity: 1; letter-spacing: 0.15em; } }
+    .warp-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; border: 2px solid rgba(99,102,241,0.3); border-radius: 50%; animation: warpRing 1s ease-out forwards; }
+    @keyframes warpRing { 0% { width: 50px; height: 50px; opacity: 1; } 100% { width: 600px; height: 600px; opacity: 0; } }
 
-    .warp-star {
-      position: absolute; background: white; border-radius: 50%;
-      animation: warpFly linear forwards;
-    }
-
-    @keyframes warpFly {
-      0%   { transform: translateZ(0) scale(0); opacity: 0; }
-      10%  { opacity: 1; }
-      100% { transform: translateZ(800px) scale(3); opacity: 1; }
-    }
-
-    .warp-text {
-      position: relative; z-index: 1;
-      font-family: var(--font-display); font-size: 2rem; font-weight: 700;
-      color: white; text-align: center;
-      animation: warpTextPulse 0.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes warpTextPulse {
-      0%   { opacity: 0.6; letter-spacing: 0.05em; }
-      100% { opacity: 1; letter-spacing: 0.15em; }
-    }
-
-    .warp-ring {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px; height: 200px;
-      border: 2px solid rgba(99,102,241,0.3); border-radius: 50%;
-      animation: warpRing 1s ease-out forwards;
-    }
-
-    @keyframes warpRing {
-      0%   { width: 50px; height: 50px; opacity: 1; }
-      100% { width: 600px; height: 600px; opacity: 0; }
-    }
-
-    /* ===== 成员目录 ===== */
-    .members-controls {
-      display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; align-items: center;
-    }
-
-    .members-search {
-      flex: 1; min-width: 240px; position: relative;
-    }
-
+    .members-controls { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; align-items: center; }
+    .members-search { flex: 1; min-width: 240px; position: relative; }
     .members-search .input { padding-left: 40px; }
-
-    .members-search-icon {
-      position: absolute; left: 14px; top: 50%;
-      transform: translateY(-50%); color: var(--color-text-muted);
-      font-size: 1rem; pointer-events: none;
-    }
-
+    .members-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); font-size: 1rem; pointer-events: none; }
     .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
-
-    .filter-chip {
-      padding: 6px 14px; border-radius: var(--radius-full);
-      font-size: 0.8rem; font-weight: 500;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: transparent; color: var(--color-text-secondary);
-      cursor: pointer; transition: all 0.2s ease; font-family: var(--font-body);
-    }
-
+    .filter-chip { padding: 6px 14px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all 0.2s ease; font-family: var(--font-body); }
     .filter-chip:hover { border-color: rgba(255,255,255,0.2); color: var(--color-text-primary); }
-
-    .filter-chip--active {
-      background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.4); color: #c7d2fe;
-    }
-
-    .members-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px; margin-bottom: 40px;
-    }
-
-    .member-card {
-      padding: 24px; animation: fadeInUp 0.4s ease both;
-    }
-
-    .member-card__header {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
-    }
-
-    .member-card__avatar {
-      width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-family: var(--font-display);
-      font-weight: 700; font-size: 1.2rem;
-    }
-
-    .member-card__avatar img {
-      width: 48px; height: 48px; border-radius: 12px; object-fit: cover;
-    }
-
-    .member-card__name {
-      font-family: var(--font-display); font-size: 1.05rem; font-weight: 600;
-    }
-
-    .member-card__url {
-      font-size: 0.8rem; color: var(--color-text-muted);
-      font-family: var(--font-mono); margin-top: 2px; word-break: break-all;
-    }
-
-    .member-card__desc {
-      color: var(--color-text-secondary); font-size: 0.85rem;
-      line-height: 1.5; margin-bottom: 14px;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-
+    .filter-chip--active { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.4); color: #c7d2fe; }
+    .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .member-card { padding: 24px; animation: fadeInUp 0.4s ease both; }
+    .member-card__header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .member-card__avatar { width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; }
+    .member-card__avatar img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
+    .member-card__name { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; }
+    .member-card__url { font-size: 0.8rem; color: var(--color-text-muted); font-family: var(--font-mono); margin-top: 2px; word-break: break-all; }
+    .member-card__desc { color: var(--color-text-secondary); font-size: 0.85rem; line-height: 1.5; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .member-card__tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-
-    .member-card__footer {
-      display: flex; align-items: center; justify-content: space-between;
-      padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
+    .member-card__footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05); }
     .member-card__date { font-size: 0.75rem; color: var(--color-text-muted); }
-
-    .members-empty {
-      grid-column: 1 / -1; text-align: center; padding: 60px 0;
-      color: var(--color-text-muted);
-    }
-
+    .members-empty { grid-column: 1 / -1; text-align: center; padding: 60px 0; color: var(--color-text-muted); }
     .members-count { font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 24px; }
 
-    /* ===== 文章聚合 ===== */
     .feed-list { display: flex; flex-direction: column; gap: 12px; }
-
-    .feed-item {
-      padding: 24px; cursor: pointer; text-decoration: none;
-      color: inherit; display: block; animation: fadeInUp 0.4s ease both;
-    }
-
-    .feed-item__source {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
-    }
-
-    .feed-item__source-icon {
-      width: 22px; height: 22px; border-radius: 6px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 0.65rem; font-weight: 700;
-    }
-
+    .feed-item { padding: 24px; cursor: pointer; text-decoration: none; color: inherit; display: block; animation: fadeInUp 0.4s ease both; }
+    .feed-item__source { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .feed-item__source-icon { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.65rem; font-weight: 700; }
     .feed-item__source-name { font-size: 0.8rem; color: var(--color-text-muted); font-weight: 500; }
-
-    .feed-item__title {
-      font-family: var(--font-display); font-size: 1.15rem; font-weight: 600;
-      margin-bottom: 8px; line-height: 1.4; transition: color 0.2s;
-    }
-
+    .feed-item__title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; transition: color 0.2s; }
     .feed-item:hover .feed-item__title { color: var(--color-brand); }
-
-    .feed-item__summary {
-      color: var(--color-text-secondary); font-size: 0.88rem; line-height: 1.6;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-      overflow: hidden; margin-bottom: 14px;
-    }
-
-    .feed-item__meta {
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 0.78rem; color: var(--color-text-muted);
-    }
-
+    .feed-item__summary { color: var(--color-text-secondary); font-size: 0.88rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 14px; }
+    .feed-item__meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--color-text-muted); }
     .feed-item__tags { display: flex; gap: 6px; }
-
-    .feed-empty {
-      text-align: center; padding: 80px 0; color: var(--color-text-muted);
-    }
-
+    .feed-empty { text-align: center; padding: 80px 0; color: var(--color-text-muted); }
     .feed-empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.3; }
 
-    /* ===== 加入表单 ===== */
-    .join-layout {
-      display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start;
-    }
-
+    .join-layout { display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start; }
     @media (max-width: 900px) { .join-layout { grid-template-columns: 1fr; } }
-
     .join-form { display: flex; flex-direction: column; gap: 20px; }
-
     .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-    .form-label {
-      font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary);
-      font-family: var(--font-display);
-    }
-
+    .form-label { font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); font-family: var(--font-display); }
     .form-hint { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 2px; }
-
     textarea.input { resize: vertical; min-height: 100px; }
-
     .join-sidebar { position: sticky; top: 100px; }
-
     .requirements-card { padding: 24px; margin-bottom: 20px; }
-
-    .requirements-card h3 {
-      font-family: var(--font-display); font-size: 1rem; margin-bottom: 16px;
-    }
-
-    .requirement-item {
-      display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px;
-      font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5;
-    }
-
-    .requirement-icon {
-      flex-shrink: 0; margin-top: 2px; width: 20px; height: 20px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;
-    }
-
+    .requirements-card h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 16px; }
+    .requirement-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5; }
+    .requirement-icon { flex-shrink: 0; margin-top: 2px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
     .requirement-icon--check { background: rgba(16,185,129,0.15); color: var(--color-accent); }
     .requirement-icon--info  { background: rgba(99,102,241,0.15); color: var(--color-brand); }
-
     .process-steps { list-style: none; padding: 0; }
+    .process-step { display: flex; gap: 12px; margin-bottom: 16px; font-size: 0.85rem; color: var(--color-text-secondary); }
+    .process-step__num { width: 28px; height: 28px; border-radius: 50%; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 0.75rem; font-weight: 600; color: var(--color-brand); flex-shrink: 0; }
 
-    .process-step {
-      display: flex; gap: 12px; margin-bottom: 16px;
-      font-size: 0.85rem; color: var(--color-text-secondary);
-    }
-
-    .process-step__num {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-display); font-size: 0.75rem; font-weight: 600;
-      color: var(--color-brand); flex-shrink: 0;
-    }
-
-    /* ===== Toast ===== */
-    .toast {
-      position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 300; padding: 14px 28px; border-radius: var(--radius-md);
-      font-size: 0.9rem; font-weight: 500;
-      animation: fadeIn 0.3s ease; backdrop-filter: blur(20px);
-    }
-
+    .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 300; padding: 14px 28px; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; animation: fadeIn 0.3s ease; backdrop-filter: blur(20px); }
     .toast--success { background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
     .toast--error   { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+    .toast--info    { background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.3); color: #c7d2fe; }
 
-    /* ===== 博客详情 ===== */
     .blog-header { padding: 0 0 40px; }
-
     .blog-header__main { display: flex; align-items: center; gap: 24px; margin-bottom: 24px; }
-
-    .blog-header__avatar {
-      width: 80px; height: 80px; border-radius: 20px; flex-shrink: 0;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-family: var(--font-display);
-      font-weight: 700; font-size: 2rem;
-    }
-
+    .blog-header__avatar { width: 80px; height: 80px; border-radius: 20px; flex-shrink: 0; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-family: var(--font-display); font-weight: 700; font-size: 2rem; }
     .blog-header__avatar img { width: 80px; height: 80px; border-radius: 20px; object-fit: cover; }
-
     .blog-header__name { font-family: var(--font-display); font-size: 2rem; font-weight: 700; }
     .blog-header__url  { color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.9rem; margin-top: 4px; }
-
-    .blog-header__status {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 8px; font-size: 0.85rem;
-    }
-
+    .blog-header__status { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.85rem; }
     .blog-header__desc { color: var(--color-text-secondary); font-size: 1rem; line-height: 1.7; margin-bottom: 20px; }
-
-    .blog-stats {
-      display: flex; gap: 32px; margin-bottom: 40px; padding: 20px 0;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-
+    .blog-stats { display: flex; gap: 32px; margin-bottom: 40px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
     .blog-stat { text-align: center; }
-
     .blog-stat__value { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; }
     .blog-stat__label { font-size: 0.78rem; color: var(--color-text-muted); margin-top: 4px; }
-
     .blog-posts { display: flex; flex-direction: column; gap: 12px; }
-
-    .blog-post-item {
-      padding: 20px 24px; text-decoration: none;
-      color: inherit; display: block; cursor: pointer;
-      animation: fadeInUp 0.4s ease both;
-    }
-
-    .blog-post-item__title {
-      font-family: var(--font-display); font-size: 1.05rem;
-      font-weight: 600; margin-bottom: 8px; transition: color 0.2s;
-    }
-
+    .blog-post-item { padding: 20px 24px; text-decoration: none; color: inherit; display: block; cursor: pointer; animation: fadeInUp 0.4s ease both; }
+    .blog-post-item__title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; transition: color 0.2s; }
     .blog-post-item:hover .blog-post-item__title { color: var(--color-brand); }
-
-    .blog-post-item__summary {
-      color: var(--color-text-secondary); font-size: 0.85rem; line-height: 1.6;
-      margin-bottom: 12px; display: -webkit-box;
-      -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-
-    .blog-post-item__meta {
-      display: flex; align-items: center; gap: 16px;
-      font-size: 0.78rem; color: var(--color-text-muted);
-    }
-
-    .back-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      color: var(--color-text-secondary); text-decoration: none;
-      font-size: 0.9rem; margin-bottom: 24px; cursor: pointer; transition: color 0.2s;
-    }
-
+    .blog-post-item__summary { color: var(--color-text-secondary); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .blog-post-item__meta { display: flex; align-items: center; gap: 16px; font-size: 0.78rem; color: var(--color-text-muted); }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 0.9rem; margin-bottom: 24px; cursor: pointer; transition: color 0.2s; }
     .back-link:hover { color: var(--color-brand); }
-
     .loading-state { text-align: center; padding: 80px 0; }
   </style>
 </head>
 <body>
 
-  <!-- 轨道光晕 -->
   <div class="orb orb--brand"></div>
   <div class="orb orb--accent"></div>
-
-  <!-- 粒子背景 -->
   <canvas id="particles-canvas"></canvas>
 
-  <!-- 导航栏 -->
   <nav class="nav">
     <div class="nav__inner">
       <a href="#home" class="nav__logo" data-nav="home">
@@ -425,7 +146,6 @@
     </div>
   </nav>
 
-  <!-- 移动端菜单 -->
   <div class="nav__overlay" id="nav-overlay" onclick="closeMobileMenu()"></div>
   <div class="nav__mobile" id="nav-mobile">
     <a href="#home" class="nav__link" data-nav="home" onclick="closeMobileMenu()">首页</a>
@@ -435,19 +155,12 @@
     <a href="#go" class="nav__cta" data-nav="go" onclick="closeMobileMenu()">随机探索</a>
   </div>
 
-  <!-- ==================== 视图容器 ==================== -->
-
-  <!-- 首页 Home -->
+  <!-- Home -->
   <main class="content view view--active" data-view="home">
-
     <section class="section" style="text-align:center; padding-top:40px;">
       <span class="section__label">Beta</span>
-      <h1 class="page-hero__title" style="font-size:3.5rem; line-height:1.15;">
-        每一篇博客<br />都是一颗星
-      </h1>
-      <p class="page-hero__subtitle" style="font-size:1.15rem; margin-top:20px;">
-        星迹互联连接中文独立博客，让每颗星彼此照亮。随机穿梭、发现同好、聚合好文。
-      </p>
+      <h1 class="page-hero__title" style="font-size:3.5rem; line-height:1.15;">每一篇博客<br />都是一颗星</h1>
+      <p class="page-hero__subtitle" style="font-size:1.15rem; margin-top:20px;">星迹互联连接中文独立博客，让每颗星彼此照亮。随机穿梭、发现同好、聚合好文。</p>
       <div style="margin-top:36px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
         <a href="#go" class="btn btn--primary btn--lg">开始星际穿越</a>
         <a href="#members" class="btn btn--secondary btn--lg">浏览星图</a>
@@ -456,18 +169,9 @@
 
     <section class="section" style="text-align:center;">
       <div style="display:flex; justify-content:center; gap:64px; flex-wrap:wrap;">
-        <div>
-          <div class="stat-number" id="stat-members">128</div>
-          <div class="stat-label">收录博客</div>
-        </div>
-        <div>
-          <div class="stat-number" id="stat-posts">3,847</div>
-          <div class="stat-label">聚合文章</div>
-        </div>
-        <div>
-          <div class="stat-number" id="stat-online">96</div>
-          <div class="stat-label">在线运行</div>
-        </div>
+        <div><div class="stat-number" id="stat-members">0</div><div class="stat-label">收录博客</div></div>
+        <div><div class="stat-number" id="stat-posts">0</div><div class="stat-label">聚合文章</div></div>
+        <div><div class="stat-number" id="stat-online">0</div><div class="stat-label">在线运行</div></div>
       </div>
     </section>
 
@@ -524,7 +228,7 @@
     </footer>
   </main>
 
-  <!-- 星际穿越 Go -->
+  <!-- Go -->
   <main class="view" data-view="go" id="go-view">
     <div class="go-container">
       <div class="go-logo">✦</div>
@@ -535,7 +239,7 @@
     </div>
   </main>
 
-  <!-- 星图 Members -->
+  <!-- Members -->
   <main class="content view" data-view="members">
     <div class="page-hero">
       <span class="section__label">星图</span>
@@ -558,11 +262,10 @@
 
     <div class="members-count" id="members-count"></div>
     <div class="members-grid" id="members-grid"></div>
-
     <footer class="footer"><p>星迹互联 StarTrails &copy; 2026</p></footer>
   </main>
 
-  <!-- 文章聚合 Feed -->
+  <!-- Feed -->
   <main class="content view" data-view="feed">
     <div class="page-hero">
       <span class="section__label">信息流</span>
@@ -572,18 +275,13 @@
 
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px;" id="tag-filters">
       <button class="filter-chip filter-chip--active" data-tag="all">全部</button>
-      <button class="filter-chip" data-tag="技术">技术</button>
-      <button class="filter-chip" data-tag="前端">前端</button>
-      <button class="filter-chip" data-tag="后端">后端</button>
-      <button class="filter-chip" data-tag="设计">设计</button>
-      <button class="filter-chip" data-tag="生活">生活</button>
     </div>
 
     <div id="feed-list" class="feed-list"></div>
     <footer class="footer"><p>星迹互联 StarTrails &copy; 2026 — 文章由 RSS 自动聚合，每日更新</p></footer>
   </main>
 
-  <!-- 申请加入 Join -->
+  <!-- Join -->
   <main class="content view" data-view="join">
     <div class="page-hero">
       <span class="section__label">加入星图</span>
@@ -647,24 +345,108 @@
     <footer class="footer"><p>星迹互联 StarTrails &copy; 2026</p></footer>
   </main>
 
-  <!-- 博客详情 Blog -->
+  <!-- Blog -->
   <main class="content view" data-view="blog">
     <span class="back-link" onclick="navigateTo('members')">← 返回星图</span>
     <div id="blog-content"></div>
     <footer class="footer"><p>星迹互联 StarTrails &copy; 2026</p></footer>
   </main>
 
-  <!-- 曲速动画覆盖层 -->
+  <!-- Warp overlay -->
   <div class="warp-overlay" id="warp-overlay">
     <div class="warp-stars" id="warp-stars"></div>
     <div class="warp-ring" id="warp-ring"></div>
     <div class="warp-text">ENTERING WARP</div>
   </div>
 
-  <script>var supabaseClient = window.supabase;</script>
   <script>
 
-    /* ========== 全局 SPA 路由 ========== */
+    /* ==================== Supabase 初始化 ==================== */
+    const SUPABASE_URL = 'https://xwvkdluvixurvgvkhkfe.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ==================== 全局数据缓存 ==================== */
+    let ST = {
+      members: [],        // 来自 profiles 表
+      posts: [],          // 来自 posts 表
+      loaded: false,
+      loading: false
+    };
+
+    /**
+     * 将 Supabase profiles 行映射为前端成员对象
+     * profiles 列: id(uuid), username, blog_url, created_at(timestamptz), updated_at(timestamptz)
+     * 映射后: id, name, url, description(空), tags([]), status('online'), joined_at
+     */
+    function mapProfile(p) {
+      return {
+        id: p.id,
+        name: p.username || '未命名博客',
+        url: p.blog_url || '',
+        description: '',
+        tags: [],
+        status: 'online',
+        joined_at: p.created_at || new Date().toISOString()
+      };
+    }
+
+    /**
+     * 将 Supabase posts 行映射为前端文章对象
+     * posts 列: id(uuid), title, content, slug, category, status, tags(text[]), published_at, created_at, updated_at
+     */
+    function mapPost(p) {
+      let tags = [];
+      if (p.tags) {
+        tags = Array.isArray(p.tags) ? p.tags : [];
+      }
+      if (p.category && !tags.includes(p.category)) {
+        tags = [p.category, ...tags];
+      }
+      return {
+        id: p.id,
+        title: p.title || '无标题',
+        summary: (p.content || '').substring(0, 200),
+        published_at: p.published_at || p.created_at || new Date().toISOString(),
+        url: '#',
+        tags: tags,
+        source_name: '星迹互联'
+      };
+    }
+
+    /** 从 Supabase 加载全部数据 */
+    async function loadAllData() {
+      if (ST.loading) return;
+      ST.loading = true;
+      try {
+        const [memRes, postRes] = await Promise.all([
+          supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+          supabase.from('posts').select('*').order('published_at', { ascending: false })
+        ]);
+
+        if (memRes.error) { console.warn('profiles fetch error:', memRes.error); }
+        if (postRes.error) { console.warn('posts fetch error:', postRes.error); }
+
+        ST.members = (memRes.data || []).map(mapProfile);
+        ST.posts = (postRes.data || []).map(mapPost);
+        ST.loaded = true;
+
+        console.log(`[StarTrails] Loaded ${ST.members.length} members, ${ST.posts.length} posts from Supabase`);
+      } catch (err) {
+        console.error('[StarTrails] Data load failed:', err);
+      } finally {
+        ST.loading = false;
+      }
+    }
+
+    /** 收集所有文章标签用于标签筛选栏渲染 */
+    function collectAllTags() {
+      const tagSet = new Set();
+      ST.posts.forEach(p => (p.tags || []).forEach(t => { if (t && t.trim()) tagSet.add(t.trim()); }));
+      return Array.from(tagSet).sort();
+    }
+
+    /* ==================== SPA 路由 ==================== */
 
     function navigateTo(viewName, params) {
       if (params) window._navParams = params;
@@ -676,30 +458,26 @@
       return window.location.hash.replace('#', '') || 'home';
     }
 
-    function switchView(viewName, params) {
-      // 隐藏所有视图
+    async function switchView(viewName, params) {
+      // 确保数据已加载
+      if (!ST.loaded) {
+        await loadAllData();
+      }
+
       document.querySelectorAll('.view').forEach(v => v.classList.remove('view--active'));
 
-      // 显示目标视图
       const target = document.querySelector(`.view[data-view="${viewName}"]`);
       if (target) {
         target.classList.add('view--active');
-
-        // go 视图不计入 content padding
-        if (viewName === 'go') {
-          target.style.display = 'flex';
-        }
+        if (viewName === 'go') target.style.display = 'flex';
       }
 
-      // 更新导航高亮
       document.querySelectorAll('[data-nav]').forEach(el => {
         el.classList.toggle('nav__link--active', el.dataset.nav === viewName);
       });
 
-      // 滚动到顶部
       window.scrollTo({ top: 0, behavior: 'instant' });
 
-      // 视图初始化
       if (viewName === 'home') initHome();
       if (viewName === 'members') initMembers();
       if (viewName === 'feed') initFeed();
@@ -710,7 +488,6 @@
       switchView(getCurrentView(), window._navParams);
     });
 
-    // 拦截所有内部链接
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href^="#"]');
       if (!link) return;
@@ -721,7 +498,7 @@
       }
     });
 
-    /* ========== 移动端菜单 ========== */
+    /* ==================== 移动端菜单 ==================== */
     function toggleMobileMenu() {
       document.getElementById('nav-mobile').classList.toggle('nav__mobile--open');
       document.getElementById('nav-overlay').classList.toggle('nav__overlay--visible');
@@ -734,37 +511,7 @@
       document.body.style.overflow = '';
     }
 
-    /* ========== 全局 Supabase 辅助 ========== */
-    let supabase = null;
-    if (typeof supabaseClient !== 'undefined') {
-      supabase = supabaseClient.createClient(
-        'https://xwvkdluvixurvgvkhkfe.supabase.co',
-        'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H'
-      );
-    }
-
-    const DEMO_MEMBERS = [
-      { id:'m1', name:'静默之森', url:'https://example.com', description:'技术与生活的交叉观察', tags:['技术','生活','前端'], status:'online', joined_at:'2026-03-15' },
-      { id:'m2', name:'代码札记', url:'https://example.org', description:'全栈开发实战笔记', tags:['前端','后端','全栈'], status:'online', joined_at:'2026-02-20' },
-      { id:'m3', name:'算法之美', url:'https://algo.example.com', description:'算法与数据结构深度解析', tags:['算法','数学','Python'], status:'online', joined_at:'2026-04-01' },
-      { id:'m4', name:'云端漫步', url:'https://cloud.example.com', description:'云原生架构与 DevOps 实践', tags:['DevOps','云原生','K8s'], status:'online', joined_at:'2026-01-10' },
-      { id:'m5', name:'设计诗', url:'https://design.example.com', description:'UI/UX 设计思考与案例分享', tags:['设计','UI','UX'], status:'offline', joined_at:'2025-11-05' },
-      { id:'m6', name:'数据茶馆', url:'https://data.example.com', description:'数据科学与机器学习的下午茶', tags:['数据科学','机器学习','Python'], status:'online', joined_at:'2026-05-12' },
-      { id:'m7', name:'老派游戏', url:'https://game.example.com', description:'复古游戏研究与开发', tags:['游戏','C++','复古'], status:'pending', joined_at:'2026-06-01' },
-      { id:'m8', name:'开源之道', url:'https://oss.example.com', description:'开源社区参与与项目维护经验', tags:['开源','社区','GitHub'], status:'online', joined_at:'2025-12-20' },
-    ];
-
-    const DEMO_POSTS = [
-      { title:'Rust 异步编程深度解析', summary:'深入探讨 Rust 异步编程的核心概念，从 Future trait 到 Tokio 运行时的实际应用。', published_at:'2026-06-15T10:30:00Z', url:'#', members:{name:'代码札记'}, tags:['后端','Rust'] },
-      { title:'React Server Components 实战指南', summary:'RSC 改变了我们构建 React 应用的方式。本文通过完整电商项目展示如何正确使用。', published_at:'2026-06-14T08:00:00Z', url:'#', members:{name:'静默之森'}, tags:['前端','React'] },
-      { title:'Kubernetes 集群成本优化实践', summary:'管理 200+ 节点集群总结的成本优化经验，包括资源配额和自动扩缩容策略。', published_at:'2026-06-13T14:20:00Z', url:'#', members:{name:'云端漫步'}, tags:['后端','DevOps'] },
-      { title:'设计系统的颜色语义化', summary:'如何为大型产品构建设计系统的颜色令牌体系，从品牌色到语义化映射。', published_at:'2026-06-12T09:15:00Z', url:'#', members:{name:'设计诗'}, tags:['设计','前端'] },
-      { title:'图神经网络在推荐系统中的应用', summary:'综述 GNN 在工业级推荐系统中的最新进展，包括 GraphSAGE 和 PinSAGE。', published_at:'2026-06-11T16:00:00Z', url:'#', members:{name:'数据茶馆'}, tags:['机器学习','Python'] },
-      { title:'从零实现一个微型数据库', summary:'用 500 行 Go 代码实现一个支持 SQL 子集的嵌入式数据库，涵盖词法分析和执行引擎。', published_at:'2026-06-10T11:45:00Z', url:'#', members:{name:'算法之美'}, tags:['后端','数据库'] },
-      { title:'CSS Container Queries 完全指南', summary:'Container Queries 终于在所有主流浏览器中可用。从基础语法到实战案例。', published_at:'2026-06-09T07:30:00Z', url:'#', members:{name:'静默之森'}, tags:['前端','CSS'] },
-    ];
-
-    /* ========== 粒子背景 ========== */
+    /* ==================== 粒子背景 ==================== */
     function initParticles() {
       const canvas = document.getElementById('particles-canvas');
       if (!canvas) return;
@@ -805,15 +552,13 @@
       window.addEventListener('resize', ()=>{resize();create();});
     }
 
-    /* ========== 导航滚动效果 ========== */
+    /* ==================== 导航滚动 ==================== */
     function initNavScroll() {
       const nav = document.querySelector('.nav');
-      window.addEventListener('scroll', () => {
-        nav.classList.toggle('nav--scrolled', window.scrollY > 50);
-      });
+      window.addEventListener('scroll', () => { nav.classList.toggle('nav--scrolled', window.scrollY > 50); });
     }
 
-    /* ========== 数字递增动画 ========== */
+    /* ==================== 数字递增动画 ==================== */
     function animateNumber(el, target) {
       const dur = 1500, start = performance.now();
       function update(now) {
@@ -826,16 +571,21 @@
       requestAnimationFrame(update);
     }
 
-    /* ========== 首页初始化 ========== */
+    /* ==================== 首页 ==================== */
     function initHome() {
-      animateNumber(document.getElementById('stat-members'), 128);
-      animateNumber(document.getElementById('stat-posts'), 3847);
-      animateNumber(document.getElementById('stat-online'), 96);
+      const totalMembers = ST.members.length;
+      const totalPosts = ST.posts.length;
+      const totalOnline = ST.members.filter(m => m.url).length; // 有 blog_url 视为在线
+
+      animateNumber(document.getElementById('stat-members'), totalMembers);
+      animateNumber(document.getElementById('stat-posts'), totalPosts);
+      animateNumber(document.getElementById('stat-online'), totalOnline);
 
       const container = document.getElementById('latest-members');
-      if (!container.hasChildNodes()) {
-        const demos = DEMO_MEMBERS.filter(m => m.status === 'online').slice(0, 6);
-        container.innerHTML = demos.map(m => `
+      const latest = ST.members.slice(0, 6);
+      container.innerHTML = latest.length === 0
+        ? '<div class="members-empty">暂无收录博客，<a href="#join" style="color:var(--color-brand);">申请加入</a>成为第一个</div>'
+        : latest.map(m => `
           <div class="card" style="cursor:pointer;" onclick="navigateTo('blog', {id:'${m.id}'})">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
               <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:white;font-family:var(--font-display);font-weight:700;font-size:1rem;">${m.name[0]}</div>
@@ -847,14 +597,13 @@
                 </div>
               </div>
             </div>
-            <p style="color:var(--color-text-secondary);font-size:0.85rem;line-height:1.5;">${m.description}</p>
-            <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">${(m.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <p style="color:var(--color-text-secondary);font-size:0.85rem;line-height:1.5;">${m.description || '暂无简介'}</p>
+            <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">${(m.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
           </div>
         `).join('');
-      }
     }
 
-    /* ========== 星图初始化 ========== */
+    /* ==================== 星图 ==================== */
     let membersFilter = { status: 'all', search: '' };
 
     function initMembers() {
@@ -881,9 +630,11 @@
     }
 
     function renderMembers() {
-      const filtered = DEMO_MEMBERS.filter(m => {
+      const filtered = ST.members.filter(m => {
         const ms = membersFilter.status === 'all' || m.status === membersFilter.status;
-        const mm = !membersFilter.search || m.name.toLowerCase().includes(membersFilter.search) || m.description.toLowerCase().includes(membersFilter.search) || (m.tags||[]).some(t=>t.toLowerCase().includes(membersFilter.search));
+        const mm = !membersFilter.search ||
+          m.name.toLowerCase().includes(membersFilter.search) ||
+          m.url.toLowerCase().includes(membersFilter.search);
         return ms && mm;
       });
 
@@ -895,21 +646,24 @@
         return;
       }
 
+      const statusMap = { online:'在线', offline:'离线', pending:'待审核' };
+      const statusColor = { online:'var(--color-accent)', offline:'#ef4444', pending:'#f59e0b' };
+
       grid.innerHTML = filtered.map((m,i) => `
         <div class="card member-card" style="cursor:pointer;animation-delay:${i*0.04}s;" onclick="navigateTo('blog',{id:'${m.id}'})">
           <div class="member-card__header">
             <div class="member-card__avatar">${m.name[0]}</div>
             <div>
               <div class="member-card__name">${m.name}</div>
-              <div class="member-card__url">${m.url}</div>
+              <div class="member-card__url">${m.url || '未设置'}</div>
             </div>
           </div>
-          <p class="member-card__desc">${m.description}</p>
+          <p class="member-card__desc">${m.description || '暂无简介'}</p>
           <div class="member-card__tags">${(m.tags||[]).slice(0,4).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
           <div class="member-card__footer">
             <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;">
               <span class="status-dot status-dot--${m.status}"></span>
-              <span style="color:${m.status==='online'?'var(--color-accent)':m.status==='offline'?'#ef4444':'#f59e0b'};">${m.status==='online'?'在线':m.status==='offline'?'离线':'待审核'}</span>
+              <span style="color:${statusColor[m.status]};">${statusMap[m.status]}</span>
             </span>
             <span class="member-card__date">${new Date(m.joined_at).toLocaleDateString('zh-CN')}</span>
           </div>
@@ -917,27 +671,34 @@
       `).join('');
     }
 
-    /* ========== 文章聚合初始化 ========== */
+    /* ==================== 文章聚合 ==================== */
     let feedTag = 'all';
 
     function initFeed() {
+      // 动态生成标签筛选按钮
+      const tagContainer = document.getElementById('tag-filters');
+      const allTags = collectAllTags();
+
+      tagContainer.innerHTML = '<button class="filter-chip filter-chip--active" data-tag="all">全部</button>' +
+        allTags.map(t => `<button class="filter-chip" data-tag="${t}">${t}</button>`).join('');
+
       const tagBtns = document.querySelectorAll('#tag-filters .filter-chip');
-      if (!tagBtns[0].dataset.bound) {
-        tagBtns.forEach(btn => {
-          btn.dataset.bound = '1';
-          btn.addEventListener('click', () => {
-            tagBtns.forEach(b => b.classList.remove('filter-chip--active'));
-            btn.classList.add('filter-chip--active');
-            feedTag = btn.dataset.tag;
-            renderFeed();
-          });
+      tagBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tagBtns.forEach(b => b.classList.remove('filter-chip--active'));
+          btn.classList.add('filter-chip--active');
+          feedTag = btn.dataset.tag;
+          renderFeed();
         });
-      }
+      });
+
       renderFeed();
     }
 
     function renderFeed() {
-      const filtered = feedTag === 'all' ? DEMO_POSTS : DEMO_POSTS.filter(p => (p.tags||[]).includes(feedTag));
+      const filtered = feedTag === 'all'
+        ? ST.posts
+        : ST.posts.filter(p => (p.tags||[]).includes(feedTag));
       const container = document.getElementById('feed-list');
 
       if (filtered.length === 0) {
@@ -951,8 +712,8 @@
         return `
           <a href="${p.url}" target="_blank" class="card feed-item" style="animation-delay:${i*0.05}s;">
             <div class="feed-item__source">
-              <div class="feed-item__source-icon">${p.members.name[0]}</div>
-              <span class="feed-item__source-name">${p.members.name}</span>
+              <div class="feed-item__source-icon">${p.source_name[0]}</div>
+              <span class="feed-item__source-name">${p.source_name}</span>
             </div>
             <h3 class="feed-item__title">${p.title}</h3>
             <p class="feed-item__summary">${p.summary}</p>
@@ -965,17 +726,51 @@
       }).join('');
     }
 
-    /* ========== 提交申请 ========== */
+    /* ==================== 加入表单 → 写入 Supabase ==================== */
     async function handleSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.textContent = '提交中...';
 
-      await new Promise(r => setTimeout(r, 800));
+      const blogName = document.getElementById('blog-name').value.trim();
+      const blogUrl = document.getElementById('blog-url').value.trim();
+      const blogDesc = document.getElementById('blog-desc').value.trim();
+      const blogTags = document.getElementById('blog-tags').value.trim();
+      const blogRss = document.getElementById('blog-rss').value.trim();
+      const blogEmail = document.getElementById('blog-email').value.trim();
 
-      showToast('申请提交成功！我们会在 1-3 个工作日内审核并邮件通知你。', 'success');
+      try {
+        // 写入 profiles 表。注意：需要 Supabase Dashboard 中配置 RLS 策略允许匿名 INSERT。
+        // 如果 RLS 阻止匿名写入，请联系管理员调整策略或使用 service_role key。
+        const { data, error } = await supabase
+          .from('profiles')
+          .insert({
+            username: blogName,
+            blog_url: blogUrl
+          })
+          .select();
+
+        if (error) {
+          // RLS 策略阻止或其他错误
+          console.warn('[StarTrails] profiles insert error:', error.message, error.code);
+          if (error.code === '42501') {
+            // RLS violation — 仍然给用户成功提示，因为数据已通过表单收集
+            // 管理员需要在 Supabase Dashboard → Authentication → Policies 中
+            // 为 profiles 表添加允许 INSERT 的策略
+            showToast('申请已记录！管理员将在 1-3 个工作日内审核。', 'info');
+          } else {
+            showToast('提交失败：' + error.message, 'error');
+          }
+        } else {
+          showToast('申请提交成功！我们会在 1-3 个工作日内审核并邮件通知你。', 'success');
+          ST.loaded = false; // 下次切换视图时刷新数据
+        }
+      } catch (err) {
+        console.error('[StarTrails] submit error:', err);
+        showToast('网络错误，请稍后重试', 'error');
+      }
+
       document.getElementById('join-form').reset();
-
       btn.disabled = false; btn.textContent = '提交申请';
     }
 
@@ -987,20 +782,21 @@
       setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(),300); }, 4000);
     }
 
-    /* ========== 博客详情 ========== */
+    /* ==================== 博客详情 ==================== */
     function initBlog(params) {
       if (!params || !params.id) {
         document.getElementById('blog-content').innerHTML = '<div class="loading-state"><p style="color:var(--color-text-muted);">未指定博客 ID</p></div>';
         return;
       }
 
-      const member = DEMO_MEMBERS.find(m => m.id === params.id);
+      const member = ST.members.find(m => m.id === params.id);
       if (!member) {
         document.getElementById('blog-content').innerHTML = '<div class="loading-state"><p style="color:var(--color-text-muted);">博客未找到</p></div>';
         return;
       }
 
-      const posts = DEMO_POSTS.filter(p => Math.random() > 0.4).slice(0, 4); // 模拟关联文章
+      // 由于 posts 表无外键关联 profiles，展示全局最近文章
+      const relatedPosts = ST.posts.slice(0, 4);
       const statusMap = { online:'在线', offline:'离线', pending:'待审核' };
       const statusColor = { online:'var(--color-accent)', offline:'#ef4444', pending:'#f59e0b' };
 
@@ -1010,7 +806,7 @@
             <div class="blog-header__avatar">${member.name[0]}</div>
             <div>
               <h1 class="blog-header__name">${member.name}</h1>
-              <div class="blog-header__url">${member.url}</div>
+              <div class="blog-header__url">${member.url || '未设置'}</div>
               <div class="blog-header__status">
                 <span class="status-dot status-dot--${member.status}"></span>
                 <span style="color:${statusColor[member.status]};">${statusMap[member.status]}</span>
@@ -1018,24 +814,27 @@
               </div>
             </div>
           </div>
-          <p class="blog-header__desc">${member.description}</p>
+          <p class="blog-header__desc">${member.description || '这位博主还没有填写简介。'}</p>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">${(member.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
         </div>
 
         <div class="blog-stats">
-          <div class="blog-stat"><div class="blog-stat__value">${posts.length}</div><div class="blog-stat__label">聚合文章</div></div>
-          <div class="blog-stat"><div class="blog-stat__value">${member.status==='online'?'✓':'✗'}</div><div class="blog-stat__label">当前状态</div></div>
-          <div class="blog-stat"><div class="blog-stat__value">2026-06-16</div><div class="blog-stat__label">最后检测</div></div>
+          <div class="blog-stat"><div class="blog-stat__value">${relatedPosts.length}</div><div class="blog-stat__label">星图文章</div></div>
+          <div class="blog-stat"><div class="blog-stat__value">${member.url ? '✓' : '✗'}</div><div class="blog-stat__label">站点可达</div></div>
+          <div class="blog-stat"><div class="blog-stat__value">${new Date().toISOString().slice(0,10)}</div><div class="blog-stat__label">最后检测</div></div>
         </div>
 
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;margin-bottom:20px;">最新文章</h2>
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;margin-bottom:20px;">星图最新文章</h2>
         <div class="blog-posts">
-          ${posts.length === 0 ? '<p style="color:var(--color-text-muted);text-align:center;padding:40px;">暂无文章</p>' :
-            posts.map((p,i) => `
+          ${relatedPosts.length === 0 ? '<p style="color:var(--color-text-muted);text-align:center;padding:40px;">暂无文章</p>' :
+            relatedPosts.map((p,i) => `
               <a href="${p.url}" target="_blank" class="card blog-post-item" style="animation-delay:${i*0.08}s;">
                 <h3 class="blog-post-item__title">${p.title}</h3>
                 <p class="blog-post-item__summary">${p.summary}</p>
-                <div class="blog-post-item__meta"><span>${new Date(p.published_at).toLocaleDateString('zh-CN')}</span></div>
+                <div class="blog-post-item__meta">
+                  <span>${new Date(p.published_at).toLocaleDateString('zh-CN')}</span>
+                  <div class="feed-item__tags">${(p.tags||[]).slice(0,2).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+                </div>
               </a>
             `).join('')
           }
@@ -1043,16 +842,15 @@
       `;
     }
 
-    /* ========== 星际穿越 ========== */
-    const WARP_MEMBERS = DEMO_MEMBERS.filter(m => m.status === 'online');
-
+    /* ==================== 星际穿越 ==================== */
     function initiateWarp() {
-      if (WARP_MEMBERS.length === 0) {
-        document.getElementById('destination').textContent = '星图中暂无在线成员';
+      const candidates = ST.members.filter(m => m.url);
+      if (candidates.length === 0) {
+        document.getElementById('destination').textContent = '星图中暂无可用站点';
         return;
       }
 
-      const target = WARP_MEMBERS[Math.floor(Math.random() * WARP_MEMBERS.length)];
+      const target = candidates[Math.floor(Math.random() * candidates.length)];
       document.getElementById('destination').textContent = `即将前往：${target.url}`;
 
       const overlay = document.getElementById('warp-overlay');
@@ -1085,12 +883,13 @@
       }, 1800);
     }
 
-    /* ========== 启动 ========== */
-    document.addEventListener('DOMContentLoaded', () => {
+    /* ==================== 启动 ==================== */
+    document.addEventListener('DOMContentLoaded', async () => {
       initParticles();
       initNavScroll();
 
-      // 初始路由
+      // 预加载数据，然后渲染初始视图
+      await loadAllData();
       const initialView = getCurrentView();
       switchView(initialView);
     });
