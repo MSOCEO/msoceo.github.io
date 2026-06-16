@@ -46,6 +46,7 @@ const thanksMsg = thanksMessages[Math.floor(Math.random() * thanksMessages.lengt
 <html lang="zh-CN">
   <head>
     <BaseHead title={pageTitle} description={description} image={image} />
+    <slot name="head" />
   </head>
   <body>
     <ReadingProgress show={showReadingProgress} />
