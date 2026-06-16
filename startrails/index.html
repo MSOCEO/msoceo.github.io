@@ -7,8 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/style.css" /></noscript>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     /* ===== SPA 路由：所有视图默认隐藏 ===== */
     .view { display: none; }
@@ -169,9 +170,9 @@
 
     <section class="section" style="text-align:center;">
       <div style="display:flex; justify-content:center; gap:64px; flex-wrap:wrap;">
-        <div><div class="stat-number" id="stat-members">0</div><div class="stat-label">收录博客</div></div>
-        <div><div class="stat-number" id="stat-posts">0</div><div class="stat-label">聚合文章</div></div>
-        <div><div class="stat-number" id="stat-online">0</div><div class="stat-label">在线运行</div></div>
+        <div><div class="stat-number" id="stat-members"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">收录博客</div></div>
+        <div><div class="stat-number" id="stat-posts"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">聚合文章</div></div>
+        <div><div class="stat-number" id="stat-online"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">在线运行</div></div>
       </div>
     </section>
 
@@ -211,6 +212,29 @@
       <div style="text-align:center; margin-top:32px;">
         <a href="#members" class="btn btn--secondary">查看全部星图 →</a>
       </div>
+    </section>
+
+    <!-- 本周星推荐 -->
+    <section class="section">
+      <div class="section__header" style="text-align:center;">
+        <span class="section__label">精选推荐</span>
+        <h2 class="section__title" style="font-size:2.2rem;">本周星推荐</h2>
+        <p class="section__desc" style="margin:0 auto;">编辑精选的优质独立博客，值得一读</p>
+      </div>
+      <div id="featured-members" class="featured-grid"></div>
+      <div style="text-align:center; margin-top:32px;">
+        <a href="#members" class="btn btn--secondary">浏览更多 →</a>
+      </div>
+    </section>
+
+    <!-- 热门标签云 -->
+    <section class="section">
+      <div class="section__header" style="text-align:center;">
+        <span class="section__label">探索主题</span>
+        <h2 class="section__title" style="font-size:2.2rem;">热门标签</h2>
+        <p class="section__desc" style="margin:0 auto;">点击标签探索感兴趣的内容方向</p>
+      </div>
+      <div id="tag-cloud" class="tag-cloud"></div>
     </section>
 
     <section class="section" style="text-align:center;">
@@ -290,19 +314,32 @@
     </div>
 
     <div class="join-layout">
-      <form class="join-form" id="join-form" onsubmit="handleSubmit(event)">
-        <div class="form-group">
+      <form class="join-form" id="join-form" novalidate>
+        <div class="form-group" id="fg-applicant-name">
+          <label class="form-label">申请人昵称 *</label>
+          <input type="text" class="input" id="applicant-name" placeholder="你的昵称" required />
+          <span class="form-error">请输入你的昵称</span>
+        </div>
+        <div class="form-group" id="fg-applicant-email">
+          <label class="form-label">申请人邮箱 *</label>
+          <input type="email" class="input" id="applicant-email" placeholder="your@email.com" required />
+          <span class="form-error">请输入有效的邮箱地址</span>
+        </div>
+        <div class="form-group" id="fg-blog-name">
           <label class="form-label">博客名称 *</label>
           <input type="text" class="input" id="blog-name" placeholder="你的博客名称" required />
+          <span class="form-error">请输入博客名称</span>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="fg-blog-url">
           <label class="form-label">博客地址 *</label>
           <input type="url" class="input" id="blog-url" placeholder="https://your-blog.com" required />
           <span class="form-hint">必须以 https:// 开头</span>
+          <span class="form-error">请输入有效的博客地址（以 https:// 开头）</span>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="fg-blog-desc">
           <label class="form-label">博客简介 *</label>
           <textarea class="input" id="blog-desc" placeholder="简要描述你的博客内容和方向..." required></textarea>
+          <span class="form-error">请输入博客简介</span>
         </div>
         <div class="form-group">
           <label class="form-label">标签</label>
@@ -312,11 +349,6 @@
         <div class="form-group">
           <label class="form-label">RSS 地址</label>
           <input type="url" class="input" id="blog-rss" placeholder="https://your-blog.com/rss.xml (选填)" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">联系邮箱 *</label>
-          <input type="email" class="input" id="blog-email" placeholder="your@email.com" required />
-          <span class="form-hint">仅用于审核通知，不会公开</span>
         </div>
         <button type="submit" class="btn btn--primary btn--lg" style="margin-top:8px;align-self:flex-start;" id="submit-btn">提交申请</button>
       </form>
@@ -352,12 +384,7 @@
     <footer class="footer"><p>星迹互联 StarTrails &copy; 2026</p></footer>
   </main>
 
-  <!-- Warp overlay -->
-  <div class="warp-overlay" id="warp-overlay">
-    <div class="warp-stars" id="warp-stars"></div>
-    <div class="warp-ring" id="warp-ring"></div>
-    <div class="warp-text">ENTERING WARP</div>
-  </div>
+  <!-- Warp overlay (Canvas-based) -->
 
   <script>
 
@@ -368,49 +395,40 @@
 
     /* ==================== 全局数据缓存 ==================== */
     let ST = {
-      members: [],        // 来自 profiles 表
+      members: [],        // 来自 members 视图（映射 profiles）
       posts: [],          // 来自 posts 表
       loaded: false,
       loading: false
     };
 
-    /**
-     * 将 Supabase profiles 行映射为前端成员对象
-     * profiles 列: id(uuid), username, blog_url, created_at(timestamptz), updated_at(timestamptz)
-     * 映射后: id, name, url, description(空), tags([]), status('online'), joined_at
-     */
-    function mapProfile(p) {
+    /** 将 members 视图行映射为前端成员对象 */
+    function mapMember(m) {
       return {
-        id: p.id,
-        name: p.username || '未命名博客',
-        url: p.blog_url || '',
-        description: '',
-        tags: [],
-        status: 'online',
-        joined_at: p.created_at || new Date().toISOString()
+        id: m.id,
+        name: m.name || m.username || '未命名博客',
+        url: m.url || m.blog_url || '',
+        description: m.description || '',
+        tags: Array.isArray(m.tags) ? m.tags : [],
+        status: m.status || 'online',
+        joined_at: m.created_at || m.joined_at || new Date().toISOString(),
+        rss_url: m.rss_url || ''
       };
     }
 
-    /**
-     * 将 Supabase posts 行映射为前端文章对象
-     * posts 列: id(uuid), title, content, slug, category, status, tags(text[]), published_at, created_at, updated_at
-     */
-    function mapPost(p) {
+    /** 将 Supabase posts 行映射为前端文章对象 */
+    function mapPost(p, memberName) {
       let tags = [];
-      if (p.tags) {
-        tags = Array.isArray(p.tags) ? p.tags : [];
-      }
-      if (p.category && !tags.includes(p.category)) {
-        tags = [p.category, ...tags];
-      }
+      if (p.tags) { tags = Array.isArray(p.tags) ? p.tags : []; }
+      if (p.category && !tags.includes(p.category)) { tags = [p.category, ...tags]; }
       return {
         id: p.id,
         title: p.title || '无标题',
-        summary: (p.content || '').substring(0, 200),
+        summary: (p.content || '').replace(/<[^>]*>/g, '').substring(0, 200),
         published_at: p.published_at || p.created_at || new Date().toISOString(),
-        url: '#',
+        url: p.url || '#',
         tags: tags,
-        source_name: '星迹互联'
+        source_name: memberName || '星迹互联',
+        source_id: p.member_id || null
       };
     }
 
@@ -420,15 +438,21 @@
       ST.loading = true;
       try {
         const [memRes, postRes] = await Promise.all([
-          supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+          supabase.from('members').select('*').order('created_at', { ascending: false }),
           supabase.from('posts').select('*').order('published_at', { ascending: false })
         ]);
 
-        if (memRes.error) { console.warn('profiles fetch error:', memRes.error); }
+        if (memRes.error) { console.warn('members view fetch error:', memRes.error); }
         if (postRes.error) { console.warn('posts fetch error:', postRes.error); }
 
-        ST.members = (memRes.data || []).map(mapProfile);
-        ST.posts = (postRes.data || []).map(mapPost);
+        ST.members = (memRes.data || []).map(mapMember);
+        ST.posts = (postRes.data || []).map(p => {
+          if (p.member_id) {
+            const m = ST.members.find(mm => mm.id === p.member_id);
+            return mapPost(p, m ? m.name : null);
+          }
+          return mapPost(p);
+        });
         ST.loaded = true;
 
         console.log(`[StarTrails] Loaded ${ST.members.length} members, ${ST.posts.length} posts from Supabase`);
@@ -464,13 +488,34 @@
         await loadAllData();
       }
 
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('view--active'));
-
+      const oldView = document.querySelector('.view--active');
       const target = document.querySelector(`.view[data-view="${viewName}"]`);
-      if (target) {
-        target.classList.add('view--active');
-        if (viewName === 'go') target.style.display = 'flex';
+      if (!target) return;
+
+      // 过渡旧视图
+      if (oldView && oldView !== target) {
+        oldView.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        oldView.style.opacity = '0';
+        oldView.style.transform = 'translateY(8px)';
+        await new Promise(r => setTimeout(r, 220));
+        oldView.classList.remove('view--active');
+        oldView.style.opacity = '';
+        oldView.style.transform = '';
+        oldView.style.transition = '';
+        if (oldView.dataset.view === 'go') oldView.style.display = 'none';
       }
+
+      // 显示新视图
+      if (viewName === 'go') target.style.display = 'flex';
+      else target.style.display = 'block';
+      target.style.opacity = '0';
+      target.style.transform = 'translateY(8px)';
+      target.style.transition = 'none';
+      target.offsetHeight; // force reflow
+      target.style.transition = 'opacity 0.3s ease 0.05s, transform 0.3s ease 0.05s';
+      target.style.opacity = '1';
+      target.style.transform = 'translateY(0)';
+      target.classList.add('view--active');
 
       document.querySelectorAll('[data-nav]').forEach(el => {
         el.classList.toggle('nav__link--active', el.dataset.nav === viewName);
@@ -482,6 +527,11 @@
       if (viewName === 'members') initMembers();
       if (viewName === 'feed') initFeed();
       if (viewName === 'blog') initBlog(params);
+
+      // 等待过渡完成后清理 + 触发卡片入场
+      await new Promise(r => setTimeout(r, 400));
+      target.style.transition = '';
+      observeCards();
     }
 
     window.addEventListener('hashchange', () => {
@@ -511,55 +561,255 @@
       document.body.style.overflow = '';
     }
 
-    /* ==================== 粒子背景 ==================== */
+    /* ==================== 粒子背景（增强：星云+流星+闪烁星+移动端降级+帧率控制） ==================== */
+
+    // --- 帧率节流工具 ---
+    const frameThrottle = (() => {
+      let lastTime = 0;
+      return function shouldRender(targetFps) {
+        const now = performance.now();
+        const interval = 1000 / targetFps;
+        if (now - lastTime >= interval) { lastTime = now; return true; }
+        return false;
+      };
+    })();
+
+    // --- debounce 工具 ---
+    function debounce(fn, delay) {
+      let timer;
+      return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+
     function initParticles() {
       const canvas = document.getElementById('particles-canvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
+      let isMobile = window.innerWidth < 768;
+      const COUNT = isMobile ? 20 : 80;
+      const TARGET_FPS = isMobile ? 30 : 60;
       let particles = [];
-      const COUNT = 80;
 
-      function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
-
-      function create() {
-        particles = Array.from({length:COUNT}, () => ({
-          x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-          r: Math.random()*1.5+0.3, sx: (Math.random()-0.5)*0.3, sy: (Math.random()-0.5)*0.3,
-          o: Math.random()*0.5+0.2,
-        }));
+      // --- 星云（离线Canvas缓存） ---
+      let nebulaCache = null;
+      const nebulae = [];
+      if (!isMobile) {
+        const colors = [
+          { r: 99, g: 102, b: 241, baseAlpha: 0.03, size: 280 },
+          { r: 16, g: 185, b: 129, baseAlpha: 0.02, size: 220 },
+          { r: 59, g: 130, b: 246, baseAlpha: 0.03, size: 250 },
+        ];
+        colors.forEach(c => {
+          nebulae.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            ...c,
+          });
+        });
       }
 
-      function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        particles.forEach(p => {
-          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-          ctx.fillStyle=`rgba(255,255,255,${p.o})`; ctx.fill();
-          p.x+=p.sx; p.y+=p.sy;
-          if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
-          if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+      function renderNebulaCache() {
+        if (isMobile) return;
+        const off = document.createElement('canvas');
+        off.width = canvas.width; off.height = canvas.height;
+        const octx = off.getContext('2d');
+        nebulae.forEach(n => {
+          const grad = octx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.size);
+          grad.addColorStop(0, `rgba(${n.r},${n.g},${n.b},${n.baseAlpha})`);
+          grad.addColorStop(1, 'rgba(0,0,0,0)');
+          octx.fillStyle = grad;
+          octx.beginPath(); octx.arc(n.x, n.y, n.size, 0, Math.PI * 2); octx.fill();
         });
-        for(let i=0;i<particles.length;i++){
-          for(let j=i+1;j<particles.length;j++){
-            const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
-            const d=Math.sqrt(dx*dx+dy*dy);
-            if(d<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(99,102,241,${0.06*(1-d/120)})`;ctx.lineWidth=0.5;ctx.stroke();}
+        nebulaCache = off;
+      }
+
+      function updateNebulae() {
+        if (isMobile) return;
+        const W = canvas.width, H = canvas.height;
+        nebulae.forEach(n => {
+          n.x += n.vx; n.y += n.vy;
+          if (n.x < -n.size) { n.x = W + n.size; n.vx *= -1; }
+          if (n.x > W + n.size) { n.x = -n.size; n.vx *= -1; }
+          if (n.y < -n.size) { n.y = H + n.size; n.vy *= -1; }
+          if (n.y > H + n.size) { n.y = -n.size; n.vy *= -1; }
+        });
+        nebulaCache = null;
+      }
+
+      // --- 流星 ---
+      let meteors = [];
+      let meteorTimer = 0;
+      const METEOR_INTERVAL_MIN = 15 * 60;
+      const METEOR_INTERVAL_MAX = 30 * 60;
+
+      function spawnMeteor() {
+        if (isMobile) return;
+        const W = canvas.width, H = canvas.height;
+        const startX = W * 0.6 + Math.random() * W * 0.4;
+        const startY = Math.random() * H * 0.4;
+        const speed = 8 + Math.random() * 4;
+        const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3;
+        meteors.push({
+          x: startX, y: startY,
+          vx: -Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          len: 100 + Math.random() * 100,
+          trail: [],
+          life: 0,
+          maxLife: (W / speed) * 0.7,
+        });
+      }
+
+      function resize() { canvas.width = innerWidth; canvas.height = innerHeight; nebulaCache = null; }
+
+      function create() {
+        const cnt = isMobile ? 20 : 80;
+        particles = Array.from({ length: cnt }, () => {
+          const isStrobe = Math.random() < 0.2;
+          return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.5 + 0.3,
+            sx: (Math.random() - 0.5) * 0.3,
+            sy: (Math.random() - 0.5) * 0.3,
+            o: Math.random() * 0.5 + 0.2,
+            baseO: null,
+            blinkPhase: Math.random() * Math.PI * 2,
+            blinkSpeed: isStrobe ? 0.005 : (0.005 + Math.random() * 0.02),
+            isStrobe,
+            hueShift: isStrobe ? Math.random() * Math.PI * 2 : 0,
+          };
+        });
+      }
+
+      let frameCount = 0;
+
+      function draw() {
+        frameCount++;
+        if (!frameThrottle(TARGET_FPS)) { requestAnimationFrame(draw); return; }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Nebula (cached, only every 3 frames)
+        if (!isMobile) {
+          if (!nebulaCache) renderNebulaCache();
+          if (nebulaCache) ctx.drawImage(nebulaCache, 0, 0);
+          if (frameCount % 3 === 0) updateNebulae();
+        }
+
+        // Meteors (desktop only)
+        if (!isMobile) {
+          meteorTimer++;
+          if (meteorTimer >= METEOR_INTERVAL_MIN + Math.random() * (METEOR_INTERVAL_MAX - METEOR_INTERVAL_MIN)) {
+            meteorTimer = 0;
+            if (meteors.length < 2) spawnMeteor();
+          }
+
+          for (let mi = meteors.length - 1; mi >= 0; mi--) {
+            const m = meteors[mi];
+            m.life++;
+            m.x += m.vx; m.y += m.vy;
+            m.trail.unshift({ x: m.x, y: m.y, alpha: 0.8 });
+            if (m.trail.length > 5) m.trail.length = 5;
+            m.trail.forEach((tp, i) => { tp.alpha = 0.8 * (1 - i / 5); });
+            if (m.trail.length >= 2) {
+              for (let t = 1; t < m.trail.length; t++) {
+                const tp = m.trail[t], tp2 = m.trail[t - 1];
+                ctx.strokeStyle = `rgba(255,255,255,${tp.alpha * 0.5})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(tp.x, tp.y);
+                ctx.lineTo(tp2.x, tp2.y);
+                ctx.stroke();
+              }
+            }
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.beginPath(); ctx.arc(m.x, m.y, 1.5, 0, Math.PI * 2); ctx.fill();
+            if (m.y > canvas.height + 100 || m.x < -100) meteors.splice(mi, 1);
           }
         }
+
+        // Particles + mouse push (desktop only, no push on mobile)
+        const mx = particleMouse.x, my = particleMouse.y;
+        const mouseNear = !isMobile && mx > 0 && my > 0;
+
+        particles.forEach(p => {
+          if (mouseNear) {
+            const dx = p.x - mx;
+            const dy = p.y - my;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 250) {
+              const force = (1 - dist / 250) * 2.0;
+              p.x += (dx / dist) * force;
+              p.y += (dy / dist) * force;
+            }
+          }
+
+          if (!p.baseO) p.baseO = p.o;
+          p.blinkPhase += p.blinkSpeed;
+
+          let blink, r = 255, g = 255, b = 255;
+          if (p.isStrobe) {
+            blink = p.baseO * (0.5 + 0.5 * Math.sin(p.blinkPhase));
+            const hue = Math.sin(p.blinkPhase + p.hueShift);
+            if (hue > 0.5) { r = 200; g = 180; b = 255; }
+            else if (hue < -0.5) { r = 180; g = 240; b = 255; }
+          } else {
+            blink = p.baseO * (0.7 + 0.3 * Math.sin(p.blinkPhase));
+          }
+
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${blink})`;
+          ctx.fill();
+
+          p.x += p.sx; p.y += p.sy;
+          if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+        });
+
+        // Lines (desktop only)
+        if (!isMobile) {
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const d = Math.sqrt(dx * dx + dy * dy);
+              if (d < 120) {
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(99,102,241,${0.06 * (1 - d / 120)})`;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+              }
+            }
+          }
+        }
+
         requestAnimationFrame(draw);
       }
 
       resize(); create(); draw();
-      window.addEventListener('resize', ()=>{resize();create();});
+      window.addEventListener('resize', debounce(() => {
+        isMobile = window.innerWidth < 768;
+        resize(); create();
+      }, 200));
     }
 
     /* ==================== 导航滚动 ==================== */
     function initNavScroll() {
       const nav = document.querySelector('.nav');
-      window.addEventListener('scroll', () => { nav.classList.toggle('nav--scrolled', window.scrollY > 50); });
+      window.addEventListener('scroll', () => { nav.classList.toggle('nav--scrolled', window.scrollY > 50); }, { passive: true });
     }
 
     /* ==================== 数字递增动画 ==================== */
     function animateNumber(el, target) {
+      // 清除骨架屏占位
+      const skeleton = el.querySelector('.skeleton-stats');
+      if (skeleton) skeleton.remove();
       const dur = 1500, start = performance.now();
       function update(now) {
         const p = Math.min((now-start)/dur, 1);
@@ -573,14 +823,16 @@
 
     /* ==================== 首页 ==================== */
     function initHome() {
+      // 真实统计数字
       const totalMembers = ST.members.length;
       const totalPosts = ST.posts.length;
-      const totalOnline = ST.members.filter(m => m.url).length; // 有 blog_url 视为在线
+      const totalOnline = ST.members.filter(m => m.status === 'active' || m.status === 'online').length;
 
       animateNumber(document.getElementById('stat-members'), totalMembers);
       animateNumber(document.getElementById('stat-posts'), totalPosts);
       animateNumber(document.getElementById('stat-online'), totalOnline);
 
+      // 最新收录博客
       const container = document.getElementById('latest-members');
       const latest = ST.members.slice(0, 6);
       container.innerHTML = latest.length === 0
@@ -593,7 +845,7 @@
                 <h4 style="font-family:var(--font-display);font-size:1rem;font-weight:600;">${m.name}</h4>
                 <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
                   <span class="status-dot status-dot--${m.status}"></span>
-                  <span style="font-size:0.75rem;color:var(--color-accent);">在线</span>
+                  <span style="font-size:0.75rem;color:var(--color-accent);">${m.status === 'active' ? '在线' : m.status}</span>
                 </div>
               </div>
             </div>
@@ -601,6 +853,86 @@
             <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">${(m.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
           </div>
         `).join('');
+
+      // 本周星推荐（取前 4 个有简介和标签的成员，按 created_at 倒序前 4）
+      const featured = ST.members.filter(m => m.description && m.tags.length > 0).slice(0, 4);
+      const featContainer = document.getElementById('featured-members');
+      if (featContainer && featured.length > 0) {
+        featContainer.innerHTML = featured.map((m, i) => `
+          <div class="card featured-card" style="cursor:pointer;animation:fadeInUp 0.4s ease both;animation-delay:${i*0.08}s;" onclick="navigateTo('blog',{id:'${m.id}'})">
+            <div class="featured-card__header">
+              <div class="featured-card__avatar">${m.name[0]}</div>
+              <div>
+                <div class="featured-card__name">${m.name}</div>
+                <span class="featured-card__badge">✦ 推荐</span>
+              </div>
+            </div>
+            <p class="featured-card__desc">${m.description}</p>
+            <div class="featured-card__tags">${m.tags.slice(0,4).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <div class="featured-card__footer">
+              <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;">
+                <span class="status-dot status-dot--${m.status}"></span>
+                <span style="color:var(--color-accent);">${m.status === 'active' ? '在线' : m.status}</span>
+              </span>
+              <span class="featured-card__date">${new Date(m.joined_at).toLocaleDateString('zh-CN')}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // 热门标签云
+      renderTagCloud();
+    }
+
+    /** 聚合 stats 并渲染标签云 */
+    function renderTagCloud() {
+      const tagCount = {};
+      ST.members.forEach(m => {
+        (m.tags || []).forEach(t => {
+          if (t && t.trim()) {
+            const key = t.trim();
+            tagCount[key] = (tagCount[key] || 0) + 1;
+          }
+        });
+      });
+
+      const sorted = Object.entries(tagCount)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 15);
+
+      if (sorted.length === 0) return;
+
+      const maxFreq = sorted[0][1];
+      const minFreq = sorted[sorted.length - 1][1];
+      const range = maxFreq - minFreq || 1;
+
+      const cloudEl = document.getElementById('tag-cloud');
+      if (!cloudEl) return;
+
+      cloudEl.innerHTML = sorted.map(([tag, freq]) => {
+        const ratio = (freq - minFreq) / range;
+        const fontSize = 0.8 + ratio * 0.7;
+        const opacity = 0.5 + ratio * 0.5;
+        return `<span class="tag-cloud__item" style="font-size:${fontSize}rem; opacity:${opacity};" onclick="navigateTo('members');setTimeout(()=>{const s=document.getElementById('members-search-input');if(s){s.value='${tag.replace(/'/g,"\\'")}';s.dispatchEvent(new Event('input'));}},200);">${tag}</span>`;
+      }).join('');
+    }
+
+    /* ==================== 粒子鼠标交互（Hero 区域疏密） ==================== */
+    let particleMouse = { x: -9999, y: -9999 };
+
+    function initParticleMouse() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+
+      canvas.addEventListener('mousemove', (e) => {
+        particleMouse.x = e.clientX;
+        particleMouse.y = e.clientY;
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        particleMouse.x = -9999;
+        particleMouse.y = -9999;
+      });
     }
 
     /* ==================== 星图 ==================== */
@@ -671,10 +1003,10 @@
       `).join('');
     }
 
-    /* ==================== 文章聚合 ==================== */
+    /* ==================== 文章聚合（含 RSS 客户端解析） ==================== */
     let feedTag = 'all';
 
-    function initFeed() {
+    async function initFeed() {
       // 动态生成标签筛选按钮
       const tagContainer = document.getElementById('tag-filters');
       const allTags = collectAllTags();
@@ -692,7 +1024,88 @@
         });
       });
 
+      // 先渲染已有数据
       renderFeed();
+      // 然后异步拉取 RSS 后更新
+      await fetchRssPosts();
+      renderFeed();
+    }
+
+    /** 从各成员的 RSS 拉取最近文章 */
+    async function fetchRssPosts() {
+      const membersWithRss = ST.members.filter(m => m.rss_url);
+      if (membersWithRss.length === 0) return;
+
+      // 动态加载 rss-parser
+      if (typeof RSSParser === 'undefined') {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/rss-parser@3/dist/rss-parser.min.js';
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+
+      // 检查 localStorage 缓存（5 分钟内不重复请求）
+      const cacheKey = 'startrails_rss_cache';
+      let cache = {};
+      try {
+        cache = JSON.parse(localStorage.getItem(cacheKey) || '{}');
+      } catch (e) {}
+
+      const now = Date.now();
+      const CACHE_TTL = 5 * 60 * 1000;
+
+      const parser = new RSSParser();
+      const rssPosts = [];
+
+      for (const member of membersWithRss) {
+        const memberCache = cache[member.id];
+        if (memberCache && (now - memberCache.ts) < CACHE_TTL) {
+          rssPosts.push(...memberCache.posts);
+          continue;
+        }
+
+        try {
+          const feed = await parser.parseURL(
+            'https://api.allorigins.win/raw?url=' + encodeURIComponent(member.rss_url)
+          );
+          const posts = (feed.items || []).slice(0, 5).map(item => ({
+            id: 'rss_' + member.id + '_' + (item.guid || item.link || Math.random().toString(36)),
+            title: item.title || '无标题',
+            summary: (item.contentSnippet || item.content || '').replace(/<[^>]*>/g, '').substring(0, 200),
+            published_at: item.isoDate || item.pubDate || new Date().toISOString(),
+            url: item.link || member.url,
+            tags: member.tags.slice(0, 3),
+            source_name: member.name,
+            source_id: member.id
+          }));
+          cache[member.id] = { ts: now, posts };
+          rssPosts.push(...posts);
+        } catch (e) {
+          console.warn('[StarTrails] RSS fetch failed for', member.name, e.message);
+        }
+      }
+
+      // 合并 RSS 文章与 Supabase posts，去重按时间排序
+      if (rssPosts.length > 0) {
+        const combined = [...ST.posts, ...rssPosts];
+        const seen = new Set();
+        const deduped = combined.filter(p => {
+          const key = p.url + '|' + p.title;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        deduped.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+        ST.posts = deduped;
+      }
+
+      // 缓存到 localStorage
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(cache));
+      } catch (e) {}
     }
 
     function renderFeed() {
@@ -726,60 +1139,111 @@
       }).join('');
     }
 
-    /* ==================== 加入表单 → 写入 Supabase ==================== */
+    /* ==================== 加入表单 → 写入 Supabase applications ==================== */
+    function clearFormErrors() {
+      document.querySelectorAll('.form-group--error').forEach(el => el.classList.remove('form-group--error'));
+    }
+
+    function setFormError(fieldId, show) {
+      const fg = document.getElementById('fg-' + fieldId);
+      if (fg) {
+        if (show) fg.classList.add('form-group--error');
+        else fg.classList.remove('form-group--error');
+      }
+    }
+
+    function validateForm() {
+      clearFormErrors();
+      let valid = true;
+
+      const applicantName = document.getElementById('applicant-name').value.trim();
+      if (!applicantName) { setFormError('applicant-name', true); valid = false; }
+
+      const applicantEmail = document.getElementById('applicant-email').value.trim();
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!applicantEmail || !emailRe.test(applicantEmail)) { setFormError('applicant-email', true); valid = false; }
+
+      const blogName = document.getElementById('blog-name').value.trim();
+      if (!blogName) { setFormError('blog-name', true); valid = false; }
+
+      const blogUrl = document.getElementById('blog-url').value.trim();
+      const urlRe = /^https:\/\/.+/i;
+      if (!blogUrl || !urlRe.test(blogUrl)) { setFormError('blog-url', true); valid = false; }
+
+      const blogDesc = document.getElementById('blog-desc').value.trim();
+      if (!blogDesc) { setFormError('blog-desc', true); valid = false; }
+
+      return valid;
+    }
+
     async function handleSubmit(e) {
       e.preventDefault();
+      if (!validateForm()) return;
+
       const btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.textContent = '提交中...';
 
+      const applicantName = document.getElementById('applicant-name').value.trim();
+      const applicantEmail = document.getElementById('applicant-email').value.trim();
       const blogName = document.getElementById('blog-name').value.trim();
       const blogUrl = document.getElementById('blog-url').value.trim();
       const blogDesc = document.getElementById('blog-desc').value.trim();
       const blogTags = document.getElementById('blog-tags').value.trim();
       const blogRss = document.getElementById('blog-rss').value.trim();
-      const blogEmail = document.getElementById('blog-email').value.trim();
 
       try {
-        // 写入 profiles 表。注意：需要 Supabase Dashboard 中配置 RLS 策略允许匿名 INSERT。
-        // 如果 RLS 阻止匿名写入，请联系管理员调整策略或使用 service_role key。
-        const { data, error } = await supabase
-          .from('profiles')
+        const { error } = await supabase
+          .from('applications')
           .insert({
-            username: blogName,
-            blog_url: blogUrl
-          })
-          .select();
+            applicant_name: applicantName,
+            applicant_email: applicantEmail,
+            blog_name: blogName,
+            blog_url: blogUrl,
+            description: blogDesc,
+            tags: blogTags ? blogTags.split(',').map(t => t.trim()).filter(Boolean) : [],
+            rss_url: blogRss || null,
+            status: 'pending'
+          });
 
         if (error) {
-          // RLS 策略阻止或其他错误
-          console.warn('[StarTrails] profiles insert error:', error.message, error.code);
-          if (error.code === '42501') {
-            // RLS violation — 仍然给用户成功提示，因为数据已通过表单收集
-            // 管理员需要在 Supabase Dashboard → Authentication → Policies 中
-            // 为 profiles 表添加允许 INSERT 的策略
-            showToast('申请已记录！管理员将在 1-3 个工作日内审核。', 'info');
-          } else {
-            showToast('提交失败：' + error.message, 'error');
-          }
+          console.warn('[StarTrails] applications insert error:', error.message, error.code);
+          showToast('提交失败：' + error.message, 'error');
         } else {
           showToast('申请提交成功！我们会在 1-3 个工作日内审核并邮件通知你。', 'success');
-          ST.loaded = false; // 下次切换视图时刷新数据
+          document.getElementById('join-form').reset();
+          clearFormErrors();
+          ST.loaded = false;
         }
       } catch (err) {
         console.error('[StarTrails] submit error:', err);
         showToast('网络错误，请稍后重试', 'error');
       }
 
-      document.getElementById('join-form').reset();
       btn.disabled = false; btn.textContent = '提交申请';
     }
 
+    // 绑定表单事件
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('join-form');
+      if (form) form.addEventListener('submit', handleSubmit);
+    });
+
     function showToast(message, type) {
+      const existing = document.querySelector('.toast');
+      if (existing) {
+        existing.classList.add('toast--closing');
+        setTimeout(() => existing.remove(), 300);
+      }
+
       const toast = document.createElement('div');
       toast.className = `toast toast--${type}`;
       toast.textContent = message;
       document.body.appendChild(toast);
-      setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(),300); }, 4000);
+
+      setTimeout(() => {
+        toast.classList.add('toast--closing');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
     }
 
     /* ==================== 博客详情 ==================== */
@@ -842,57 +1306,309 @@
       `;
     }
 
-    /* ==================== 星际穿越 ==================== */
+    /* ==================== 星际穿越：Canvas 曲速跃迁 ==================== */
+
+    let warpCtx = null, warpCanvas = null;
+    let warpAnimId = null;
+    let warpTarget = null;
+    let warpPhase = 'idle';       // idle | charge | stretch | streak | flash | result
+    let warpPhaseStart = 0;
+    let warpStreaks = [];
+    let warpChargeParticles = [];
+
+    const WARP_PHASES_DESKTOP = [
+      { name: 'charge',  dur: 600 },
+      { name: 'stretch', dur: 400 },
+      { name: 'streak',  dur: 300 },
+      { name: 'flash',   dur: 200 },
+      { name: 'result',  dur: 500 },
+    ];
+    const WARP_PHASES_MOBILE = [
+      { name: 'charge',  dur: 500 },
+      { name: 'streak',  dur: 300 },
+      { name: 'flash',   dur: 200 },
+      { name: 'result',  dur: 500 },
+    ];
+
+    function initWarpCanvas() {
+      const c = document.createElement('canvas');
+      c.style.cssText = 'position:fixed;inset:0;z-index:1000;display:none;pointer-events:none;';
+      document.body.appendChild(c);
+      warpCanvas = c;
+      warpCtx = c.getContext('2d');
+    }
+
+    function resizeWarpCanvas() {
+      if (!warpCanvas) return;
+      warpCanvas.width = window.innerWidth;
+      warpCanvas.height = window.innerHeight;
+    }
+
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function drawWarpFrame(now) {
+      if (warpPhase === 'idle') return;
+      const { width: W, height: H } = warpCanvas;
+      const cx = W / 2, cy = H / 2;
+      const elapsed = now - warpPhaseStart;
+      const ctx = warpCtx;
+      const isMobile = window.innerWidth < 768;
+      const phases = isMobile ? WARP_PHASES_MOBILE : WARP_PHASES_DESKTOP;
+
+      // Determine current phase
+      let phaseStart = 0, currentPhase = null, phaseProgress = 0;
+      for (const p of phases) {
+        if (elapsed < phaseStart + p.dur) {
+          currentPhase = p.name;
+          phaseProgress = Math.min((elapsed - phaseStart) / p.dur, 1);
+          break;
+        }
+        phaseStart += p.dur;
+      }
+      if (!currentPhase) {
+        // All phases complete
+        finishWarp();
+        return;
+      }
+      warpPhase = currentPhase;
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+
+      switch (currentPhase) {
+        case 'charge': {
+          // Energy ball
+          const r = 10 + phaseProgress * 70;
+          const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 1.5);
+          grad.addColorStop(0, 'rgba(139,92,246,0.9)');
+          grad.addColorStop(0.4, 'rgba(99,102,241,0.5)');
+          grad.addColorStop(1, 'rgba(99,102,241,0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath(); ctx.arc(cx, cy, r * 1.5, 0, Math.PI * 2); ctx.fill();
+
+          // Particles converging
+          warpChargeParticles.forEach(p => {
+            const t = Math.min(phaseProgress * 1.3 + p.offset, 1);
+            const px = p.sx + (cx - p.sx) * t;
+            const py = p.sy + (cy - p.sy) * t;
+            const alpha = 0.25 + t * 0.75;
+            ctx.fillStyle = `rgba(200,200,255,${alpha})`;
+            ctx.beginPath(); ctx.arc(px, py, 1.5, 0, Math.PI * 2); ctx.fill();
+          });
+          break;
+        }
+        case 'stretch': {
+          const t = easeInOutCubic(phaseProgress);
+          const ew = 80 + t * 320;
+          const eh = 80 * (1 - t) + 4 * t;
+          const rr = Math.floor(99 + 156 * t);
+          const gg = Math.floor(102 + 153 * t);
+          const bb = Math.floor(241 + 14 * t);
+
+          ctx.save(); ctx.translate(cx, cy);
+          const ggGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, ew);
+          ggGrad.addColorStop(0, `rgba(${rr},${gg},${bb},0.8)`);
+          ggGrad.addColorStop(1, `rgba(${rr},${gg},${bb},0)`);
+          ctx.fillStyle = ggGrad;
+          ctx.beginPath(); ctx.ellipse(0, 0, ew, eh + 10, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(-ew, 0); ctx.lineTo(ew, 0); ctx.stroke();
+          ctx.restore();
+          break;
+        }
+        case 'streak': {
+          // Draw the stretched line
+          const half = 200;
+          ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx - half, cy); ctx.lineTo(cx + half, cy); ctx.stroke();
+
+          // Init streaks once
+          if (warpStreaks.length === 0) {
+            for (let i = 0; i < 8; i++) {
+              const side = i < 4 ? -1 : 1;
+              const sx2 = cx + side * half;
+              const len = 100 + Math.random() * 200;
+              const angle = (Math.random() - 0.5) * 0.7;
+              warpStreaks.push({
+                sx: sx2, sy: cy,
+                ex: sx2 + Math.cos(angle) * len * side,
+                ey: cy + Math.sin(angle) * len,
+                alpha: 0.12 + Math.random() * 0.08,
+              });
+            }
+          }
+          warpStreaks.forEach(s => {
+            const t2 = Math.min(phaseProgress * 1.6, 1);
+            const curX = s.sx + (s.ex - s.sx) * t2;
+            const curY = s.sy + (s.ey - s.sy) * t2;
+            const lg = ctx.createLinearGradient(s.sx, s.sy, curX, curY);
+            lg.addColorStop(0, `rgba(255,255,255,${s.alpha})`);
+            lg.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.strokeStyle = lg; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(s.sx, s.sy); ctx.lineTo(curX, curY); ctx.stroke();
+          });
+          break;
+        }
+        case 'flash': {
+          const a = phaseProgress < 0.5 ? phaseProgress * 2 : (1 - phaseProgress) * 2;
+          ctx.fillStyle = `rgba(255,255,255,${a})`;
+          ctx.fillRect(0, 0, W, H);
+          break;
+        }
+        case 'result': {
+          const bgA = Math.max(0, 1 - phaseProgress * 1.5);
+          ctx.fillStyle = `rgba(255,255,255,${bgA})`;
+          ctx.fillRect(0, 0, W, H);
+          if (phaseProgress > 0.3 && warpTarget) {
+            const tA = Math.min((phaseProgress - 0.3) / 0.5, 1);
+            ctx.fillStyle = `rgba(10,10,15,${tA})`;
+            ctx.font = 'bold 2rem "Space Grotesk", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(warpTarget.name, cx, cy - 8);
+            ctx.fillStyle = `rgba(99,102,241,${tA})`;
+            ctx.font = '0.95rem "JetBrains Mono", monospace';
+            ctx.fillText(warpTarget.url, cx, cy + 28);
+          }
+          break;
+        }
+      }
+
+      warpAnimId = requestAnimationFrame(drawWarpFrame);
+    }
+
+    function finishWarp() {
+      if (warpAnimId) cancelAnimationFrame(warpAnimId);
+      warpAnimId = null;
+      warpPhase = 'idle';
+      warpCanvas.style.display = 'none';
+      warpStreaks = [];
+      if (warpTarget) {
+        const url = warpTarget.url;
+        warpTarget = null;
+        document.getElementById('destination').textContent = '';
+        window.open(url, '_blank');
+      }
+    }
+
     function initiateWarp() {
       const candidates = ST.members.filter(m => m.url);
       if (candidates.length === 0) {
         document.getElementById('destination').textContent = '星图中暂无可用站点';
         return;
       }
-
       const target = candidates[Math.floor(Math.random() * candidates.length)];
       document.getElementById('destination').textContent = `即将前往：${target.url}`;
 
-      const overlay = document.getElementById('warp-overlay');
-      const starsContainer = document.getElementById('warp-stars');
+      if (!warpCanvas) initWarpCanvas();
+      resizeWarpCanvas();
+      warpTarget = target;
+      warpStreaks = [];
+      const isMobile = window.innerWidth < 768;
+      const particleCount = isMobile ? 20 : 40;
+      warpChargeParticles = Array.from({ length: particleCount }, () => ({
+        sx: Math.random() * warpCanvas.width,
+        sy: Math.random() * warpCanvas.height,
+        offset: Math.random() * 0.4,
+      }));
+      warpCanvas.style.display = 'block';
+      warpPhase = 'charge';
+      warpPhaseStart = performance.now();
+      warpAnimId = requestAnimationFrame(drawWarpFrame);
+    }
 
-      starsContainer.innerHTML = '';
-      for (let i = 0; i < 120; i++) {
-        const star = document.createElement('div');
-        star.className = 'warp-star';
-        star.style.left = Math.random()*100+'%';
-        star.style.top = Math.random()*100+'%';
-        star.style.width = star.style.height = (Math.random()*3+1)+'px';
-        star.style.animationDuration = (Math.random()*1.5+0.5)+'s';
-        star.style.animationDelay = Math.random()*0.5+'s';
-        starsContainer.appendChild(star);
-      }
+    /* ==================== 卡片入场动画（IntersectionObserver + 移动端降级） ==================== */
+    let cardEntranceObserver = null;
 
-      overlay.classList.add('warp-overlay--active');
+    function initCardEntranceObserver() {
+      if (cardEntranceObserver) return;
+      cardEntranceObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-card-in--visible');
+            // 移除 will-change 以减少内存占用
+            entry.target.style.willChange = '';
+            cardEntranceObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    }
 
-      const ring = document.getElementById('warp-ring');
-      ring.style.animation = 'none'; ring.offsetHeight;
-      ring.style.animation = 'warpRing 1s ease-out forwards';
+    function observeCards() {
+      initCardEntranceObserver();
+      const isMobile = window.innerWidth < 768;
+      const directions = isMobile ? ['down'] : ['left', 'right', 'down'];
+      let dirIndex = 0;
 
-      setTimeout(() => {
-        window.open(target.url, '_blank');
-        setTimeout(() => {
-          overlay.classList.remove('warp-overlay--active');
-          document.getElementById('destination').textContent = '';
-        }, 500);
-      }, 1800);
+      const cards = document.querySelectorAll(
+        '.card:not([data-card-observed]), .member-card:not([data-card-observed]), .feed-item:not([data-card-observed])'
+      );
+
+      cards.forEach((card, i) => {
+        const dir = directions[dirIndex % directions.length];
+        dirIndex++;
+        card.setAttribute('data-card-observed', '1');
+        card.classList.add('animate-card-in');
+
+        if (isMobile) {
+          card.style.transform = 'translateY(30px)';
+        } else {
+          switch (dir) {
+            case 'left':  card.style.transform = 'translateX(-40px)'; break;
+            case 'right': card.style.transform = 'translateX(40px)'; break;
+            case 'down':  card.style.transform = 'translateY(40px)'; break;
+          }
+        }
+        card.style.transitionDelay = `${i * 0.06}s`;
+        cardEntranceObserver.observe(card);
+      });
+    }
+
+    /* ==================== 波纹特效 ==================== */
+    function initRipple() {
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('input, textarea, select')) return;
+        if (window.getSelection().toString().length > 0) return;
+
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = e.clientX + 'px';
+        ripple.style.top = e.clientY + 'px';
+        document.body.appendChild(ripple);
+        ripple.addEventListener('animationend', () => ripple.remove());
+      });
     }
 
     /* ==================== 启动 ==================== */
     document.addEventListener('DOMContentLoaded', async () => {
       initParticles();
+      initParticleMouse();
       initNavScroll();
+      initRipple();
 
-      // 预加载数据，然后渲染初始视图
-      await loadAllData();
+      // 首屏数据预取：立即发起 stats 请求
+      const statsPromise = loadAllData();
+
+      // 渲染初始视图
+      await statsPromise;
       const initialView = getCurrentView();
-      switchView(initialView);
+      await switchView(initialView);
+
+      // 首屏就绪标记
+      if (typeof performance !== 'undefined') {
+        performance.mark('startrails-ready');
+      }
     });
+
+    // Passive 事件监听器
+    (function initPassiveListeners() {
+      const passiveOpts = { passive: true };
+      window.addEventListener('scroll', () => {}, passiveOpts);
+      window.addEventListener('touchstart', () => {}, passiveOpts);
+      window.addEventListener('touchmove', () => {}, passiveOpts);
+    })();
 
   </script>
 </body>

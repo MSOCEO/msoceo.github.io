@@ -269,19 +269,27 @@ body {
 
 /* ===== 卡片基础 ===== */
 .card {
+  position: relative;
+  overflow: hidden;
   background: var(--color-bg-card);
   backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 24px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  contain: content;
 }
 
 .card:hover {
   background: var(--color-bg-card-hover);
   border-color: var(--color-border-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(99,102,241,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 24px rgba(99,102,241,0.15);
+  will-change: transform;
+}
+
+.card:not(:hover) {
+  will-change: auto;
 }
 
 /* ===== 按钮 ===== */
@@ -355,6 +363,18 @@ body {
   margin-top: 4px;
 }
 
+/* ===== 统计骨架屏 ===== */
+.skeleton-stats {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
 /* ===== 状态指示器 ===== */
 .status-dot {
   width: 8px; height: 8px;
@@ -418,7 +438,7 @@ body {
   color: var(--color-text-muted);
 }
 
-/* ===== 骨架屏 ===== */
+/* ===== 通用骨架屏 ===== */
 .skeleton {
   background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
   background-size: 200% 100%;
@@ -429,6 +449,13 @@ body {
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* ===== 头像占位渐变（防布局抖动） ===== */
+.member-card__avatar,
+.blog-header__avatar,
+.featured-card__avatar {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
 }
 
 /* ===== 动画 ===== */
@@ -507,4 +534,259 @@ body {
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .content { padding: 90px 24px 70px; }
+}
+
+/* ===== 星推荐卡片 ===== */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.featured-card {
+  padding: 28px;
+  cursor: pointer;
+}
+
+.featured-card__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.featured-card__avatar {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-family: var(--font-display);
+  font-weight: 700; font-size: 1.3rem;
+}
+
+.featured-card__avatar img {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.featured-card__name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.featured-card__badge {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));
+  border: 1px solid rgba(139,92,246,0.3);
+  color: #c4b5fd;
+  margin-top: 4px;
+}
+
+.featured-card__desc {
+  color: var(--color-text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.featured-card__tags {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.featured-card__footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.featured-card__date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ===== 标签云 ===== */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.tag-cloud__item {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  color: var(--color-text-secondary);
+  font-family: var(--font-display);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tag-cloud__item:hover {
+  border-color: var(--color-brand);
+  background: rgba(99,102,241,0.12);
+  color: #c7d2fe;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99,102,241,0.15);
+}
+
+/* ===== 表单验证 ===== */
+.form-group--error .input {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+}
+
+.form-error {
+  display: none;
+  font-size: 0.78rem;
+  color: #fca5a5;
+  margin-top: 4px;
+}
+
+.form-group--error .form-error {
+  display: block;
+}
+
+/* ===== Toast 增强动画 ===== */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-12px);
+  z-index: 300;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  animation: toastIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.toast--closing {
+  animation: toastOut 0.3s ease forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+}
+
+/* ===== 卡片悬停流动光晕 ===== */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent, #6366f1, #8b5cf6, #10b981, #6366f1, transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 2px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 1;
+  animation: borderGlow 3s linear infinite;
+}
+
+.member-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent, #8b5cf6, #6366f1, #10b981, #8b5cf6, transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 2px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.member-card:hover::before {
+  opacity: 1;
+  animation: borderGlow 3s linear infinite reverse;
+}
+
+@keyframes borderGlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ===== 卡片入场动画 ===== */
+.animate-card-in {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-card-in--visible {
+  opacity: 1;
+  transform: translate(0, 0) !important;
+}
+
+/* ===== Tab 视图转场 ===== */
+.view--leaving {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* ===== 点击波纹特效 ===== */
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.3);
+  pointer-events: none;
+  z-index: 999;
+  animation: rippleAnim 0.6s ease-out forwards;
+}
+
+@keyframes rippleAnim {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.5;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ===== 移动端降级 ===== */
+@media (max-width: 768px) {
+  .card::before,
+  .member-card::before { display: none; }
 }
