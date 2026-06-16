@@ -19,6 +19,7 @@ const topTags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
 const navLinks = [
   { href: '/', label: '首页' },
   { href: '/about', label: '关于博客' },
+  { href: 'https://www.travellings.cn/go.html', label: '开往', external: true },
 ];
 ---
 
@@ -35,7 +36,8 @@ const navLinks = [
       {navLinks.map(link => (
         <a href={link.href}
            class="nav-link px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-300"
-           data-nav={link.href}>
+           data-nav={!link.external ? link.href : null}
+           {...(link.external ? { target: '_blank', rel: 'noopener' } : {})}>
           {link.label}
         </a>
       ))}
@@ -156,7 +158,8 @@ const navLinks = [
   </div>
   <div class="p-4 flex flex-col gap-1">
     {navLinks.map(link => (
-      <a href={link.href} class="mobile-nav-link block px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <a href={link.href} class="mobile-nav-link block px-3 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+         {...(link.external ? { target: '_blank', rel: 'noopener' } : {})}>
         {link.label}
       </a>
     ))}
