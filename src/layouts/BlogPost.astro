@@ -9,7 +9,7 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content, remarkPluginFrontmatter } = await entry.render();
-const { title, pubDate, category, tags } = entry.data;
+const { title, pubDate, category, tags, heroImage } = entry.data;
 const readingMinutes = Math.max(1, Math.ceil((entry.body?.length || 0) / 500));
 ---
 
@@ -32,6 +32,18 @@ const readingMinutes = Math.max(1, Math.ceil((entry.body?.length || 0) / 500));
         </div>
       )}
     </header>
+
+    <!-- 封面图 -->
+    {heroImage && (
+      <figure class="mb-10 -mx-4 md:-mx-8 lg:-mx-16">
+        <img
+          src={heroImage}
+          alt={title}
+          class="w-full rounded-lg object-cover max-h-[480px]"
+          loading="eager"
+        />
+      </figure>
+    )}
 
     <!-- 正文 -->
     <div class="prose-custom drop-cap">
