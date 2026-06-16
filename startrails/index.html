@@ -126,6 +126,9 @@
 </head>
 <body>
 
+  <!-- 星电波开关 -->
+  <button id="danmaku-toggle" class="danmaku-toggle danmaku-toggle--on" onclick="toggleDanmaku()" title="切换星电波">📡 星电波</button>
+
   <div class="orb orb--brand"></div>
   <div class="orb orb--accent"></div>
   <canvas id="particles-canvas"></canvas>
@@ -173,6 +176,26 @@
         <div><div class="stat-number" id="stat-members"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">收录博客</div></div>
         <div><div class="stat-number" id="stat-posts"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">聚合文章</div></div>
         <div><div class="stat-number" id="stat-online"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">在线运行</div></div>
+      </div>
+    </section>
+
+    <!-- 深空信号广播条 -->
+    <section class="section broadcast-section">
+      <div class="broadcast-container" id="broadcast-container">
+        <div class="broadcast-track" id="broadcast-track"></div>
+      </div>
+    </section>
+
+    <!-- 首页数据统计（本地数据） -->
+    <section class="section" style="text-align:center;">
+      <div class="section__header" style="text-align:center;">
+        <span class="section__label">数据纵览</span>
+        <h2 class="section__title" style="font-size:2.2rem;">星图数据</h2>
+      </div>
+      <div style="display:flex; justify-content:center; gap:64px; flex-wrap:wrap;" id="home-data-stats">
+        <div><div class="stat-number" id="stat-blogs-local">-</div><div class="stat-label">已收录博客</div></div>
+        <div><div class="stat-number" id="stat-posts-local">-</div><div class="stat-label">聚合文章</div></div>
+        <div><div class="stat-number" id="stat-bloggers-local">-</div><div class="stat-label">独立博主</div></div>
       </div>
     </section>
 
@@ -237,6 +260,27 @@
       <div id="tag-cloud" class="tag-cloud"></div>
     </section>
 
+
+    <!-- 时空裂隙 -->
+    <section class="section rift-section" id="rift-section">
+      <div class="section__header" style="text-align:center;">
+        <span class="section__label">时空裂隙</span>
+        <h2 class="section__title" style="font-size:2.2rem;">本周推荐</h2>
+        <p class="section__desc" style="margin:0 auto;" id="rift-countdown"></p>
+      </div>
+      <div class="card rift-card" id="rift-card">
+        <div class="rift-card__inner">
+          <div class="rift-card__avatar" id="rift-avatar"></div>
+          <div class="rift-card__info">
+            <h3 class="rift-card__name" id="rift-name"></h3>
+            <p class="rift-card__desc" id="rift-desc"></p>
+            <div class="rift-card__tags" id="rift-tags"></div>
+          </div>
+        </div>
+        <a class="btn btn--primary btn--lg rift-btn" id="rift-btn" target="_blank">进入裂隙 →</a>
+      </div>
+    </section>
+
     <section class="section" style="text-align:center;">
       <div class="card" style="max-width:600px;margin:0 auto;padding:48px;text-align:center;">
         <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--color-brand),#8b5cf6);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 24px;">✦</div>
@@ -259,7 +303,21 @@
       <h1 class="go-title">星际穿越</h1>
       <p class="go-subtitle">点击按钮随机跳转至一个独立博客<br />每一次点击都是未知的探索</p>
       <button class="go-btn" onclick="initiateWarp()">启动曲速引擎</button>
+
       <div class="go-destination" id="destination"></div>
+      <div style="margin-top:48px; text-align:left; max-width:700px;">
+        <!-- 我的星标 -->
+        <div class="go-section" id="go-favorites-section">
+          <h3 class="go-section__title">★ 我的星标</h3>
+          <div class="go-favorites-grid" id="go-favorites-grid"></div>
+          <p class="go-empty-hint" id="go-favorites-empty" style="display:none;text-align:center;color:var(--color-text-muted);padding:24px;">还没有收藏，去星图中标记喜欢的博客吧</p>
+        </div>
+        <!-- 成就展馆 -->
+        <div class="go-section" id="go-achievements-section">
+          <h3 class="go-section__title">✦ 成就展馆</h3>
+          <div class="go-achievements-grid" id="go-achievements-grid"></div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -271,6 +329,13 @@
       <p class="page-hero__subtitle">浏览所有已收录的独立博客，按状态和标签筛选</p>
     </div>
 
+
+    <div class="members-progress" id="members-progress">
+      <div class="members-progress__text" id="members-progress-text">探索进度：已探索 0/28 个博客</div>
+      <div class="members-progress__bar">
+        <div class="members-progress__fill" id="members-progress-fill"></div>
+      </div>
+    </div>
     <div class="members-controls">
       <div class="members-search">
         <span class="members-search-icon">⌕</span>
@@ -391,7 +456,21 @@
     /* ==================== Supabase 初始化 ==================== */
     const SUPABASE_URL = 'https://xwvkdluvixurvgvkhkfe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_NOdEPhf8yD4dMRJIH1JqqA_z5By3p0H';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let supabase = null;
+    function ensureSupabase() {
+      if (!supabase && typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+      return supabase;
+    }
+
+    /* ===== localStorage 安全包装 ===== */
+    function safeLSGet(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return fallback; }
+    }
+    function safeLSSet(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* quota/private browsing */ }
+    }
 
     /* ==================== 全局数据缓存 ==================== */
     let ST = {
@@ -438,8 +517,8 @@
       ST.loading = true;
       try {
         const [memRes, postRes] = await Promise.all([
-          supabase.from('members').select('*').order('created_at', { ascending: false }),
-          supabase.from('posts').select('*').order('published_at', { ascending: false })
+          ensureSupabase().from('members').select('*').order('created_at', { ascending: false }),
+          ensureSupabase().from('posts').select('*').order('published_at', { ascending: false })
         ]);
 
         if (memRes.error) { console.warn('members view fetch error:', memRes.error); }
@@ -1104,7 +1183,7 @@
 
       // 缓存到 localStorage
       try {
-        localStorage.setItem(cacheKey, JSON.stringify(cache));
+        try { localStorage.setItem(cacheKey, JSON.stringify(cache)); } catch (e) {}
       } catch (e) {}
     }
 
@@ -1192,7 +1271,7 @@
       const blogRss = document.getElementById('blog-rss').value.trim();
 
       try {
-        const { error } = await supabase
+        const { error } = await ensureSupabase()
           .from('applications')
           .insert({
             applicant_name: applicantName,
@@ -1610,6 +1689,511 @@
       window.addEventListener('touchmove', () => {}, passiveOpts);
     })();
 
+  
+
+    /* ===== 星电波弹幕系统 ===== */
+    let danmakuData = [];
+    let danmakuEnabled = true;
+    let danmakuAnimId = null;
+    let danmakuPaused = false;
+    let danmakuPool = [];
+    let danmakuCanvas = null, danmakuCtx = null;
+    let danmakuNextSpawn = 0;
+    let danmakuResizeTimer = null;
+    let danmakuSpawnTimer = 0;
+    let danmakuIndex = 0;
+    const DANMAKU_SPAWN_INTERVAL = 80;
+
+    const DANMAKU_FALLBACK = [
+      {name:"旅行者1号", text:"正在穿越小行星带，信号稳定 🚀"},
+      {name:"深空信使", text:"前方发现未知星系，准备跃迁 ✦"},
+      {name:"星尘观测者", text:"信号微弱，正在增强接收..."}
+    ];
+
+    async function loadDanmaku() {
+      try {
+        const resp = await fetch('data/danmu.json');
+        if (resp.ok) { danmakuData = await resp.json(); }
+        else { danmakuData = DANMAKU_FALLBACK; }
+      } catch (e) { danmakuData = DANMAKU_FALLBACK; }
+      shuffleDanmakuArray(danmakuData);
+    }
+
+    function shuffleDanmakuArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function initDanmakuCanvas() {
+      danmakuCanvas = document.getElementById('danmaku-canvas');
+      if (!danmakuCanvas) return;
+      danmakuCtx = danmakuCanvas.getContext('2d');
+      resizeDanmakuCanvas();
+      window.addEventListener('resize', () => {
+        clearTimeout(danmakuResizeTimer);
+        danmakuResizeTimer = setTimeout(resizeDanmakuCanvas, 200);
+      });
+      danmakuCanvas.addEventListener('mouseenter', () => { danmakuPaused = true; });
+      danmakuCanvas.addEventListener('mouseleave', () => { danmakuPaused = false; });
+      let saved;
+      try { saved = localStorage.getItem('danmaku_enabled'); } catch (e) { saved = null; }
+      if (saved === 'false') {
+        danmakuEnabled = false;
+        danmakuCanvas.style.display = 'none';
+        updateDanmakuToggle();
+      }
+    }
+
+    function resizeDanmakuCanvas() {
+      if (!danmakuCanvas) return;
+      danmakuCanvas.width = window.innerWidth;
+      danmakuCanvas.height = window.innerHeight;
+    }
+
+    function toggleDanmaku() {
+      danmakuEnabled = !danmakuEnabled;
+      try { localStorage.setItem('danmaku_enabled', danmakuEnabled.toString()); } catch (e) {}
+      if (danmakuCanvas) danmakuCanvas.style.display = danmakuEnabled ? 'block' : 'none';
+      updateDanmakuToggle();
+    }
+
+    function updateDanmakuToggle() {
+      const btn = document.getElementById('danmaku-toggle');
+      if (!btn) return;
+      if (danmakuEnabled) { btn.classList.add('danmaku-toggle--on'); btn.classList.remove('danmaku-toggle--off'); }
+      else { btn.classList.add('danmaku-toggle--off'); btn.classList.remove('danmaku-toggle--on'); }
+    }
+
+    class DanmakuItem {
+      constructor(name, text) {
+        this.name = name; this.text = text; this.active = true;
+        this.reset();
+      }
+      reset() {
+        if (!danmakuCanvas) return;
+        const ctx = danmakuCtx;
+        const isMobile = window.innerWidth < 768;
+        const fs = isMobile ? 8 : 14;
+        ctx.font = 'bold ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
+        const nw = ctx.measureText(this.name + ': ').width;
+        ctx.font = fs + 'px "Space Grotesk", system-ui, sans-serif';
+        const tw = ctx.measureText(this.text).width;
+        this.width = nw + tw + 16;
+        this.x = danmakuCanvas.width + Math.random() * 300;
+        this.y = 20 + Math.random() * 60;
+        const dur = 5 + Math.random() * 2;
+        this.speed = (danmakuCanvas.width + this.width) / (dur * 60);
+      }
+      update() {
+        if (!danmakuCanvas || !this.active) return;
+        this.x -= this.speed;
+        if (this.x < -this.width) this.active = false;
+      }
+      draw() {
+        if (!danmakuCtx || !this.active) return;
+        const ctx = danmakuCtx;
+        const isMobile = window.innerWidth < 768;
+        const fs = isMobile ? 8 : 14;
+        ctx.save();
+        ctx.globalAlpha = 0.85;
+        ctx.font = 'bold ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
+        ctx.fillStyle = '#22d3ee';
+        ctx.shadowColor = 'rgba(34,211,238,0.4)';
+        ctx.shadowBlur = 20;
+        ctx.fillText(this.name + ': ', this.x, this.y);
+        const nw = ctx.measureText(this.name + ': ').width;
+        ctx.font = fs + 'px "Space Grotesk", system-ui, sans-serif';
+        const grad = ctx.createLinearGradient(this.x + nw, this.y, this.x + nw + 200, this.y);
+        grad.addColorStop(0, '#6366f1');
+        grad.addColorStop(1, '#8b5cf6');
+        ctx.fillStyle = grad;
+        ctx.shadowColor = 'rgba(99,102,241,0.3)';
+        ctx.shadowBlur = 20;
+        ctx.fillText(this.text, this.x + nw, this.y);
+        ctx.restore();
+      }
+    }
+
+    function danmakuLoop() {
+      if (!danmakuEnabled || danmakuPaused || !danmakuCtx || !danmakuCanvas) {
+        danmakuAnimId = requestAnimationFrame(danmakuLoop);
+        return;
+      }
+      const ctx = danmakuCtx;
+      ctx.clearRect(0, danmakuCanvas.height - 120, danmakuCanvas.width, 120);
+      danmakuSpawnTimer++;
+      const isMobile = window.innerWidth < 768;
+      const maxActive = isMobile ? 3 : 6;
+      const activeCount = danmakuPool.filter(function(d) { return d.active; }).length;
+      if (activeCount < maxActive && danmakuSpawnTimer >= DANMAKU_SPAWN_INTERVAL && danmakuData.length > 0) {
+        danmakuSpawnTimer = 0;
+        var data = danmakuData[danmakuIndex % danmakuData.length];
+        danmakuPool.push(new DanmakuItem(data.name, data.text));
+        danmakuIndex++;
+        if (danmakuIndex >= danmakuData.length) {
+          danmakuIndex = 0;
+          shuffleDanmakuArray(danmakuData);
+        }
+      }
+      for (var i = danmakuPool.length - 1; i >= 0; i--) {
+        danmakuPool[i].update();
+        danmakuPool[i].draw();
+        if (!danmakuPool[i].active) danmakuPool.splice(i, 1);
+      }
+      danmakuAnimId = requestAnimationFrame(danmakuLoop);
+    }
+
+    function startDanmaku() {
+      if (danmakuAnimId) return;
+      danmakuAnimId = requestAnimationFrame(danmakuLoop);
+    }
+
+    /* ===== 收藏功能「标记星标」 ===== */
+    function getFavorites() {
+      try { return JSON.parse(localStorage.getItem('favorites') || '[]'); } catch (e) { return []; }
+    }
+    function saveFavorites(favs) { safeLSSet('favorites', favs); }
+    function toggleFavorite(id, name, url, type) {
+      var favs = getFavorites();
+      var idx = favs.findIndex(function(f) { return f.id === id && f.type === type; });
+      if (idx >= 0) { favs.splice(idx, 1); saveFavorites(favs); checkAchievements(); return false; }
+      else { favs.push({id:id, name:name, url:url, type:type}); saveFavorites(favs); checkAchievements(); return true; }
+    }
+    function isFavorited(id, type) {
+      return getFavorites().some(function(f) { return f.id === id && f.type === type; });
+    }
+    function renderFavoriteBtn(id, name, url, type) {
+      var fav = isFavorited(id, type);
+      var sid = id.replace(/'/g, "\\'");
+      var sname = (name||'').replace(/'/g, "\\'");
+      var surl = (url||'').replace(/'/g, "\\'");
+      return '<button class="fav-btn' + (fav ? ' fav-btn--active' : '') + '" onclick="event.stopPropagation();handleFavoriteClick(this,\'' + sid + '\',\'' + sname + '\',\'' + surl + '\',\'' + type + '\')">' + (fav ? '★ 已收藏' : '☆ 收藏') + '</button>';
+    }
+    function handleFavoriteClick(btn, id, name, url, type) {
+      var isNowFav = toggleFavorite(id, name, url, type);
+      if (isNowFav) { btn.classList.add('fav-btn--active'); btn.textContent = '★ 已收藏'; }
+      else { btn.classList.remove('fav-btn--active'); btn.textContent = '☆ 收藏'; }
+    }
+
+    /* ===== 探索日志 ===== */
+    function getExplored() {
+      try { return JSON.parse(localStorage.getItem('explored') || '[]'); } catch (e) { return []; }
+    }
+    function addExplored(id, name, url) {
+      var explored = getExplored();
+      if (!explored.some(function(e) { return e.id === id; })) {
+        explored.push({id:id, name:name, url:url, timestamp:Date.now()});
+        safeLSSet('explored', explored);
+      }
+      recordVisitedTags();
+      checkAchievements();
+    }
+    function recordVisitedTags() {
+      var explored = getExplored();
+      var exploredIds = new Set(explored.map(function(e) { return e.id; }));
+      var visitedTags = [];
+      try { visitedTags = JSON.parse(localStorage.getItem('visitedTags') || '[]'); } catch (e) {}
+      if (typeof localBlogs !== 'undefined' && localBlogs) {
+        localBlogs.forEach(function(blog) {
+          if (exploredIds.has(blog.id) && blog.tags && blog.tags.length > 0) {
+            blog.tags.forEach(function(t) { if (t && visitedTags.indexOf(t) === -1) visitedTags.push(t); });
+          }
+        });
+      }
+      if (ST && ST.members) {
+        ST.members.forEach(function(m) {
+          if (exploredIds.has(m.id) && m.tags && m.tags.length > 0) {
+            m.tags.forEach(function(t) { if (t && t.trim() && visitedTags.indexOf(t.trim()) === -1) visitedTags.push(t.trim()); });
+          }
+        });
+      }
+      safeLSSet('visitedTags', visitedTags);
+    }
+
+    /* ===== 成就系统「星际旅者档案」 ===== */
+    var ACHIEVEMENTS = [
+      {id:'traveler', name:'星际旅者', desc:'探索 10 个博客', icon:'🌠', check:function(){return getExplored().length >= 10;}},
+      {id:'cartographer', name:'星图绘制者', desc:'收藏 5 个博客/文章', icon:'🗺️', check:function(){return getFavorites().length >= 5;}},
+      {id:'centurion', name:'百光年穿越', desc:'探索 50 个博客', icon:'🌌', check:function(){return getExplored().length >= 50;}},
+      {id:'collector', name:'星系收藏家', desc:'收藏 20 个博客/文章', icon:'✧', check:function(){return getFavorites().length >= 20;}},
+      {id:'tracker', name:'信号追踪者', desc:'访问 5 个不同标签', icon:'📡', check:function(){try{return JSON.parse(localStorage.getItem('visitedTags')||'[]').length >= 5;}catch(e){return false;}}}
+    ];
+    function getUnlockedAchievements() {
+      try { return JSON.parse(localStorage.getItem('achievements') || '[]'); } catch (e) { return []; }
+    }
+    function checkAchievements() {
+      var unlocked = getUnlockedAchievements();
+      ACHIEVEMENTS.forEach(function(ach) {
+        if (unlocked.indexOf(ach.id) === -1 && ach.check()) {
+          unlocked.push(ach.id);
+          safeLSSet('achievements', unlocked);
+          showAchievementToast(ach);
+          playAchievementSound();
+        }
+      });
+    }
+    function showAchievementToast(ach) {
+      var el = document.getElementById('achievement-toast');
+      if (!el) return;
+      el.innerHTML = '<div class="achievement-toast__icon">' + ach.icon + '</div><div class="achievement-toast__content"><div class="achievement-toast__label">成就解锁</div><div class="achievement-toast__name">' + ach.name + '</div></div>';
+      el.className = 'achievement-toast achievement-toast--show';
+      setTimeout(function() { el.classList.remove('achievement-toast--show'); }, 3000);
+    }
+    function playAchievementSound() {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+      } catch (e) {}
+    }
+    function renderAchievements() {
+      var container = document.getElementById('go-achievements-grid');
+      if (!container) return;
+      var unlocked = getUnlockedAchievements();
+      container.innerHTML = ACHIEVEMENTS.map(function(a) {
+        var isUnlocked = unlocked.indexOf(a.id) !== -1;
+        return '<div class="ach-card ' + (isUnlocked ? 'ach-card--unlocked' : 'ach-card--locked') + '">' +
+          '<div class="ach-card__icon">' + a.icon + '</div>' +
+          '<div class="ach-card__name">' + a.name + '</div>' +
+          '<div class="ach-card__desc">' + a.desc + '</div>' +
+          '<div class="ach-card__status ' + (isUnlocked ? 'ach-card__status--done' : 'ach-card__status--lock') + '">' +
+          (isUnlocked ? '已解锁' : '🔒 未解锁') + '</div></div>';
+      }).join('');
+    }
+
+    /* ===== 星际广播「深空信号」 ===== */
+    var broadcastData = [];
+    var BROADCAST_FALLBACK = [
+      {time: Date.now() - 60000, text: "旅行者1号 刚刚探索了 阮一峰的网络日志 🚀"},
+      {time: Date.now() - 300000, text: "新博客 月光博客 已加入星图 ✦"},
+      {time: Date.now() - 3600000, text: "星尘观测者 收藏了 Rust异步编程深度解析 ⭐"}
+    ];
+    async function loadBroadcast() {
+      try {
+        var resp = await fetch('data/broadcast.json');
+        if (resp.ok) {
+          var data = await resp.json();
+          broadcastData = (data.events || []).sort(function(a, b) { return b.time - a.time; });
+        } else { broadcastData = BROADCAST_FALLBACK; }
+      } catch (e) { broadcastData = BROADCAST_FALLBACK; }
+    }
+    function getRelativeTime(ts) {
+      var diff = Date.now() - ts;
+      var mins = Math.floor(diff / 60000);
+      if (mins < 1) return '刚刚';
+      if (mins < 60) return mins + '分钟前';
+      var hours = Math.floor(mins / 60);
+      if (hours < 24) return hours + '小时前';
+      return Math.floor(hours / 24) + '天前';
+    }
+    function initBroadcast() {
+      var track = document.getElementById('broadcast-track');
+      if (!track || broadcastData.length === 0) return;
+      var colors = ['#6366f1', '#3b82f6', '#22d3ee'];
+      var now = Date.now();
+      var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+      var recent = broadcastData.filter(function(b) { return (now - b.time) < SEVEN_DAYS; });
+      if (recent.length === 0) {
+        track.innerHTML = '<span style="color:var(--color-text-muted);">✦ 暂无近期信号</span>';
+        return;
+      }
+      var items = recent.map(function(b, i) {
+        var color = colors[i % colors.length];
+        return '<span class="broadcast-item" style="color:' + color + ';">✦ ' + b.text + ' <span class="broadcast-time">· ' + getRelativeTime(b.time) + '</span></span>';
+      });
+      var content = items.join('&nbsp;&nbsp;&nbsp;&nbsp;') + '&nbsp;&nbsp;&nbsp;&nbsp;' + items.join('&nbsp;&nbsp;&nbsp;&nbsp;');
+      track.innerHTML = content;
+      var container = document.getElementById('broadcast-container');
+      if (container) {
+        container.addEventListener('mouseenter', function() { track.style.animationPlayState = 'paused'; });
+        container.addEventListener('mouseleave', function() { track.style.animationPlayState = 'running'; });
+      }
+    }
+
+    /* ===== 时空裂隙 ===== */
+    var riftData = null;
+    var RIFT_FALLBACK = {featured:{name:"寒影·栖居",url:"https://msoceo.github.io",description:"记录思考，分享工具，在沉寂中沉淀，于代码间生光。",tags:["技术","设计","生活"],weekStart:"2026-06-16T00:00:00Z",weekEnd:"2026-06-23T00:00:00Z"}};
+    async function loadRift() {
+      try {
+        var resp = await fetch('data/rift.json');
+        if (resp.ok) { riftData = await resp.json(); }
+        else { riftData = RIFT_FALLBACK; }
+      } catch (e) { riftData = RIFT_FALLBACK; }
+    }
+    function initRift() {
+      if (!riftData || !riftData.featured) return;
+      var f = riftData.featured;
+      document.getElementById('rift-name').textContent = f.name;
+      document.getElementById('rift-desc').textContent = f.description || '';
+      document.getElementById('rift-tags').innerHTML = (f.tags || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
+      document.getElementById('rift-btn').href = f.url;
+      var avatar = document.getElementById('rift-avatar');
+      if (f.avatar) {
+        avatar.innerHTML = '<img src="' + f.avatar + '" alt="' + f.name + '" style="width:64px;height:64px;border-radius:16px;object-fit:cover;" />';
+      } else {
+        avatar.textContent = f.name ? f.name[0] : '✦';
+      }
+      updateRiftCountdown(f.weekEnd);
+      setInterval(function() { updateRiftCountdown(f.weekEnd); }, 60000);
+    }
+    function updateRiftCountdown(weekEnd) {
+      var el = document.getElementById('rift-countdown');
+      if (!el || !weekEnd) return;
+      var end = new Date(weekEnd);
+      var now = new Date();
+      var diff = end - now;
+      if (diff <= 0) { el.textContent = '新一期推荐即将到来'; return; }
+      var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      el.textContent = '距离下次刷新还有 ' + days + ' 天 ' + hours + ' 小时';
+    }
+
+    /* ===== 星图探索进度条 ===== */
+    function updateProgressBar() {
+      var textEl = document.getElementById('members-progress-text');
+      var fillEl = document.getElementById('members-progress-fill');
+      if (!textEl || !fillEl) return;
+      var explored = getExplored();
+      var exploredBlogIds = new Set(explored.map(function(e) { return e.id; }));
+      var totalBlogs = 0, exploredBlogs = 0;
+      if (typeof localBlogs !== 'undefined' && localBlogs && localBlogs.length > 0) {
+        totalBlogs = localBlogs.length;
+        exploredBlogs = localBlogs.filter(function(b) { return b.url && exploredBlogIds.has(b.id); }).length;
+      } else if (ST && ST.members) {
+        totalBlogs = ST.members.length;
+        exploredBlogs = ST.members.filter(function(m) { return m.url && exploredBlogIds.has(m.id); }).length;
+      } else { totalBlogs = 28; }
+      var pct = totalBlogs > 0 ? (exploredBlogs / totalBlogs) * 100 : 0;
+      textEl.textContent = '探索进度：已探索 ' + exploredBlogs + '/' + totalBlogs + ' 个博客';
+      fillEl.style.width = pct + '%';
+    }
+
+    /* ===== 首页数据统计（本地数据源） ===== */
+    var localBlogs = [];
+    var localPosts = [];
+    async function loadLocalData() {
+      try {
+        var results = await Promise.all([fetch('data/blogs.json'), fetch('data/posts.json')]);
+        if (results[0].ok) localBlogs = await results[0].json();
+        if (results[1].ok) localPosts = await results[1].json();
+      } catch (e) {}
+    }
+    function initHomeDataStats() {
+      var blogsCount = localBlogs.length;
+      var postsCount = localPosts.length;
+      var unique = {};
+      localBlogs.forEach(function(b) { if (b.name) unique[b.name] = true; });
+      var uniqueBloggers = Object.keys(unique).length;
+      animateNumber(document.getElementById('stat-blogs-local'), blogsCount);
+      animateNumber(document.getElementById('stat-posts-local'), postsCount);
+      animateNumber(document.getElementById('stat-bloggers-local'), uniqueBloggers);
+    }
+
+    /* ===== 我的星标渲染 ===== */
+    function initFavorites() {
+      var grid = document.getElementById('go-favorites-grid');
+      var empty = document.getElementById('go-favorites-empty');
+      if (!grid || !empty) return;
+      var favs = getFavorites();
+      if (favs.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+      empty.style.display = 'none';
+      grid.innerHTML = favs.map(function(f) {
+        return '<a href="' + f.url + '" target="_blank" class="card fav-card-item">' +
+          '<div class="fav-card-item__icon">' + (f.type === 'blog' ? '✦' : '📄') + '</div>' +
+          '<div class="fav-card-item__info"><div class="fav-card-item__name">' + (f.name || '未命名') + '</div>' +
+          '<div class="fav-card-item__type">' + (f.type === 'blog' ? '博客' : '文章') + '</div></div>' +
+          '<span style="color:#f59e0b;font-size:0.85rem;">★</span></a>';
+      }).join('');
+    }
+
+    /* ===== 修改原有功能以集成新特性 ===== */
+    var _origFinishWarp2 = finishWarp;
+    finishWarp = function() {
+      if (warpTarget && warpTarget.name && warpTarget.url) {
+        addExplored(warpTarget.id, warpTarget.name, warpTarget.url);
+      }
+      updateProgressBar();
+      _origFinishWarp2.apply(this, arguments);
+    };
+
+    var _origRenderMembers = renderMembers;
+    renderMembers = function() {
+      _origRenderMembers.apply(this, arguments);
+      var cards = document.querySelectorAll('#members-grid .member-card');
+      var filtered = ST.members.filter(function(m) {
+        var ms = membersFilter.status === 'all' || m.status === membersFilter.status;
+        var mm = !membersFilter.search || m.name.toLowerCase().indexOf(membersFilter.search.toLowerCase()) !== -1 || (m.url||'').toLowerCase().indexOf(membersFilter.search.toLowerCase()) !== -1;
+        return ms && mm;
+      });
+      cards.forEach(function(card, i) {
+        var m = filtered[i];
+        if (!m || card.querySelector('.fav-btn')) return;
+        var footer = card.querySelector('.member-card__footer');
+        if (footer) {
+          footer.insertAdjacentHTML('beforeend', ' ' + renderFavoriteBtn(m.id, m.name, m.url, 'blog'));
+        }
+      });
+      updateProgressBar();
+    };
+
+    var _origInitHome = initHome;
+    initHome = function() {
+      _origInitHome.apply(this, arguments);
+      setTimeout(function() { initBroadcast(); initRift(); initHomeDataStats(); }, 100);
+    };
+
+    var _origInitMembers = initMembers;
+    initMembers = function() {
+      _origInitMembers.apply(this, arguments);
+      setTimeout(updateProgressBar, 100);
+    };
+
+    var _origSwitchView = switchView;
+    switchView = async function(viewName, params) {
+      await _origSwitchView.apply(this, arguments);
+      if (viewName === 'go') {
+        initFavorites();
+        renderAchievements();
+      }
+    };
+
+    /* ===== 初始化所有新功能 ===== */
+    async function initNewFeatures() {
+      await Promise.all([loadDanmaku(), loadBroadcast(), loadRift(), loadLocalData()]);
+      // Canvas 需要在 DOM 就绪后初始化（元素在 script 之后）
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          initDanmakuCanvas();
+          startDanmaku();
+        });
+      } else {
+        initDanmakuCanvas();
+        startDanmaku();
+      }
+    }
+    initNewFeatures();
+
+    // 兜底：确保数据统计在 Supabase 加载后也能显示
+    setTimeout(function() {
+      if (typeof localBlogs !== 'undefined' && localBlogs.length > 0) initHomeDataStats();
+    }, 3000);
+
   </script>
+
+  <canvas id="danmaku-canvas"></canvas>
+
+  <!-- 成就解锁 Toast -->
+  <div id="achievement-toast" class="achievement-toast"></div>
 </body>
 </html>
