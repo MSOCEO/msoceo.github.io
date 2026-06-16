@@ -2,14 +2,17 @@
 import Page from '../../layouts/Page.astro';
 import { getCollection } from 'astro:content';
 
-const posts = await getCollection('blog');
-const sortedPosts = posts.sort(
+const allPostsUnsorted = await getCollection('blog');
+const allPosts = allPostsUnsorted.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-// Collect all tags from posts
+const PAGE_SIZE = 8;
+const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
+
+// Tag cloud from ALL posts
 const allTags = new Map();
-sortedPosts.forEach(p => {
+allPosts.forEach(p => {
   const tags = p.data.tags || [];
   tags.forEach(t => {
     const tag = String(t).trim();
@@ -17,15 +20,6 @@ sortedPosts.forEach(p => {
   });
 });
 const tagsSorted = [...allTags.entries()].sort((a, b) => b[1] - a[1]);
-
-const postsJson = JSON.stringify(sortedPosts.map(p => ({
-  id: p.id,
-  title: p.data.title,
-  description: p.data.description || '',
-  pubDate: p.data.pubDate.toISOString(),
-  tags: p.data.tags || [],
-  url: `/blog/${p.id}`,
-})));
 
 const title = '博客 | 寒影';
 const description = '探索关于技术、生活与发现的文字记录';
@@ -40,10 +34,10 @@ const description = '探索关于技术、生活与发现的文字记录';
       </header>
 
       <!-- Search Bar -->
-      <div class="blog-search-bar animate-in" style="animation-delay:0.1s">
-        <svg class="blog-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <input type="text" id="blogSearch" class="blog-search-input" placeholder="搜索文章..." oninput="filterPosts()" />
-        <span class="blog-search-count" id="blogSearchCount">{sortedPosts.length} 篇文章</span>
+      <div class="blog-search-bar animate-in" style="animation-delay:0.05s">
+        <svg class="blog-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input type="text" class="blog-search-input" id="blogSearch" placeholder="搜索文章..." autocomplete="off" />
+        <span class="blog-search-count" id="blogSearchCount">{allPosts.length} 篇</span>
       </div>
 
       <!-- Tag Cloud -->
@@ -57,8 +51,8 @@ const description = '探索关于技术、生活与发现的文字记录';
       )}
 
       <div class="post-grid" id="postGrid">
-        {sortedPosts.map((post) => (
-          <article class="post-card animate-in" style={`animation-delay: ${sortedPosts.indexOf(post) * 80}ms`} data-tags={JSON.stringify(post.data.tags || [])}>
+        {allPosts.map((post, i) => (
+          <article class="post-card animate-in" style={`animation-delay: ${i * 80}ms`} data-tags={JSON.stringify(post.data.tags || [])}>
             <a href={`/blog/${post.id}`} class="post-card-link">
               <time class="post-date" datetime={post.data.pubDate.toISOString()}>
                 {post.data.pubDate.toLocaleDateString('zh-CN', {
@@ -76,34 +70,148 @@ const description = '探索关于技术、生活与发现的文字记录';
               )}
               <span class="post-read-more">
                 阅读全文
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </span>
             </a>
           </article>
         ))}
       </div>
 
-      <div class="blog-no-result" id="blogNoResult" style="display:none">
-        <p>没有找到匹配的文章</p>
-      </div>
+      <div class="blog-no-result" id="blogNoResult" style="display:none">没有找到匹配的文章</div>
+
+      <!-- ====== Pagination ====== -->
+      {totalPages > 1 && (
+        <nav class="pagination" aria-label="博客分页">
+          <div class="pagination-inner">
+            <button class="pagination-btn pagination-disabled" id="pgPrev">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              上一页
+            </button>
+
+            <div class="pagination-pages" id="pgPages">
+              <span class="pagination-num pagination-active" data-pg="1">1</span>
+            </div>
+
+            <button class="pagination-btn" id="pgNext">
+              下一页
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="pagination-info" id="pgInfo">第 1 / {totalPages} 页，共 {allPosts.length} 篇文章</div>
+        </nav>
+      )}
     </div>
   </section>
 </Page>
 
 <script>
-  const postsData = JSON.parse(document.getElementById('postGrid')?.parentElement?.querySelector('script')?.textContent || '[]');
+  const PAGE_SIZE = 8;
+  const grid = document.getElementById('postGrid');
+  const searchCount = document.getElementById('blogSearchCount');
+  const noResult = document.getElementById('blogNoResult');
+  let activeTag = null;
 
-  // Embed posts data directly
+  function getVisibleCards() {
+    return Array.from(grid.querySelectorAll('.post-card')).filter(c => c.style.display !== 'none');
+  }
+
+  function filterPosts() {
+    const q = document.getElementById('blogSearch').value.toLowerCase().trim();
+    const cards = grid.querySelectorAll('.post-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const title = card.querySelector('.post-title')?.textContent?.toLowerCase() || '';
+      const excerpt = card.querySelector('.post-excerpt')?.textContent?.toLowerCase() || '';
+      const tagsText = card.dataset.tags || '[]';
+      const tags = JSON.parse(tagsText).map(t => String(t).toLowerCase());
+      const matchesSearch = !q || title.includes(q) || excerpt.includes(q) || tags.some(t => t.includes(q));
+      const matchesTag = !activeTag || tags.some(t => t.toLowerCase() === activeTag.toLowerCase());
+      const show = matchesSearch && matchesTag;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    searchCount.textContent = visible + ' 篇';
+    noResult.style.display = visible === 0 ? 'block' : 'none';
+    goToPage(1);
+  }
+
+  window.filterByTag = function(tag, btn) {
+    activeTag = tag;
+    document.querySelectorAll('.blog-tag').forEach(b => b.classList.remove('blog-tag-active'));
+    if (btn) btn.classList.add('blog-tag-active');
+    filterPosts();
+  };
+
+  // Pagination
+  function goToPage(pg) {
+    const visible = getVisibleCards();
+    const totalVisible = visible.length;
+    const vPages = Math.ceil(totalVisible / PAGE_SIZE);
+
+    visible.forEach((c, i) => {
+      const page = Math.floor(i / PAGE_SIZE) + 1;
+      c.style.display = page === pg ? '' : 'none';
+    });
+
+    // Update buttons
+    const prev = document.getElementById('pgPrev');
+    const next = document.getElementById('pgNext');
+    const info = document.getElementById('pgInfo');
+    const pages = document.getElementById('pgPages');
+
+    if (prev) {
+      if (pg <= 1) prev.classList.add('pagination-disabled');
+      else prev.classList.remove('pagination-disabled');
+    }
+    if (next) {
+      if (pg >= vPages) next.classList.add('pagination-disabled');
+      else next.classList.remove('pagination-disabled');
+    }
+    if (info) info.textContent = '第 ' + pg + ' / ' + vPages + ' 页，共 ' + totalVisible + ' 篇可见';
+
+    if (pages) {
+      let html = '';
+      for (let n = 1; n <= vPages; n++) {
+        if (n === 1 || n === vPages || Math.abs(n - pg) <= 1) {
+          html += '<span class="pagination-num' + (n === pg ? ' pagination-active' : '') + '" data-pg="' + n + '">' + n + '</span>';
+        } else if (n === 2 && pg > 3) {
+          html += '<span class="pagination-ellipsis">...</span>';
+        } else if (n === vPages - 1 && pg < vPages - 2) {
+          html += '<span class="pagination-ellipsis">...</span>';
+        }
+      }
+      pages.innerHTML = html;
+      pages.querySelectorAll('.pagination-num:not(.pagination-active)').forEach(el => {
+        el.addEventListener('click', () => goToPage(parseInt(el.dataset.pg)));
+      });
+    }
+  }
+
+  document.getElementById('pgPrev')?.addEventListener('click', () => {
+    const cur = document.querySelector('.pagination-active');
+    const pg = cur ? parseInt(cur.dataset.pg) : 1;
+    if (pg > 1) goToPage(pg - 1);
+  });
+  document.getElementById('pgNext')?.addEventListener('click', () => {
+    const cur = document.querySelector('.pagination-active');
+    const pg = cur ? parseInt(cur.dataset.pg) : 1;
+    const visible = getVisibleCards();
+    const vPages = Math.ceil(visible.length / PAGE_SIZE);
+    if (pg < vPages) goToPage(pg + 1);
+  });
+
+  // Scroll active tag into view
   (function() {
-    window.__blogPosts = {postsData};
+    const tagContainer = document.querySelector('.blog-tag-cloud');
+    if (!tagContainer) return;
+    const activeBtn = tagContainer.querySelector('.blog-tag-active');
+    if (activeBtn) activeBtn.scrollIntoView({ inline: 'center', block: 'nearest' });
   })();
 </script>
 
 <style>
   .blog-section {
-    padding: var(--space-4xl) 0 var(--space-5xl);
+    padding: var(--space-4xl) 0 var(--space-2xl);
   }
 
   .blog-header {
@@ -299,50 +407,110 @@ const description = '探索关于技术、生活与发现的文字记录';
     font-size: var(--text-base);
   }
 
+  /* ====== Pagination ====== */
+  .pagination {
+    padding: var(--space-3xl) 0 var(--space-5xl);
+    text-align: center;
+  }
+
+  .pagination-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    background: var(--ink-10);
+    border: 1px solid var(--ink-20);
+    border-radius: var(--radius-lg);
+  }
+
+  .pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--ink-70);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--duration-fast);
+    font-family: inherit;
+  }
+  .pagination-btn:hover {
+    background: var(--ink-15);
+    color: var(--amber-400);
+  }
+
+  .pagination-disabled {
+    color: var(--ink-30);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+  }
+
+  .pagination-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--ink-50);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+    font-family: inherit;
+  }
+  .pagination-num:hover {
+    background: var(--ink-15);
+    color: var(--amber-400);
+  }
+
+  .pagination-active {
+    background: #6366f1;
+    color: #fff;
+    cursor: default;
+    pointer-events: none;
+  }
+  .pagination-active:hover {
+    background: #6366f1;
+    color: #fff;
+  }
+
+  .pagination-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    font-size: var(--text-sm);
+    color: var(--ink-40);
+    user-select: none;
+  }
+
+  .pagination-info {
+    margin-top: var(--space-md);
+    font-size: var(--text-xs);
+    color: var(--ink-40);
+  }
+
+  @media (max-width: 480px) {
+    .pagination-pages { display: none; }
+    .pagination-info { display: none; }
+    .pagination-btn { padding: 10px 20px; font-size: var(--text-base); }
+    .pagination-inner { gap: 0; }
+  }
+
   @media (max-width: 768px) {
-    .blog-section { padding: var(--space-3xl) 0; }
+    .blog-section { padding: var(--space-3xl) 0 var(--space-md); }
   }
 </style>
-
-<script>
-  const ALL_POSTS = {postsData};
-  const grid = document.getElementById('postGrid');
-  const searchCount = document.getElementById('blogSearchCount');
-  const noResult = document.getElementById('blogNoResult');
-  let activeTag = null;
-
-  function filterPosts() {
-    const q = document.getElementById('blogSearch').value.toLowerCase().trim();
-    const cards = grid.querySelectorAll('.post-card');
-    let visible = 0;
-    cards.forEach(card => {
-      const title = card.querySelector('.post-title')?.textContent?.toLowerCase() || '';
-      const excerpt = card.querySelector('.post-excerpt')?.textContent?.toLowerCase() || '';
-      const tagsText = card.dataset.tags || '[]';
-      const tags = JSON.parse(tagsText).map(t => String(t).toLowerCase());
-      const matchesSearch = !q || title.includes(q) || excerpt.includes(q) || tags.some(t => t.includes(q));
-      const matchesTag = !activeTag || tags.some(t => t.toLowerCase() === activeTag.toLowerCase());
-      const show = matchesSearch && matchesTag;
-      card.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-    searchCount.textContent = visible + ' 篇文章';
-    noResult.style.display = visible === 0 ? 'block' : 'none';
-  }
-
-  window.filterByTag = function(tag, btn) {
-    activeTag = tag;
-    document.querySelectorAll('.blog-tag').forEach(b => b.classList.remove('blog-tag-active'));
-    if (btn) btn.classList.add('blog-tag-active');
-    filterPosts();
-  };
-
-  // Scroll current tag cloud button into view
-  (function() {
-    const tagContainer = document.querySelector('.blog-tag-cloud');
-    if (!tagContainer) return;
-    // handle overflow scroll on mobile
-    const allBtn = tagContainer.querySelector('.blog-tag-active');
-    if (allBtn) allBtn.scrollIntoView({ inline: 'center', block: 'nearest' });
-  })();
-</script>
