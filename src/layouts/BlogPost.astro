@@ -14,6 +14,9 @@ const readingMinutes = Math.max(1, Math.ceil((entry.body?.length || 0) / 500));
 ---
 
 <BaseLayout title={title} description={entry.data.description} showReadingProgress={true}>
+  <Fragment slot="head">
+    {heroImage && <link rel="preload" as="image" href={heroImage} fetchpriority="high" />}
+  </Fragment>
   <article class="max-w-3xl mx-auto">
     <!-- 文章头 -->
     <header class="mb-10">
