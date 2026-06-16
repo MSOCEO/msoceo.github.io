@@ -4,7 +4,7 @@ description: '一本关于质量、技术与哲学的奇书，重读有感。'
 pubDate: 2026-05-25
 category: '阅读'
 tags: ['读书', '哲学', '随笔']
-heroImage: '/blog/images/cover-forest.jpg'
+heroImage: '/blog/images/cover-forest.webp'
 ---
 
 ## 关于这本书
