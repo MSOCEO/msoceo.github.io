@@ -755,6 +755,17 @@ body {
   transform: translate(0, 0) !important;
 }
 
+/* ===== 视图显示/隐藏 ===== */
+.view {
+  display: none;
+}
+.view--active {
+  display: block;
+}
+.view--active[data-view="go"] {
+  display: flex;
+}
+
 /* ===== Tab 视图转场 ===== */
 .view--leaving {
   transition: opacity 0.2s ease, transform 0.2s ease;
