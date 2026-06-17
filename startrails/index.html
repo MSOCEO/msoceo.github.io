@@ -1769,7 +1769,7 @@
     let danmakuIndex = 0;
     let danmakuLastSpawn = 0;
     let danmakuSpawnDelay = 2000;
-    const DANMAKU_COLORS = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#A78BFA', '#F472B6', '#60A5FA', '#34D399', '#FB923C', '#E879F9', '#22D3EE', '#FBBF24', '#818CF8', '#FB7185', '#2DD4BF'];
+    const DANMAKU_COLORS = ['#FF6B6B','#4ECDC4','#FFE66D','#A78BFA','#F472B6','#60A5FA','#34D399','#FB923C','#E879F9','#22D3EE','#FBBF24','#818CF8','#FB7185','#2DD4BF','#F97316','#06B6D4','#EC4899','#84CC16','#8B5CF6','#EF4444'];
 
     const DANMAKU_FALLBACK = [
       {name:"旅行者1号", text:"正在穿越小行星带，信号稳定 🚀"},
@@ -1847,16 +1847,16 @@
         const ctx = danmakuCtx;
         const isMobile = window.innerWidth < 768;
         // 随机字号 15-18px（移动端略小）
-        const fontSize = isMobile ? (13 + Math.random() * 3) : (15 + Math.random() * 3);
-        const fontWeight = '500';
+        const fontSize = 16;
+        const fontWeight = '700';
         this.fontSize = fontSize;
         this.fontWeight = fontWeight;
         this.msgColor = DANMAKU_COLORS[Math.floor(Math.random() * DANMAKU_COLORS.length)];
         this.opacity = 0.85 + Math.random() * 0.1;
         // 测量文本宽度
-        ctx.font = '500 ' + fontSize + 'px "Space Grotesk", system-ui, sans-serif';
+        ctx.font = '700 ' + fontSize + 'px "Space Grotesk", system-ui, sans-serif';
         const nw = ctx.measureText(this.name + ': ').width;
-        ctx.font = '500 ' + fontSize + 'px "Space Grotesk", system-ui, sans-serif';
+        ctx.font = '700 ' + fontSize + 'px "Space Grotesk", system-ui, sans-serif';
         const tw = ctx.measureText(this.text).width;
         this.width = nw + tw + 16;
         // 位置：右侧外面随机出现，Y 随机分布全屏（避开顶部导航 60px 和底部操作区）
@@ -1879,12 +1879,12 @@
         ctx.save();
         ctx.globalAlpha = this.opacity;
         // 用户名：青蓝色
-        ctx.font = '500 ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
+        ctx.font = '700 ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
         ctx.fillStyle = '#22d3ee';
         ctx.fillText(this.name + ': ', this.x, this.y);
         const nw = ctx.measureText(this.name + ': ').width;
         // 消息：随机霓虹配色
-        ctx.font = '500 ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
+        ctx.font = '700 ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
         ctx.fillStyle = this.msgColor;
         ctx.fillText(this.text, this.x + nw, this.y);
         ctx.restore();
