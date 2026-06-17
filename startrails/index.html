@@ -231,7 +231,7 @@
         <span class="section__label">近期新星</span>
         <h2 class="section__title" style="font-size:2.2rem;">最新收录博客</h2>
       </div>
-      <div id="latest-members" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;"></div>
+      <div id="latest-members" class="home-cards-grid"></div>
       <div style="text-align:center; margin-top:32px;">
         <a href="#members" class="btn btn--secondary">查看全部星图 →</a>
       </div>
@@ -911,25 +911,29 @@
       animateNumber(document.getElementById('stat-posts'), totalPosts);
       animateNumber(document.getElementById('stat-online'), totalOnline);
 
-      // 最新收录博客
+      // 最新收录博客 — 3 列卡片网格，与三大引擎卡片风格统一
       const container = document.getElementById('latest-members');
       const latest = ST.members.slice(0, 6);
       container.innerHTML = latest.length === 0
         ? '<div class="members-empty">暂无收录博客，<a href="#join" style="color:var(--color-brand);">申请加入</a>成为第一个</div>'
-        : latest.map(m => `
-          <div class="card" style="cursor:pointer;" onclick="navigateTo('blog', {id:'${m.id}'})">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-              <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:white;font-family:var(--font-display);font-weight:700;font-size:1rem;">${m.name[0]}</div>
+        : latest.map((m, i) => `
+          <div class="card home-card" style="cursor:pointer;animation:fadeInUp 0.4s ease both;animation-delay:${i*0.08}s;" onclick="navigateTo('blog', {id:'${m.id}'})">
+            <div class="home-card__header">
+              <div class="home-card__avatar">${m.name[0]}</div>
               <div>
-                <h4 style="font-family:var(--font-display);font-size:1rem;font-weight:600;">${m.name}</h4>
-                <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
-                  <span class="status-dot status-dot--${m.status}"></span>
-                  <span style="font-size:0.75rem;color:var(--color-accent);">${m.status === 'active' ? '在线' : m.status}</span>
-                </div>
+                <h4 class="home-card__name">${m.name}</h4>
+                <span class="home-card__badge">收录</span>
               </div>
             </div>
-            <p style="color:var(--color-text-secondary);font-size:0.85rem;line-height:1.5;">${m.description || '暂无简介'}</p>
-            <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">${(m.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <p class="home-card__desc">${m.description || '暂无简介'}</p>
+            <div class="home-card__tags">${(m.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <div class="home-card__footer">
+              <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;">
+                <span class="status-dot status-dot--${m.status}"></span>
+                <span style="color:var(--color-accent);">${m.status === 'active' ? '在线' : m.status}</span>
+              </span>
+              <span class="home-card__date">${new Date(m.joined_at).toLocaleDateString('zh-CN')}</span>
+            </div>
           </div>
         `).join('');
 
@@ -1691,18 +1695,18 @@
 
   
 
-    /* ===== 星电波弹幕系统 ===== */
+    /* ===== 星电波弹幕系统 — 全屏不规则飘屏 ===== */
     let danmakuData = [];
     let danmakuEnabled = true;
     let danmakuAnimId = null;
     let danmakuPaused = false;
     let danmakuPool = [];
     let danmakuCanvas = null, danmakuCtx = null;
-    let danmakuNextSpawn = 0;
     let danmakuResizeTimer = null;
-    let danmakuSpawnTimer = 0;
     let danmakuIndex = 0;
-    const DANMAKU_SPAWN_INTERVAL = 80;
+    let danmakuLastSpawn = 0;
+    let danmakuSpawnDelay = 2000;
+    const DANMAKU_COLORS = ['#6366f1', '#8b5cf6', '#a78bfa', '#22d3ee'];
 
     const DANMAKU_FALLBACK = [
       {name:"旅行者1号", text:"正在穿越小行星带，信号稳定 🚀"},
@@ -1735,8 +1739,12 @@
         clearTimeout(danmakuResizeTimer);
         danmakuResizeTimer = setTimeout(resizeDanmakuCanvas, 200);
       });
-      danmakuCanvas.addEventListener('mouseenter', () => { danmakuPaused = true; });
-      danmakuCanvas.addEventListener('mouseleave', () => { danmakuPaused = false; });
+      // 悬停暂停：通过底部独立 hover 区域触发（canvas 本身 pointer-events:none）
+      const hoverZone = document.getElementById('danmaku-hover-zone');
+      if (hoverZone) {
+        hoverZone.addEventListener('mouseenter', () => { danmakuPaused = true; });
+        hoverZone.addEventListener('mouseleave', () => { danmakuPaused = false; });
+      }
       let saved;
       try { saved = localStorage.getItem('danmaku_enabled'); } catch (e) { saved = null; }
       if (saved === 'false') {
@@ -1775,15 +1783,25 @@
         if (!danmakuCanvas) return;
         const ctx = danmakuCtx;
         const isMobile = window.innerWidth < 768;
-        const fs = isMobile ? 8 : 14;
-        ctx.font = 'bold ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
+        // 随机字号 13-22px（移动端略小）
+        const fontSize = isMobile ? (11 + Math.random() * 6) : (13 + Math.random() * 9);
+        const fontWeight = [400, 500, 600, 700][Math.floor(Math.random() * 4)];
+        this.fontSize = fontSize;
+        this.fontWeight = fontWeight;
+        this.msgColor = DANMAKU_COLORS[Math.floor(Math.random() * DANMAKU_COLORS.length)];
+        this.opacity = 0.6 + Math.random() * 0.3;
+        // 测量文本宽度
+        ctx.font = 'bold ' + fontSize + 'px "Space Grotesk", system-ui, sans-serif';
         const nw = ctx.measureText(this.name + ': ').width;
-        ctx.font = fs + 'px "Space Grotesk", system-ui, sans-serif';
+        ctx.font = fontWeight + ' ' + fontSize + 'px "Space Grotesk", system-ui, sans-serif';
         const tw = ctx.measureText(this.text).width;
         this.width = nw + tw + 16;
+        // 位置：右侧外面随机出现，Y 随机分布全屏（避开顶部导航 60px 和底部操作区）
         this.x = danmakuCanvas.width + Math.random() * 300;
-        this.y = 20 + Math.random() * 60;
-        const dur = 5 + Math.random() * 2;
+        const topMargin = 70, bottomMargin = 90;
+        this.y = topMargin + Math.random() * (danmakuCanvas.height - topMargin - bottomMargin);
+        // 飘动速度：6-9 秒横穿屏幕
+        const dur = 6 + Math.random() * 3;
         this.speed = (danmakuCanvas.width + this.width) / (dur * 60);
       }
       update() {
@@ -1794,47 +1812,50 @@
       draw() {
         if (!danmakuCtx || !this.active) return;
         const ctx = danmakuCtx;
-        const isMobile = window.innerWidth < 768;
-        const fs = isMobile ? 8 : 14;
+        const fs = this.fontSize;
         ctx.save();
-        ctx.globalAlpha = 0.85;
+        ctx.globalAlpha = this.opacity;
+        // 用户名：青蓝色
         ctx.font = 'bold ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
         ctx.fillStyle = '#22d3ee';
         ctx.shadowColor = 'rgba(34,211,238,0.4)';
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 14;
         ctx.fillText(this.name + ': ', this.x, this.y);
         const nw = ctx.measureText(this.name + ': ').width;
-        ctx.font = fs + 'px "Space Grotesk", system-ui, sans-serif';
-        const grad = ctx.createLinearGradient(this.x + nw, this.y, this.x + nw + 200, this.y);
-        grad.addColorStop(0, '#6366f1');
-        grad.addColorStop(1, '#8b5cf6');
-        ctx.fillStyle = grad;
-        ctx.shadowColor = 'rgba(99,102,241,0.3)';
-        ctx.shadowBlur = 20;
+        // 消息：随机霓虹紫蓝色
+        ctx.font = this.fontWeight + ' ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
+        ctx.fillStyle = this.msgColor;
+        ctx.shadowColor = 'rgba(99,102,241,0.35)';
+        ctx.shadowBlur = 14;
         ctx.fillText(this.text, this.x + nw, this.y);
         ctx.restore();
       }
     }
 
-    function danmakuLoop() {
+    function danmakuLoop(now) {
       if (!danmakuEnabled || danmakuPaused || !danmakuCtx || !danmakuCanvas) {
         danmakuAnimId = requestAnimationFrame(danmakuLoop);
         return;
       }
       const ctx = danmakuCtx;
-      ctx.clearRect(0, danmakuCanvas.height - 120, danmakuCanvas.width, 120);
-      danmakuSpawnTimer++;
-      const isMobile = window.innerWidth < 768;
-      const maxActive = isMobile ? 3 : 6;
-      const activeCount = danmakuPool.filter(function(d) { return d.active; }).length;
-      if (activeCount < maxActive && danmakuSpawnTimer >= DANMAKU_SPAWN_INTERVAL && danmakuData.length > 0) {
-        danmakuSpawnTimer = 0;
-        var data = danmakuData[danmakuIndex % danmakuData.length];
-        danmakuPool.push(new DanmakuItem(data.name, data.text));
-        danmakuIndex++;
-        if (danmakuIndex >= danmakuData.length) {
-          danmakuIndex = 0;
-          shuffleDanmakuArray(danmakuData);
+      // 清空整个 Canvas（全屏飘屏）
+      ctx.clearRect(0, 0, danmakuCanvas.width, danmakuCanvas.height);
+      // 时间驱动随机间隔生成弹幕
+      if (!danmakuLastSpawn) danmakuLastSpawn = now;
+      if (now - danmakuLastSpawn >= danmakuSpawnDelay && danmakuData.length > 0) {
+        danmakuLastSpawn = now;
+        danmakuSpawnDelay = 1500 + Math.random() * 2500;
+        const isMobile = window.innerWidth < 768;
+        const maxConcurrent = isMobile ? (4 + Math.floor(Math.random() * 3)) : (8 + Math.floor(Math.random() * 5));
+        const activeCount = danmakuPool.filter(function(d) { return d.active; }).length;
+        if (activeCount < maxConcurrent) {
+          var data = danmakuData[danmakuIndex % danmakuData.length];
+          danmakuPool.push(new DanmakuItem(data.name, data.text));
+          danmakuIndex++;
+          if (danmakuIndex >= danmakuData.length) {
+            danmakuIndex = 0;
+            shuffleDanmakuArray(danmakuData);
+          }
         }
       }
       for (var i = danmakuPool.length - 1; i >= 0; i--) {
@@ -2192,6 +2213,7 @@
   </script>
 
   <canvas id="danmaku-canvas"></canvas>
+  <div id="danmaku-hover-zone"></div>
 
   <!-- 成就解锁 Toast -->
   <div id="achievement-toast" class="achievement-toast"></div>
