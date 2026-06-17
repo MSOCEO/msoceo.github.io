@@ -1845,8 +1845,8 @@
         if (!danmakuCanvas) return;
         const ctx = danmakuCtx;
         const isMobile = window.innerWidth < 768;
-        // 随机字号 13-22px（移动端略小）
-        const fontSize = isMobile ? (11 + Math.random() * 6) : (13 + Math.random() * 9);
+        // 随机字号 15-18px（移动端略小）
+        const fontSize = isMobile ? (13 + Math.random() * 3) : (15 + Math.random() * 3);
         const fontWeight = [400, 500, 600, 700][Math.floor(Math.random() * 4)];
         this.fontSize = fontSize;
         this.fontWeight = fontWeight;
@@ -1880,15 +1880,15 @@
         // 用户名：青蓝色
         ctx.font = 'bold ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
         ctx.fillStyle = '#22d3ee';
-        ctx.shadowColor = 'rgba(34,211,238,0.4)';
-        ctx.shadowBlur = 14;
+        ctx.shadowColor = 'rgba(34,211,238,0.2)';
+        ctx.shadowBlur = 4;
         ctx.fillText(this.name + ': ', this.x, this.y);
         const nw = ctx.measureText(this.name + ': ').width;
         // 消息：随机霓虹紫蓝色
         ctx.font = this.fontWeight + ' ' + fs + 'px "Space Grotesk", system-ui, sans-serif';
         ctx.fillStyle = this.msgColor;
-        ctx.shadowColor = 'rgba(99,102,241,0.35)';
-        ctx.shadowBlur = 14;
+        ctx.shadowColor = 'rgba(99,102,241,0.15)';
+        ctx.shadowBlur = 4;
         ctx.fillText(this.text, this.x + nw, this.y);
         ctx.restore();
       }
