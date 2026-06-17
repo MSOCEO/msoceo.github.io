@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="css/style.css" /></noscript>
+  <link rel="stylesheet" href="css/style.css?v=4" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/style.css?v=4" /></noscript>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     /* ===== SPA 路由：所有视图默认隐藏 ===== */
@@ -536,9 +536,71 @@
 
         console.log(`[StarTrails] Loaded ${ST.members.length} members, ${ST.posts.length} posts from Supabase`);
       } catch (err) {
-        console.error('[StarTrails] Data load failed:', err);
+        console.warn('[StarTrails] Supabase unreachable, falling back to local JSON...');
+        await loadFromLocalJSON();
       } finally {
         ST.loading = false;
+      }
+    }
+
+    /** 将本地 blogs.json 条目映射为 ST.members 格式 */
+    function mapLocalBlog(b) {
+      return {
+        id: b.id || ('local-' + Math.random().toString(36).substr(2, 9)),
+        name: b.name || '未命名博客',
+        url: b.url || '',
+        description: b.description || '',
+        tags: Array.isArray(b.tags) ? b.tags : [],
+        status: b.status || 'active',
+        joined_at: new Date().toISOString(),
+        rss_url: b.rss || ''
+      };
+    }
+
+    /** 将本地 posts.json 条目映射为 ST.posts 格式 */
+    function mapLocalPost(p, memberName) {
+      return {
+        id: p.id,
+        title: p.title || '无标题',
+        summary: p.summary || '',
+        published_at: p.publishedAt || new Date().toISOString(),
+        url: p.url || '#',
+        tags: Array.isArray(p.tags) ? p.tags : [],
+        source_name: memberName || p.blogName || '星迹互联',
+        source_id: p.memberId || null
+      };
+    }
+
+    /** 从本地 JSON 文件加载数据（Supabase 不可达时的降级方案） */
+    async function loadFromLocalJSON() {
+      try {
+        const [blogRes, postRes] = await Promise.all([
+          fetch('data/blogs.json'),
+          fetch('data/posts.json')
+        ]);
+        const blogs = blogRes.ok ? await blogRes.json() : [];
+        const posts = postRes.ok ? await postRes.json() : [];
+
+        // 构建 name→member 映射，用于 post 关联 source_name
+        const nameToMember = {};
+        blogs.forEach(b => { if (b.name) nameToMember[b.name] = b; });
+
+        ST.members = blogs.map(mapLocalBlog);
+        ST.posts = posts.map(p => {
+          const member = p.memberId ? ST.members.find(m => m.id === p.memberId) : null;
+          const ownerName = member ? member.name : (nameToMember[p.blogName] ? p.blogName : null);
+          return mapLocalPost(p, ownerName);
+        });
+        ST.loaded = true;
+
+        // 同时填充 localBlogs/localPosts 供 initHomeDataStats 使用
+        window.localBlogs = blogs;
+        window.localPosts = posts;
+
+        console.log('[StarTrails] Loaded ' + ST.members.length + ' members, ' + ST.posts.length + ' posts from local JSON fallback');
+      } catch (e) {
+        console.error('[StarTrails] Local JSON fallback also failed:', e);
+        ST.loaded = true;
       }
     }
 
