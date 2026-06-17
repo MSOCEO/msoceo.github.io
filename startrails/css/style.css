@@ -280,7 +280,11 @@ body {
   contain: content;
 }
 
+.card {
+  box-shadow: var(--shadow-card);
+}
 .card:hover {
+  box-shadow: var(--shadow-card-hover);
   background: var(--color-bg-card-hover);
   border-color: var(--color-border-hover);
   transform: translateY(-4px);
@@ -617,6 +621,36 @@ body {
   font-size: 0.75rem;
   color: var(--color-text-muted);
 }
+/* ===== CTA 旋转光环 ===== */
+.cta-rings {
+  position: relative;
+}
+.cta-rings::before,
+.cta-rings::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: inherit;
+  border: 1px solid rgba(99,102,241,0.2);
+  pointer-events: none;
+}
+.cta-rings::before {
+  animation: ringSpin1 8s linear infinite;
+}
+.cta-rings::after {
+  inset: -16px;
+  border-color: rgba(16,185,129,0.15);
+  animation: ringSpin2 12s linear infinite reverse;
+}
+@keyframes ringSpin1 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes ringSpin2 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
 
 /* ===== 主页卡片网格（最新收录博客等） ===== */
 .home-cards-grid {
@@ -739,6 +773,18 @@ body {
 
 .form-group--error .form-error {
   display: block;
+}
+
+/* ===== 全局交错入场动画 ===== */
+.animate-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animate-in--visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ===== Toast 增强动画 ===== */
