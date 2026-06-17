@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>星迹互联 StarTrails — 独立博客的星际网络</title>
+  <meta name="description" content="星迹互联 StarTrails · 独立博客聚合平台。穿梭于星海，发现每一个认真写作的独立博客。收录中文独立博客、聚合 RSS 文章、随机星际穿越。" />
+  <meta property="og:title" content="星迹互联 StarTrails · 独立博客聚合平台" />
+  <meta property="og:description" content="穿梭于星海，发现每一个认真写作的独立博客。收录中文独立博客、聚合 RSS 文章、随机星际穿越。" />
+  <meta property="og:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDYzMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGExMDFmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNjM2NmYxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iNjAwIiB5PSIyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjY0IiBmb250LXdlaWdodD0iNzAwIj7mmJ/ov7nkuLrpmpQ8L3RleHQ+PHRleHQgeD0iNjAwIiB5PSIzNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC44KSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzIiPlN0YXJUcmFpbHMg4ouEIOeLrOeri+WNmuWuouWBt+WQiOW5s+WPsDwvdGV4dD48L3N2Zz4=" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="星迹互联 StarTrails · 独立博客聚合平台" />
+  <meta name="twitter:description" content="穿梭于星海，发现每一个认真写作的独立博客。" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%238b5cf6'/%3E%3Cstop offset='100%25' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='24' text-anchor='middle' fill='white' font-size='22' font-weight='bold'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
@@ -172,30 +181,29 @@
     </section>
 
     <section class="section" style="text-align:center;">
-      <div style="display:flex; justify-content:center; gap:64px; flex-wrap:wrap;">
-        <div><div class="stat-number" id="stat-members"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">收录博客</div></div>
-        <div><div class="stat-number" id="stat-posts"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">聚合文章</div></div>
-        <div><div class="stat-number" id="stat-online"><span class="skeleton-stats" style="display:inline-block;width:80px;height:48px;"></span></div><div class="stat-label">在线运行</div></div>
+      <div class="stats-dashboard" id="stats-dashboard">
+        <div class="stat-gauge">
+          <div class="stat-gauge__ring"></div>
+          <div class="stat-gauge__value" id="stat-members">0</div>
+          <div class="stat-gauge__label">收录博客</div>
+        </div>
+        <div class="stat-gauge">
+          <div class="stat-gauge__ring"></div>
+          <div class="stat-gauge__value" id="stat-posts">0</div>
+          <div class="stat-gauge__label">聚合文章</div>
+        </div>
+        <div class="stat-gauge">
+          <div class="stat-gauge__ring"></div>
+          <div class="stat-gauge__value" id="stat-online">0</div>
+          <div class="stat-gauge__label">在线运行</div>
+        </div>
       </div>
     </section>
 
     <!-- 深空信号广播条 -->
-    <section class="section broadcast-section">
+    <section class="section broadcast-section" id="broadcast-section" style="display:none;">
       <div class="broadcast-container" id="broadcast-container">
         <div class="broadcast-track" id="broadcast-track"></div>
-      </div>
-    </section>
-
-    <!-- 首页数据统计（本地数据） -->
-    <section class="section" style="text-align:center;">
-      <div class="section__header" style="text-align:center;">
-        <span class="section__label">数据纵览</span>
-        <h2 class="section__title" style="font-size:2.2rem;">星图数据</h2>
-      </div>
-      <div style="display:flex; justify-content:center; gap:64px; flex-wrap:wrap;" id="home-data-stats">
-        <div><div class="stat-number" id="stat-blogs-local">-</div><div class="stat-label">已收录博客</div></div>
-        <div><div class="stat-number" id="stat-posts-local">-</div><div class="stat-label">聚合文章</div></div>
-        <div><div class="stat-number" id="stat-bloggers-local">-</div><div class="stat-label">独立博主</div></div>
       </div>
     </section>
 
@@ -206,19 +214,19 @@
       </div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:20px;">
         <div class="card">
-          <div style="width:48px;height:48px;background:rgba(99,102,241,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;">🚀</div>
+          <div style="width:48px;height:48px;background:rgba(99,102,241,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="28" height="28" viewBox="0 0 48 48" fill="none"><path d="M24 4L28 16L40 20L28 24L24 36L20 24L8 20L20 16L24 4Z" fill="#818cf8" stroke="#6366f1" stroke-width="1.5"/><circle cx="24" cy="24" r="2" fill="#c7d2fe"/></svg></div>
           <h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px;">随机穿梭</h3>
           <p style="color:var(--color-text-secondary);font-size:0.9rem;line-height:1.6;">一键随机跳转至任意成员博客。星际穿越动画 + 丝滑过渡，每次都是未知的邂逅。</p>
           <div style="margin-top:16px;"><span class="tag">随机发现</span><span class="tag">全屏动画</span></div>
         </div>
         <div class="card">
-          <div style="width:48px;height:48px;background:rgba(16,185,129,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;">🌐</div>
+          <div style="width:48px;height:48px;background:rgba(16,185,129,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="28" height="28" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" fill="none" stroke="#34d399" stroke-width="2"/><circle cx="24" cy="24" r="12" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="6 3"/><circle cx="24" cy="24" r="6" fill="none" stroke="#6ee7b7" stroke-width="2"/><circle cx="24" cy="24" r="2" fill="#34d399"/></svg></div>
           <h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px;">社区收录</h3>
           <p style="color:var(--color-text-secondary);font-size:0.9rem;line-height:1.6;">审核收录优质独立博客，多维度分类标签，在线状态实时监控。打造可信赖的博客黄页。</p>
           <div style="margin-top:16px;"><span class="tag">审核收录</span><span class="tag">状态监控</span><span class="tag">标签分类</span></div>
         </div>
         <div class="card">
-          <div style="width:48px;height:48px;background:rgba(245,158,11,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;">📡</div>
+          <div style="width:48px;height:48px;background:rgba(245,158,11,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="28" height="28" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="4" fill="#fbbf24"/><circle cx="24" cy="24" r="10" fill="none" stroke="#f59e0b" stroke-width="1.5"/><circle cx="24" cy="24" r="17" fill="none" stroke="#f59e0b" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/><line x1="24" y1="8" x2="24" y2="14" stroke="#fbbf24" stroke-width="2"/><line x1="24" y1="34" x2="24" y2="40" stroke="#fbbf24" stroke-width="2"/><line x1="8" y1="24" x2="14" y2="24" stroke="#fbbf24" stroke-width="2"/><line x1="34" y1="24" x2="40" y2="24" stroke="#fbbf24" stroke-width="2"/></svg></div>
           <h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px;">文章聚合</h3>
           <p style="color:var(--color-text-secondary);font-size:0.9rem;line-height:1.6;">RSS 自动抓取成员博客最新文章，按时间线聚合展示。跨博客发现好内容，不必逐个打开。</p>
           <div style="margin-top:16px;"><span class="tag">RSS抓取</span><span class="tag">时间线</span><span class="tag">每日更新</span></div>
@@ -282,17 +290,36 @@
     </section>
 
     <section class="section" style="text-align:center;">
-      <div class="card" style="max-width:600px;margin:0 auto;padding:48px;text-align:center;">
+      <div class="card cta-rings" style="max-width:600px;margin:0 auto;padding:48px;text-align:center;border-radius:20px;position:relative;overflow:visible;">
         <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--color-brand),#8b5cf6);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 24px;">✦</div>
         <h2 style="font-family:var(--font-display);font-size:1.6rem;margin-bottom:12px;">拥有独立博客？</h2>
         <p style="color:var(--color-text-secondary);margin-bottom:28px;line-height:1.6;">加入星迹互联，让你的博客与其他创作者互联。免费收录，审核通过后即可出现在星图中。</p>
-        <a href="#join" class="btn btn--primary btn--lg">申请加入</a>
+        <a href="#join" class="btn btn--primary btn--lg btn--glitch">申请加入</a>
       </div>
     </section>
 
     <footer class="footer">
-      <p>星迹互联 StarTrails &copy; 2026 — 连接每一颗独立之星</p>
-      <p style="margin-top:8px;font-size:0.8rem;">由 Supabase + GitHub Pages 驱动 · 零服务器架构</p>
+      <div class="footer__col">
+        <div class="footer__col-title">快速链接</div>
+        <a href="#home">首页</a>
+        <a href="#members">星图</a>
+        <a href="#feed">文章</a>
+        <a href="#join">加入</a>
+        <a href="#go">星际穿越</a>
+      </div>
+      <div class="footer__col">
+        <div class="footer__col-title">友情链接</div>
+        <a href="https://github.com/msoceo/startrails" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>GitHub
+        </a>
+        <a href="#feed">RSS 聚合</a>
+      </div>
+      <div class="footer__col">
+        <div class="footer__col-title">订阅与社交</div>
+        <p style="color:var(--color-text-muted);font-size:0.85rem;margin-bottom:8px;">星迹互联 StarTrails &copy; 2026</p>
+        <p style="color:var(--color-text-muted);font-size:0.75rem;">连接每一颗独立之星</p>
+        <p style="color:var(--color-text-muted);font-size:0.7rem;margin-top:8px;">由 Supabase + GitHub Pages 驱动</p>
+      </div>
     </footer>
   </main>
 
@@ -310,7 +337,7 @@
         <div class="go-section" id="go-favorites-section">
           <h3 class="go-section__title">★ 我的星标</h3>
           <div class="go-favorites-grid" id="go-favorites-grid"></div>
-          <p class="go-empty-hint" id="go-favorites-empty" style="display:none;text-align:center;color:var(--color-text-muted);padding:24px;">还没有收藏，去星图中标记喜欢的博客吧</p>
+          <p class="go-empty-hint" id="go-favorites-empty" style="display:none;text-align:center;color:var(--color-text-muted);padding:24px;"><svg width="64" height="64" viewBox="0 0 64 64" style="display:block;margin:0 auto 16px;"><circle cx="32" cy="32" r="28" fill="none" stroke="var(--color-surface-3)" stroke-width="1.5"/><polygon points="32,12 38,26 52,26 40,36 44,50 32,42 20,50 24,36 12,26 26,26" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5" opacity="0.4"/></svg>暂无收藏，去星图发现好博客吧～</p>
         </div>
         <!-- 成就展馆 -->
         <div class="go-section" id="go-achievements-section">
@@ -974,12 +1001,15 @@
       animateNumber(document.getElementById('stat-posts'), totalPosts);
       animateNumber(document.getElementById('stat-online'), totalOnline);
 
-      // 最新收录博客 — 3 列卡片网格，与三大引擎卡片风格统一
+      // 最新收录博客 — 空状态隐藏
       const container = document.getElementById('latest-members');
       const latest = ST.members.slice(0, 6);
-      container.innerHTML = latest.length === 0
-        ? '<div class="members-empty">暂无收录博客，<a href="#join" style="color:var(--color-brand);">申请加入</a>成为第一个</div>'
-        : latest.map((m, i) => `
+      const latestSection = container ? container.closest('.section') : null;
+      if (latest.length === 0) {
+        if (latestSection) latestSection.innerHTML = '<div style="text-align:center;padding:48px 24px;color:var(--color-text-muted);font-size:1.05rem;">星图正在扩展中…</div>';
+      } else {
+        if (latestSection) latestSection.style.display = '';
+        container.innerHTML = latest.map((m, i) => `
           <div class="card home-card" style="cursor:pointer;animation:fadeInUp 0.4s ease both;animation-delay:${i*0.08}s;" onclick="navigateTo('blog', {id:'${m.id}'})">
             <div class="home-card__header">
               <div class="home-card__avatar">${m.name[0]}</div>
@@ -1028,6 +1058,19 @@
 
       // 热门标签云
       renderTagCloud();
+
+      // 标签云无数据时隐藏 section
+      const tagCloudSection = document.getElementById('tag-cloud')?.closest('.section');
+      if (tagCloudSection && !document.getElementById('tag-cloud').innerHTML.trim()) {
+        tagCloudSection.style.display = 'none';
+      }
+
+      // 广播条有数据时显示
+      const bcTrack = document.getElementById('broadcast-track');
+      const bcSection = document.getElementById('broadcast-section');
+      if (bcSection) {
+        bcSection.style.display = (bcTrack && bcTrack.innerHTML.trim()) ? '' : 'none';
+      }
     }
 
     /** 聚合 stats 并渲染标签云 */
@@ -1124,7 +1167,7 @@
         return;
       }
 
-      const statusMap = { online:'在线', offline:'离线', pending:'待审核' };
+      const statusMap = { online:'在线', offline:'离线', pending:'待审核', active:'在线' };
       const statusColor = { online:'var(--color-accent)', offline:'#ef4444', pending:'#f59e0b' };
 
       grid.innerHTML = filtered.map((m,i) => `
@@ -1136,7 +1179,7 @@
               <div class="member-card__url">${m.url || '未设置'}</div>
             </div>
           </div>
-          <p class="member-card__desc">${m.description || '暂无简介'}</p>
+          <p class="member-card__desc">${m.description || '这片星域还在生成中…'}</p>
           <div class="member-card__tags">${(m.tags||[]).slice(0,4).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
           <div class="member-card__footer">
             <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;">
@@ -1368,10 +1411,46 @@
       btn.disabled = false; btn.textContent = '提交申请';
     }
 
-    // 绑定表单事件
+    // 表单验证 + 提交按钮 loading
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('join-form');
       if (form) form.addEventListener('submit', handleSubmit);
+
+      const urlInput = document.getElementById('blog-url');
+      const nameInput = document.getElementById('blog-name');
+      const submitBtn = document.querySelector('#join-form button[type="submit"]');
+
+      // URL 实时格式检查
+      if (urlInput) {
+        urlInput.addEventListener('input', () => {
+          const wrapper = urlInput.closest('.form-group') || urlInput.parentElement;
+          let indicator = wrapper.querySelector('.input-indicator');
+          if (!indicator) { indicator = document.createElement('span'); indicator.className = 'input-indicator'; wrapper.appendChild(indicator); }
+          try {
+            const u = new URL(urlInput.value);
+            indicator.textContent = '✓'; indicator.style.color = '#10b981';
+          } catch { indicator.textContent = '✗'; indicator.style.color = '#ef4444'; }
+        });
+      }
+
+      // 名称 blur 非空检查
+      if (nameInput) {
+        nameInput.addEventListener('blur', () => {
+          const wrapper = nameInput.closest('.form-group') || nameInput.parentElement;
+          let indicator = wrapper.querySelector('.input-indicator');
+          if (!indicator) { indicator = document.createElement('span'); indicator.className = 'input-indicator'; wrapper.appendChild(indicator); }
+          indicator.textContent = nameInput.value.trim() ? '✓' : '✗';
+          indicator.style.color = nameInput.value.trim() ? '#10b981' : '#ef4444';
+        });
+      }
+
+      // 提交时 button loading
+      const origHandleSubmit = handleSubmit;
+      handleSubmit = async function(e) {
+        if (submitBtn) { submitBtn.textContent = '正在发送信号…'; submitBtn.disabled = true; }
+        try { await origHandleSubmit(e); }
+        finally { if (submitBtn) { submitBtn.textContent = '提交申请'; submitBtn.disabled = false; } }
+      };
     });
 
     function showToast(message, type) {
@@ -1407,7 +1486,7 @@
 
       // 由于 posts 表无外键关联 profiles，展示全局最近文章
       const relatedPosts = ST.posts.slice(0, 4);
-      const statusMap = { online:'在线', offline:'离线', pending:'待审核' };
+      const statusMap = { online:'在线', offline:'离线', pending:'待审核', active:'在线' };
       const statusColor = { online:'var(--color-accent)', offline:'#ef4444', pending:'#f59e0b' };
 
       document.getElementById('blog-content').innerHTML = `
@@ -2170,14 +2249,13 @@
       } catch (e) {}
     }
     function initHomeDataStats() {
-      var blogsCount = localBlogs.length;
-      var postsCount = localPosts.length;
-      var unique = {};
-      localBlogs.forEach(function(b) { if (b.name) unique[b.name] = true; });
-      var uniqueBloggers = Object.keys(unique).length;
-      animateNumber(document.getElementById('stat-blogs-local'), blogsCount);
-      animateNumber(document.getElementById('stat-posts-local'), postsCount);
-      animateNumber(document.getElementById('stat-bloggers-local'), uniqueBloggers);
+      // 统一使用 ST 数据源，在 initHome 中已渲染
+      if (!ST.loaded) {
+        const dash = document.getElementById('stats-dashboard');
+        if (dash) dash.innerHTML = '<div style="text-align:center;padding:32px;color:var(--color-text-muted);font-size:1rem;">接收信号中…</div>';
+        return;
+      }
+      // 数据已在 initHome() 的 animateNumber 中更新
     }
 
     /* ===== 我的星标渲染 ===== */
@@ -2263,6 +2341,23 @@
       }
     }
     initNewFeatures();
+
+    /* ===== 滚动视差 + 全局入场动画 ===== */
+    var scrollParallax = function() {
+      var orbs = document.querySelectorAll('.orb');
+      var sy = window.scrollY;
+      for (var i = 0; i < orbs.length; i++) { orbs[i].style.transform = 'translateY(' + (sy * 0.05) + 'px)'; }
+    };
+    window.addEventListener('scroll', scrollParallax, {passive:true});
+
+    var animObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('animate-in--visible'); animObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.card, .stat-gauge, .section__header, .btn--glitch').forEach(function(el) {
+      el.classList.add('animate-in'); animObserver.observe(el);
+    });
 
     // 兜底：确保数据统计在 Supabase 加载后也能显示
     setTimeout(function() {
