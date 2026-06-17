@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.25)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+    <filter id="starGlow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+
+  <!-- Decorative star dots -->
+  <circle cx="100" cy="120" r="3" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="400" cy="100" r="2.5" fill="rgba(255,255,255,0.25)"/>
+  <circle cx="420" cy="380" r="3" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="130" cy="400" r="2" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="300" cy="420" r="2.5" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="80" cy="260" r="2" fill="rgba(255,255,255,0.25)"/>
+
+  <!-- Constellation lines -->
+  <line x1="100" y1="120" x2="256" y2="200" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+  <line x1="400" y1="100" x2="256" y2="200" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <line x1="420" y1="380" x2="256" y2="320" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <line x1="130" y1="400" x2="256" y2="320" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+
+  <!-- Center glow -->
+  <circle cx="256" cy="240" r="180" fill="url(#glow)"/>
+
+  <!-- Main star ✦ -->
+  <g filter="url(#starGlow)" fill="white">
+    <path d="M256 80 L272 220 L256 200 L240 220 Z
+             M256 80 L200 160 L256 150 L312 160 Z
+             M400 160 L296 190 L300 175 L304 190 Z
+             M112 160 L216 190 L212 175 L208 190 Z
+             M160 320 L240 276 L235 286 L230 276 Z
+             M352 320 L272 276 L277 286 L282 276 Z
+             M256 360 L272 280 L256 300 L240 280 Z"/>
+    <!-- Simpler, cleaner star shape -->
+    <path d="M256 90 L275 215 L256 200 L237 215 L256 90Z
+             M390 155 L300 190 L310 180 L300 170 L390 155Z
+             M122 155 L212 190 L202 180 L212 170 L122 155Z
+             M170 310 L235 275 L240 285 L235 295 L170 310Z
+             M342 310 L277 275 L272 285 L277 295 L342 310Z
+             M256 350 L275 285 L256 305 L237 285 L256 350Z"/>
+  </g>
+
+  <!-- Inner accent ring -->
+  <circle cx="256" cy="240" r="130" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <circle cx="256" cy="240" r="160" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+</svg>
