@@ -1,91 +1,71 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
+import { SITE } from '../consts';
 import Header from '../components/Header.astro';
-import Sidebar from '../components/Sidebar.astro';
-import BackToTop from '../components/BackToTop.astro';
-import RippleEffect from '../components/RippleEffect.astro';
-import CustomCursor from '../components/CustomCursor.astro';
-import SearchModal from '../components/SearchModal.astro';
-import Lightbox from '../components/Lightbox.astro';
+import Footer from '../components/Footer.astro';
+import Starfield from '../components/Starfield.astro';
+import MeteorEffect from '../components/MeteorEffect.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
-import ParallaxBg from '../components/ParallaxBg.astro';
-import Toast from '../components/Toast.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 interface Props {
   title?: string;
   description?: string;
-  image?: string;
-  showSidebar?: boolean;
-  showReadingProgress?: boolean;
 }
 
-const {
-  title,
-  description = SITE_DESCRIPTION,
-  image = '/blog-placeholder-about.jpg',
-  showSidebar = true,
-  showReadingProgress = false,
-} = Astro.props;
-
-const pageTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
-
-const thanksMessages = [
-  '感谢阅读，愿文字温暖你',
-  '谢谢你读到这里',
-  '笔墨已干，心意长存',
-  '字短情长，感谢陪伴',
-  '今日份的阅读，满分',
-  '感谢你的每一次停留',
-  '寒影在此谢过',
-];
-const thanksMsg = thanksMessages[Math.floor(Math.random() * thanksMessages.length)];
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} | ${SITE.TITLE}` : SITE.TITLE;
+const pageDesc = description || SITE.DESCRIPTION;
 ---
 
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <BaseHead title={pageTitle} description={description} image={image} />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,400..600;1,14..32,400..600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style is:global>
+      @import '../styles/global.css';
+    </style>
+
     <slot name="head" />
   </head>
+
   <body>
-    <ReadingProgress show={showReadingProgress} />
-    <Header />
+    <!-- 星空背景层 -->
+    <Starfield />
+    <MeteorEffect />
     
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col lg:flex-row gap-8 py-8">
-        <main class="flex-1 min-w-0 page-enter">
-          <slot />
-        </main>
-        {showSidebar && (
-          <aside class="w-full lg:w-80 flex-shrink-0">
-            <div class="lg:sticky lg:top-24">
-              <Sidebar />
-            </div>
-          </aside>
-        )}
-      </div>
-    </div>
+    <!-- 阅读进度条 -->
+    <ReadingProgress />
 
-    <!-- Footer -->
-    <footer class="border-t border-[var(--border-color)] mt-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--text-tertiary)]">
-          <span>&copy; 寒影 · 原创品牌</span>
-          <span>鄂ICP备XXXXXXXX号-1</span>
-        </div>
-        <div class="thanks-note mt-4">
-          {thanksMsg}
-        </div>
-      </div>
-    </footer>
+    <!-- 头部 -->
+    <Header />
 
-    <BackToTop />
-    <RippleEffect />
-    <CustomCursor />
-    <SearchModal />
-    <Lightbox />
-    <Toast />
-    <ParallaxBg />
+    <!-- 主内容区 -->
+    <main class="site-main">
+      <slot />
+    </main>
+
+    <!-- 底部 -->
+    <Footer />
   </body>
 </html>
+
+<style>
+  .site-main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 64px - 120px);
+  }
+</style>
