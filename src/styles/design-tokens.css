@@ -1,251 +1,71 @@
-/* ============================================
-   墨影 Monoshade — Design Tokens
-   参考：Linear / Apple / Stripe
-   ============================================ */
+/* ===== 寒影拾光 · 深夜书房 设计令牌 ===== */
 
 :root {
-  /* ---- 色彩系统 ---- */
-  --ink-0:    #0a0a0a;   /* 纯黑底 */
-  --ink-10:   #111111;   /* 卡片底 */
-  --ink-15:   #1a1a1a;   /* 悬浮态 */
-  --ink-20:   #242424;   /* 边框 */
-  --ink-30:   #333333;   /* 分割线 */
-  --ink-40:   #555555;   /* 次级文字 */
-  --ink-50:   #888888;   /* 辅助文字 */
-  --ink-70:   #bbbbbb;   /* 正文 */
-  --ink-90:   #e8e8e8;   /* 标题 */
-  --ink-100:  #ffffff;   /* 强调 */
+  /* ---------- 深色基底 ---------- */
+  --color-bg-primary: #0d0f14;
+  --color-bg-secondary: #141822;
+  --color-bg-tertiary: #1a1f2e;
+  --color-bg-card: rgba(20, 24, 34, 0.72);
+  --color-bg-hover: rgba(26, 31, 46, 0.64);
 
-  /* 5 站差异化强调色（深底 #0a0a0a 统一） */
-  /* 主站：靛蓝 */
-  --accent-indigo-400: #6366f1;
-  --accent-indigo-500: #4f46e5;
-  --accent-indigo-200: #a5b4fc;
-  --accent-indigo-50:  #eef2ff;
-  /* 博客 / 墨迹：暖橙 */
-  --accent-blog-400: #f59e0b;
-  --accent-blog-500: #d97706;
-  --accent-blog-200: #fde68a;
-  /* 导航站 / 星轨：冷紫 */
-  --accent-links-400: #8b5cf6;
-  --accent-links-500: #7c3aed;
-  --accent-links-200: #c4b5fd;
-  /* 云笺平台：青绿 */
-  --accent-yunjian-400: #10b981;
-  --accent-yunjian-500: #059669;
-  --accent-yunjian-200: #a7f3d0;
-  /* 后台 / 墨韵：琥珀 */
-  --accent-admin-400: #f97316;
-  --accent-admin-500: #ea580c;
-  --accent-admin-200: #fed7aa;
+  /* ---------- 文字 ---------- */
+  --color-text-primary: #e4e1dc;
+  --color-text-secondary: #9a9894;
+  --color-text-muted: #5f5d5a;
 
-  /* 强调色 — 琥珀金（保持向后兼容） */
-  --amber-400: var(--accent-indigo-400);
-  --amber-500: var(--accent-indigo-500);
-  --amber-600: #b08452;
-  --amber-200: var(--accent-indigo-200);
-  --amber-50:  var(--accent-indigo-50);
+  /* ---------- 靛蓝强调 ---------- */
+  --color-accent: #4f8bc9;
+  --color-accent-soft: rgba(79, 139, 201, 0.15);
+  --color-accent-hover: #6aa0d8;
 
-  /* 语义色 */
-  --success: #3dba82;
-  --error:   #e5484d;
-  --warn:    #f5a623;
+  /* ---------- 旧金点缀 ---------- */
+  --color-gold: #d4a373;
+  --color-gold-soft: rgba(212, 163, 115, 0.12);
+  --color-gold-hover: #e0b88a;
 
-  /* ---- 纹理 ---- */
-  --texture-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  /* ---------- 边界 ---------- */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-focus: rgba(79, 139, 201, 0.32);
 
-  /* ---- 字体 ---- */
-  --font-display: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', serif;
-  --font-body:    system-ui, -apple-system, 'PingFang SC', 'SF Pro Text', sans-serif;
-  --font-mono:    'SF Mono', 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
-  --font-en:      'Inter', 'SF Pro Display', system-ui, sans-serif;
-  --font-serif:   'Georgia', 'Noto Serif SC', serif;
+  /* ---------- 间距/圆角 ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
 
-  /* ---- 字号 ---- */
-  --text-xs:   0.75rem;    /* 12px */
-  --text-sm:   0.875rem;   /* 14px */
-  --text-base: 1rem;       /* 16px */
-  --text-lg:   1.125rem;   /* 18px */
-  --text-xl:   1.25rem;    /* 20px */
-  --text-2xl:  1.5rem;     /* 24px */
-  --text-3xl:  2rem;       /* 32px */
-  --text-4xl:  2.75rem;    /* 44px */
-  --text-5xl:  3.5rem;     /* 56px */
-  --text-6xl:  4.5rem;     /* 72px */
+  /* ---------- 字体 ---------- */
+  --font-serif: 'Playfair Display', 'Noto Serif SC', serif;
+  --font-sans: 'Inter', 'Noto Sans SC', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  /* ---- 字重 ---- */
-  --weight-light:   300;
-  --weight-regular: 400;
-  --weight-medium:  500;
-  --weight-semibold:600;
-  --weight-bold:    700;
+  /* ---------- 阴影 ---------- */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.5);
 
-  /* ---- 间距 ---- */
-  --space-xs:  0.25rem;   /* 4px */
-  --space-sm:  0.5rem;    /* 8px */
-  --space-md:  1rem;      /* 16px */
-  --space-lg:  1.5rem;    /* 24px */
-  --space-xl:  2rem;      /* 32px */
-  --space-2xl: 3rem;      /* 48px */
-  --space-3xl: 4rem;      /* 64px */
-  --space-4xl: 6rem;      /* 96px */
-  --space-5xl: 8rem;      /* 128px */
-
-  /* ---- 行高 ---- */
-  --leading-tight:  1.15;
-  --leading-snug:   1.35;
-  --leading-normal: 1.6;
-  --leading-relaxed:1.8;
-
-  /* ---- 圆角 ---- */
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  16px;
-  --radius-xl:  24px;
-  --radius-full:9999px;
-
-  /* ---- 阴影（双层系统，非AI感的关键） ---- */
-  --shadow-card:    0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3);
-  --shadow-elevated:0 2px 4px rgba(0,0,0,0.5), 0 16px 48px rgba(0,0,0,0.4);
-  --shadow-glow:    0 0 40px rgba(99,102,241,0.15);
-  /* 保持向后兼容 */
-  --shadow-sm:  var(--shadow-card);
-  --shadow-md:  var(--shadow-elevated);
-  --shadow-lg:  0 8px 30px rgba(0,0,0,0.6);
-
-  /* ---- 动效 ---- */
-  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out:cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast:  150ms;
-  --duration-normal:250ms;
-  --duration-slow:  400ms;
-
-  /* ---- 毛玻璃 ---- */
-  --glass-bg:      rgba(17,17,17,0.7);
-  --glass-border:  rgba(255,255,255,0.06);
-  --glass-blur:    20px;
-
-  /* ---- 布局 ---- */
-  --max-width:      1200px;
-  --content-width:  720px;
-  --header-height:  60px;
+  /* ---------- 过渡 ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ---- 全局基础 ---- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* 浅色模式覆盖 */
+:root.light {
+  --color-bg-primary: #faf8f5;
+  --color-bg-secondary: #f2eeea;
+  --color-bg-tertiary: #e8e3dd;
+  --color-bg-card: rgba(242, 238, 234, 0.85);
+  --color-bg-hover: rgba(232, 227, 221, 0.72);
 
-html {
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
-}
+  --color-text-primary: #2a2522;
+  --color-text-secondary: #6b6560;
+  --color-text-muted: #9a9490;
 
-body {
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-  color: var(--ink-70);
-  background-color: var(--ink-0);
-  min-height: 100vh;
-}
+  --color-accent: #3b6da8;
+  --color-accent-soft: rgba(59, 109, 168, 0.1);
 
-/* ---- 排版 ---- */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: var(--weight-regular);
-  color: var(--ink-90);
-  line-height: var(--leading-loose);
-  letter-spacing: 0.06em;
-}
+  --color-gold: #b8863f;
+  --color-gold-soft: rgba(184, 134, 63, 0.1);
 
-h1 { font-size: var(--text-5xl); font-weight: var(--weight-medium); letter-spacing: 0.05em; }
-h2 { font-size: var(--text-3xl); }
-h3 { font-size: var(--text-2xl); }
-h4 { font-size: var(--text-xl); }
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-focus: rgba(59, 109, 168, 0.35);
 
-p {
-  color: var(--ink-50);
-  line-height: var(--leading-relaxed);
-  margin-bottom: var(--space-md);
-  max-width: 65ch;
-}
-
-a {
-  color: var(--amber-400);
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-a:hover {
-  color: var(--amber-500);
-}
-
-::selection {
-  background: var(--amber-400);
-  color: var(--ink-0);
-}
-
-/* ---- 骨架屏 ---- */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, var(--ink-15) 25%, var(--ink-20) 50%, var(--ink-15) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
-}
-
-/* ---- 入场动画 ---- */
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.animate-in {
-  animation: fade-in-up var(--duration-slow) var(--ease-out) both;
-}
-
-/* ---- 工具类 ---- */
-.container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 var(--space-xl);
-}
-
-.content-narrow {
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 0 var(--space-xl);
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  border: 0;
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
