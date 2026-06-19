@@ -12,6 +12,9 @@ const { title, description } = Astro.props;
 <html lang="zh-CN">
   <head>
     <BaseHead title={title} description={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
   </head>
   <body>
     <Header />
@@ -29,6 +32,18 @@ const { title, description } = Astro.props;
 <style>
   .site-main {
     min-height: 100vh;
-    padding-top: var(--header-height);
+  }
+
+  body:has(.blog-hero) header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: transparent;
+  }
+
+  body:has(.blog-hero) .site-main {
+    padding-top: 0;
   }
 </style>
