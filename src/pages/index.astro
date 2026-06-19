@@ -2,21 +2,19 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import { SITE } from '../consts';
+import { getCollection } from 'astro:content';
 
-const posts = await Astro.glob<{
-  frontmatter: {
-    title: string;
-    date: string;
-    excerpt?: string;
-    tags?: string[];
-    readingTime?: string;
-  };
-  url?: string;
-  slug?: string;
-}>('../content/posts/**/*.md');
-
-const sorted = posts
-  .map((p) => ({ ...p.frontmatter, slug: p.url || p.frontmatter.slug }))
+const allPosts = await getCollection('blog');
+const sorted = allPosts
+  .filter(p => !p.data.draft)
+  .map(p => ({
+    title: p.data.title,
+    date: p.data.pubDate.toISOString().split('T')[0],
+    excerpt: p.data.description,
+    tags: p.data.tags,
+    slug: p.id,
+    readingTime: `${Math.max(1, Math.ceil((p.body?.length || 0) / 500))} 分钟`,
+  }))
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 ---
 
