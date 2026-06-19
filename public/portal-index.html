@@ -3,52 +3,433 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>寒影</title>
+  <title>寒影拾光</title>
+  <meta name="description" content="在深夜书房里，拾取散落的光">
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#0d0d0d;--text:#e0e0e0;--accent:#6b8c7c;--sub:#888;--muted:#555}
-    body{
-      background:var(--bg);color:var(--text);
-      font-family:"Noto Serif SC","Source Han Serif SC",Georgia,serif;
-      min-height:100vh;display:flex;align-items:center;justify-content:center;
-      padding:2rem;
+
+    :root {
+      --bg-deep: #020208;
+      --bg-stars: #0a0a2e;
+      --text: #e8e4f0;
+      --accent: #b48cff;
+      --muted: rgba(255,255,255,0.35);
+      --card-bg: rgba(20,18,30,0.65);
     }
-    body::before{
-      content:'';position:fixed;inset:0;
-      background:radial-gradient(ellipse at 50% 0%,rgba(107,140,124,.08),transparent 60%);
-      pointer-events:none;z-index:0;
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text);
+      font-family: "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
-    .noise{position:fixed;inset:0;opacity:.03;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
-    main{position:relative;z-index:1;text-align:center;max-width:520px}
-    h1{font-size:clamp(3rem,8vw,5rem);font-weight:700;letter-spacing:.12em;margin-bottom:.5rem}
-    h1 span{color:var(--accent)}
-    .subtitle{font-size:1.1rem;color:var(--sub);letter-spacing:.25em;margin-bottom:2.5rem}
-    .divider{width:60px;height:1px;background:var(--muted);margin:0 auto 2.5rem}
-    .links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap}
-    .links a{
-      color:var(--text);text-decoration:none;
-      padding:.6rem 1.8rem;border:1px solid var(--muted);
-      border-radius:2rem;font-size:.95rem;letter-spacing:.06em;
-      transition:all .3s;
+
+    /* ===== 星空 Canvas ===== */
+    #starry-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
-    .links a:hover{border-color:var(--accent);color:var(--accent);background:rgba(107,140,124,.06)}
-    .links a.primary{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
-    .links a.primary:hover{background:transparent;color:var(--accent)}
-    footer{position:fixed;bottom:1.5rem;z-index:1;font-size:.8rem;color:var(--muted);letter-spacing:.08em}
+
+    /* ===== Hero 整屏 ===== */
+    .hero {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 10vw, 6.5rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #fff;
+      position: relative;
+      text-shadow: 0 0 60px rgba(180,140,255,0.35), 0 0 120px rgba(140,100,220,0.2);
+    }
+
+    .hero-title .accent {
+      color: var(--accent);
+      text-shadow: 0 0 80px rgba(180,140,255,0.5), 0 0 160px rgba(140,100,220,0.3);
+    }
+
+    .hero-sub {
+      margin-top: 1.2rem;
+      font-size: 1.15rem;
+      color: var(--muted);
+      letter-spacing: 0.35em;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.6s ease-out forwards;
+    }
+
+    .hero-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 2rem auto;
+      opacity: 0;
+      animation: fadeUp 1s 1s ease-out forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== 下滑指示 ===== */
+    .scroll-hint {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      opacity: 0;
+      animation: fadeUp 1s 1.4s ease-out forwards;
+    }
+
+    .scroll-hint .arrow {
+      width: 24px;
+      height: 24px;
+      border-right: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
+      transform: rotate(45deg);
+      animation: bounceDown 2s infinite;
+    }
+
+    @keyframes bounceDown {
+      0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.6; }
+      50%      { transform: rotate(45deg) translateY(8px); opacity: 1; }
+    }
+
+    /* ===== 内容区 ===== */
+    .content-section {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 6rem 2rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      max-width: 900px;
+      width: 100%;
+      margin-bottom: 4rem;
+    }
+
+    .card {
+      text-decoration: none;
+      color: var(--text);
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(180,140,255,0.25);
+      box-shadow: 0 12px 40px rgba(100,60,180,0.15);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card.primary {
+      background: rgba(180,140,255,0.08);
+      border-color: rgba(180,140,255,0.2);
+    }
+
+    .card.primary:hover {
+      background: rgba(180,140,255,0.14);
+      box-shadow: 0 12px 40px rgba(140,100,220,0.2);
+    }
+
+    /* ===== Footer ===== */
+    .site-footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 3rem 2rem;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 640px) {
+      .hero-title { font-size: clamp(2.5rem, 12vw, 3.5rem); }
+      .hero-sub { font-size: 0.9rem; letter-spacing: 0.2em; }
+      .card-grid { grid-template-columns: 1fr; }
+      .content-section { padding: 4rem 1.25rem 2rem; }
+    }
   </style>
 </head>
 <body>
-  <div class="noise"></div>
-  <main>
-    <h1><span>寒</span>影</h1>
-    <p class="subtitle">一纸墨痕，半窗寒影</p>
-    <div class="divider"></div>
-    <div class="links">
-      <a href="/blog/" class="primary">进入博客</a>
-      <a href="/blog/about">关于</a>
-      <a href="/blog/archive">归档</a>
+
+  <!-- 星空 Canvas -->
+  <canvas id="starry-canvas"></canvas>
+
+  <!-- 英雄区 -->
+  <section class="hero">
+    <h1 class="hero-title"><span class="accent">寒</span>影<span class="accent">·</span>拾光</h1>
+    <p class="hero-sub">在深夜书房里，拾取散落的光</p>
+    <div class="hero-line"></div>
+    <div class="scroll-hint">
+      <span>下滑进入</span>
+      <div class="arrow"></div>
     </div>
-  </main>
-  <footer>HanYing &copy; 2026</footer>
+  </section>
+
+  <!-- 内容区 -->
+  <section class="content-section" id="content">
+    <p class="section-label">— 探索 —</p>
+    <div class="card-grid">
+      <a href="/blog/" class="card primary">
+        <div class="card-icon">📖</div>
+        <h3>进入博客</h3>
+        <p>阅读技术、设计和生活感悟</p>
+      </a>
+      <a href="/blog/about" class="card">
+        <div class="card-icon">✨</div>
+        <h3>关于我</h3>
+        <p>了解作者与技术栈</p>
+      </a>
+      <a href="/blog/archive" class="card">
+        <div class="card-icon">📚</div>
+        <h3>文章归档</h3>
+        <p>按时间线浏览所有文章</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    寒影拾光 &copy; 2026 · 在星空下书写
+  </footer>
+
+  <!-- ====== Canvas 星空引擎 ====== -->
+  <script>
+  (function() {
+    const canvas = document.getElementById('starry-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let stars = [];
+    let meteors = [];
+    const STAR_COUNT = 220;
+    let scrollY = 0;
+    let targetScrollY = 0;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    class Star {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial) {
+        this.x = Math.random() * canvas.width;
+        this.y = initial ? Math.random() * canvas.height : Math.random() * canvas.height;
+        this.size = Math.random() * 2.2 + 0.5;
+        this.baseAlpha = Math.random() * 0.4 + 0.3;
+        this.alpha = this.baseAlpha;
+        this.twinkleSpeed = Math.random() * 0.05 + 0.01;
+        this.twinklePhase = Math.random() * Math.PI * 2;
+        this.isPulsar = Math.random() < 0.15;
+        this.pulseAmp = this.isPulsar ? Math.random() * 0.55 + 0.4 : Math.random() * 0.35 + 0.15;
+        const rng = Math.random();
+        if (rng < 0.55) this.color = [220,230,255];
+        else if (rng < 0.8) this.color = [255,255,255];
+        else if (rng < 0.95) this.color = [180,160,255];
+        else this.color = [200,180,255];
+      }
+      update() {
+        this.twinklePhase += this.twinkleSpeed;
+        this.alpha = this.baseAlpha + Math.sin(this.twinklePhase) * this.pulseAmp;
+        this.alpha = Math.max(0.08, Math.min(1, this.alpha));
+      }
+      draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        const glow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+        const [r,g,b] = this.color;
+        glow.addColorStop(0, `rgba(${r},${g},${b},1)`);
+        glow.addColorStop(0.4, `rgba(${r},${g},${b},0.6)`);
+        glow.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    class Meteor {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width * 1.5 - canvas.width * 0.25;
+        this.y = Math.random() * canvas.height * 0.5;
+        this.length = Math.random() * 120 + 60;
+        this.speed = Math.random() * 6 + 3;
+        this.angle = (Math.random() * 20 + 25) * (Math.PI / 180);
+        this.alpha = Math.random() * 0.6 + 0.4;
+        this.life = 0;
+        this.maxLife = 80 + Math.random() * 100;
+      }
+      update() {
+        this.life++;
+        if (this.life >= this.maxLife) {
+          this.reset();
+          this.life = -Math.random() * 400;
+        }
+        if (this.life < 0) return;
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+      }
+      draw(ctx) {
+        if (this.life < 0) return;
+        const progress = this.life / this.maxLife;
+        const fadeAlpha = this.alpha * (progress < 0.1 ? progress/0.1 : progress > 0.8 ? (1-progress)/0.2 : 1);
+        const endX = this.x - Math.cos(this.angle) * this.length;
+        const endY = this.y - Math.sin(this.angle) * this.length;
+        const gradient = ctx.createLinearGradient(this.x, this.y, endX, endY);
+        gradient.addColorStop(0, `rgba(180,140,255,${fadeAlpha})`);
+        gradient.addColorStop(0.3, `rgba(140,100,220,${fadeAlpha*0.8})`);
+        gradient.addColorStop(1, `rgba(100,60,180,0)`);
+        ctx.save();
+        ctx.globalAlpha = fadeAlpha;
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+        ctx.fillStyle = `rgba(220,200,255,${fadeAlpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) stars.push(new Star());
+    }
+    function createMeteors() {
+      meteors = [];
+      for (let i = 0; i < 3; i++) {
+        const m = new Meteor();
+        m.life = -(i * 200 + Math.random() * 300);
+        meteors.push(m);
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 平滑滚动视差
+      scrollY += (targetScrollY - scrollY) * 0.08;
+      const parallax = scrollY * 0.3;
+
+      for (const star of stars) {
+        star.update();
+        star.draw(ctx);
+      }
+      for (const meteor of meteors) {
+        meteor.update();
+        meteor.draw(ctx);
+      }
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('scroll', () => {
+      targetScrollY = window.scrollY;
+    });
+
+    resize();
+    createStars();
+    createMeteors();
+    animate();
+
+    window.addEventListener('resize', () => {
+      resize();
+      createStars();
+      createMeteors();
+    });
+  })();
+  </script>
+
 </body>
 </html>
