@@ -73,4 +73,17 @@ const pageDesc = description || SITE.DESCRIPTION;
     padding: 2rem 1.5rem;
     min-height: calc(100vh - 64px - 120px);
   }
+
+  body:has(.blog-hero) header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: transparent;
+  }
+
+  body:has(.blog-hero) .site-main {
+    padding-top: 0;
+  }
 </style>
