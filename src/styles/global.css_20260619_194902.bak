@@ -191,31 +191,3 @@ blockquote {
     font-size: 0.95rem;
   }
 }
-
-/* ---------- 自定义光标 ---------- */
-* {
-  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><circle cx='8' cy='8' r='4' fill='none' stroke='%23A78BFA' stroke-width='1.5' opacity='0.7'/><circle cx='8' cy='8' r='1.5' fill='%23A78BFA'/></svg>") 8 8, auto;
-}
-
-a, button, .post-card-link, [role="button"], input[type="submit"] {
-  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='5' fill='none' stroke='%23A78BFA' stroke-width='1.5'/><circle cx='10' cy='10' r='2' fill='%23A78BFA'/></svg>") 10 10, pointer;
-}
-
-@keyframes cursorGlow {
-  0%, 100% { filter: drop-shadow(0 0 2px rgba(167,139,250,0.3)); }
-  50% { filter: drop-shadow(0 0 6px rgba(167,139,250,0.7)); }
-}
-
-/* ---------- 毛玻璃卡片 ---------- */
-.glass-card {
-  background: rgba(10, 10, 20, 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(167, 139, 250, 0.08);
-  border-radius: 20px;
-}
-
-:root.light .glass-card {
-  background: rgba(250, 248, 245, 0.55);
-  border-color: rgba(124, 58, 237, 0.1);
-}

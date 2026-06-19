@@ -31,7 +31,6 @@ const pageDesc = description || SITE.DESCRIPTION;
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,400..600;1,14..32,400..600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style is:global>
       @import '../styles/global.css';
@@ -68,7 +67,7 @@ const pageDesc = description || SITE.DESCRIPTION;
   .site-main {
     position: relative;
     z-index: 1;
-    max-width: 1400px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
     min-height: calc(100vh - 64px - 120px);

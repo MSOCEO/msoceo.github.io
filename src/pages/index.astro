@@ -19,52 +19,169 @@ const sorted = allPosts
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <h1 class="hero-title">{SITE.TITLE}</h1>
-    <p class="hero-desc">{SITE.DESCRIPTION}</p>
-  </section>
+  <div class="home-layout">
+    <!-- 左侧栏 25% -->
+    <aside class="home-sidebar home-sidebar-left">
+      <div class="sidebar-avatar">
+        <div class="sidebar-avatar-circle">
+          <i class="fa-solid fa-user-astronaut"></i>
+        </div>
+        <h2 class="sidebar-name">{SITE.TITLE}</h2>
+        <p class="sidebar-desc">{SITE.DESCRIPTION}</p>
+      </div>
+    </aside>
 
-  <section class="post-list">
-    {sorted.length === 0 && (
-      <p class="empty-state">暂无文章，深夜书房正在筹备中...</p>
-    )}
-    {sorted.map((post, i) => (
-      <PostCard
-        slug={post.slug}
-        title={post.title}
-        date={post.date}
-        excerpt={post.excerpt}
-        tags={post.tags}
-        readingTime={post.readingTime}
-        index={i}
-      />
-    ))}
-  </section>
+    <!-- 中间栏 50%：文章列表 -->
+    <section class="home-main">
+      {sorted.length === 0 && (
+        <p class="empty-state">暂无文章，深夜书房正在筹备中...</p>
+      )}
+      {sorted.map((post, i) => (
+        <PostCard
+          slug={post.slug}
+          title={post.title}
+          date={post.date}
+          excerpt={post.excerpt}
+          tags={post.tags}
+          readingTime={post.readingTime}
+          index={i}
+        />
+      ))}
+    </section>
+
+    <!-- 右侧栏 25% -->
+    <aside class="home-sidebar home-sidebar-right">
+      <div class="sidebar-card glass-card">
+        <h3 class="sidebar-title">热门文章</h3>
+        <ul class="sidebar-list">
+          {sorted.slice(0, 5).map(post => (
+            <li><a href={`/blog/${post.slug}/`}>{post.title}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="sidebar-card glass-card">
+        <h3 class="sidebar-title">分类</h3>
+        <div class="sidebar-tags">
+          {[...new Set(sorted.flatMap(p => p.tags || []))].slice(0, 12).map(tag => (
+            <a href={`/blog/?tag=${tag}`} class="sidebar-tag">{tag}</a>
+          ))}
+        </div>
+      </div>
+    </aside>
+  </div>
 </BaseLayout>
 
 <style>
-  .hero {
+  .home-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .home-sidebar {
+    position: sticky;
+    top: 100px;
+    width: 25%;
+    flex-shrink: 0;
+  }
+
+  .home-main {
+    width: 50%;
+    flex-shrink: 0;
+  }
+
+  /* 左侧栏 - 头像 Logo */
+  .sidebar-avatar {
     text-align: center;
-    padding: 4rem 0 3rem;
+    padding: 2rem 0;
   }
 
-  .hero-title {
-    font-family: var(--font-serif);
+  .sidebar-avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(167, 139, 250, 0.08);
+    border: 2px solid rgba(167, 139, 250, 0.3);
+    box-shadow: 0 0 24px rgba(167, 139, 250, 0.15);
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
     font-size: 2.8rem;
+    color: #A78BFA;
+  }
+
+  .sidebar-avatar-circle:hover {
+    transform: rotate(360deg);
+  }
+
+  .sidebar-name {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
     color: var(--color-text-primary);
-    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
   }
 
-  .hero-desc {
-    font-size: 1rem;
+  .sidebar-desc {
+    font-size: 0.85rem;
     color: var(--color-text-muted);
-    letter-spacing: 0.2em;
+    margin-top: 0.4rem;
+    letter-spacing: 0.08em;
   }
 
-  .post-list {
-    margin-top: 1rem;
+  /* 右侧栏 */
+  .sidebar-card {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .sidebar-title {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: #A78BFA;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+  }
+
+  .sidebar-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .sidebar-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-list a {
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    transition: color 0.2s;
+  }
+
+  .sidebar-list a:hover {
+    color: #A78BFA;
+  }
+
+  .sidebar-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .sidebar-tag {
+    font-size: 0.72rem;
+    padding: 0.2em 0.65em;
+    border-radius: 12px;
+    background: rgba(167, 139, 250, 0.1);
+    color: #A78BFA;
+    transition: background 0.2s;
+  }
+
+  .sidebar-tag:hover {
+    background: rgba(167, 139, 250, 0.2);
   }
 
   .empty-state {
@@ -74,12 +191,24 @@ const sorted = allPosts
     font-size: 0.9rem;
   }
 
-  @media (max-width: 640px) {
-    .hero {
-      padding: 2rem 0 1.5rem;
+  @media (max-width: 1024px) {
+    .home-layout {
+      flex-direction: column;
     }
 
-    .hero-title {
+    .home-sidebar,
+    .home-main {
+      width: 100%;
+    }
+
+    .home-sidebar {
+      position: static;
+      order: -1;
+    }
+
+    .sidebar-avatar-circle {
+      width: 80px;
+      height: 80px;
       font-size: 2rem;
     }
   }

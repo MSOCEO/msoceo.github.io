@@ -44,18 +44,21 @@ const isEven = index % 2 === 1;
 
 <style>
   .post-card {
-    border: 1px solid rgba(167, 139, 250, 0.12);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    padding: 24px;
-    margin-bottom: 1rem;
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    border-bottom: 1px solid var(--color-border);
+    padding: 2.5rem 0;
+    transition: all 0.3s var(--ease-out);
+  }
+
+  .post-card:first-child {
+    padding-top: 0;
   }
 
   .post-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(167, 139, 250, 0.28);
-    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.08);
+    transform: translateX(8px);
+  }
+
+  .post-card--alt:hover {
+    transform: translateX(-8px);
   }
 
   .post-card-link {
@@ -65,30 +68,30 @@ const isEven = index % 2 === 1;
   }
 
   .post-card-date {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--color-text-muted);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .post-card-title {
-    font-family: 'Noto Serif SC', var(--font-serif);
-    font-size: 1.3rem;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
     font-weight: 600;
-    margin: 0.4rem 0 0.5rem;
-    color: #E4E4E7;
-    transition: color 0.25s;
+    margin: 0.5rem 0 0.65rem;
+    color: var(--color-text-primary);
+    transition: color 0.25s var(--ease-out);
   }
 
   .post-card:hover .post-card-title {
-    color: #A78BFA;
+    color: var(--color-accent);
   }
 
   .post-card-excerpt {
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     color: var(--color-text-secondary);
     line-height: 1.65;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -98,33 +101,33 @@ const isEven = index % 2 === 1;
   .post-card-meta {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 0.72rem;
+    gap: 1rem;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
   }
 
   .post-card-tags {
     display: flex;
-    gap: 0.35rem;
+    gap: 0.4rem;
   }
 
   .post-card-tag {
-    background: rgba(167, 139, 250, 0.1);
-    color: #A78BFA;
-    padding: 0.1em 0.5em;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    padding: 0.1em 0.55em;
     border-radius: 3px;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
   }
 
   .post-card-read {
     display: inline-block;
-    margin-top: 0.6rem;
-    font-size: 0.8rem;
-    color: #A78BFA;
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    color: var(--color-accent);
     font-weight: 500;
     opacity: 0;
-    transform: translateX(-6px);
-    transition: all 0.3s;
+    transform: translateX(-8px);
+    transition: all 0.3s var(--ease-out);
   }
 
   .post-card:hover .post-card-read {
@@ -134,10 +137,11 @@ const isEven = index % 2 === 1;
 
   @media (max-width: 640px) {
     .post-card {
-      padding: 18px;
+      padding: 1.5rem 0;
     }
+
     .post-card-title {
-      font-size: 1.15rem;
+      font-size: 1.25rem;
     }
   }
 </style>

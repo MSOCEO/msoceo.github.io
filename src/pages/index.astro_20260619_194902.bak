@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sorted = allPosts
+  .filter(p => !p.data.draft)
+  .map(p => ({
+    title: p.data.title,
+    date: p.data.pubDate.toISOString().split('T')[0],
+    excerpt: p.data.description,
+    tags: p.data.tags,
+    slug: p.id,
+    readingTime: `${Math.max(1, Math.ceil((p.body?.length || 0) / 500))} 分钟`,
+  }))
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+---
+
+<BaseLayout>
+  <section class="hero">
+    <h1 class="hero-title">{SITE.TITLE}</h1>
+    <p class="hero-desc">{SITE.DESCRIPTION}</p>
+  </section>
+
+  <section class="post-list">
+    {sorted.length === 0 && (
+      <p class="empty-state">暂无文章，深夜书房正在筹备中...</p>
+    )}
+    {sorted.map((post, i) => (
+      <PostCard
+        slug={post.slug}
+        title={post.title}
+        date={post.date}
+        excerpt={post.excerpt}
+        tags={post.tags}
+        readingTime={post.readingTime}
+        index={i}
+      />
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 4rem 0 3rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-serif);
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.2em;
+  }
+
+  .post-list {
+    margin-top: 1rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 4rem 0;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: 2rem 0 1.5rem;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+    }
+  }
+</style>

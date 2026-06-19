@@ -309,17 +309,33 @@ const description = '探索关于技术、生活与发现的文字记录';
   }
 
   .post-card {
-    border: 1px solid rgba(167, 139, 250, 0.12);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    border: 1px solid var(--ink-20);
+    border-radius: var(--radius-lg);
+    background: var(--ink-10);
+    transition: all var(--duration-normal) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--amber-400);
+    opacity: 0;
+    border-radius: 0 2px 2px 0;
+    transition: opacity var(--duration-normal) var(--ease-out);
   }
 
   .post-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(167, 139, 250, 0.28);
-    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.08);
+    border-color: var(--ink-30);
+    transform: translateX(6px);
+    box-shadow: var(--shadow-md);
   }
+  .post-card:hover::before { opacity: 1; }
 
   .post-card-link {
     display: block;
@@ -338,10 +354,10 @@ const description = '探索关于技术、生活与发现的文字记录';
   }
 
   .post-title {
-    font-family: 'Noto Serif SC', serif;
+    font-family: var(--font-display);
     font-size: var(--text-xl);
     font-weight: var(--weight-semibold);
-    color: #E4E4E7;
+    color: var(--ink-90);
     margin-bottom: var(--space-xs);
     line-height: var(--leading-snug);
   }
@@ -373,10 +389,10 @@ const description = '探索关于技术、生活与发现的文字记录';
     gap: 6px;
     font-size: var(--text-sm);
     font-weight: var(--weight-medium);
-    color: #A78BFA;
+    color: var(--amber-400);
     transition: color var(--duration-fast) var(--ease-out);
   }
-  .post-read-more:hover { color: #8B5CF6; }
+  .post-read-more:hover { color: var(--amber-500); }
   .post-read-more svg {
     transition: transform var(--duration-fast) var(--ease-out);
   }
