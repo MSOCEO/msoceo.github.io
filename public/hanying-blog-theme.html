@@ -748,10 +748,9 @@
 
   /* ══════ 返回顶部按钮 — 二次元动漫风 ══════ */
   .back-to-top {
-    position: fixed !important;
-    right: 24px !important;
-    left: auto !important;
-    bottom: 48px;
+    position: absolute;
+    right: 24px;
+    left: auto;
     z-index: 1001;
     cursor: pointer;
     transition: opacity 0.4s ease;
@@ -849,7 +848,7 @@
     to   { transform: rotate(360deg); }
   }
   @media (max-width: 768px) {
-    .back-to-top { right: 12px !important; left: auto !important; bottom: 32px; transform: none !important; }
+    .back-to-top { right: 12px; left: auto; transform: none; }
     .return-btn { width: 40px; height: 40px; }
     .return-btn-inner { width: 22px; height: 22px; }
     .return-btn-inner svg { width: 18px; height: 18px; stroke-width: 2.5; }
@@ -2369,6 +2368,26 @@
 
 <!-- ══════ JS ══════ -->
 <script>
+  /* ══════ 返回顶部按钮：强制精确定位 ══════ */
+  function positionBackToTop() {
+    var btn = document.getElementById('backToTop');
+    if (!btn) return;
+    /* 用 absolute 定位，相对于 body（不受 transform 影响）*/
+    btn.style.position = 'absolute';
+    btn.style.right = '24px';
+    btn.style.left = 'auto';
+    /* 始终在视口右下角：scrollY + innerHeight - 按钮偏移 */
+    btn.style.top = (window.scrollY + window.innerHeight - 96) + 'px';
+  }
+  
+  /* 确保 body 是定位参考（position:relative）*/
+  if (document.body && getComputedStyle) {
+    var bodyPos = getComputedStyle(document.body).position;
+    if (bodyPos === 'static') {
+      document.body.style.position = 'relative';
+    }
+  }
+
   /* 当前激活的页面 */
   var currentSection = 'home';
 
@@ -2495,7 +2514,8 @@
     } else {
       btn.classList.remove('visible');
     }
-  });
+    requestAnimationFrame(positionBackToTop);
+  }, { passive: true });
 
   /* ══════ 樱花 + 落叶飘落动效 ══════ */
   var sakuraCanvas = document.getElementById('sakura-canvas');
@@ -2820,7 +2840,18 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeEmailModal();
   });
-  </script>
+  
+
+  // 窗口大小改变时重新定位
+  window.addEventListener('resize', positionBackToTop);
+
+  // 页面加载后立即定位
+  if (document.readyState === 'loading') {
+    window.addEventListener('load', positionBackToTop);
+  } else {
+    positionBackToTop();  /* DOM 已就绪，立即执行 */
+  }
+</script>
 
 
 <!-- ══════ 邮件弹窗 ══════ -->
