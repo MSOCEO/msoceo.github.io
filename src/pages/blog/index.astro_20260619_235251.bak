@@ -26,15 +26,10 @@ const description = '在深夜书房里，拾取散落的光';
 ---
 
 <Page {title} {description}>
-  <!-- 全屏流水 Hero -->
+  <!-- 全屏星空 Hero -->
   <div class="blog-hero">
     <div class="blog-hero-inner">
-      <h1 class="blog-hero-title">
-        <span class="hero-char char-1">寒</span>
-        <span class="hero-char char-2">影</span>
-        <span class="hero-char char-3">拾</span>
-        <span class="hero-char char-4">光</span>
-      </h1>
+      <h1 class="blog-hero-title"><span class="accent-purple">寒</span>影<span class="accent-purple">·</span>拾光</h1>
       <p class="blog-hero-sub">在深夜书房里，拾取散落的光</p>
       <div class="blog-hero-line"></div>
     </div>
@@ -494,7 +489,7 @@ const description = '在深夜书房里，拾取散落的光';
   }
 
   .post-thumb-num {
-    font-family: 'Liu Jian Mao Cao', 'Noto Serif SC', serif;
+    font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
     font-size: 4rem;
     color: rgba(167, 139, 250, 0.15);
     z-index: 1;
@@ -659,69 +654,28 @@ const description = '在深夜书房里，拾取散落的光';
     align-items: center;
   }
 
-  /* ---- 四字逐现标题 ---- */
   .blog-hero-title {
-    font-family: 'Liu Jian Mao Cao', 'Noto Serif SC', serif;
-    font-size: clamp(4rem, 11vw, 8rem);
+    font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
+    font-size: clamp(3.5rem, 10vw, 7rem);
     font-weight: 400;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.12em;
+    color: #fff;
+    text-shadow: 0 0 60px rgba(180,140,255,0.35), 0 0 120px rgba(140,100,220,0.2);
     margin: 0;
-    display: flex;
-    gap: 0.15em;
   }
 
-  .hero-char {
-    display: inline-block;
-    opacity: 0;
-    filter: blur(12px);
-    transform: translateY(30px);
-    animation: charReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    /* 流水渐变：用 background-clip 把渐变色裁剪到文字上 */
-    background: linear-gradient(
-      180deg,
-      #e0d5ff 0%,
-      #c4b5fd 18%,
-      #a78bfa 36%,
-      #8b5cf6 54%,
-      #a78bfa 72%,
-      #c4b5fd 88%,
-      #e0d5ff 100%
-    );
-    background-size: 100% 300%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation:
-      charReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards,
-      flowGradient 3s ease-in-out infinite;
+  .blog-hero-title .accent-purple {
+    color: #b48cff;
+    text-shadow: 0 0 80px rgba(180,140,255,0.5), 0 0 160px rgba(140,100,220,0.3);
   }
 
-  .char-1 { animation-delay: 0.3s, 1.7s; }
-  .char-2 { animation-delay: 0.5s, 1.9s; }
-  .char-3 { animation-delay: 0.7s, 2.1s; }
-  .char-4 { animation-delay: 0.9s, 2.3s; }
-
-  @keyframes charReveal {
-    0%   { opacity: 0; filter: blur(12px); transform: translateY(30px); }
-    60%  { opacity: 0.8; filter: blur(2px); transform: translateY(-4px); }
-    100% { opacity: 1; filter: blur(0); transform: translateY(0); }
-  }
-
-  @keyframes flowGradient {
-    0%, 100% { background-position: 50% 0%; }
-    50%      { background-position: 50% 100%; }
-  }
-
-  /* ---- 副标题（衬线体） ---- */
   .blog-hero-sub {
-    margin-top: 1.6rem;
-    font-family: 'Noto Serif SC', serif;
+    margin-top: 1.2rem;
     font-size: 1.15rem;
-    font-weight: 400;
     color: rgba(255,255,255,0.35);
     letter-spacing: 0.35em;
     opacity: 0;
-    animation: heroFadeUp 1.2s 1.6s ease-out forwards;
+    animation: heroFadeUp 1.2s 0.6s ease-out forwards;
   }
 
   .blog-hero-line {
@@ -730,7 +684,7 @@ const description = '在深夜书房里，拾取散落的光';
     background: linear-gradient(90deg, transparent, #b48cff, transparent);
     margin: 2rem auto;
     opacity: 0;
-    animation: heroFadeUp 1s 1.8s ease-out forwards;
+    animation: heroFadeUp 1s 1s ease-out forwards;
   }
 
   @keyframes heroFadeUp {
@@ -750,9 +704,8 @@ const description = '在深夜书房里，拾取散落的光';
     color: rgba(255,255,255,0.35);
     font-size: 0.75rem;
     letter-spacing: 0.2em;
-    font-family: 'Noto Serif SC', serif;
     opacity: 0;
-    animation: heroFadeUp 1s 2.8s ease-out forwards;
+    animation: heroFadeUp 1s 1.4s ease-out forwards;
   }
 
   .blog-hero-arrow {
@@ -770,7 +723,7 @@ const description = '在深夜书房里，拾取散落的光';
   }
 
   @media (max-width: 640px) {
-    .blog-hero-title { font-size: clamp(3rem, 13vw, 5rem); letter-spacing: 0.2em; }
+    .blog-hero-title { font-size: clamp(2.5rem, 12vw, 3.5rem); }
     .blog-hero-sub { font-size: 0.9rem; letter-spacing: 0.2em; }
   }
 </style>

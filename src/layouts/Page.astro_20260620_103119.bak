@@ -14,7 +14,7 @@ const { title, description } = Astro.props;
     <BaseHead title={title} description={description} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&family=Noto+Serif+SC:wght@400;600&text=寒影拾光在深夜书房里取散落的下降阅读博客文章全文搜索标签全部页共篇没有找到匹配上一&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
   </head>
   <body>
     <Header />

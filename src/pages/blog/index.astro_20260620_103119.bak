@@ -494,7 +494,7 @@ const description = '在深夜书房里，拾取散落的光';
   }
 
   .post-thumb-num {
-    font-family: 'Liu Jian Mao Cao', 'Noto Serif SC', serif;
+    font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
     font-size: 4rem;
     color: rgba(167, 139, 250, 0.15);
     z-index: 1;
@@ -661,7 +661,7 @@ const description = '在深夜书房里，拾取散落的光';
 
   /* ---- 四字逐现标题 ---- */
   .blog-hero-title {
-    font-family: 'Liu Jian Mao Cao', 'Noto Serif SC', serif;
+    font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
     font-size: clamp(4rem, 11vw, 8rem);
     font-weight: 400;
     letter-spacing: 0.3em;
