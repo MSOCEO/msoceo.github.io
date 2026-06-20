@@ -38,3 +38,9 @@ if [ -f /tmp/portal-index.html ]; then
   cp /tmp/portal-index.html dist/index.html
   rm -f /tmp/portal-index.html
 fi
+
+# Replace blog homepage with custom theme (if present)
+if [ -f dist/blog/hanying-blog-theme.html ]; then
+  cp dist/blog/hanying-blog-theme.html dist/blog/index.html
+  echo "✓ Blog homepage replaced with custom theme"
+fi
