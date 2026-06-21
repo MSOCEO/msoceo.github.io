@@ -742,12 +742,12 @@
     width: 100%;
     min-height: calc(100vh - 56px);
     padding: 0 40px;
-    gap: 0;
+    gap: 12px;
   }
 
   /* ══════ Main Content ══════ */
   .main-content {
-    padding: 32px 48px 80px 0;
+    padding: 32px 0 80px 0;
     min-width: 0;
   }
   .page-header {
@@ -783,7 +783,9 @@
   .article-section {
     padding: 0 !important;
     overflow: hidden;
+    margin-bottom: 12px;
   }
+  .article-section:last-child { margin-bottom: 0; }
   .article-section-label {
     display: flex;
     align-items: center;
@@ -1312,9 +1314,9 @@
   }
   /* 旧 carousel-arrow 已替换为 hero-arrow */
 
-  /* ══════ Right Sidebar ══════ */
+  /* ═════ Right Sidebar ═════ */
   .right-sidebar {
-    padding: 34px 0 32px 20px;
+    padding: 35px 0 32px 20px;
     border-left: 1px solid var(--border-subtle);
     align-self: start;
   }
@@ -3000,6 +3002,68 @@
 </div>
 
 
+
+<script>
+(function() {
+  var MAX_TRIES = 8;
+  var NUDGE_PX = -1;  // 手动微调：负数=右边向上移
+  var tryCount = 0;
+
+  function alignSidebar() {
+    var label = document.querySelector('.article-section-label');
+    var sidebar = document.querySelector('.right-sidebar');
+    var firstSection = sidebar ? sidebar.querySelector('.sidebar-section, .profile-card') : null;
+    if (!label || !sidebar || !firstSection) return;
+    if (window.getComputedStyle(sidebar).display === 'none') {
+      sidebar.style.marginTop = '0px';
+      return;
+    }
+
+    var labelTop = label.getBoundingClientRect().top;
+    var firstTop = firstSection.getBoundingClientRect().top;
+    var diff = Math.round(firstTop - labelTop);  // 正数=右边偏低，负数=右边偏高
+
+    if (Math.abs(diff) <= 1 || tryCount >= MAX_TRIES) {
+      if (tryCount >= MAX_TRIES) console.log('[alignSidebar] max tries reached, diff=' + diff + 'px');
+      else console.log('[alignSidebar] ✓ aligned (diff=' + diff + 'px)');
+      return;
+    }
+
+    // 当前 marginTop
+    var currentMT = parseInt(sidebar.style.marginTop) || 0;
+    // 需要让右边移动 -diff 像素（diff>0 右边太低，要向下移；diff<0 右边太高，要向上移）
+    var newMT = currentMT - diff + NUDGE_PX;
+    sidebar.style.marginTop = newMT + 'px';
+    tryCount++;
+    console.log('[alignSidebar] try#' + tryCount + ' diff=' + diff + 'px  marginTop ' + currentMT + '→' + newMT + 'px (nudge=' + NUDGE_PX + ')');
+
+    // 下一帧重新测量
+    requestAnimationFrame(alignSidebar);
+  }
+
+  function init() {
+    tryCount = 0;
+    // 重置 marginTop 从 0 开始
+    var sidebar = document.querySelector('.right-sidebar');
+    if (sidebar) sidebar.style.marginTop = '0px';
+    requestAnimationFrame(function() {
+      alignSidebar();
+      setTimeout(function() { if (tryCount < MAX_TRIES) alignSidebar(); }, 300);
+      setTimeout(function() { if (tryCount < MAX_TRIES) alignSidebar(); }, 800);
+      setTimeout(function() { if (tryCount < MAX_TRIES) alignSidebar(); }, 2000);
+    });
+  }
+
+  window.alignSidebar = alignSidebar;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  window.addEventListener('resize', function() { tryCount = 0; init(); });
+})();
+</script>
 
 </body>
 </html>
