@@ -32,7 +32,7 @@
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: auto; scroll-padding-top: 64px; }
+    html { scroll-behavior: auto; scroll-padding-top: 64px; min-height: 100vh; }
     body {
     font-family: var(--type-sans);
     background: var(--ink-deep);
@@ -40,7 +40,14 @@
     line-height: 1.7;
     font-size: 15px;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
   }
+  /* 确保 flex 贴底链路：html → body → 内容区 → footer */
+  #splash { flex-shrink: 0; }
+  .main-layout { flex: 1 0 auto; }
+  .site-footer { flex-shrink: 0; margin-top: auto; }
 
   /* ══════ 自定义滚动条（暂隐藏，颜色留底）══════
   | 深色模式 | thumb:#22c55e | track:#0c0c18 |
@@ -724,13 +731,23 @@
   [data-theme="light"] .stat-label { color: var(--text-secondary); }
   [data-theme="light"] .recent-title a { color: var(--text-primary); }
   [data-theme="light"] .recent-title a:hover { color: var(--gold-light); }
-  [data-theme="light"] .profile-name { color: var(--text-primary); }
+  [data-theme="light"] .profile-name-row { color: var(--text-primary); }
   [data-theme="light"] .profile-bio { color: var(--text-secondary); }
   [data-theme="light"] .social-btn { opacity: 0.85; }
   [data-theme="light"] .scroll-cue svg { stroke: var(--gold); }
   [data-theme="light"] .footer-brand { color: var(--text-primary); }
   [data-theme="light"] .fn-shine { color: #ef4444; }
   [data-theme="light"] .footer-tech { color: #1a1a1a; font-weight: 400; }
+  [data-theme="light"] .article-card::after {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(240,192,64,0.7) 0px, rgba(240,192,64,0.7) 3px,
+      rgba(255,107,107,0.7) 3px, rgba(255,107,107,0.7) 6px,
+      rgba(78,205,196,0.7) 6px, rgba(78,205,196,0.7) 9px,
+      rgba(168,85,247,0.7) 9px, rgba(168,85,247,0.7) 12px
+    );
+    background-size: 12px 12px;
+  }
 
   /* ══════ Main Layout (Content + Right Sidebar) ══════ */
   .main-layout {
@@ -740,7 +757,6 @@
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
-    min-height: calc(100vh - 56px);
     padding: 0 40px;
     gap: 12px;
   }
@@ -792,7 +808,7 @@
     gap: 12px;
     padding: 12px 28px;
     background: linear-gradient(90deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.02) 60%, transparent 100%);
-    border-bottom: 1px solid rgba(201,168,76,0.15);
+    border-bottom: none;
   }
   .asl-dot {
     width: 8px;
@@ -915,18 +931,34 @@
     display: flex;
     gap: 24px;
     padding: 24px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    transition: gap 0.3s ease, border-color 0.3s ease;
+    border-bottom: none;
+    position: relative;
+    transition: gap 0.3s ease;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
     align-items: flex-start;
   }
+  /* 卡片间彩色斜杠条纹分隔线 */
+  .article-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #ffe066 0px, #ffe066 3px,
+      #ff8fab 3px, #ff8fab 6px,
+      #6ee7b7 6px, #6ee7b7 9px,
+      #c084fc 9px, #c084fc 12px
+    );
+    background-size: 12px 12px;
+    border-radius: 2px;
+  }
   .article-card:first-child { padding-top: 4px; }
-  .article-card:last-child { border-bottom: none; }
+  .article-card:last-child::after { display: none; }
   .article-card:hover {
     gap: 32px;
-    border-bottom-color: rgba(201,168,76,0.25);
   }
   .article-card:hover .article-title { color: var(--gold-light); }
 
@@ -942,7 +974,9 @@
     border-radius: 10px;
     overflow: hidden;
     position: relative;
-    background: #1a1a2e;
+    background: #111118;
+    /* 确保图片渲染质量 */
+    image-rendering: auto;
   }
   .article-thumb img {
     width: 100%;
@@ -950,6 +984,10 @@
     object-fit: cover;
     display: block;
     transition: transform 0.4s ease;
+    /* 彻底不用滤镜，保留原图真实色彩 */
+    filter: none !important;
+    image-rendering: auto;
+    mix-blend-mode: normal;
   }
   .article-card:hover .article-thumb img {
     transform: scale(1.08);
@@ -975,7 +1013,7 @@
     );
     transform: skewX(-20deg);
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
   }
   .article-card:hover .article-thumb::after {
     animation: shimmerSlide 0.75s ease-in-out forwards;
@@ -1140,17 +1178,20 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0; /* 隐藏暗色SVG叠加层，让Wallhaven高清图透出来 */
+    pointer-events: none;
   }
   /* 渐变遮罩 — 底部深色用于文字可读性 */
   .hero-slide::after {
     content: '';
     position: absolute;
-    inset: 0;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
     background: linear-gradient(
       to top,
-      rgba(10,10,15,0.92) 0%,
-      rgba(10,10,15,0.5) 40%,
-      transparent 70%
+      rgba(10,10,18,0.55) 0%,
+      rgba(10,10,18,0.15) 60%,
+      transparent 100%
     );
     pointer-events: none;
     z-index: 2;
@@ -1341,54 +1382,142 @@
 
   /* ══════ Profile Card (sidebar top) ══════ */
   .profile-card {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 12px;
-    padding: 12px 14px;
+    padding: 0 14px 14px;
     border: 2px solid rgba(201,168,76,0.18);
     border-radius: var(--radius-md);
     background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(201,168,76,0.03) 100%);
     box-shadow: 0 1px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04);
+    overflow: hidden;
+  }
+  .profile-cover {
+    margin: 0 -14px 0 -14px;
+    height: 56px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, rgba(168,128,184,0.15) 50%, rgba(110,200,212,0.12) 100%);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    position: relative;
+  }
+  .profile-cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
   }
   .profile-avatar-wrap {
-    width: 56px;
-    height: 56px;
-    margin: 0 auto 6px;
+    width: 88px;
+    height: 88px;
+    margin: -36px auto 10px;
+    padding: 0; /* 给认证标留出空间，不裁切 */
     border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid rgba(201,168,76,0.3);
-    transition: border-color 0.3s;
+    border: 3px solid var(--ink-deep);
+    background: var(--ink-deep);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.3), 0 6px 24px rgba(0,0,0,0.5);
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
     cursor: pointer;
+    position: relative;
+    z-index: 1;
   }
   .profile-avatar-wrap:hover {
     border-color: rgba(201,168,76,0.7);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.5), 0 6px 28px rgba(0,0,0,0.55);
   }
   .profile-avatar {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .profile-avatar-wrap:hover .profile-avatar {
-    transform: rotate(360deg);
+    transform: scale(1.08);
   }
-  .profile-name {
-    font-size: 14px;
+  /* ══ 名字行：水平居中 + 图标对齐 ══ */
+  .profile-name-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: 0.06em;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
+    /* 整体居中 */
+    width: 100%;
+    text-align: center;
+  }
+  /* ══ 名字行认证标 ══ */
+  .profile-name-verified {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .profile-name-verified svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    filter: drop-shadow(0 1px 4px rgba(24,119,242,0.3));
+    transition: filter 0.2s;
+  }
+  .profile-name-row:hover .profile-name-verified svg {
+    filter: drop-shadow(0 2px 10px rgba(24,119,242,0.55));
+  }
+  .profile-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 99px;
+    padding: 3px 12px;
+    margin-bottom: 8px;
   }
   .profile-desc {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-secondary);
     letter-spacing: 0.03em;
     margin-bottom: 10px;
-    line-height: 1.4;
+    line-height: 1.5;
+  }
+  .profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  .ptag {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-subtle);
+    border-radius: 99px;
+    padding: 3px 10px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .ptag:hover {
+    color: var(--gold-light);
+    border-color: rgba(201,168,76,0.3);
+  }
+  .profile-meta {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+  .pm-item i {
+    margin-right: 3px;
+    font-size: 9px;
   }
   .profile-socials {
     display: flex;
@@ -1588,6 +1717,15 @@
   #sec-archive, #sec-categories, #sec-tags, #sec-about, #sec-links {
     display: none;
     padding-top: 88px;
+  }
+  /* flex 贴底：主内容区撑满剩余空间，页脚始终在底部 */
+  #page-home,
+  #sec-archive,
+  #sec-categories,
+  #sec-tags,
+  #sec-about,
+  #sec-links {
+    flex: 1 0 auto;
   }
   .section-desc {
     color: var(--text-secondary);
@@ -1891,11 +2029,35 @@
   [data-theme="light"] .email-modal-footer { border-top-color: rgba(0,0,0,0.06); }
   [data-theme="light"] .email-modal-note { color: rgba(0,0,0,0.3); }
 
+  .click-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    width: 14px;
+    height: 14px;
+    transform: rotate(45deg);
+    background: var(--hc, #ff4757);
+    /* 用 CSS 变量传颜色给伪元素 */
+    --hc: #ff4757;
+  }
+  .click-heart::before,
+  .click-heart::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--hc, #ff4757);
+  }
+  .click-heart::before { top: -7px; left: 0; }
+  .click-heart::after  { left: -7px; top: 0; }
+
   </style>
 </head>
 
 <body>
 
+<!-- ══════ 顶部导航栏 ══════ -->
 <!-- ══════ 顶部导航栏 ══════ -->
 <nav class="top-nav">
   <div class="top-nav-inner">
@@ -2024,7 +2186,7 @@
           
           <div class="hero-slides">
             <!-- Slide 1: 加密社交 -->
-            <div class="hero-slide active" data-index="0">
+            <div class="hero-slide active" data-index="0" style="background:url('https://w.wallhaven.cc/full/yq/wallhaven-yqg6r7.jpg') center/cover no-repeat;">
               <svg class="hero-slide-bg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="hg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0a1628"/><stop offset="50%" stop-color="#142744"/><stop offset="100%" stop-color="#1b3a60"/></linearGradient>
@@ -2069,7 +2231,7 @@
             </div>
 
             <!-- Slide 2: 设计美学 -->
-            <div class="hero-slide" data-index="1">
+            <div class="hero-slide" data-index="1" style="background:url('https://w.wallhaven.cc/full/9m/wallhaven-9mvqzw.jpg') center/cover no-repeat;">
               <svg class="hero-slide-bg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="hg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e1630"/><stop offset="50%" stop-color="#2d1e42"/><stop offset="100%" stop-color="#3d2858"/></linearGradient>
@@ -2111,7 +2273,7 @@
             </div>
 
             <!-- Slide 3: 开发实践 -->
-            <div class="hero-slide" data-index="2">
+            <div class="hero-slide" data-index="2" style="background:url('https://w.wallhaven.cc/full/3z/wallhaven-3z7k6y.jpg') center/cover no-repeat;">
               <svg class="hero-slide-bg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="hg3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0d1a14"/><stop offset="50%" stop-color="#142a22"/><stop offset="100%" stop-color="#1d3a2e"/></linearGradient>
@@ -2156,7 +2318,7 @@
             </div>
 
             <!-- Slide 4: OLED 色彩哲学 -->
-            <div class="hero-slide" data-index="3">
+            <div class="hero-slide" data-index="3" style="background:url('https://w.wallhaven.cc/full/dp/wallhaven-dpp6mg.jpg') center/cover no-repeat;">
               <svg class="hero-slide-bg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="hg4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0f0f18"/><stop offset="50%" stop-color="#161628"/><stop offset="100%" stop-color="#1a1230"/></linearGradient>
@@ -2237,11 +2399,38 @@
     <aside class="right-sidebar">
       <!-- 个人资料 -->
       <div class="profile-card">
+        <div class="profile-cover"></div>
         <div class="profile-avatar-wrap">
-          <div class="profile-avatar">🦊</div>
+          <img class="profile-avatar" src="avatar-anime.jpg" alt="MSOCEO">
         </div>
-        <div class="profile-name">寒影拾光</div>
-        <div class="profile-desc">深夜书房里的拾光人<br>写代码 · 聊设计 · 记生活</div>
+        <div class="profile-name-row">
+          MSOCEO
+          <span class="profile-name-verified" title="已认证">
+            <!-- Meta 认证标：十角星 decagram（精确形状） -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- 十角星外框 -->
+              <path fill="#1877F2" d="
+                M23 12L20.56 9.22L20.9 5.54L17.29 4.72L15.4 1.54L12 3L8.6 1.54L6.71 4.72L3.1 5.54L3.44 9.22L1 12L3.44 14.78L3.1 18.46L6.71 19.28L8.6 22.46L12 21L15.4 22.46L17.29 19.28L20.9 18.46L20.56 14.78Z
+              "/>
+              <!-- 内圈高光 -->
+              <circle cx="12" cy="12" r="8.5" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="0.7"/>
+              <!-- 对勾 ✓ -->
+              <path d="M8 12.5L10.5 15L16 9.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+        <div class="profile-badge">开发者 / 设计师 / 博主</div>
+        <div class="profile-desc">深夜书房里的拾光人<br>用代码编织梦境，以文字记录时光</div>
+        <div class="profile-tags">
+          <span class="ptag">前端开发</span>
+          <span class="ptag">UI设计</span>
+          <span class="ptag">二次元</span>
+          <span class="ptag">开源</span>
+        </div>
+        <div class="profile-meta">
+          <span class="pm-item"><i class="fas fa-map-marker-alt"></i> 中国</span>
+          <span class="pm-item"><i class="fas fa-clock"></i> 2018年加入</span>
+        </div>
         <div class="profile-socials">
           <a class="ps-btn qq" href="javascript:void(0)" title="QQ"><i class="fab fa-qq"></i></a>
           <a class="ps-btn wechat" href="javascript:void(0)" title="微信"><i class="fab fa-weixin"></i></a>
@@ -2416,8 +2605,6 @@
 </footer>
 
 
-  </div>
-</div>
 
 <!-- ══════ JS ══════ -->
 <script>
@@ -2433,18 +2620,18 @@
 
   /* ══════ 文章数据 + 分页 ══════ */
   var articles = [
-    { title: '关于设计系统与暗色美学的思考', date: '2026-06-18', cat: '设计美学', wc: '3,200', excerpt: '在 Swiss Modernism 与 Bento Grid 的交汇处，探索 OLED 深色模式下的视觉语言，从色彩哲学到布局秩序的完整思考。', img: 'https://th.wallhaven.cc/small/yq/yqvwrx.jpg' },
-    { title: '使用 Ardot 构建加密社交应用的设计实践', date: '2026-06-17', cat: '开发', wc: '2,800', excerpt: '基于 Ardot 设计工具，从零构建端到端加密社交应用的全流程设计实践，涵盖信息架构、交互原型与视觉规范。', img: 'https://th.wallhaven.cc/small/yq/yqvrmk.jpg' },
-    { title: '中文书法字体在 Web 端的应用探索', date: '2026-06-15', cat: '设计美学', wc: '1,500', excerpt: '如何在网页中优雅地使用中文书法字体？从字体加载策略到降级方案，兼顾性能与美学表达。', img: 'https://th.wallhaven.cc/small/9o/9orlxx.jpg' },
-    { title: 'Bento Grid 布局在个人博客中的应用', date: '2026-06-12', cat: '开发实践', wc: '2,400', excerpt: '如何将 Swiss Modernism 的几何美学融入博客布局，兼顾信息密度与阅读体验。', img: 'https://th.wallhaven.cc/small/6l/6lw7v6.jpg' },
-    { title: 'OLED 深色模式的色彩哲学', date: '2026-06-08', cat: '设计美学', wc: '1,800', excerpt: '金色、紫色、青色三色点缀在 #0a0a0f 背景下的可访问性研究与实战心得，探索暗色主题中色彩的克制与张力。', img: 'https://th.wallhaven.cc/small/rq/rqje87.jpg' },
-    { title: '重复造轮子之简易RPC框架', date: '2026-05-02', cat: '技术', wc: '4,554', excerpt: '重复造轮子之实现一个简易的RPC框架，包含服务提供者、消费者、公共模块和RPC核心模块的设计与开发。', img: 'https://th.wallhaven.cc/small/9o/9orkjd.jpg' },
-    { title: 'Spring AOP 动态代理机制：从静态代理到 JDK 与 CGLIB 的实现', date: '2026-04-20', cat: '技术', wc: '3,560', excerpt: '用日志和业务逻辑解耦的案例，从静态代理的手动编码痛点出发，逐步演进至JDK动态代理与CGLIB字节码增强。', img: 'https://th.wallhaven.cc/small/1q/1qr6mg.jpg' },
-    { title: '从零手写一个 Spring Boot Starter：深入理解自动装配原理', date: '2026-04-09', cat: '开发', wc: '1,505', excerpt: '以开发一个控制台 Banner 输出组件为例，手把手讲解 Spring Boot 自动装配机制的实现原理和完整开发流程。', img: 'https://th.wallhaven.cc/small/7j/7jr7o9.jpg' },
-    { title: 'LangChain4j工具调用中断引发JSON格式报错的问题调查', date: '2025-11-01', cat: '开发', wc: '2,081', excerpt: '使用LangChain4j集成AI服务时遇到的400错误问题排查过程，因中断AI回复导致会话历史格式错误。', img: 'https://th.wallhaven.cc/small/xe/xep3oo.jpg' },
-    { title: '策略模式优化多重判断', date: '2025-10-16', cat: '开发', wc: '1,119', excerpt: '使用策略模式优化多重if-else条件判断，将条件逻辑解耦，使代码结构清晰、易于维护和扩展。', img: 'https://th.wallhaven.cc/small/vp/vp5e2m.jpg' },
-    { title: 'NPM包管理工具的幻影依赖问题', date: '2025-08-27', cat: '技术', wc: '998', excerpt: '在Node生态里，NPM、Yarn、PNPM各有优劣，NPM容易产生幻影依赖问题，本文深入分析原因与解决方案。', img: 'https://th.wallhaven.cc/small/3q/3qr2y9.jpg' },
-    { title: 'CSS多行溢出，兼容性比较好的做法', date: '2025-08-02', cat: '开发', wc: '701', excerpt: '利用CSS的float浮动布局的文字环绕特性，实现多行文字溢出省略的兼容方案，Firefox和Safari均完美支持。', img: 'https://th.wallhaven.cc/small/zp/zp561w.jpg' }
+    { title: '关于设计系统与暗色美学的思考', date: '2026-06-18', cat: '设计美学', wc: '3,200', excerpt: '在 Swiss Modernism 与 Bento Grid 的交汇处，探索 OLED 深色模式下的视觉语言，从色彩哲学到布局秩序的完整思考。', img: 'https://w.wallhaven.cc/full/1j/wallhaven-1jd35g.png' },
+    { title: '使用 Ardot 构建加密社交应用的设计实践', date: '2026-06-17', cat: '开发', wc: '2,800', excerpt: '基于 Ardot 设计工具，从零构建端到端加密社交应用的全流程设计实践，涵盖信息架构、交互原型与视觉规范。', img: 'https://w.wallhaven.cc/full/6o/wallhaven-6oodpw.jpg' },
+    { title: '中文书法字体在 Web 端的应用探索', date: '2026-06-15', cat: '设计美学', wc: '1,500', excerpt: '如何在网页中优雅地使用中文书法字体？从字体加载策略到降级方案，兼顾性能与美学表达。', img: 'https://w.wallhaven.cc/full/0q/wallhaven-0qz8eq.jpg' },
+    { title: 'Bento Grid 布局在个人博客中的应用', date: '2026-06-12', cat: '开发实践', wc: '2,400', excerpt: '如何将 Swiss Modernism 的几何美学融入博客布局，兼顾信息密度与阅读体验。', img: 'https://w.wallhaven.cc/full/9m/wallhaven-9mvqzw.jpg' },
+    { title: 'OLED 深色模式的色彩哲学', date: '2026-06-08', cat: '设计美学', wc: '1,800', excerpt: '金色、紫色、青色三色点缀在深色背景下的可访问性研究与实战心得。', img: 'https://w.wallhaven.cc/full/3z/wallhaven-3z7k6y.jpg' },
+    { title: '重复造轮子之简易RPC框架', date: '2026-05-02', cat: '技术', wc: '4,554', excerpt: '重复造轮子之实现一个简易的RPC框架，包含服务提供者、消费者、公共模块和RPC核心模块的设计与开发。', img: 'https://w.wallhaven.cc/full/dp/wallhaven-dpp6mg.jpg' },
+    { title: 'Spring AOP 动态代理机制', date: '2026-04-20', cat: '技术', wc: '3,560', excerpt: '用日志和业务逻辑解耦的案例，从静态代理的手动编码痛点出发，逐步演进至JDK动态代理与CGLIB字节码增强。', img: 'https://w.wallhaven.cc/full/md/wallhaven-mdormk.jpg' },
+    { title: '从零手写一个 Spring Boot Starter', date: '2026-04-09', cat: '开发', wc: '1,505', excerpt: '以开发一个控制台 Banner 输出组件为例，手把手讲解 Spring Boot 自动装配机制的实现原理和完整开发流程。', img: 'https://w.wallhaven.cc/full/mp/wallhaven-mpmz69.jpg' },
+    { title: 'LangChain4j工具调用中断引发JSON格式报错', date: '2025-11-01', cat: '开发', wc: '2,081', excerpt: '使用LangChain4j集成AI服务时遇到的400错误问题排查过程，因中断AI回复导致会话历史格式错误。', img: 'https://w.wallhaven.cc/full/2k/wallhaven-2kvw3y.jpg' },
+    { title: '策略模式优化多重判断', date: '2025-10-16', cat: '开发', wc: '1,119', excerpt: '使用策略模式优化多重if-else条件判断，将条件逻辑解耦，使代码结构清晰、易于维护和扩展。', img: 'https://w.wallhaven.cc/full/8o/wallhaven-8ookok.png' },
+    { title: 'NPM包管理工具的幻影依赖问题', date: '2025-08-27', cat: '技术', wc: '998', excerpt: '在Node生态里，NPM、Yarn、PNPM各有优劣，NPM容易产生幻影依赖问题，本文深入分析原因与解决方案。', img: 'https://w.wallhaven.cc/full/e7/wallhaven-e7kv8l.jpg' },
+    { title: 'CSS多行溢出，兼容性比较好的做法', date: '2025-08-02', cat: '开发', wc: '701', excerpt: '利用CSS的float浮动布局的文字环绕特性，实现多行文字溢出省略的兼容方案，Firefox和Safari均完美支持。', img: 'https://w.wallhaven.cc/full/zy/wallhaven-zy9m2y.png' }
   ];
 
   var articlesPerPage = 7;
@@ -3065,5 +3252,61 @@
 })();
 </script>
 
-</body>
+<!-- ══ 鼠标点击爱心效果（matery风格）══ -->
+<script>
+(function() {
+  var list = [];
+
+  // 兼容 requestAnimationFrame
+  var rAF = window.requestAnimationFrame
+    || window.webkitRequestAnimationFrame
+    || window.mozRequestAnimationFrame
+    || function(cb) { setTimeout(cb, 16); };
+
+  function loop() {
+    for (var i = list.length - 1; i >= 0; i--) {
+      var it = list[i];
+      it.y--;
+      it.s += 0.004;
+      it.a -= 0.013;
+
+      if (it.a <= 0) {
+        if (it.el.parentNode) it.el.parentNode.removeChild(it.el);
+        list.splice(i, 1);
+        continue;
+      }
+
+      it.el.style.left   = it.x + 'px';
+      it.el.style.top    = it.y + 'px';
+      it.el.style.opacity = it.a;
+      it.el.style.transform = 'scale(' + it.s + ') rotate(45deg)';
+    }
+    if (list.length > 0) rAF(loop);
+  }
+
+  function click(e) {
+    var el = document.createElement('div');
+    el.className = 'click-heart';
+
+    var r = Math.floor(Math.random() * 256);
+    var g = Math.floor(Math.random() * 256);
+    var b = Math.floor(Math.random() * 256);
+    var c = 'rgb(' + r + ',' + g + ',' + b + ')';
+
+    el.style.setProperty('--hc', c);
+    el.style.left = (e.clientX - 7) + 'px';
+    el.style.top  = (e.clientY - 7) + 'px';
+
+    document.body.appendChild(el);
+    list.push({ el: el, x: e.clientX - 7, y: e.clientY - 7, s: 1, a: 1 });
+
+    if (list.length === 1) rAF(loop);
+  }
+
+  document.addEventListener('click', click, false);
+})();
+</script>
+
+
+  </body>
 </html>
