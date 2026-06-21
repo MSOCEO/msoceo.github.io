@@ -25,10 +25,18 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Install dependencies
+      - name: Install dependencies (root)
         run: npm ci
-      - name: Build
+      - name: Build root
         run: npm run build
+      - name: Install dependencies (agent-hub)
+        working-directory: ./agent-hub
+        run: npm ci
+      - name: Build agent-hub
+        working-directory: ./agent-hub
+        run: npm run build
+      - name: Copy agent-hub to dist
+        run: mkdir -p dist/agent-hub && cp -r agent-hub/dist/* dist/agent-hub/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

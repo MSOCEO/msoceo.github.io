@@ -1,33 +1,35 @@
 /*
- * Agent Hub – Design System
- * Brand: Local Intelligence. Zero Leakage.
- * Palette: Deep tech with AI violet + cyan accents
+ * Agent Hub — Premium Design System v3
+ * "Local Intelligence. Zero Leakage."
+ * AI-Dark palette with violet/cyan accents + glass + bento
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
   /* ===== Palette ===== */
-  --bg-root: #09090D;
-  --bg-primary: #0D0D14;
-  --bg-secondary: #111118;
-  --bg-tertiary: #18181F;
-  --bg-card: #13131C;
-  --bg-elevated: #1A1A25;
-  --bg-glass: rgba(22, 22, 34, 0.85);
+  --bg-root: #06060A;
+  --bg-primary: #0A0A10;
+  --bg-secondary: #0E0E18;
+  --bg-tertiary: #131320;
+  --bg-card: #111119;
+  --bg-elevated: #181828;
+  --bg-glass: rgba(14, 14, 24, 0.78);
 
-  --border-subtle: #1E1E2A;
-  --border-default: #282836;
-  --border-accent: rgba(139, 92, 246, 0.25);
+  --border-subtle: #1A1A2C;
+  --border-default: #252538;
+  --border-accent: rgba(124, 58, 237, 0.28);
+  --border-cyan: rgba(6, 182, 212, 0.18);
 
   --accent: #8B5CF6;
   --accent-light: #A78BFA;
   --accent-deep: #7C3AED;
-  --accent-bg: rgba(139, 92, 246, 0.08);
-  --accent-bg-hover: rgba(139, 92, 246, 0.14);
+  --accent-bg: rgba(139, 92, 246, 0.09);
+  --accent-bg-hover: rgba(139, 92, 246, 0.15);
 
   --cyan: #06B6D4;
-  --cyan-bg: rgba(6, 182, 212, 0.1);
+  --cyan-bg: rgba(6, 182, 212, 0.08);
+  --cyan-light: #22D3EE;
 
   --success: #10B981;
   --success-bg: rgba(16, 185, 129, 0.1);
@@ -44,7 +46,7 @@
   /* ===== Typography ===== */
   --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Noto Sans SC', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* ===== Spacing Scale ===== */
   --space-1: 4px;
@@ -57,6 +59,7 @@
   --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
+  --space-20: 80px;
 
   /* ===== Radius ===== */
   --radius-sm: 6px;
@@ -67,22 +70,27 @@
   --radius-full: 9999px;
 
   /* ===== Shadows ===== */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.15);
-  --shadow-cyan: 0 0 24px rgba(6, 182, 212, 0.1);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.65);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 24px rgba(139, 92, 246, 0.18);
+  --shadow-glow-strong: 0 0 40px rgba(139, 92, 246, 0.25);
+  --shadow-cyan: 0 0 20px rgba(6, 182, 212, 0.12);
 
   /* ===== Transitions ===== */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 400ms;
+  --duration-glacial: 600ms;
 
   /* ===== Glass ===== */
-  --glass-blur: 16px;
-  --glass-opacity: 0.72;
+  --glass-blur: 18px;
+  --glass-opacity: 0.7;
 }
 
 /* ===== Reset ===== */
@@ -105,6 +113,17 @@ html, body, #root {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ===== Noise Texture Overlay ===== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -121,6 +140,12 @@ html, body, #root {
   border-radius: var(--radius-sm);
 }
 
+/* ===== Selection ===== */
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: var(--text-primary);
+}
+
 /* ===== Animations ===== */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -128,18 +153,28 @@ html, body, #root {
 }
 
 @keyframes fade-in-scale {
-  from { opacity: 0; transform: scale(0.96); }
+  from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes fade-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50% { opacity: 0.25; }
 }
 
 @keyframes shimmer {
@@ -154,23 +189,57 @@ html, body, #root {
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.15); }
-  50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.25); }
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.12); }
+  50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.22); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: var(--border-accent); }
+  50% { border-color: rgba(139, 92, 246, 0.5); }
 }
 
 .animate-fade-in { animation: fade-in var(--duration-base) var(--ease-out) both; }
 .animate-fade-in-scale { animation: fade-in-scale var(--duration-slow) var(--ease-spring) both; }
-.animate-slide-up { animation: slide-up var(--duration-base) var(--ease-out) both; }
+.animate-fade-in-left { animation: fade-in-left var(--duration-base) var(--ease-out) both; }
+.animate-slide-up { animation: slide-up var(--duration-slow) var(--ease-out) both; }
+.animate-slide-down { animation: slide-down var(--duration-base) var(--ease-out) both; }
+.animate-view-enter { animation: view-enter var(--duration-slow) var(--ease-out) both; }
 .animate-pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 8s linear infinite; }
 .animate-shimmer {
   background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-elevated) 50%, var(--bg-tertiary) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+.animate-float { animation: float 4s ease-in-out infinite; }
 
-/* ===== Utility ===== */
+/* ===== Stagger ===== */
 .stagger-1 { animation-delay: 0.05s; }
 .stagger-2 { animation-delay: 0.1s; }
 .stagger-3 { animation-delay: 0.15s; }
 .stagger-4 { animation-delay: 0.2s; }
 .stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+
+/* ===== View Transition ===== */
+.view-enter {
+  animation: view-enter var(--duration-slow) var(--ease-out) both;
+}

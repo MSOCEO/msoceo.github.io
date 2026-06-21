@@ -14,6 +14,7 @@ function App() {
   const [view, setView] = useState<View>('chat');
   const [showHero, setShowHero] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [viewKey, setViewKey] = useState(0);
 
   const webLLM = useWebLLM();
   const agent = useAgent();
@@ -34,6 +35,7 @@ function App() {
   const handleViewChange = (v: View) => {
     setView(v);
     setShowHero(false);
+    setViewKey(k => k + 1);
     localStorage.setItem('agent-hub-view', v);
   };
 
@@ -55,17 +57,23 @@ function App() {
         {!sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
-            className="fixed top-3 left-3 z-20 w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--bg-tertiary)] text-[var(--text-muted)] transition-colors"
+            className="fixed top-3 left-3 z-20 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105"
+            style={{
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border-subtle)',
+              boxShadow: 'var(--shadow-md)',
+              color: 'var(--text-muted)',
+            }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 18l6-6-6-6"/>
+              <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>
             </svg>
           </button>
         )}
         {showHero && view === 'chat' && (
           <HeroBrand onDismiss={() => setShowHero(false)} />
         )}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden" key={viewKey}>
           {view === 'chat' && <ChatPanel webLLM={webLLM} agent={agent} skillReg={skillReg} />}
           {view === 'models' && <ModelSwitcher />}
           {view === 'skills' && <SkillMarket />}
