@@ -18,7 +18,7 @@ export function useWebLLM() {
     setStreamingContent(''); setReasoningContent('');
     try {
       const engine = await CreateMLCEngine(model.modelId, {
-        initProgressCallback: (p) => setLoadState({ status: 'downloading', progress: p.progress, loaded: p.loaded, total: p.total }),
+        initProgressCallback: (p) => setLoadState({ status: 'downloading', progress: p.progress }),
         logLevel: 'WARN',
       });
       engineRef.current = engine;
@@ -56,7 +56,7 @@ export function useWebLLM() {
         messages: msgs as any, tools: tools.length > 0 ? tools as any : undefined,
         tool_choice: tools.length > 0 ? 'auto' : undefined,
         temperature: 0.7, max_tokens: 2048, stream: true, stream_options: { include_usage: true },
-      } as any);
+      } as any) as unknown as AsyncIterable<any>;
       for await (const chunk of chunks) {
         const delta = (chunk as any).choices?.[0]?.delta;
         if (!delta) continue;

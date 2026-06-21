@@ -3,7 +3,7 @@
 // ============================================================
 
 import { openDB, type IDBPDatabase } from 'idb';
-import type { ConversationSession, ChatMessage, SkillDefinition } from '../types';
+import type { ConversationSession, SkillDefinition } from '../types';
 
 const DB_NAME = 'agent-hub';
 const DB_VERSION = 1;

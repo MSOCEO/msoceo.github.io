@@ -79,7 +79,7 @@ export interface ConversationSession {
 
 export type ModelLoadState = 
   | { status: 'idle' }
-  | { status: 'downloading'; progress: number; loaded: number; total: number }
+  | { status: 'downloading'; progress: number }
   | { status: 'loading' }
   | { status: 'ready' }
   | { status: 'error'; error: string };

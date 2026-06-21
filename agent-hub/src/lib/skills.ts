@@ -15,16 +15,47 @@ export const BUILTIN_SKILLS: SkillDefinition[] = [
       { name: 'query', type: 'string', description: '搜索关键词', required: true },
       { name: 'maxResults', type: 'number', description: '最大结果数', required: false, default: 5 },
     ],
-    execute: `async ({ query, maxResults = 5 }) => {
-      const res = await fetch('https://api.duckduckgo.com/?q=' + encodeURIComponent(query) + '&format=json&no_html=1');
-      const data = await res.json();
-      const results = (data.RelatedTopics || []).slice(0, maxResults).map((t, i) => ({
-        title: t.Text?.split(' - ')[0] || t.Text,
-        url: t.FirstURL,
-        snippet: t.Text,
+    execute: `async ({ query, maxResults = 8 }) => {
+  const limit = Math.min(maxResults || 8, 15);
+  // SearXNG public instances — no API key, no CORS issues
+  const searxInstances = [
+    'https://search.sapti.me',
+    'https://searx.be',
+    'https://search.inetol.net',
+    'https://search.rhscz.eu',
+  ];
+  for (const base of searxInstances) {
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 4000);
+      const resp = await fetch(base + '/search?q=' + encodeURIComponent(query) + '&format=json&categories=general&language=zh', { signal: ctrl.signal });
+      clearTimeout(t);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      const results = (data.results || []).slice(0, limit).map(r => ({
+        title: r.title || '', url: r.url || '', snippet: (r.content || r.snippet || '').replace(/\\\\n/g, ' '),
       }));
-      return JSON.stringify(results);
-    }`,
+      if (results.length > 0) return JSON.stringify(results);
+    } catch {}
+  }
+  // Fallback: DuckDuckGo Lite HTML search
+  try {
+    const fd = new URLSearchParams(); fd.append('q', query);
+    const ctrl2 = new AbortController();
+    const t2 = setTimeout(() => ctrl2.abort(), 5000);
+    const resp2 = await fetch('https://lite.duckduckgo.com/lite/', { method: 'POST', body: fd, signal: ctrl2.signal });
+    clearTimeout(t2);
+    const html = await resp2.text();
+    const results = [];
+    const re = /<a[^>]*rel="nofollow"[^>]*>([^<]+)<\\/a>.*?<td class="result-snippet">([^<]*?)</gs;
+    let m;
+    while ((m = re.exec(html)) && results.length < limit) {
+      results.push({ title: m[1].trim(), url: '', snippet: m[2].trim() });
+    }
+    if (results.length > 0) return JSON.stringify(results);
+  } catch {}
+  return JSON.stringify([]);
+}`,
     isBuiltin: true,
   },
   {

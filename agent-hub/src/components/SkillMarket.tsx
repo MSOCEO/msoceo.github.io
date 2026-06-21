@@ -1,217 +1,121 @@
-// ============================================================
-// Agent Hub - Skill Marketplace
-// ============================================================
-
 import { useState } from 'react';
-import type { SkillDefinition } from '../types';
 import { useSkillRegistry } from '../hooks/useSkillRegistry';
 
-interface SkillMarketProps {
-  skillReg: ReturnType<typeof useSkillRegistry>;
-}
+const CATEGORY_MAP: Record<string, string> = {
+  search: 'Search',
+  file: 'File',
+  code: 'Code',
+  media: 'Media',
+  productivity: 'Tools',
+  custom: 'Custom',
+};
 
-export function SkillMarket({ skillReg }: SkillMarketProps) {
-  const [addingCustom, setAddingCustom] = useState(false);
-  const [customName, setCustomName] = useState('');
-  const [customDesc, setCustomDesc] = useState('');
+const ICON_PATHS: Record<string, string> = {
+  'web-search': 'M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z',
+  'time-date': 'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
+  'calculator': 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z',
+  'weather': 'M3 15a4 4 0 0 0 4 4h9a5 5 0 1 0-.1-9.999 5.002 5.002 0 1 0-9.78 2.096A4.001 4.001 0 0 0 3 15z',
+  'url-fetch': 'M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z',
+  'code-runner': 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+};
 
-  const handleAddCustom = async () => {
-    if (!customName.trim() || !customDesc.trim()) return;
-    const id = 'custom-' + Date.now();
-    const skill: SkillDefinition = {
-      id,
-      name: customName,
-      description: customDesc,
-      icon: '🧩',
-      category: 'custom',
-      isBuiltin: false,
-      parameters: [],
-      execute: 'async () => JSON.stringify({ message: "Hello from custom skill!" })',
-    };
-    await skillReg.installSkill(skill);
-    setCustomName('');
-    setCustomDesc('');
-    setAddingCustom(false);
-  };
+export default function SkillMarket() {
+  const { skills, activeSkills, toggleSkill } = useSkillRegistry();
+  const [filter, setFilter] = useState<string>('All');
 
-  const categories = [
-    { key: 'all', label: '全部' },
-    { key: 'search', label: '搜索' },
-    { key: 'productivity', label: '效率' },
-    { key: 'code', label: '代码' },
-    { key: 'media', label: '媒体' },
-    { key: 'custom', label: '自定义' },
-  ] as const;
-  const [activeCat, setActiveCat] = useState<string>('all');
-
-  const filtered = activeCat === 'all'
-    ? skillReg.skills
-    : skillReg.skills.filter(s => s.category === activeCat);
+  const categories = ['All', ...new Set(skills.map(s => s.category))];
+  const filtered = filter === 'All' ? skills : skills.filter(s => s.category === filter);
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 animate-fade-in">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-lg font-semibold">插件市场</h2>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">
-            安装和管理 AI Agent 可调用的工具插件
+    <div className="h-full overflow-y-auto">
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="text-lg font-bold tracking-tight animate-slide-up"
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+            Skill Plugins
+          </h2>
+          <p className="text-sm mt-1 animate-slide-up stagger-1"
+            style={{ color: 'var(--text-secondary)' }}>
+            Modular tools the Agent can use. Toggle on/off — no restart needed.
           </p>
         </div>
-        <button
-          onClick={() => setAddingCustom(!addingCustom)}
-          className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90 transition-opacity"
-        >
-          + 添加插件
-        </button>
-      </div>
 
-      {/* Custom Skill Form */}
-      {addingCustom && (
-        <div className="mb-4 p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] animate-fade-in">
-          <div className="flex gap-3">
-            <input
-              type="text"
-              value={customName}
-              onChange={e => setCustomName(e.target.value)}
-              placeholder="插件名称"
-              className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]/50"
-            />
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-1.5 mb-6 animate-slide-up stagger-2">
+          {categories.map(cat => (
             <button
-              onClick={handleAddCustom}
-              className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90"
+              key={cat}
+              onClick={() => setFilter(cat)}
+              className="text-xs px-3 py-1.5 rounded-lg transition-all"
+              style={{
+                background: filter === cat ? 'var(--accent-bg)' : 'var(--bg-tertiary)',
+                color: filter === cat ? 'var(--accent-light)' : 'var(--text-muted)',
+                fontFamily: 'var(--font-body)',
+                border: filter === cat ? '1px solid var(--border-accent)' : '1px solid transparent',
+              }}
             >
-              确认
+              {cat === 'All' ? 'All' : CATEGORY_MAP[cat] || cat}
             </button>
-            <button
-              onClick={() => setAddingCustom(false)}
-              className="px-4 py-2 rounded-lg border border-[var(--border)] text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            >
-              取消
-            </button>
-          </div>
-          <input
-            type="text"
-            value={customDesc}
-            onChange={e => setCustomDesc(e.target.value)}
-            placeholder="插件描述"
-            className="w-full mt-2 px-3 py-2 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]/50"
-          />
-          <p className="text-[10px] text-[var(--text-muted)] mt-1.5">
-            自定义插件默认为空壳，后续可在浏览器 DevTools 中编辑 execute 函数
-          </p>
-        </div>
-      )}
-
-      {/* Category Tabs */}
-      <div className="flex gap-1 mb-4">
-        {categories.map(cat => (
-          <button
-            key={cat.key}
-            onClick={() => setActiveCat(cat.key)}
-            className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
-              activeCat === cat.key
-                ? 'bg-[var(--accent-bg)] text-[var(--accent-light)]'
-                : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Skill Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {filtered.map(skill => (
-          <SkillCard
-            key={skill.id}
-            skill={skill}
-            isActive={skillReg.activeSkills.includes(skill.id)}
-            onToggle={() => skillReg.toggleSkill(skill.id)}
-            onRemove={skill.isBuiltin ? undefined : () => skillReg.removeSkill(skill.id)}
-          />
-        ))}
-      </div>
-
-      {/* Stats */}
-      <div className="mt-6 p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border)]">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-[var(--text-secondary)]">
-            已启用 <span className="font-medium text-[var(--text-primary)]">{skillReg.activeSkills.length}</span> / {skillReg.skills.length} 个插件
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={skillReg.enableAllSkills}
-              className="text-[11px] text-[var(--accent-light)] hover:underline"
-            >
-              全部启用
-            </button>
-            <button
-              onClick={skillReg.disableAllSkills}
-              className="text-[11px] text-[var(--text-muted)] hover:underline"
-            >
-              全部禁用
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SkillCard({ skill, isActive, onToggle, onRemove }: {
-  skill: SkillDefinition;
-  isActive: boolean;
-  onToggle: () => void;
-  onRemove?: () => void;
-}) {
-  return (
-    <div className={`p-4 rounded-xl border transition-all ${
-      isActive
-        ? 'border-[var(--accent)]/50 bg-[var(--accent-bg)]'
-        : 'border-[var(--border)] bg-[var(--bg-card)]'
-    }`}>
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="text-lg">{skill.icon}</span>
-          <div>
-            <p className="font-medium text-sm">{skill.name}</p>
-            <p className="text-[11px] text-[var(--text-muted)]">
-              {skill.isBuiltin ? '内置' : '自定义'} · {skill.parameters.length} 参数
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={onToggle}
-            className={`relative w-9 h-5 rounded-full transition-colors ${
-              isActive ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
-            }`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
-              isActive ? 'translate-x-[18px]' : 'translate-x-[1px]'
-            }`} />
-          </button>
-          {onRemove && (
-            <button
-              onClick={onRemove}
-              className="w-5 h-5 flex items-center justify-center rounded text-[var(--text-muted)] hover:text-[var(--error)] transition-colors"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-          )}
-        </div>
-      </div>
-      <p className="text-xs text-[var(--text-secondary)] mt-2.5 leading-relaxed">{skill.description}</p>
-      {skill.parameters.length > 0 && (
-        <div className="mt-2.5 flex flex-wrap gap-1">
-          {skill.parameters.map(p => (
-            <span key={p.name} className="px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] text-[10px] text-[var(--text-muted)]">
-              {p.name}: {p.type}
-            </span>
           ))}
         </div>
-      )}
+
+        {/* Skills Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {filtered.map((skill, i) => {
+            const active = activeSkills.includes(skill.id);
+            const iconPath = ICON_PATHS[skill.id] || 'M13 2L3 14h9l-1 8 10-12h-9l1-8z';
+
+            return (
+              <div
+                key={skill.id}
+                className="rounded-xl p-4 transition-all duration-200 animate-fade-in-scale"
+                style={{
+                  background: active ? 'var(--bg-card)' : 'var(--bg-primary)',
+                  border: active ? '1px solid var(--border-subtle)' : '1px solid var(--border-subtle)',
+                  boxShadow: active ? 'var(--shadow-sm)' : 'none',
+                  animationDelay: `${i * 0.04}s`,
+                  opacity: active ? 1 : 0.55,
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: active ? 'var(--accent-bg)' : 'var(--bg-tertiary)' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke={active ? 'var(--accent-light)' : 'var(--text-muted)'}
+                      strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={iconPath} />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-medium truncate"
+                        style={{ fontFamily: 'var(--font-body)', color: 'var(--text-primary)' }}>
+                        {skill.name}
+                      </h3>
+                      <button
+                        onClick={() => toggleSkill(skill.id)}
+                        className="flex-shrink-0 ml-2 relative w-9 h-5 rounded-full transition-all"
+                        style={{ background: active ? 'var(--accent)' : 'var(--border-default)' }}
+                      >
+                        <span className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all shadow-sm"
+                          style={{ left: active ? 'calc(100% - 18px)' : '2px', transition: 'left 0.2s var(--ease-spring)' }} />
+                      </button>
+                    </div>
+                    <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                      {skill.description}
+                    </p>
+                    <span className="inline-block text-[10px] mt-2 px-2 py-0.5 rounded-full"
+                      style={{ background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
+                      {CATEGORY_MAP[skill.category] || skill.category}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
