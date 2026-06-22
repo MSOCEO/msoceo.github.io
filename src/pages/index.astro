@@ -1,5 +1,8 @@
 ---
 import Page from '../layouts/Page.astro';
+import AuroraBg from '../components/AuroraBg.astro';
+import Fireflies from '../components/Fireflies.astro';
+import GlowFollow from '../components/GlowFollow.astro';
 import { getCollection } from 'astro:content';
 
 const allPostsUnsorted = await getCollection('blog');
@@ -45,6 +48,11 @@ const description = '在深夜书房里，拾取散落的光';
 ---
 
 <Page {title} {description}>
+  <!-- v3 动态装饰层 -->
+  <AuroraBg />
+  <Fireflies />
+  <GlowFollow />
+
   <div class="diary-page">
     <header class="diary-header">
       <div class="diary-header-decoration">
@@ -71,23 +79,24 @@ const description = '在深夜书房里，拾取散落的光';
       </div>
     )}
 
-    <div class="diary-feed" id="postGrid">
+    <div class="bento-grid" id="postGrid">
       {allPosts.map((post, i) => (
-        <article class="diary-card" style={`--anim-delay: ${i * 80}ms`} data-tags={JSON.stringify(post.data.tags || [])}>
+        <article
+          class="diary-card"
+          style={`--anim-delay: ${i * 80}ms`}
+          data-tags={JSON.stringify(post.data.tags || [])}
+        >
           <a href={`/blog/${post.id}`} class="diary-card-link">
-            <div class="diary-card-line"></div>
-            <div class="diary-card-inner">
-              <time class="diary-date" datetime={post.data.pubDate.toISOString()}>
-                {formatDiaryDate(post.data.pubDate)}
-              </time>
-              <h2 class="diary-entry-title">{post.data.title}</h2>
-              <p class="diary-excerpt">{post.data.description}</p>
-              {post.data.tags && post.data.tags.length > 0 && (
-                <div class="diary-tags">
-                  {post.data.tags.map(tag => <span class="diary-post-tag">{tag}</span>)}
-                </div>
-              )}
-            </div>
+            <time class="card-date" datetime={post.data.pubDate.toISOString()}>
+              {formatDiaryDate(post.data.pubDate)}
+            </time>
+            <h2 class="card-title">{post.data.title}</h2>
+            <p class="card-desc">{post.data.description}</p>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="diary-tags">
+                {post.data.tags.map(tag => <span class="diary-post-tag">{tag}</span>)}
+              </div>
+            )}
           </a>
         </article>
       ))}
@@ -97,13 +106,16 @@ const description = '在深夜书房里，拾取散落的光';
 
 <style>
   .diary-page {
-    max-width: var(--content-width, 680px);
+    max-width: 780px;
     margin: 0 auto;
+    position: relative;
+    z-index: 10;
   }
 
+  /* ---- 页头 ---- */
   .diary-header {
     text-align: center;
-    padding: 3rem 0 2rem;
+    padding: 2.5rem 0 1.5rem;
   }
 
   .diary-header-decoration {
@@ -115,52 +127,53 @@ const description = '在深夜书房里，拾取散落的光';
   }
 
   .decoration-dot {
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     border-radius: 50%;
-    background: var(--color-accent, #c4a35a);
+    background: var(--color-accent);
   }
 
   .decoration-line {
-    width: 60px;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--color-accent, #c4a35a), transparent);
+    width: 60px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-accent), transparent);
   }
 
   .diary-title {
-    font-family: var(--font-serif, 'Noto Serif SC', serif);
+    font-family: var(--font-serif);
     font-size: 2rem;
     font-weight: 600;
-    color: var(--color-text-primary, #e8e0d5);
+    color: var(--color-text-primary);
     letter-spacing: 0.15em;
     margin-bottom: 0.5rem;
   }
 
   .diary-subtitle {
     font-size: 0.9rem;
-    color: var(--color-text-muted, #6b6560);
+    color: var(--color-text-muted);
     letter-spacing: 0.05em;
   }
 
+  /* ---- 搜索框 ---- */
   .diary-search-bar {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    background: var(--color-bg-secondary, #25221e);
-    border: 1px solid var(--color-border, rgba(255,255,255,0.06));
-    border-radius: var(--radius-lg, 14px);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
     padding: 0.6rem 1rem;
     margin-bottom: 1.5rem;
-    transition: border-color 0.2s;
+    transition: border-color var(--duration-fast);
   }
 
   .diary-search-bar:focus-within {
-    border-color: var(--color-border-focus, rgba(196,163,90,0.35));
+    border-color: var(--glass-border-hover);
   }
 
   .diary-search-icon {
     flex-shrink: 0;
-    color: var(--color-text-muted, #6b6560);
+    color: var(--color-text-muted);
   }
 
   .diary-search-input {
@@ -169,20 +182,21 @@ const description = '在深夜书房里，拾取散落的光';
     border: none;
     outline: none;
     font-size: 0.9rem;
-    color: var(--color-text-primary, #e8e0d5);
+    color: var(--color-text-primary);
     font-family: inherit;
   }
 
   .diary-search-input::placeholder {
-    color: var(--color-text-muted, #6b6560);
+    color: var(--color-text-muted);
   }
 
   .diary-search-count {
     font-size: 0.78rem;
-    color: var(--color-text-muted, #6b6560);
+    color: var(--color-text-muted);
     flex-shrink: 0;
   }
 
+  /* ---- 标签云 ---- */
   .diary-tag-cloud {
     display: flex;
     flex-wrap: wrap;
@@ -194,112 +208,46 @@ const description = '在深夜书房里，拾取散落的光';
     font-size: 0.75rem;
     padding: 0.25em 0.75em;
     border-radius: 14px;
-    border: 1px solid var(--color-border, rgba(255,255,255,0.06));
-    background: var(--color-bg-secondary, #25221e);
-    color: var(--color-text-secondary, #9a9085);
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--color-text-secondary);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--duration-fast) var(--ease-out);
     font-family: inherit;
   }
 
   .diary-tag:hover {
-    border-color: var(--color-accent, #c4a35a);
-    color: var(--color-accent, #c4a35a);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
   }
 
   .diary-tag-active {
-    background: var(--color-accent-soft, rgba(196,163,90,0.12));
-    border-color: var(--color-accent, #c4a35a);
-    color: var(--color-accent, #c4a35a);
+    background: var(--color-accent-soft);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
   }
 
-  .diary-feed {
-    position: relative;
-  }
-
+  /* ---- 卡片进入动画 ---- */
   .diary-card {
-    position: relative;
-    padding-left: 2rem;
-    margin-bottom: 0;
     opacity: 0;
-    animation: diaryFadeIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    animation: diaryFadeIn 0.5s var(--ease-out) forwards;
     animation-delay: var(--anim-delay, 0ms);
   }
 
   @keyframes diaryFadeIn {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .diary-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, var(--color-accent, #c4a35a), transparent 80%);
-  }
-
+  /* ---- 卡片内部链接 ---- */
   .diary-card-link {
     display: block;
     text-decoration: none;
     color: inherit;
-    padding: 1.5rem 0;
-    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    height: 100%;
   }
 
-  .diary-card-link:hover {
-    transform: translateX(6px);
-  }
-
-  .diary-card-line {
-    position: absolute;
-    left: -4px;
-    top: 1.8rem;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--color-accent, #c4a35a);
-    transition: transform 0.3s;
-  }
-
-  .diary-card-link:hover .diary-card-line {
-    transform: scale(1.4);
-  }
-
-  .diary-date {
-    font-size: 0.8rem;
-    color: var(--color-text-muted, #6b6560);
-    letter-spacing: 0.05em;
-    margin-bottom: 0.3rem;
-    display: block;
-  }
-
-  .diary-entry-title {
-    font-family: var(--font-serif, 'Noto Serif SC', serif);
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-text-primary, #e8e0d5);
-    margin-bottom: 0.4rem;
-    line-height: 1.4;
-    transition: color 0.3s;
-  }
-
-  .diary-card-link:hover .diary-entry-title {
-    color: var(--color-accent, #c4a35a);
-  }
-
-  .diary-excerpt {
-    font-size: 0.88rem;
-    color: var(--color-text-secondary, #9a9085);
-    line-height: 1.7;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
+  /* ---- 标签 ---- */
   .diary-tags {
     display: flex;
     flex-wrap: wrap;
@@ -311,22 +259,14 @@ const description = '在深夜书房里，拾取散落的光';
     font-size: 0.7rem;
     padding: 0.15em 0.55em;
     border-radius: 10px;
-    background: var(--color-accent-soft, rgba(196,163,90,0.12));
-    color: var(--color-accent, #c4a35a);
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
   }
 
   @media (max-width: 768px) {
-    .diary-title {
-      font-size: 1.5rem;
-    }
-
-    .diary-card-link {
-      padding: 1.2rem 0;
-    }
-
-    .diary-entry-title {
-      font-size: 1.1rem;
-    }
+    .diary-page { max-width: 100%; padding: 0 1rem; }
+    .diary-title { font-size: 1.5rem; }
+    .diary-card { padding: 1.2rem 1rem; }
   }
 </style>
 
