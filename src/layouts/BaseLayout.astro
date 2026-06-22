@@ -2,8 +2,9 @@
 import { SITE } from '../consts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import Starfield from '../components/Starfield.astro';
-import MeteorEffect from '../components/MeteorEffect.astro';
+import AuroraBg from '../components/AuroraBg.astro';
+import Fireflies from '../components/Fireflies.astro';
+import GlowFollow from '../components/GlowFollow.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 
 interface Props {
@@ -40,10 +41,11 @@ const pageDesc = description || SITE.DESCRIPTION;
   </head>
 
   <body>
-    <!-- 星空背景层 -->
-    <Starfield />
-    <MeteorEffect />
-    
+    <!-- v3 动态装饰层：极光 + 萤火 + 光晕跟随 -->
+    <AuroraBg />
+    <Fireflies />
+    <GlowFollow />
+
     <!-- 阅读进度条 -->
     <ReadingProgress />
 
@@ -57,16 +59,13 @@ const pageDesc = description || SITE.DESCRIPTION;
 
     <!-- 底部 -->
     <Footer />
-
-    <!-- Canvas 动态星空脚本 -->
-    <script is:inline src="/blog/starry-sky.js"></script>
   </body>
 </html>
 
 <style>
   .site-main {
     position: relative;
-    z-index: 1;
+    z-index: 10;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
