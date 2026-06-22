@@ -1,71 +1,62 @@
 /* ===== 寒影拾光 · 深夜书房 设计令牌 ===== */
 
 :root {
-  /* ---------- 深色基底 ---------- */
-  --color-bg-primary: #0a0a14;
-  --color-bg-secondary: #141822;
-  --color-bg-tertiary: #1a1f2e;
-  --color-bg-card: rgba(20, 24, 34, 0.72);
-  --color-bg-hover: rgba(26, 31, 46, 0.64);
-
-  /* ---------- 文字 ---------- */
-  --color-text-primary: #E4E4E7;
-  --color-text-secondary: #9a9894;
-  --color-text-muted: #5f5d5a;
-
-  /* ---------- 紫色强调 ---------- */
-  --color-accent: #A78BFA;
-  --color-accent-soft: rgba(167, 139, 250, 0.12);
-  --color-accent-hover: #8B5CF6;
-
-  /* ---------- 淡紫点缀 ---------- */
-  --color-gold: #C4B5FD;
-  --color-gold-soft: rgba(196, 181, 253, 0.1);
-  --color-gold-hover: #A78BFA;
-
-  /* ---------- 边界 ---------- */
+  --color-bg-primary: #1e1b18;
+  --color-bg-secondary: #25221e;
+  --color-bg-tertiary: #2d2a25;
+  --color-bg-card: #2a2522;
+  --color-bg-hover: #35302b;
+  --color-text-primary: #e8e0d5;
+  --color-text-secondary: #9a9085;
+  --color-text-muted: #6b6560;
+  --color-accent: #c4a35a;
+  --color-accent-soft: rgba(196, 163, 90, 0.12);
+  --color-accent-hover: #d4b368;
+  --color-gold: #8b5e3c;
+  --color-gold-soft: rgba(139, 94, 60, 0.1);
+  --color-gold-hover: #a0704a;
   --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-focus: rgba(167, 139, 250, 0.32);
-
-  /* ---------- 间距/圆角 ---------- */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-
-  /* ---------- 字体 ---------- */
+  --color-border-focus: rgba(196, 163, 90, 0.35);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
   --font-serif: 'Noto Serif SC', serif;
   --font-sans: 'Inter', 'PingFang SC', 'Noto Sans SC', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-
-  /* ---------- 阴影 ---------- */
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.5);
-
-  /* ---------- 过渡 ---------- */
+  --line-height-body: 1.85;
+  --line-height-heading: 1.4;
+  --letter-spacing-body: 0.015em;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 2px 12px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.4);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 0.2s;
+  --duration-normal: 0.35s;
+  --layout-max: 1200px;
+  --sidebar-width: 260px;
+  --content-width: 680px;
+  --right-panel-width: 200px;
+  --gap-column: 30px;
 }
 
-/* 浅色模式覆盖 */
 :root.light {
-  --color-bg-primary: #faf8f5;
-  --color-bg-secondary: #f2eeea;
-  --color-bg-tertiary: #e8e3dd;
-  --color-bg-card: rgba(242, 238, 234, 0.85);
-  --color-bg-hover: rgba(232, 227, 221, 0.72);
-
+  --color-bg-primary: #faf6f0;
+  --color-bg-secondary: #f5f0ea;
+  --color-bg-tertiary: #ede6dc;
+  --color-bg-card: #fefcf9;
+  --color-bg-hover: #f8f3ec;
   --color-text-primary: #2a2522;
-  --color-text-secondary: #6b6560;
-  --color-text-muted: #9a9490;
-
-  --color-accent: #7C3AED;
-  --color-accent-soft: rgba(124, 58, 237, 0.1);
-
-  --color-gold: #7C3AED;
-  --color-gold-soft: rgba(124, 58, 237, 0.08);
-
+  --color-text-secondary: #7a7268;
+  --color-text-muted: #a09890;
+  --color-accent: #8b5e3c;
+  --color-accent-soft: rgba(139, 94, 60, 0.1);
+  --color-accent-hover: #a0704a;
+  --color-gold: #c4a35a;
+  --color-gold-soft: rgba(196, 163, 90, 0.1);
+  --color-gold-hover: #b8943e;
   --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-focus: rgba(124, 58, 237, 0.35);
-
-  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06);
-  --shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --color-border-focus: rgba(139, 94, 60, 0.35);
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
