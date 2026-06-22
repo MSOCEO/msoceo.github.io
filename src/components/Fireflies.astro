@@ -1,0 +1,33 @@
+---
+/* ===== Fireflies.astro · 萤火粒子装饰 ===== */
+---
+<div class="fireflies-layer" aria-hidden="true" id="fireflies"></div>
+
+<script>
+  // 生成 12-18 只萤火虫，位置和运动参数随机（人味：不是均匀网格）
+  const container = document.getElementById('fireflies');
+  if (container) {
+    const count = 12 + Math.floor(Math.random() * 7);
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('div');
+      el.className = 'firefly';
+      const x = Math.random() * 90 + 5; // 5%-95%
+      const y = Math.random() * 80 + 10; // 10%-90%
+      el.style.left = x + '%';
+      el.style.top = y + '%';
+      el.style.setProperty('--ff-dur', (6 + Math.random() * 10) + 's');
+      el.style.setProperty('--ff-delay', (Math.random() * 8) + 's');
+      el.style.setProperty('--ff-dx1', (Math.random() * 60 - 30) + 'px');
+      el.style.setProperty('--ff-dy1', -(20 + Math.random() * 40) + 'px');
+      el.style.setProperty('--ff-dx2', (Math.random() * 40 - 20) + 'px');
+      el.style.setProperty('--ff-dy2', -(40 + Math.random() * 50) + 'px');
+      el.style.setProperty('--ff-dx3', (Math.random() * 50 - 25) + 'px');
+      el.style.setProperty('--ff-dy3', -(25 + Math.random() * 45) + 'px');
+      el.style.setProperty('--ff-dx4', (Math.random() * 30 - 15) + 'px');
+      el.style.setProperty('--ff-dy4', -(50 + Math.random() * 40) + 'px');
+      frag.appendChild(el);
+    }
+    container.appendChild(frag);
+  }
+</script>
