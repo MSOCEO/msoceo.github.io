@@ -6,5 +6,11 @@ export default defineConfig({
   base: '/agent-hub/',
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      external: ['@mlc-ai/web-llm'],
+    },
+  },
+  optimizeDeps: {
+    exclude: ['@mlc-ai/web-llm'],
   },
 });
