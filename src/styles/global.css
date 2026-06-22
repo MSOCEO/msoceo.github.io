@@ -1,4 +1,4 @@
-/* ===== 寒影拾光 · 深夜书房 全局样式 ===== */
+/* ===== 寒影拾光 v3 · 液态日记 全局样式 ===== */
 @import './design-tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,48 +19,263 @@ body {
   min-height: 100vh;
 }
 
-/* ---- 纸张纤维噪点纹理 ---- */
+/* ====================  Aurora 极光动态背景 ==================== */
+.aurora-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.12;
+  animation: auroraDrift var(--breathe-duration) ease-in-out infinite;
+}
+
+/* 四个色块：金-茶褐-苔青-墨蓝，非对称分布（人手调的位置） */
+.aurora-1 {
+  width: 50vw; height: 40vw;
+  background: var(--aurora-1);
+  top: -15%; left: -10%;
+  animation-delay: 0s;
+  animation-duration: 16s;
+}
+.aurora-2 {
+  width: 45vw; height: 35vw;
+  background: var(--aurora-2);
+  top: 30%; right: -5%;
+  animation-delay: -3s;
+  animation-duration: 14s;
+}
+.aurora-3 {
+  width: 35vw; height: 38vw;
+  background: var(--aurora-3);
+  bottom: -10%; left: 15%;
+  animation-delay: -6s;
+  animation-duration: 18s;
+}
+.aurora-4 {
+  width: 40vw; height: 30vw;
+  background: var(--aurora-4);
+  top: 50%; left: 50%;
+  animation-delay: -10s;
+  animation-duration: 17s;
+}
+
+@keyframes auroraDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(3vw, -2vw) scale(1.08); }
+  50%  { transform: translate(-2vw, 1.5vw) scale(0.94); }
+  75%  { transform: translate(1.5vw, 2vw) scale(1.05); }
+}
+
+:root.light .aurora-blob { opacity: 0.06; }
+
+/* ====================  纸张纤维噪点纹理 ==================== */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 0;
-  opacity: 0.03;
+  z-index: 1;
+  opacity: 0.025;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
-/* ---- 星空（仅夜间模式） ---- */
-.starfield { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-.starfield .star {
+/* ====================  液态玻璃面板预设 ==================== */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 玻璃面板顶部微光条——模拟光线斜照玻璃面的高光 */
+.glass-panel::after {
+  content: '';
   position: absolute;
-  background: radial-gradient(circle, rgba(232,224,213,0.6) 0%, transparent 70%);
+  top: 0; left: 5%; right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.glass-panel:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+}
+
+/* ====================  萤火粒子装饰 ==================== */
+.fireflies-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.firefly {
+  position: absolute;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  animation: starPulse var(--twinkle-dur, 4s) ease-in-out infinite;
-  animation-delay: var(--twinkle-delay, 0s);
+  background: radial-gradient(circle, rgba(196,163,90,0.8) 0%, rgba(196,163,90,0) 70%);
+  box-shadow: 0 0 12px 2px rgba(196,163,90,0.15);
+  animation: fireflyFloat var(--ff-dur, 8s) ease-in-out infinite;
+  animation-delay: var(--ff-delay, 0s);
+  opacity: 0;
 }
-@keyframes starPulse {
-  0%, 100% { opacity: var(--star-opacity, 0.3); }
-  50% { opacity: var(--star-peak, 0.7); }
-}
-:root.light .starfield { display: none; }
 
-/* ---- 流星 ---- */
-.meteor {
-  position: fixed; width: 1.5px; height: 60px; z-index: 1; pointer-events: none;
-  background: linear-gradient(to bottom, transparent, rgba(232,224,213,0.5));
-  border-radius: 1px;
-  animation: meteorFall var(--meteor-dur, 2s) linear infinite;
-  animation-delay: var(--meteor-delay, 0s); opacity: 0;
+@keyframes fireflyFloat {
+  0%, 100% { opacity: 0; transform: translate(0, 0); }
+  10%  { opacity: 0.6; }
+  30%  { opacity: 0.8; transform: translate(var(--ff-dx1, 20px), var(--ff-dy1, -30px)); }
+  50%  { opacity: 0.3; transform: translate(var(--ff-dx2, -10px), var(--ff-dy2, -60px)); }
+  70%  { opacity: 0.7; transform: translate(var(--ff-dx3, 15px), var(--ff-dy3, -40px)); }
+  90%  { opacity: 0.1; transform: translate(var(--ff-dx4, -5px), var(--ff-dy4, -70px)); }
 }
-@keyframes meteorFall {
-  0% { transform: translate(0,0) rotate(-35deg); opacity: 0; }
-  5% { opacity: 0.6; }
-  100% { transform: translate(-500px,500px) rotate(-35deg); opacity: 0; }
-}
-:root.light .meteor { display: none; }
 
-/* ---- 排版 ---- */
+:root.light .firefly { opacity: 0.2; }
+
+/* ====================  微光跟随（鼠标光晕） ==================== */
+.glow-follow {
+  position: fixed;
+  z-index: 3;
+  pointer-events: none;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,163,90,0.04) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.6s;
+  opacity: 0;
+}
+
+.glow-follow.active {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+/* ====================  日记卡片 Bento 容器 ==================== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  position: relative;
+  z-index: 10;
+}
+
+/* 非对称偏移：每 3 张中第 2 张下沉 */
+.bento-grid > *:nth-child(3n+2) {
+  margin-top: 32px;
+}
+
+@media (max-width: 768px) {
+  .bento-grid > *:nth-child(3n+2) { margin-top: 0; }
+}
+
+/* ====================  日记卡片 ==================== */
+.diary-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.75rem;
+  overflow: hidden;
+  transition:
+    transform var(--duration-normal) var(--ease-spring),
+    box-shadow var(--duration-normal) var(--ease-out),
+    border-color var(--duration-normal) var(--ease-out);
+  cursor: default;
+}
+
+/* 左侧装饰竖线（有手工笔触感——渐变而非纯色） */
+.diary-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 10%; bottom: 10%;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    var(--color-accent) 15%,
+    var(--color-gold) 50%,
+    var(--color-accent) 85%,
+    transparent 100%
+  );
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+/* hover：竖线发光 + 卡片浮起 + 光掠 */
+.diary-card:hover::before {
+  box-shadow: 0 0 12px var(--color-accent-soft), 0 0 24px rgba(196,163,90,0.06);
+  width: 4px;
+}
+
+.diary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--micro-glow), var(--shadow-card-hover);
+  border-color: var(--glass-border-hover);
+}
+
+/* 光掠效果：hover 时从左到右扫过一道光 */
+.diary-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255,255,255,0.02),
+    transparent
+  );
+  transition: left 0.7s ease-out;
+  pointer-events: none;
+}
+
+.diary-card:hover::after {
+  left: 120%;
+}
+
+/* 日期区域——hover 时变色 */
+.diary-card .card-date {
+  transition: color var(--duration-normal) var(--ease-out);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+.diary-card:hover .card-date {
+  color: var(--color-accent);
+}
+
+/* 标题 */
+.diary-card .card-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* 摘要 */
+.diary-card .card-desc {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+/* ====================  排版 ==================== */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   font-weight: 600;
@@ -69,14 +284,14 @@ h1, h2, h3, h4, h5, h6 {
 a { color: var(--color-accent); text-decoration: none; transition: color var(--duration-fast) var(--ease-out); }
 a:hover { color: var(--color-accent-hover); }
 
-/* ---- 阅读进度条 ---- */
+/* ====================  阅读进度条 ==================== */
 .reading-progress {
   position: fixed; top: 0; left: 0; height: 2px; z-index: 100;
   background: linear-gradient(90deg, var(--color-accent), var(--color-gold));
   transition: width 0.1s linear;
 }
 
-/* ---- 主题切换 ---- */
+/* ====================  主题切换 ==================== */
 .theme-toggle-btn {
   display: flex; align-items: center; justify-content: center;
   width: 34px; height: 34px; border: 1px solid var(--color-border);
@@ -85,13 +300,13 @@ a:hover { color: var(--color-accent-hover); }
 }
 .theme-toggle-btn:hover { color: var(--color-accent); border-color: var(--color-accent); }
 
-/* ---- 滚动条 ---- */
+/* ====================  滚动条 ==================== */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
 
-/* ---- 代码块 ---- */
+/* ====================  代码块 ==================== */
 pre {
   background: var(--color-bg-secondary); border: 1px solid var(--color-border);
   border-radius: var(--radius-md); padding: 1.25rem 1.5rem; overflow-x: auto;
@@ -100,26 +315,20 @@ pre {
 code { font-family: var(--font-mono); font-size: 0.875em; }
 :not(pre) > code { background: var(--color-bg-tertiary); padding: 0.15em 0.4em; border-radius: 3px; font-size: 0.85em; }
 
-/* ---- 图片 ---- */
+/* ====================  图片 ==================== */
 img { max-width: 100%; height: auto; border-radius: var(--radius-md); }
 
-/* ---- 引用 ---- */
+/* ====================  引用 ==================== */
 blockquote {
   border-left: 3px solid var(--color-accent); margin: 1.5rem 0;
   padding: 0.5rem 0 0.5rem 1.25rem; color: var(--color-text-secondary); font-style: italic;
 }
 
-/* ---- 选择 ---- */
+/* ====================  选择 ==================== */
 ::selection { background: var(--color-accent-soft); color: var(--color-accent); }
 
-/* ---- 毛玻璃 ---- */
-.glass-card {
-  background: rgba(30,27,24,0.5); backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(196,163,90,0.08); border-radius: var(--radius-lg);
-}
-:root.light .glass-card { background: rgba(250,246,240,0.55); border-color: rgba(139,94,60,0.1); }
-
-/* ---- 响应式 ---- */
+/* ====================  响应式 ==================== */
 @media (max-width: 768px) {
   body { font-size: 0.95rem; }
+  .bento-grid { grid-template-columns: 1fr; gap: 16px; }
 }
