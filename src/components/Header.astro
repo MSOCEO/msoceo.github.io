@@ -5,22 +5,33 @@ import ThemeToggle from './ThemeToggle.astro';
 
 <header class="site-header">
   <div class="header-inner">
-    <!-- 左侧留空保持对称 -->
-    <div class="header-side" />
-
-    <!-- Logo 居中 -->
     <a href="/" class="site-avatar-wrap">
       <div class="site-avatar">
         <i class="fa-solid fa-user-astronaut"></i>
       </div>
       <span class="site-name">{SITE.TITLE}</span>
-      <span class="site-desc">{SITE.DESCRIPTION}</span>
     </a>
 
-    <!-- 右侧：主题切换 -->
-    <div class="header-side header-right">
+    <nav class="header-nav">
+      <a href="/about" class="nav-link">关于</a>
+      <a href="/links" class="nav-link">链接</a>
+      <button class="nav-link nav-search-btn" id="navSearchBtn" aria-label="搜索">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span class="nav-search-label">搜索</span>
+      </button>
       <ThemeToggle />
-    </div>
+    </nav>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="/about" class="mobile-nav-link">关于</a>
+    <a href="/links" class="mobile-nav-link">链接</a>
+    <button class="mobile-nav-link mobile-search-btn" id="mobileSearchBtn">搜索</button>
+    <div class="mobile-nav-divider"></div>
+    <ThemeToggle />
   </div>
 </header>
 
@@ -29,78 +40,135 @@ import ThemeToggle from './ThemeToggle.astro';
     position: sticky;
     top: 0;
     z-index: 50;
-    border-bottom: 1px solid rgba(167, 139, 250, 0.1);
-    background: rgba(10, 10, 20, 0.6);
+    border-bottom: 1px solid rgba(167,139,250,0.1);
+    background: rgba(10,10,20,0.6);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
-
   :root.light .site-header {
-    background: rgba(250, 248, 245, 0.75);
+    background: rgba(250,248,245,0.75);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
   }
-
   .header-inner {
     display: flex;
     align-items: center;
-    justify-content: center;
-    max-width: 1400px;
+    justify-content: space-between;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0.75rem 1.5rem;
     min-height: 56px;
   }
-
   .site-avatar-wrap {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: 0.6rem;
     text-decoration: none;
-    gap: 0.35rem;
+    flex-shrink: 0;
   }
-
   .site-avatar {
-    width: 56px;
-    height: 56px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(167, 139, 250, 0.1);
-    border: 2px solid rgba(167, 139, 250, 0.35);
-    box-shadow: 0 0 16px rgba(167, 139, 250, 0.2);
-    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-    font-size: 1.4rem;
+    background: rgba(167,139,250,0.1);
+    border: 1.5px solid rgba(167,139,250,0.35);
+    box-shadow: 0 0 12px rgba(167,139,250,0.15);
+    font-size: 1rem;
     color: #A78BFA;
+    transition: transform 0.8s cubic-bezier(0.22,1,0.36,1);
   }
-
-  .site-avatar-wrap:hover .site-avatar {
-    transform: rotate(360deg);
-  }
-
+  .site-avatar-wrap:hover .site-avatar { transform: rotate(360deg); }
   .site-name {
     font-family: var(--font-serif);
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--color-text-primary);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
   }
-
-  .site-desc {
-    font-size: 0.65rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.15em;
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-shrink: 0;
   }
-
-  .header-side { display: none; }
-
-  @media (max-width: 640px) {
-    .header-inner {
-      padding: 0.5rem 1rem;
-    }
-    .site-avatar {
-      width: 44px;
-      height: 44px;
-      font-size: 1.1rem;
-    }
-    .site-name { font-size: 0.8rem; }
+  .nav-link {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .nav-link:hover { color: var(--color-accent); }
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 60;
+  }
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-text-primary);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mobile-nav {
+    display: none;
+    flex-direction: column;
+    padding: 0.75rem 1.5rem 1.25rem;
+    border-top: 1px solid rgba(167,139,250,0.06);
+    background: rgba(10,10,20,0.95);
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav-link {
+    padding: 0.7rem 0;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: color 0.2s;
+  }
+  .mobile-nav-link:hover { color: var(--color-accent); }
+  .mobile-nav-divider {
+    height: 1px;
+    background: rgba(167,139,250,0.08);
+    margin: 0.5rem 0;
+  }
+  @media (max-width: 768px) {
+    .header-nav { display: none; }
+    .hamburger { display: flex; }
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    if (hamburger && mobileNav) {
+      hamburger.addEventListener('click', () => {
+        const isOpen = mobileNav.classList.toggle('open');
+        hamburger.classList.toggle('open', isOpen);
+      });
+    }
+  });
+</script>
