@@ -1,14 +1,7 @@
 /* ===== 寒影拾光 · 深夜书房 全局样式 ===== */
 @import './design-tokens.css';
 
-/* ---------- Reset & Base ---------- */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
   scroll-behavior: smooth;
@@ -20,202 +13,113 @@ body {
   font-family: var(--font-sans);
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
-  line-height: 1.75;
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
   overflow-x: hidden;
   min-height: 100vh;
 }
 
-/* ---------- 星空背景 ---------- */
-.starfield {
+/* ---- 纸张纤维噪点纹理 ---- */
+body::before {
+  content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
-  overflow: hidden;
+  opacity: 0.03;
   pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
+/* ---- 星空（仅夜间模式） ---- */
+.starfield { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
 .starfield .star {
   position: absolute;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(232,224,213,0.6) 0%, transparent 70%);
   border-radius: 50%;
-  animation: starPulse var(--twinkle-dur, 3s) ease-in-out infinite;
+  animation: starPulse var(--twinkle-dur, 4s) ease-in-out infinite;
   animation-delay: var(--twinkle-delay, 0s);
 }
-
 @keyframes starPulse {
-  0%, 100% { opacity: var(--star-opacity, 0.4); }
-  50% { opacity: var(--star-peak, 0.9); }
+  0%, 100% { opacity: var(--star-opacity, 0.3); }
+  50% { opacity: var(--star-peak, 0.7); }
 }
+:root.light .starfield { display: none; }
 
-/* ---------- 流星 ---------- */
+/* ---- 流星 ---- */
 .meteor {
-  position: fixed;
-  width: 2px;
-  height: 80px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7));
+  position: fixed; width: 1.5px; height: 60px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, rgba(232,224,213,0.5));
   border-radius: 1px;
-  animation: meteorFall var(--meteor-dur, 1.8s) linear infinite;
-  animation-delay: var(--meteor-delay, 0s);
-  opacity: 0;
-  z-index: 1;
-  pointer-events: none;
+  animation: meteorFall var(--meteor-dur, 2s) linear infinite;
+  animation-delay: var(--meteor-delay, 0s); opacity: 0;
 }
-
 @keyframes meteorFall {
-  0% {
-    transform: translate(0, 0) rotate(-35deg);
-    opacity: 0;
-  }
-  5% { opacity: 1; }
-  100% {
-    transform: translate(-600px, 600px) rotate(-35deg);
-    opacity: 0;
-  }
+  0% { transform: translate(0,0) rotate(-35deg); opacity: 0; }
+  5% { opacity: 0.6; }
+  100% { transform: translate(-500px,500px) rotate(-35deg); opacity: 0; }
 }
+:root.light .meteor { display: none; }
 
-/* ---------- 排版 ---------- */
+/* ---- 排版 ---- */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: var(--line-height-heading);
 }
+a { color: var(--color-accent); text-decoration: none; transition: color var(--duration-fast) var(--ease-out); }
+a:hover { color: var(--color-accent-hover); }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: color 0.2s var(--ease-out);
-}
-
-a:hover {
-  color: var(--color-accent-hover);
-}
-
-/* ---------- 阅读进度条 ---------- */
+/* ---- 阅读进度条 ---- */
 .reading-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
+  position: fixed; top: 0; left: 0; height: 2px; z-index: 100;
   background: linear-gradient(90deg, var(--color-accent), var(--color-gold));
-  z-index: 100;
   transition: width 0.1s linear;
 }
 
-/* ---------- 主题切换 ---------- */
+/* ---- 主题切换 ---- */
 .theme-toggle-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: all 0.25s var(--ease-out);
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border: 1px solid var(--color-border);
+  border-radius: 50%; background: transparent; color: var(--color-text-secondary);
+  cursor: pointer; transition: all var(--duration-fast) var(--ease-out);
 }
+.theme-toggle-btn:hover { color: var(--color-accent); border-color: var(--color-accent); }
 
-.theme-toggle-btn:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-}
+/* ---- 滚动条 ---- */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
 
-/* ---------- 滚动条 ---------- */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
-}
-
-/* ---------- 代码块 ---------- */
+/* ---- 代码块 ---- */
 pre {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 1.25rem 1.5rem;
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.65;
+  background: var(--color-bg-secondary); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 1.25rem 1.5rem; overflow-x: auto;
+  font-family: var(--font-mono); font-size: 0.875rem; line-height: 1.65;
 }
+code { font-family: var(--font-mono); font-size: 0.875em; }
+:not(pre) > code { background: var(--color-bg-tertiary); padding: 0.15em 0.4em; border-radius: 3px; font-size: 0.85em; }
 
-code {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-}
+/* ---- 图片 ---- */
+img { max-width: 100%; height: auto; border-radius: var(--radius-md); }
 
-:not(pre) > code {
-  background: var(--color-bg-tertiary);
-  padding: 0.15em 0.4em;
-  border-radius: 3px;
-  font-size: 0.85em;
-}
-
-/* ---------- 图片 ---------- */
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: var(--radius-md);
-}
-
-/* ---------- 引用 ---------- */
+/* ---- 引用 ---- */
 blockquote {
-  border-left: 3px solid var(--color-accent);
-  margin: 1.5rem 0;
-  padding: 0.5rem 0 0.5rem 1.25rem;
-  color: var(--color-text-secondary);
-  font-style: italic;
+  border-left: 3px solid var(--color-accent); margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1.25rem; color: var(--color-text-secondary); font-style: italic;
 }
 
-/* ---------- 选择 ---------- */
-::selection {
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
-}
+/* ---- 选择 ---- */
+::selection { background: var(--color-accent-soft); color: var(--color-accent); }
 
-/* ---------- 响应式 ---------- */
-@media (max-width: 768px) {
-  body {
-    font-size: 0.95rem;
-  }
-}
-
-/* ---------- 自定义光标 ---------- */
-* {
-  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><circle cx='8' cy='8' r='4' fill='none' stroke='%23A78BFA' stroke-width='1.5' opacity='0.7'/><circle cx='8' cy='8' r='1.5' fill='%23A78BFA'/></svg>") 8 8, auto;
-}
-
-a, button, .post-card-link, [role="button"], input[type="submit"] {
-  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='5' fill='none' stroke='%23A78BFA' stroke-width='1.5'/><circle cx='10' cy='10' r='2' fill='%23A78BFA'/></svg>") 10 10, pointer;
-}
-
-@keyframes cursorGlow {
-  0%, 100% { filter: drop-shadow(0 0 2px rgba(167,139,250,0.3)); }
-  50% { filter: drop-shadow(0 0 6px rgba(167,139,250,0.7)); }
-}
-
-/* ---------- 毛玻璃卡片 ---------- */
+/* ---- 毛玻璃 ---- */
 .glass-card {
-  background: rgba(10, 10, 20, 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(167, 139, 250, 0.08);
-  border-radius: 20px;
+  background: rgba(30,27,24,0.5); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(196,163,90,0.08); border-radius: var(--radius-lg);
 }
+:root.light .glass-card { background: rgba(250,246,240,0.55); border-color: rgba(139,94,60,0.1); }
 
-:root.light .glass-card {
-  background: rgba(250, 248, 245, 0.55);
-  border-color: rgba(124, 58, 237, 0.1);
+/* ---- 响应式 ---- */
+@media (max-width: 768px) {
+  body { font-size: 0.95rem; }
 }
