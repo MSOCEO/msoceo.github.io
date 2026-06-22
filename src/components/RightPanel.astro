@@ -1,0 +1,115 @@
+---
+export interface Props {
+  recentPosts?: Array<{ title: string; url: string; date: string }>;
+  tags?: Array<{ name: string; count: number }>;
+}
+
+const {
+  recentPosts = [],
+  tags = [],
+} = Astro.props;
+---
+
+<aside class="right-panel">
+  <div class="right-panel-inner">
+    <!-- 最近文章 -->
+    {recentPosts.length > 0 && (
+      <section class="panel-section">
+        <h3 class="section-title">最近文章</h3>
+        <ul class="recent-list">
+          {recentPosts.map(post => (
+            <li><a href={post.url} class="recent-link">{post.title}</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <!-- 标签云 -->
+    {tags.length > 0 && (
+      <section class="panel-section">
+        <h3 class="section-title">标签</h3>
+        <div class="tag-cloud">
+          {tags.map(tag => (
+            <a href={`/blog/tags/${tag.name}/`} class="tag-chip">{tag.name}</a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 回到顶部 -->
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部" aria-label="回到顶部">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+  </div>
+</aside>
+
+<style>
+.right-panel {
+  width: var(--right-panel-width);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  border-left: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  z-index: 4;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.right-panel-inner {
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.panel-section { }
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--color-text-muted); margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: 0.04em;
+}
+
+/* 最近文章 */
+.recent-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.recent-link {
+  display: block; font-size: 0.78rem; color: var(--color-text-secondary);
+  line-height: 1.5; padding: 0.25rem 0;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.recent-link:hover { color: var(--color-accent); }
+
+/* 标签云 */
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tag-chip {
+  display: inline-block; padding: 0.15rem 0.55rem;
+  font-size: 0.72rem; border-radius: 3px;
+  background: var(--color-bg-tertiary); color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.tag-chip:hover { background: var(--color-accent-soft); color: var(--color-accent); border-color: var(--color-accent-soft); }
+
+/* 回到顶部 */
+.back-to-top {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--color-border); background: transparent;
+  color: var(--color-text-muted); cursor: pointer;
+  margin-top: auto; align-self: center;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.back-to-top svg { width: 1rem; height: 1rem; }
+.back-to-top:hover { color: var(--color-accent); border-color: var(--color-accent); }
+
+/* 移动端隐藏 */
+@media (max-width: 768px) {
+  .right-panel { display: none; }
+}
+</style>
