@@ -31,8 +31,14 @@ jobs:
         run: npm run build
       - name: Copy startrails
         run: cp -r startrails dist/
-      - name: Copy agent-hub
-        run: mkdir -p dist/agent-hub && cp agent-hub/static/index.html dist/agent-hub/
+      - name: Install agent-hub dependencies
+        working-directory: ./agent-hub
+        run: npm ci
+      - name: Build agent-hub
+        working-directory: ./agent-hub
+        run: npm run build
+      - name: Copy agent-hub to dist
+        run: mkdir -p dist/agent-hub && cp -r agent-hub/dist/* dist/agent-hub/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
