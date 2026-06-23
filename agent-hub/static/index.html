@@ -147,6 +147,145 @@ body::before {
 .chat-send { padding:8px 14px; border-radius:8px; background:linear-gradient(135deg,#a78bfa,#818cf8); color:#fff; border:none; font-weight:600; font-size:13px; cursor:pointer; transition:all .2s; }
 .chat-send:hover { filter:brightness(1.1); }
 
+/* ═══════════ MEOO-STYLE HUB ═══════════ */
+.hub-section {
+  padding: 60px 0 80px;
+  position: relative;
+}
+.hub-section::before {
+  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:700px; height:500px; border-radius:50%; filter:blur(180px); pointer-events:none;
+  background: radial-gradient(circle, rgba(167,139,250,.06) 0%, transparent 70%);
+}
+
+.hub-container {
+  max-width:860px;
+  margin:0 auto;
+  padding:0 32px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:28px;
+}
+
+/* Header */
+.hub-header { text-align:center; }
+.hub-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.14em; color:var(--accent-purple); margin-bottom:8px; }
+.hub-title { font-family:var(--font-display); font-size:clamp(28px,4vw,40px); font-weight:600; letter-spacing:-.03em; margin-bottom:6px; background:linear-gradient(135deg,#e8ecf2 30%,#a78bfa 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hub-subtitle { font-size:13px; color:var(--text-muted); max-width:460px; margin:0 auto; line-height:1.6; }
+
+/* Mode Toggle Bar */
+.hub-mode-bar {
+  display:flex; gap:9px;
+  background:rgba(255,255,255,.025); border:1px solid var(--border-subtle);
+  border-radius:100px; padding:4px;
+}
+.hub-mode-btn {
+  padding:8px 20px; border-radius:100px; border:none; cursor:pointer;
+  font-family:var(--font-body); font-size:13px; font-weight:500; color:var(--text-secondary);
+  background:transparent; transition:all .25s; white-space:nowrap;
+}
+.hub-mode-btn:hover { color:var(--text-primary); }
+.hub-mode-btn.active {
+  background:linear-gradient(135deg,#a78bfa,#818cf8); color:#fff;
+  box-shadow:0 2px 14px rgba(167,139,250,.25);
+}
+
+/* Central Input Shell */
+.hub-input-shell {
+  width:100%; background:rgba(255,255,255,.025);
+  border:1px solid rgba(167,139,250,.12); border-radius:var(--radius-xl);
+  overflow:hidden; transition:border-color .3s, box-shadow .3s;
+}
+.hub-input-shell:focus-within {
+  border-color:var(--border-accent);
+  box-shadow:0 0 60px rgba(167,139,250,.06), 0 8px 32px rgba(0,0,0,.25);
+}
+.hub-input-main {
+  width:100%; padding:20px 24px 0; background:transparent; border:none; color:var(--text-primary);
+  font-family:var(--font-body); font-size:15px; line-height:1.7; resize:none; outline:none;
+  min-height:90px;
+}
+.hub-input-main::placeholder { color:var(--text-muted); }
+.hub-input-tools {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px; border-top:1px solid rgba(255,255,255,.03);
+}
+.hub-tools-left { display:flex; gap:4px; flex-wrap:wrap; }
+.hub-tool-btn {
+  padding:6px 12px; border-radius:6px; border:1px solid rgba(255,255,255,.04);
+  background:rgba(255,255,255,.015); color:var(--text-secondary); cursor:pointer;
+  font-family:var(--font-body); font-size:12px; font-weight:500; transition:all .2s;
+}
+.hub-tool-btn:hover { background:rgba(167,139,250,.06); border-color:rgba(167,139,250,.15); color:var(--accent-purple); }
+.hub-submit-btn {
+  width:40px; height:40px; border-radius:50%; border:none;
+  background:linear-gradient(135deg,#a78bfa,#818cf8); color:#fff;
+  font-size:18px; font-weight:600; cursor:pointer; transition:all .25s;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 18px rgba(167,139,250,.25);
+}
+.hub-submit-btn:hover { transform:scale(1.06); box-shadow:0 6px 24px rgba(167,139,250,.35); }
+
+/* Category Pills */
+.hub-categories {
+  display:flex; gap:7px; flex-wrap:wrap; justify-content:center; width:100%;
+}
+.hub-cat-pill {
+  padding:6px 14px; border-radius:100px; font-size:12px; font-weight:500;
+  color:var(--text-secondary); cursor:pointer; transition:all .2s;
+  border:1px solid rgba(255,255,255,.03); background:rgba(255,255,255,.01);
+}
+.hub-cat-pill:hover { color:var(--text-primary); border-color:rgba(255,255,255,.06); }
+.hub-cat-pill.active {
+  background:rgba(167,139,250,.1); border-color:rgba(167,139,250,.18); color:var(--accent-purple);
+}
+
+/* Example Cards */
+.hub-examples {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:12px; width:100%;
+}
+.hub-example-card {
+  background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.03);
+  border-radius:var(--radius-lg); padding:20px 16px; cursor:pointer; transition:all .3s;
+  display:flex; flex-direction:column; gap:8px;
+}
+.hub-example-card:hover {
+  border-color:rgba(167,139,250,.15); background:rgba(255,255,255,.035);
+  transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,.2);
+}
+.hub-example-icon { font-size:28px; line-height:1; }
+.hub-example-title { font-family:var(--font-display); font-weight:600; font-size:14px; color:var(--text-primary); }
+.hub-example-desc { font-size:12px; color:var(--text-muted); line-height:1.5; }
+
+/* Agent Strip */
+.hub-agents-strip {
+  display:flex; align-items:center; gap:16px; padding:14px 24px;
+  background:rgba(255,255,255,.015); border:1px solid rgba(255,255,255,.03);
+  border-radius:100px;
+}
+.hub-agents-label { font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; }
+.hub-agent-mini {
+  display:flex; align-items:center; gap:6px;
+  padding:4px 12px 4px 4px; border-radius:100px;
+  background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.03);
+  cursor:pointer; transition:all .2s;
+}
+.hub-agent-mini:hover { border-color:rgba(255,255,255,.08); background:rgba(255,255,255,.04); }
+.hub-agent-dot { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; flex-shrink:0; }
+.hub-agent-dot.purple { background:linear-gradient(135deg,#a78bfa,#818cf8); }
+.hub-agent-dot.cyan { background:linear-gradient(135deg,#22d3ee,#06b6d4); }
+.hub-agent-dot.pink { background:linear-gradient(135deg,#f472b6,#fb7185); }
+.hub-agent-dot.amber { background:linear-gradient(135deg,#fbbf24,#f59e0b); }
+.hub-agent-name { font-size:12px; font-weight:500; color:var(--text-secondary); }
+
+@media (max-width:768px) {
+  .hub-examples { grid-template-columns:repeat(2,1fr); }
+  .hub-agents-strip { flex-wrap:wrap; gap:10px; justify-content:center; }
+  .hub-mode-bar { width:100%; justify-content:center; }
+}
+/* ═══════════ END MEOO HUB ═══════════ */
+
 /* Agent Card */
 .agent-card { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; transition:all .3s; cursor:pointer; display:flex; flex-direction:column; }
 .agent-card:hover { border-color:var(--border-accent); background:var(--bg-elevated); }
@@ -877,32 +1016,80 @@ body::before {
   </div>
 </div>
 
-<!-- Workbench -->
-<section class="section" id="workbench">
-  <div class="container" style="text-align:center;">
-    <div class="section-label">Agent Hub</div>
-    <h2 class="section-title">智能体中枢</h2>
-    <div class="bento-grid">
-      <div class="col-span-3">
-        <div class="chat-panel">
-          <div class="chat-header"><span class="chat-header-title">Marvis 智能助手</span><span class="chat-header-badge">在线</span></div>
-          <div class="chat-messages">
-            <div class="quick-prompts"><span class="quick-prompt">整理桌面文件</span><span class="quick-prompt">分析日志报告</span><span class="quick-prompt">搜索论文资料</span><span class="quick-prompt">生成周报</span></div>
-            <div class="chat-msg assistant"><div class="chat-avatar marvis">M</div><div class="chat-bubble">老板，我是 Marvis。我可以调度所有 Agent、模型和插件。试试问我点什么？</div></div>
-            <div class="chat-msg user"><div class="chat-avatar user-av">U</div><div class="chat-bubble">帮我分析最近的项目日志</div></div>
-            <div class="chat-msg assistant"><div class="chat-avatar marvis">M</div><div class="chat-bubble">收到。调度 File Agent 搜索日志文件，Search Agent 做内容分析。全程本地处理，数据不外泄。</div></div>
-          </div>
-          <div class="chat-input-area"><input type="text" class="chat-input" placeholder="输入消息..." value="帮我整理桌面文件" /><button class="chat-send">发送</button></div>
+<!-- ═══════════ WORKBENCH / MEOO-STYLE HUB ═══════════ -->
+<section class="hub-section" id="workbench">
+  <div class="hub-container">
+    <!-- Header -->
+    <div class="hub-header">
+      <div class="hub-label">Agent Hub</div>
+      <h2 class="hub-title">智能体中枢</h2>
+      <p class="hub-subtitle">描述你想做的事情，Marvis 调度 File / Search / Browser / Computer 四大 Agent 为你完成</p>
+    </div>
+
+    <!-- Mode Toggle -->
+    <div class="hub-mode-bar">
+      <button class="hub-mode-btn active" data-mode="chat">对话模式</button>
+      <button class="hub-mode-btn" data-mode="task">任务模式</button>
+      <button class="hub-mode-btn" data-mode="skill">技能模式</button>
+    </div>
+
+    <!-- Central Input -->
+    <div class="hub-input-shell">
+      <textarea class="hub-input-main" placeholder="描述你想做的事情，@或 Tab 调度技能...&#10;例如：帮我整理桌面文件、搜索最新的 AI 论文、生成项目周报" rows="3"></textarea>
+      <div class="hub-input-tools">
+        <div class="hub-tools-left">
+          <button class="hub-tool-btn" title="添加附件">+ 附件</button>
+          <button class="hub-tool-btn" title="自动补全">Auto</button>
+          <button class="hub-tool-btn" title="上传图片">图片</button>
+          <button class="hub-tool-btn" title="选择技能">技能</button>
+          <button class="hub-tool-btn" title="风格模板">风格</button>
         </div>
+        <button class="hub-submit-btn" title="发送指令">→</button>
       </div>
-      <div class="col-span-3">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;height:440px;">
-          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon purple">F</div><div><div class="agent-name">File Agent</div><div class="agent-role">文件管理</div></div></div><div class="agent-desc">本地文件搜索、分析、整理、格式转换。支持所有文件类型。</div><div class="agent-meta"><span class="agent-tag">本地执行</span><span class="agent-tag">OCR</span><span class="agent-tag">格式转换</span></div></div>
-          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon cyan">R</div><div><div class="agent-name">Search Agent</div><div class="agent-role">深度搜索</div></div></div><div class="agent-desc">多轮联网检索与综合总结。调研、对比分析、论文综述。</div><div class="agent-meta"><span class="agent-tag">联网检索</span><span class="agent-tag">深度总结</span></div></div>
-          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon pink">B</div><div><div class="agent-name">Browser Agent</div><div class="agent-role">浏览器操控</div></div></div><div class="agent-desc">模拟浏览器操作：登录、填表、点击、截图。</div><div class="agent-meta"><span class="agent-tag">自动登录</span><span class="agent-tag">表单填写</span></div></div>
-          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon amber">C</div><div><div class="agent-name">Computer Agent</div><div class="agent-role">系统管理</div></div></div><div class="agent-desc">macOS 系统配置、窗口管理、进程监控、故障修复。</div><div class="agent-meta"><span class="agent-tag">系统设置</span><span class="agent-tag">故障修复</span></div></div>
-        </div>
+    </div>
+
+    <!-- Category Pills -->
+    <div class="hub-categories">
+      <span class="hub-cat-pill active">全部</span>
+      <span class="hub-cat-pill">📁 文件处理</span>
+      <span class="hub-cat-pill">📊 数据分析</span>
+      <span class="hub-cat-pill">🌐 联网搜索</span>
+      <span class="hub-cat-pill">⚙️ 系统管理</span>
+      <span class="hub-cat-pill">🎨 创意设计</span>
+      <span class="hub-cat-pill">💻 代码开发</span>
+    </div>
+
+    <!-- Example Cards -->
+    <div class="hub-examples">
+      <div class="hub-example-card">
+        <div class="hub-example-icon">📂</div>
+        <div class="hub-example-title">整理桌面文件</div>
+        <div class="hub-example-desc">按类型自动归类，清理重复和临时文件</div>
       </div>
+      <div class="hub-example-card">
+        <div class="hub-example-icon">📊</div>
+        <div class="hub-example-title">分析项目日志</div>
+        <div class="hub-example-desc">提取错误模式，生成可视化分析报告</div>
+      </div>
+      <div class="hub-example-card">
+        <div class="hub-example-icon">🔍</div>
+        <div class="hub-example-title">搜索论文资料</div>
+        <div class="hub-example-desc">检索最新 AI 论文，综述对比关键结论</div>
+      </div>
+      <div class="hub-example-card">
+        <div class="hub-example-icon">📝</div>
+        <div class="hub-example-title">生成项目周报</div>
+        <div class="hub-example-desc">汇总项目进展，自动排版输出 Markdown 文档</div>
+      </div>
+    </div>
+
+    <!-- Agent Strip -->
+    <div class="hub-agents-strip">
+      <span class="hub-agents-label">可用 Agent</span>
+      <div class="hub-agent-mini"><span class="hub-agent-dot purple">F</span><span class="hub-agent-name">File Agent</span></div>
+      <div class="hub-agent-mini"><span class="hub-agent-dot cyan">R</span><span class="hub-agent-name">Search Agent</span></div>
+      <div class="hub-agent-mini"><span class="hub-agent-dot pink">B</span><span class="hub-agent-name">Browser Agent</span></div>
+      <div class="hub-agent-mini"><span class="hub-agent-dot amber">C</span><span class="hub-agent-name">Computer Agent</span></div>
     </div>
   </div>
 </section>
@@ -1735,6 +1922,21 @@ renderCompare();
 
 // ===== INIT =====
 renderGrid();
+
+// ===== HUB INTERACTIVITY =====
+document.querySelectorAll('.hub-mode-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.hub-mode-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+document.querySelectorAll('.hub-cat-pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('.hub-cat-pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
 
 
 </script>
