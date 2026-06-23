@@ -659,6 +659,7 @@ body::before {
     </div>
   </div>
   <div class="pb-extra">
+    <button class="pb-btn" onclick="downloadTrack()" title="下载当前歌曲">💾</button>
     <button class="pb-btn" onclick="toggleViz()" title="可视化">📊</button>
     <div class="pb-vol">
       <button class="pb-btn" onclick="toggleMute()" id="pbMuteBtn">🔊</button>
@@ -833,8 +834,43 @@ function toggleMute() {
   document.getElementById('pbVolSlider').value = STATE.muted ? 0 : STATE.volume * 100;
 }
 
+function downloadTrack() {
+  const audio = STATE.audio;
+  if (!audio || !audio.src || audio.src === location.href) {
+    toast('没有正在播放的歌曲');
+    return;
+  }
+  const song = STATE.playlist[STATE.currentIdx];
+  const name = song ? `${song.artist} - ${song.title}` : 'download';
+  const safeName = name.replace(/[\\/:*?"<>|]/g, '_');
+  const ext = audio.src.includes('.flac') ? '.flac' : audio.src.includes('.mp3') ? '.mp3' : '.m4a';
+  const filename = safeName + ext;
+
+  toast('正在获取下载...');
+
+  fetch(audio.src).then(res => {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.blob();
+  }).then(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('下载开始：' + filename);
+  }).catch(() => {
+    // fetch 失败时直接打开链接（浏览器会尝试下载或播放）
+    window.open(audio.src, '_blank');
+    toast('已打开下载链接');
+  });
+}
+
 // ==================== 音源 API ====================
-const NETEAST_API = 'https://marvis-netease-api.vercel.app';
+const WORKER_API = 'https://meting-api.msoceo.workers.dev';   // CF Worker 代理（可直连）
+const NETEAST_API = 'https://marvis-netease-api.vercel.app';  // 降级
 const NETEAST_RAW = 'https://music.163.com';
 
 function jsonp(url, param = 'callback') {
@@ -867,18 +903,18 @@ function jsonp(url, param = 'callback') {
 function nePic(id, size) { size = size || 109951167; return id ? `https://p2.music.126.net/${size}/${id}.jpg?param=130y130` : ''; }
 
 async function searchNetease(kw) {
-  // 直连 music.163.com（vercel.app 不可达时的降级）
+  // 优先走 CF Worker（代理 vercel.app，本机可达）
   try {
-    const res = await fetch(`${NETEAST_RAW}/api/search/get?type=1&limit=30&s=${encodeURIComponent(kw)}`);
+    const res = await fetch(`${WORKER_API}/search?keywords=${encodeURIComponent(kw)}&type=1&limit=30`);
     const d = await res.json();
     return ((d.result && d.result.songs) || []).map(s => ({
       id: s.id, title: s.name, artist: (s.artists||[]).map(a=>a.name).join('/'),
-      album: s.album?.name || '', cover: nePic(s.album?.picId),
+      album: s.album?.name || '', cover: (s.album && s.album.picUrl) || '',
       source: 'netease', duration: s.duration || 0,
     }));
-  } catch (e) { console.warn('Netease direct failed:', e.message); }
+  } catch (e) { console.warn('Worker search failed:', e.message); }
 
-  // Vercel 降级
+  // 降级：Vercel 直连
   try {
     const res = await fetch(`${NETEAST_API}/search?keywords=${encodeURIComponent(kw)}&type=1&limit=30`);
     const d = await res.json();
@@ -888,6 +924,17 @@ async function searchNetease(kw) {
       source: 'netease', duration: s.duration || 0,
     }));
   } catch (e) { console.warn('Netease Vercel failed:', e.message); }
+
+  // 最终降级：直连 163
+  try {
+    const res = await fetch(`${NETEAST_RAW}/api/search/get?type=1&limit=30&s=${encodeURIComponent(kw)}`);
+    const d = await res.json();
+    return ((d.result && d.result.songs) || []).map(s => ({
+      id: s.id, title: s.name, artist: (s.artists||[]).map(a=>a.name).join('/'),
+      album: s.album?.name || '', cover: nePic(s.album?.picId),
+      source: 'netease', duration: s.duration || 0,
+    }));
+  } catch (e) { console.warn('Netease direct failed:', e.message); }
   return [];
 }
 
@@ -942,19 +989,28 @@ async function getPlayUrl(song) {
   var serverMap = { qq: 'tencent' };
   var server = serverMap[song.source] || song.source;
 
-  // 优先走 meting-ms 聚合 API
-  try {
-    var r0 = await fetch(METING_API + '?server=' + server + '&type=url&id=' + song.id);
-    var d0 = await r0.json();
-    if (d0.url) return d0.url;
-  } catch (e) {}
-
-  // 网易云降级
+  // 优先走 CF Worker 代理
   if (song.source === 'netease') {
     try {
-      var r1 = await fetch(NETEAST_API + '/song/url?id=' + song.id);
-      var d1 = await r1.json();
-      if (d1.data && d1.data[0] && d1.data[0].url) return d1.data[0].url;
+      var r0 = await fetch(WORKER_API + '/song/url?id=' + song.id);
+      var d0 = await r0.json();
+      if (d0.data && d0.data[0] && d0.data[0].url) return d0.data[0].url;
+    } catch (e) {}
+  }
+
+  // 降级 meting-ms 聚合
+  try {
+    var r1 = await fetch(METING_API + '?server=' + server + '&type=url&id=' + song.id);
+    var d1 = await r1.json();
+    if (d1.url) return d1.url;
+  } catch (e) {}
+
+  // 网易云最终降级
+  if (song.source === 'netease') {
+    try {
+      var r2 = await fetch(NETEAST_API + '/song/url?id=' + song.id);
+      var d2 = await r2.json();
+      if (d2.data && d2.data[0] && d2.data[0].url) return d2.data[0].url;
     } catch (e) {}
     return NETEAST_RAW + '/song/media/outer/url?id=' + song.id + '.mp3';
   }
