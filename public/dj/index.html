@@ -835,6 +835,7 @@ function toggleMute() {
 
 // ==================== 音源 API ====================
 const NETEAST_API = 'https://marvis-netease-api.vercel.app';
+const NETEAST_RAW = 'https://music.163.com';
 
 function jsonp(url, param = 'callback') {
   return new Promise((resolve, reject) => {
@@ -862,7 +863,22 @@ function jsonp(url, param = 'callback') {
   });
 }
 
+// 网易云封面图：用 picId 拼接
+function nePic(id, size) { size = size || 109951167; return id ? `https://p2.music.126.net/${size}/${id}.jpg?param=130y130` : ''; }
+
 async function searchNetease(kw) {
+  // 直连 music.163.com（vercel.app 不可达时的降级）
+  try {
+    const res = await fetch(`${NETEAST_RAW}/api/search/get?type=1&limit=30&s=${encodeURIComponent(kw)}`);
+    const d = await res.json();
+    return ((d.result && d.result.songs) || []).map(s => ({
+      id: s.id, title: s.name, artist: (s.artists||[]).map(a=>a.name).join('/'),
+      album: s.album?.name || '', cover: nePic(s.album?.picId),
+      source: 'netease', duration: s.duration || 0,
+    }));
+  } catch (e) { console.warn('Netease direct failed:', e.message); }
+
+  // Vercel 降级
   try {
     const res = await fetch(`${NETEAST_API}/search?keywords=${encodeURIComponent(kw)}&type=1&limit=30`);
     const d = await res.json();
@@ -871,10 +887,8 @@ async function searchNetease(kw) {
       album: s.album?.name || '', cover: (s.album && s.album.picUrl) || '',
       source: 'netease', duration: s.duration || 0,
     }));
-  } catch (e) {
-    console.warn('Netease API failed:', e.message);
-    return [];
-  }
+  } catch (e) { console.warn('Netease Vercel failed:', e.message); }
+  return [];
 }
 
 async function searchQQ(kw) {
@@ -883,65 +897,102 @@ async function searchQQ(kw) {
       `https://c.y.qq.com/soso/fcgi-bin/client_search_cp?format=jsonp&n=20&w=${encodeURIComponent(kw)}&jsonpCallback=__qqcb`,
       'jsonpCallback'
     );
-    // QQ的JSONP返回格式特殊
-    return [];
-  } catch (e) { return []; }
+    var list = (d && d.data && d.data.song && d.data.song.list) || [];
+    return list.map(function(s) {
+      var singers = (s.singer || []).map(function(a) { return a.name; }).join('/');
+      return {
+        id: 'qq_' + (s.songmid || s.songid),
+        title: s.songname || s.name || '',
+        artist: singers,
+        album: s.albumname || '',
+        cover: s.albummid ? 'https://y.qq.com/music/photo_new/T002R300x300M000' + s.albummid + '.jpg' : '',
+        source: 'qq',
+        duration: (s.interval || 0) * 1
+      };
+    });
+  } catch (e) { console.warn('QQ search failed:', e.message); return []; }
 }
 
 const METING_API = 'https://meting-ms.vercel.app';
 
 async function searchAll(kw) {
   if (!kw.trim()) return [];
-  const results = [];
-  const servers = ['netease', 'tencent', 'kugou', 'kuwo', 'migu'];
-  const searches = servers.map(async s => {
-    try {
-      const res = await fetch(`${METING_API}?server=${s}&type=search&id=${encodeURIComponent(kw)}`);
-      const data = await res.json();
-      return data;
-    } catch (e) { return []; }
-  });
-  const all = await Promise.all(searches);
-  return all.flat();
+  var ne = searchNetease(kw);
+  var qq = searchQQ(kw);
+  var results = (await Promise.all([ne, qq])).flat();
+  // 聚合后端（vercel 可达时补充其他平台）
+  try {
+    var servers = ['kugou', 'kuwo', 'migu'];
+    var extra = await Promise.all(servers.map(async function(s) {
+      try {
+        var res = await fetch(METING_API + '?server=' + s + '&type=search&id=' + encodeURIComponent(kw));
+        var data = await res.json();
+        return data;
+      } catch (e) { return []; }
+    }));
+    results = results.concat(extra.flat());
+  } catch (e) { /* Vercel 不可达，忽略 */ }
+  return results;
 }
 
 async function getPlayUrl(song) {
-  // Worker server 名映射
-  const serverMap = { qq: 'tencent' };
-  const server = serverMap[song.source] || song.source;
+  var serverMap = { qq: 'tencent' };
+  var server = serverMap[song.source] || song.source;
 
-  // 优先用 Worker 聚合 API
-  try {
-    const res = await fetch(`${METING_API}?server=${server}&type=url&id=${song.id}`);
-    const d = await res.json();
-    if (d.url) return d.url;
-  } catch (e) { /* fallback */ }
-
-  // 网易云降级
+  // 网易云：多层降级
   if (song.source === 'netease') {
+    // 优先 Vercel API
     try {
-      const res = await fetch(`${NETEAST_API}/song/url?id=${song.id}`);
-      const d = await res.json();
-      if (d.data && d.data[0] && d.data[0].url) {
-        return d.data[0].url;
-      }
-    } catch (e) { console.warn('Get play URL failed:', e.message); }
-    return `https://music.163.com/song/media/outer/url?id=${song.id}.mp3`;
+      var r1 = await fetch(NETEAST_API + '/song/url?id=' + song.id);
+      var d1 = await r1.json();
+      if (d1.data && d1.data[0] && d1.data[0].url) return d1.data[0].url;
+    } catch (e) {}
+    // 直接 outer URL
+    return NETEAST_RAW + '/song/media/outer/url?id=' + song.id + '.mp3';
   }
+
+  // QQ：Vercel 聚合
+  try {
+    var r2 = await fetch(NETEAST_API + '/song/url?id=' + song.id);
+    var d2 = await r2.json();
+    if (d2.data && d2.data[0] && d2.data[0].url) return d2.data[0].url;
+  } catch (e) {}
+
+  // 聚合 API 降级
+  try {
+    var r3 = await fetch(METING_API + '?server=' + server + '&type=url&id=' + song.id);
+    var d3 = await r3.json();
+    if (d3.url) return d3.url;
+  } catch (e) {}
+
   return null;
 }
 
 // ==================== 榜单 ====================
-async function fetchToplist(id = 3778678) {
+async function fetchToplist(id) {
+  id = id || 3778678;
+  // 直连 music.163.com
   try {
-    const res = await fetch(`${NETEAST_API}/playlist/detail?id=${id}`);
-    const d = await res.json();
-    const tracks = (d.playlist && d.playlist.tracks) || [];
-    return tracks.map(s => ({
-      id: s.id, title: s.name, artist: (s.ar||[]).map(a=>a.name).join('/'),
+    var r1 = await fetch(NETEAST_RAW + '/api/playlist/detail?id=' + id);
+    var d1 = await r1.json();
+    var tracks = (d1.playlist && d1.playlist.tracks) || [];
+    return tracks.map(function(s) { return {
+      id: s.id, title: s.name, artist: (s.ar||[]).map(function(a) { return a.name; }).join('/'),
+      album: (s.al && s.al.name) || '', cover: nePic(s.al && s.al.picId),
+      source: 'netease', duration: s.dt || 0,
+    };});
+  } catch (e) { console.warn('Toplist direct failed:', e.message); }
+
+  // Vercel 降级
+  try {
+    var r2 = await fetch(NETEAST_API + '/playlist/detail?id=' + id);
+    var d2 = await r2.json();
+    var tracks2 = (d2.playlist && d2.playlist.tracks) || [];
+    return tracks2.map(function(s) { return {
+      id: s.id, title: s.name, artist: (s.ar||[]).map(function(a) { return a.name; }).join('/'),
       album: (s.al && s.al.name) || '', cover: (s.al && s.al.picUrl) || '',
       source: 'netease', duration: s.dt || 0,
-    }));
+    };});
   } catch (e) { return []; }
 }
 
