@@ -366,7 +366,7 @@ function updateActions(){const el=document.getElementById('wsActions');if(!el)re
   else if(['office-pdf-reader'].includes(id))h=wsFiles.length?`<span style="font-size:.8rem;color:rgba(255,255,255,.35)">PDF 已加载，下方可翻页阅读</span>`:'';
   else if(['conv-audio'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="convertAudio()">🔄 转换为 WAV</button>`:'';
   else if(['pdf-unlock'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="unlockPdf()">🔓 移除密码</button>`:'';
-  else if(['comp-img','img-rotate','img-flip','img-resize','img-compress','aud-trim','aud-speed','aud-pitch','aud-reverse','aud-volume','aud-merge','aud-eq','vid-edit','conv-img','conv-heic'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="${id==='conv-heic'?'convertHeic':'id===\'vid-edit\'||id===\'conv-video\'?\'processVideo\'':id===\'conv-audio\'?\'convertAudio\'':id===\'aud-eq\'?\'processEqAudio()\':\'processTool()\'}()">⚡ 开始处理</button>`:'';
+  else if(['comp-img','img-rotate','img-flip','img-resize','img-compress','aud-trim','aud-speed','aud-pitch','aud-reverse','aud-volume','aud-merge','aud-eq','vid-edit','conv-img','conv-heic'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="handleGenericTool()">⚡ 开始处理</button>`:'';
   else h=wsFiles.length?`<button class="btn-primary" onclick="processTool()">⚡ 开始处理</button>`:'';
   el.innerHTML=h;
 }
@@ -546,6 +546,16 @@ async function convertVideo(){if(!wsFiles.length)return;wsVideoEl=document.getEl
   wsVideoMR=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9'});wsVideoChunks=[];wsVideoMR.ondataavailable=e=>wsVideoChunks.push(e.data);wsVideoMR.onstop=()=>{wsVideoOutputBlob=new Blob(wsVideoChunks,{type:'video/webm'});setProgress(100,'完成！');const btn=document.createElement('button');btn.className='btn-primary';btn.textContent='⬇ 下载 WebM';btn.onclick=()=>downloadBlob(wsVideoOutputBlob,'output.webm','video/webm');btn.style.marginTop='12px';document.getElementById('wsResult').appendChild(btn)};wsVideoMR.start();
   setProgress(10,'实时转换中（1倍速）...');v.play();
   const renderF=()=>{if(v.paused||v.ended){if(wsVideoMR&&wsVideoMR.state==='recording')wsVideoMR.stop();return}const pct=10+Math.floor(80*v.currentTime/v.duration);setProgress(pct,`${v.currentTime.toFixed(1)}s / ${v.duration.toFixed(1)}s`);ctx.drawImage(v,0,0);if(v.currentTime<v.duration&&!v.paused&&!v.ended)requestAnimationFrame(renderF);else if(wsVideoMR&&wsVideoMR.state==='recording')wsVideoMR.stop()};renderF()
+}
+
+// Generic tool dispatcher - resolves function from wsTool.id
+function handleGenericTool(){
+  const id=wsTool.id;
+  if(id==='conv-heic')convertHeic();
+  else if(id==='vid-edit'||id==='conv-video')processVideo();
+  else if(id==='conv-audio')convertAudio();
+  else if(id==='aud-eq')processEqAudio();
+  else processTool();
 }
 
 // ===== RECORDING =====
