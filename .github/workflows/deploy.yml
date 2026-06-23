@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -55,6 +55,11 @@ jobs:
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
+      - name: Verify dist workbox
+        run: |
+          echo "workbox size: $(wc -c < dist/workbox/index.html)"
+          echo "portal size: $(wc -c < dist/index.html)"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -63,3 +68,11 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Push to gh-pages (backup)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true

@@ -4,16 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>即刻办公 — 一站式在线工具箱</title>
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-<script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
-<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
@@ -69,6 +59,7 @@ body{font-family:'SF Pro Display',-apple-system,'PingFang SC','Microsoft YaHei',
 .tool-card h3{font-size:.95rem;font-weight:600;color:#e1e2e9;margin-bottom:6px;letter-spacing:-.01em}
 .tool-card p{font-size:.8rem;color:rgba(255,255,255,.35);line-height:1.5}
 @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .workspace-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s ease}
 .workspace-overlay.open{opacity:1;pointer-events:auto}
 .workspace-panel{position:fixed;right:0;top:0;bottom:0;z-index:401;width:620px;max-width:100vw;background:rgba(14,14,22,.97);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-left:1px solid rgba(255,255,255,.06);transform:translateX(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.5)}
@@ -164,6 +155,12 @@ body{font-family:'SF Pro Display',-apple-system,'PingFang SC','Microsoft YaHei',
 </nav>
 <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="菜单">&#9776;</button>
 <main class="main-content" id="mainContent">
+  <div class="loading-skeleton" id="loadingSkeleton">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px">
+      <div style="width:48px;height:48px;border:3px solid rgba(99,102,241,.15);border-top-color:#6366f1;border-radius:50%;animation:spin .8s linear infinite"></div>
+      <p style="color:rgba(255,255,255,.35);font-size:.9rem">正在加载工具库...</p>
+    </div>
+  </div>
   <div class="no-results" id="noResults" style="display:none"><div class="icon">&#128270;</div><p>未找到匹配的工具</p></div>
 </main>
 </div>
@@ -182,6 +179,16 @@ body{font-family:'SF Pro Display',-apple-system,'PingFang SC','Microsoft YaHei',
   <div class="workspace-body" id="wsBody"></div>
 </div>
 
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -280,6 +287,7 @@ let wsCropData=null,wsAudioBuffer=null,wsAudioCtx=null,wsSignCanvas=null,wsSignC
 function fmtSize(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB'}
 
 function renderTools(){
+  const sk=document.getElementById('loadingSkeleton');if(sk)sk.style.display='none';
   const main=document.getElementById('mainContent'),nr=document.getElementById('noResults');
   let filtered=tools.filter(t=>(currentCategory==='all'||t.cat===currentCategory)&&(!searchQuery||t.name.includes(searchQuery)||t.desc.includes(searchQuery)));
   main.querySelectorAll('.category-section').forEach(s=>s.remove());
