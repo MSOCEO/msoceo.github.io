@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -17,9 +17,6 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,23 +49,19 @@ jobs:
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
-      - name: List dist structure
-        run: |
-          echo "=== Dist root ==="
-          ls -la dist/
-          echo "=== Dist/blog ==="
-          ls dist/blog/ | head -20
-          echo "=== Dist/blog/index.html preview ==="
-          head -c 200 dist/blog/index.html
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: ./dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true
+          # No custom domain - using default github.io
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Configure Pages source to gh-pages branch
+        run: |
+          curl -s -X PUT \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/MSOCEO/msoceo.github.io/pages \
+            -d '{"source":{"branch":"gh-pages","path":"/"}}'
