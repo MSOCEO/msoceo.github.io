@@ -917,53 +917,47 @@ const METING_API = 'https://meting-ms.vercel.app';
 
 async function searchAll(kw) {
   if (!kw.trim()) return [];
-  var ne = searchNetease(kw);
-  var qq = searchQQ(kw);
-  var results = (await Promise.all([ne, qq])).flat();
-  // 聚合后端（vercel 可达时补充其他平台）
+
+  // 优先走 meting-ms 聚合 API（5平台一起搜）
   try {
-    var servers = ['kugou', 'kuwo', 'migu'];
-    var extra = await Promise.all(servers.map(async function(s) {
+    var servers = ['netease', 'tencent', 'kugou', 'kuwo', 'migu'];
+    var all = await Promise.all(servers.map(async function(s) {
       try {
         var res = await fetch(METING_API + '?server=' + s + '&type=search&id=' + encodeURIComponent(kw));
         var data = await res.json();
         return data;
       } catch (e) { return []; }
     }));
-    results = results.concat(extra.flat());
-  } catch (e) { /* Vercel 不可达，忽略 */ }
-  return results;
+    var results = all.flat();
+    if (results.length > 0) return results;
+  } catch (e) { /* Vercel 不可达 */ }
+
+  // 降级：网易云 + QQ 直连
+  var ne = searchNetease(kw);
+  var qq = searchQQ(kw);
+  return (await Promise.all([ne, qq])).flat();
 }
 
 async function getPlayUrl(song) {
   var serverMap = { qq: 'tencent' };
   var server = serverMap[song.source] || song.source;
 
-  // 网易云：多层降级
+  // 优先走 meting-ms 聚合 API
+  try {
+    var r0 = await fetch(METING_API + '?server=' + server + '&type=url&id=' + song.id);
+    var d0 = await r0.json();
+    if (d0.url) return d0.url;
+  } catch (e) {}
+
+  // 网易云降级
   if (song.source === 'netease') {
-    // 优先 Vercel API
     try {
       var r1 = await fetch(NETEAST_API + '/song/url?id=' + song.id);
       var d1 = await r1.json();
       if (d1.data && d1.data[0] && d1.data[0].url) return d1.data[0].url;
     } catch (e) {}
-    // 直接 outer URL
     return NETEAST_RAW + '/song/media/outer/url?id=' + song.id + '.mp3';
   }
-
-  // QQ：Vercel 聚合
-  try {
-    var r2 = await fetch(NETEAST_API + '/song/url?id=' + song.id);
-    var d2 = await r2.json();
-    if (d2.data && d2.data[0] && d2.data[0].url) return d2.data[0].url;
-  } catch (e) {}
-
-  // 聚合 API 降级
-  try {
-    var r3 = await fetch(METING_API + '?server=' + server + '&type=url&id=' + song.id);
-    var d3 = await r3.json();
-    if (d3.url) return d3.url;
-  } catch (e) {}
 
   return null;
 }
