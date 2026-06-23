@@ -296,6 +296,7 @@ html.light .theme-toggle-thumb{transform:translateX(22px)}
   transition:all .35s cubic-bezier(.22,1,.36,1);
   overflow:hidden;
   display:flex;flex-direction:column;
+  cursor:pointer;
   /* scroll animation initial state */
   opacity:0;transform:translateY(20px);
 }
@@ -604,6 +605,11 @@ products.forEach(p => {
     </div>
     <a class="card-link" href="${p.url}" target="_blank" rel="noopener">访问站点</a>
   `;
+  card.addEventListener('click',function(e){
+    // Don't fire if user clicked the explicit link
+    if(e.target.closest('.card-link')) return;
+    window.open(p.url,'_blank');
+  });
   grid.appendChild(card);
 });
 
