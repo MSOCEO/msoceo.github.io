@@ -165,9 +165,18 @@ body::before {
 /* ═══════════ APP STORE STYLE ═══════════ */
 .store-section {
   background: linear-gradient(180deg, rgba(8,8,18,1) 0%, rgba(6,6,14,1) 100%);
-  border-top: 1px solid var(--border-subtle);
   padding: 0;
   min-height: 100vh;
+}
+
+.store-outer-frame {
+  max-width: 1340px;
+  margin: 40px auto;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: rgba(6,6,14,.5);
+  box-shadow: 0 0 80px rgba(167,139,250,.03), 0 0 0 1px rgba(167,139,250,.04);
 }
 
 .store-container {
@@ -554,6 +563,106 @@ body::before {
 .store-branding .section-label { margin-bottom: 6px; }
 .store-branding .section-title { margin-bottom: 0; }
 
+/* Review Section */
+.review-section {
+  padding: 80px 0 80px;
+  max-width: 1340px;
+  margin: 0 auto;
+}
+.review-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.review-tab {
+  padding: 8px 24px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--font-body);
+}
+.review-tab:hover { color: var(--text-primary); border-color: var(--border-medium); }
+.review-tab.active {
+  color: var(--accent-purple);
+  border-color: rgba(167,139,250,.3);
+  background: rgba(167,139,250,.08);
+}
+.review-table-wrap {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 0 20px;
+  overflow-x: auto;
+}
+.review-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.review-table thead th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-medium);
+  position: sticky;
+  top: 0;
+  background: rgba(8,8,18,.95);
+  backdrop-filter: blur(12px);
+}
+.review-table thead th:first-child { padding-left: 20px; border-radius: var(--radius-md) 0 0 0; }
+.review-table thead th:last-child { border-radius: 0 var(--radius-md) 0 0; }
+.review-table tbody td {
+  padding: 16px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.review-table tbody td:first-child { padding-left: 20px; }
+.review-table tbody tr:hover { background: rgba(255,255,255,.015); }
+.review-table tbody tr:last-child td { border-bottom: none; }
+
+.review-model-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.review-model-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-grotesk);
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.review-model-name { font-weight: 700; color: var(--text-primary); }
+.review-model-provider { font-size: 11px; color: var(--text-muted); }
+
+.review-pros { color: var(--accent-green); }
+.review-cons { color: var(--accent-rose); }
+.review-pros li, .review-cons li { margin-bottom: 3px; font-size: 12px; }
+.review-pros li::before { content: '+ '; }
+.review-cons li::before { content: '- '; }
+
+.review-pricing { font-weight: 600; }
+.review-pricing.free { color: var(--accent-green); }
+.review-pricing.paid { color: var(--accent-amber); }
+.review-pricing-detail { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.review-tokens { font-size: 12px; color: var(--text-secondary); }
+.review-tokens span { color: var(--accent-purple); font-weight: 600; }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
@@ -568,7 +677,7 @@ body::before {
   .sidebar-item { border-left:none; border-bottom:2px solid transparent; white-space:nowrap; }
   .sidebar-item.active { border-left:none; border-bottom-color:var(--accent-purple); }
   .store-main { padding:20px 16px; }
-  .store-grid { grid-template-columns:1fr; }
+  .store-grid { grid-template-columns:1fr; } .review-table-wrap { padding:0 12px; } .review-table { font-size:11px; }
   .bento-grid { grid-template-columns:1fr; }
   .col-span-2,.col-span-3,.col-span-6 { grid-column:span 1; }
   .stats-row { grid-template-columns:repeat(2,1fr); }
@@ -624,8 +733,8 @@ body::before {
 <!-- Workbench -->
 <section class="section" id="workbench">
   <div class="container" style="text-align:center;">
-    <div class="section-label">AI Orchestration Hub</div>
-    <h2 class="section-title">AI 调度中心</h2>
+    <div class="section-label">Central Orchestration</div>
+    <h2 class="section-title">智能调度中心</h2>
     <div class="bento-grid">
       <div class="col-span-3">
         <div class="chat-panel">
@@ -653,6 +762,7 @@ body::before {
 
 <!-- ═══════════ APP STORE ═══════════ -->
 <section class="store-section" id="store">
+  <div class="store-outer-frame">
   <div class="store-container">
 
     <!-- Sidebar -->
@@ -660,10 +770,16 @@ body::before {
       <div class="sidebar-section">
         <div class="sidebar-label">分类浏览</div>
         <div class="sidebar-item active" data-store-cat="all"><span class="sidebar-icon">🏠</span>全部<span class="sidebar-count">20</span></div>
-        <div class="sidebar-item" data-store-cat="plugin-productivity"><span class="sidebar-icon">⚡</span>效率工具<span class="sidebar-count">5</span></div>
-        <div class="sidebar-item" data-store-cat="plugin-dev"><span class="sidebar-icon">💻</span>开发工具<span class="sidebar-count">4</span></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">📦 插件</div>
+        <div class="sidebar-item" data-store-cat="plugin-productivity"><span class="sidebar-icon">📋</span>效率办公<span class="sidebar-count">4</span></div>
+        <div class="sidebar-item" data-store-cat="plugin-dev"><span class="sidebar-icon">🔧</span>开发工具<span class="sidebar-count">5</span></div>
         <div class="sidebar-item" data-store-cat="plugin-creative"><span class="sidebar-icon">🎨</span>创意设计<span class="sidebar-count">3</span></div>
         <div class="sidebar-item" data-store-cat="plugin-data"><span class="sidebar-icon">📊</span>数据处理<span class="sidebar-count">2</span></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">🧠 模型</div>
         <div class="sidebar-item" data-store-cat="model-cloud"><span class="sidebar-icon">☁️</span>云端模型<span class="sidebar-count">4</span></div>
         <div class="sidebar-item" data-store-cat="model-local"><span class="sidebar-icon">🖥️</span>本地模型<span class="sidebar-count">2</span></div>
       </div>
@@ -673,6 +789,9 @@ body::before {
         <div class="sidebar-item" data-rank="new"><span class="sidebar-icon">🆕</span>最新上架</div>
         <div class="sidebar-item" data-rank="top"><span class="sidebar-icon">⭐</span>评分最高</div>
       </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">更多</div>
+        <a href="#review-section" class="sidebar-item"><span class="sidebar-icon">📋</span>能力测评</a></div>
     </aside>
 
     <!-- Main Content -->
@@ -702,12 +821,29 @@ body::before {
 
       <!-- Store Branding -->
       <div class="store-branding">
-        <div class="section-label">AI Capability Market</div>
+        <div class="section-label">Capability Market</div>
         <h2 class="section-title">能力工坊</h2>
       </div>
     </main>
 
   </div>
+  </div>
+</section>
+
+<!-- ═══════════ REVIEW SECTION ═══════════ -->
+<section class="review-section" id="review-section">
+  <div class="container" style="text-align:center;">
+    <div class="section-label">Capability Review</div>
+    <h2 class="section-title">能力测评</h2>
+    <p style="color:var(--text-muted);font-size:14px;max-width:600px;margin:0 auto 32px;">客观对比每个插件与模型的功能、优缺点和费用详情，帮你快速决策</p>
+  </div>
+
+  <div class="review-tabs" id="review-tabs">
+    <button class="review-tab active" data-review-tab="models">模型对比</button>
+    <button class="review-tab" data-review-tab="plugins">插件对比</button>
+  </div>
+
+  <div class="review-table-wrap" id="review-table-wrap"></div>
 </section>
 
 <!-- Detail Modal -->
@@ -718,29 +854,29 @@ body::before {
 <script>
 // ===== DATA =====
 const plugins = [
-  { id:'pdf-parser', name:'PDF 智能解析', type:'plugin', cat:'plugin-productivity', desc:'提取PDF文字、表格、图片，支持批量处理和OCR识别。', fullDesc:'基于AI视觉模型的PDF智能解析工具。支持扫描件OCR识别、表格结构化提取、多语言混合文档处理。批量导入文件夹后自动分类输出，可导出为Markdown/Excel/JSON格式。内置自然语言查询引擎，直接向文档提问即可定位关键信息。', icon:'📄', iconBg:'rgba(244,114,182,.12)', rating:4.9, downloads:12300, recs:98, version:'2.4.1', installed:true, tags:['OCR','批量','导出','NLP查询'], features:['扫描件OCR识别准确率99.2%','支持50+语言混合文档','一键导出Markdown/Excel/JSON','自然语言文档问答'] },
-  { id:'excel-analytics', name:'Excel 数据分析', type:'plugin', cat:'plugin-data', desc:'自然语言生成透视表和图表，自动发现数据洞察。', fullDesc:'告别手动拖拽透视表。直接描述你想看的数据关系，插件自动生成交互式透视表和可视化图表。内置异常检测算法会自动标注数据中的离群点和趋势变化，并生成自然语言分析报告。', icon:'📊', iconBg:'rgba(52,211,153,.12)', rating:4.7, downloads:9100, recs:92, version:'1.8.0', installed:true, tags:['透视表','图表','NLP','洞察'], features:['自然语言生成透视表','自动异常检测与标注','导出交互式HTML报告','支持CSV/XLSX/JSON'] },
-  { id:'image-processor', name:'图片智能处理', type:'plugin', cat:'plugin-creative', desc:'批量压缩、格式转换、智能去背景、超分辨率增强。', fullDesc:'AI驱动的图片处理工作流。批量导入后一键完成压缩、格式转换、去背景、超分辨率增强等操作。支持创建自定义处理流水线并保存为预设。智能去背景采用最新分割模型，发丝级精度。', icon:'🖼️', iconBg:'rgba(167,139,250,.12)', rating:4.7, downloads:8900, recs:91, version:'3.0.2', installed:false, tags:['去背景','超分','批量','流水线'], features:['发丝级智能去背景','4x超分辨率增强','自定义处理流水线','WebP/AVIF/PNG全格式'] },
-  { id:'markdown-editor', name:'Markdown Pro', type:'plugin', cat:'plugin-dev', desc:'实时预览MD编辑器，支持导出PDF/HTML/Word。', fullDesc:'为技术写作打造的Markdown编辑器。实时分屏预览、内置Mermaid图表渲染、LaTeX数学公式支持、代码高亮涵盖30+语言。一键导出为PDF/HTML/Word，支持自定义CSS模板和品牌水印。', icon:'📝', iconBg:'rgba(34,211,238,.12)', rating:4.8, downloads:15200, recs:96, version:'2.2.0', installed:true, tags:['预览','导出','LaTeX','Mermaid'], features:['实时分屏预览','Mermaid图表+LaTeX公式','自定义导出CSS模板','30+语言代码高亮'] },
-  { id:'git-viz', name:'Git 可视化', type:'plugin', cat:'plugin-dev', desc:'图形化Git操作界面，分支管理、diff对比、提交历史。', fullDesc:'告别命令行Git。可视化分支拓扑图、拖拽式合并操作、逐行diff对比、时间线提交历史浏览。支持GitFlow工作流模板一键初始化，冲突解决有图形化三方对比视图。', icon:'🔀', iconBg:'rgba(244,114,182,.12)', rating:4.5, downloads:6700, recs:85, version:'1.4.3', installed:false, tags:['分支','Diff','历史','GitFlow'], features:['可视化分支拓扑','三方对比冲突解决','GitFlow模板','拖拽式合并'] },
-  { id:'api-tester', name:'API 调试工坊', type:'plugin', cat:'plugin-dev', desc:'可视化API调试器，REST/GraphQL/gRPC全覆盖。', fullDesc:'一站式API开发调试工具。支持REST/GraphQL/gRPC/WebSocket协议，环境变量管理、前置脚本、断言测试、团队协作空间。自动生成API文档和OpenAPI规范，一键导出Postman集合。', icon:'🔧', iconBg:'rgba(34,211,238,.12)', rating:4.6, downloads:10500, recs:90, version:'3.1.0', installed:true, tags:['REST','GraphQL','gRPC','协作'], features:['REST/GraphQL/gRPC全协议','环境变量+前置脚本','自动生成OpenAPI文档','团队协作空间'] },
-  { id:'scheduler', name:'智能日程', type:'plugin', cat:'plugin-productivity', desc:'自然语言创建提醒和日程，自动解析时间意图。', fullDesc:'用自然语言管理日程。"明天下午3点和产品开会"即可自动创建日历事件。支持重复规则智能识别、跨时区转换、会前提醒。与系统日历和Google Calendar双向实时同步。', icon:'📅', iconBg:'rgba(52,211,153,.12)', rating:4.4, downloads:7800, recs:87, version:'1.6.1', installed:true, tags:['日历同步','NLP','提醒','时区'], features:['自然语言创建日程','重复规则智能识别','双日历实时同步','会前智能提醒'] },
-  { id:'web-snapshot', name:'网页快照', type:'plugin', cat:'plugin-productivity', desc:'一键保存网页为PDF/Markdown，定时抓取和变更监控。', fullDesc:'保存网页为高质量PDF或Markdown格式。支持定时抓取、内容变更监控与通知、多页批量保存。自动去除广告和无关元素，保留核心阅读内容。内置版本对比功能直观展示内容变化。', icon:'🌐', iconBg:'rgba(167,139,250,.12)', rating:4.3, downloads:5100, recs:81, version:'1.2.0', installed:false, tags:['PDF','Markdown','监控','版本对比'], features:['高质量PDF/Markdown保存','定时抓取+变更通知','智能去除广告','内容版本对比'] },
-  { id:'video-gif', name:'视频转GIF', type:'plugin', cat:'plugin-creative', desc:'视频片段转高质量GIF，支持裁剪、调速、文字叠加。', fullDesc:'视频片段快速转高质量GIF动图。可视时间轴选取片段，支持变速、裁剪画幅、文字水印叠加。内置调色板优化算法保证画质同时控制文件大小，适合社交媒体分享。', icon:'🎬', iconBg:'rgba(244,114,182,.12)', rating:4.6, downloads:4400, recs:84, version:'2.0.1', installed:false, tags:['GIF','裁剪','文字','优化'], features:['可视时间轴选取','智能调色板优化','文字水印叠加','30FPS高帧率'] },
-  { id:'speech-text', name:'语音转文字', type:'plugin', cat:'plugin-productivity', desc:'多语言语音识别，实时转录，支持离线模式。', fullDesc:'基于Whisper模型的语音识别插件。支持50+语言实时转录，离线模式无需联网保护隐私。自动说话人分割、时间戳标注、术语库定制。导出SRT/VTT/TXT多种格式。', icon:'🎙️', iconBg:'rgba(251,191,36,.12)', rating:4.8, downloads:11600, recs:95, version:'3.3.0', installed:true, tags:['实时','多语言','离线','Whisper'], features:['50+语言实时转录','离线模式保护隐私','自动说话人分割','SRT/VTT/TXT导出'] },
-  { id:'db-manager', name:'数据库管理', type:'plugin', cat:'plugin-data', desc:'SQL/NoSQL可视化客户端，智能补全和ER图生成。', fullDesc:'支持MySQL/PostgreSQL/MongoDB/Redis的统一数据库管理工具。AI辅助SQL编写与优化建议，可视化ER关系图自动生成，数据导出支持10+格式。内置查询性能分析器。', icon:'🗄️', iconBg:'rgba(34,211,238,.12)', rating:4.5, downloads:8200, recs:86, version:'4.0.1', installed:false, tags:['SQL','NoSQL','ER图','性能'], features:['AI辅助SQL编写','可视化ER图生成','查询性能分析','10+导出格式'] },
-  { id:'icon-lab', name:'设计素材库', type:'plugin', cat:'plugin-creative', desc:'AI生成图标、插画、配色方案，导出SVG/PNG。', fullDesc:'AI驱动的设计素材生成器。输入描述即可生成图标和插画，支持品牌色一键适配、多尺寸批量导出。内置配色方案推荐引擎，提供互补色、邻近色等专业配色组合。', icon:'🎨', iconBg:'rgba(244,114,182,.12)', rating:4.7, downloads:6300, recs:89, version:'1.9.0', installed:true, tags:['图标','插画','配色','SVG'], features:['AI生成图标插画','品牌色一键适配','专业配色方案','SVG/PNG批量导出'] },
-  { id:'code-reviewer', name:'代码审查', type:'plugin', cat:'plugin-dev', desc:'AI代码审查，自动检测Bug和安全漏洞。', fullDesc:'支持30+语言的AI代码审查工具。自动检测逻辑Bug、安全漏洞、性能问题和代码异味。生成详细审查报告含修复建议代码片段。支持Git PR自动审查和CI/CD流水线集成。', icon:'🔍', iconBg:'rgba(167,139,250,.12)', rating:4.9, downloads:14100, recs:97, version:'5.2.0', installed:true, tags:['安全','30+语言','CI','PR审查'], features:['30+语言漏洞检测','自动修复建议代码','Git PR自动审查','CI/CD无缝集成'] },
-  { id:'meeting-notes', name:'会议纪要', type:'plugin', cat:'plugin-productivity', desc:'实时录音转文字，自动生成结构化纪要和待办。', fullDesc:'集成Zoom/Teams/腾讯会议的智能纪要工具。实时转录并自动识别发言人，AI提取关键决策、行动项和截止日期，生成结构化会议纪要。支持全文搜索历史会议内容。', icon:'📋', iconBg:'rgba(129,140,248,.12)', rating:4.6, downloads:9700, recs:93, version:'2.5.0', installed:false, tags:['录音','纪要','待办','Zoom'], features:['Zoom/Teams集成','自动提取行动项','结构化纪要模板','全文搜索历史'] },
+  { id:'pdf-parser', name:'PDF 智能解析', type:'plugin', cat:'plugin-productivity', desc:'提取PDF文字、表格、图片，支持批量处理和OCR识别。', fullDesc:'基于AI视觉模型的PDF智能解析工具。支持扫描件OCR识别、表格结构化提取、多语言混合文档处理。批量导入文件夹后自动分类输出，可导出为Markdown/Excel/JSON格式。内置自然语言查询引擎，直接向文档提问即可定位关键信息。', icon:'📄', iconBg:'rgba(244,114,182,.12)', rating:4.9, downloads:12300, recs:98, version:'2.4.1', pros:['OCR识别极准','多语言支持强大','NLP文档问答便利'], cons:['大文件处理偏慢','高级功能需联网'], pricing:'free', pricing_detail:'完全免费', installed:true, tags:['OCR','批量','导出','NLP查询'], features:['扫描件OCR识别准确率99.2%','支持50+语言混合文档','一键导出Markdown/Excel/JSON','自然语言文档问答'] },
+  { id:'excel-analytics', name:'Excel 数据分析', type:'plugin', cat:'plugin-data', desc:'自然语言生成透视表和图表，自动发现数据洞察。', fullDesc:'告别手动拖拽透视表。直接描述你想看的数据关系，插件自动生成交互式透视表和可视化图表。内置异常检测算法会自动标注数据中的离群点和趋势变化，并生成自然语言分析报告。', icon:'📊', iconBg:'rgba(52,211,153,.12)', rating:4.7, downloads:9100, recs:92, version:'1.8.0', pros:['自然语言交互直观','自动异常检测实用','HTML报告美观'], cons:['超大数据集可能卡顿','仅支持CSV/XLSX/JSON'], pricing:'free', pricing_detail:'完全免费', installed:true, tags:['透视表','图表','NLP','洞察'], features:['自然语言生成透视表','自动异常检测与标注','导出交互式HTML报告','支持CSV/XLSX/JSON'] },
+  { id:'image-processor', name:'图片智能处理', type:'plugin', cat:'plugin-creative', desc:'批量压缩、格式转换、智能去背景、超分辨率增强。', fullDesc:'AI驱动的图片处理工作流。批量导入后一键完成压缩、格式转换、去背景、超分辨率增强等操作。支持创建自定义处理流水线并保存为预设。智能去背景采用最新分割模型，发丝级精度。', icon:'🖼️', iconBg:'rgba(167,139,250,.12)', rating:4.7, downloads:8900, recs:91, version:'3.0.2', pros:['去背景精度发丝级','超分辨率效果出色','流水线批量高效'], cons:['首次加载模型较慢','对GPU有要求'], pricing:'free', pricing_detail:'基础免费，高级功能 ¥9/月', installed:false, tags:['去背景','超分','批量','流水线'], features:['发丝级智能去背景','4x超分辨率增强','自定义处理流水线','WebP/AVIF/PNG全格式'] },
+  { id:'markdown-editor', name:'Markdown Pro', type:'plugin', cat:'plugin-dev', desc:'实时预览MD编辑器，支持导出PDF/HTML/Word。', fullDesc:'为技术写作打造的Markdown编辑器。实时分屏预览、内置Mermaid图表渲染、LaTeX数学公式支持、代码高亮涵盖30+语言。一键导出为PDF/HTML/Word，支持自定义CSS模板和品牌水印。', icon:'📝', iconBg:'rgba(34,211,238,.12)', rating:4.8, downloads:15200, recs:96, version:'2.2.0', pros:['实时预览流畅','LaTeX+Mermaid双支持','导出格式丰富'], cons:['自定义CSS门槛较高','移动端适配一般'], pricing:'free', pricing_detail:'完全免费', installed:true, tags:['预览','导出','LaTeX','Mermaid'], features:['实时分屏预览','Mermaid图表+LaTeX公式','自定义导出CSS模板','30+语言代码高亮'] },
+  { id:'git-viz', name:'Git 可视化', type:'plugin', cat:'plugin-dev', desc:'图形化Git操作界面，分支管理、diff对比、提交历史。', fullDesc:'告别命令行Git。可视化分支拓扑图、拖拽式合并操作、逐行diff对比、时间线提交历史浏览。支持GitFlow工作流模板一键初始化，冲突解决有图形化三方对比视图。', icon:'🔀', iconBg:'rgba(244,114,182,.12)', rating:4.5, downloads:6700, recs:85, version:'1.4.3', pros:['可视化分支拓扑直观','三方对比解决冲突','GitFlow模板一键'], cons:['学习曲线稍陡','大仓库加载偏慢'], pricing:'free', pricing_detail:'完全免费', installed:false, tags:['分支','Diff','历史','GitFlow'], features:['可视化分支拓扑','三方对比冲突解决','GitFlow模板','拖拽式合并'] },
+  { id:'api-tester', name:'API 调试工坊', type:'plugin', cat:'plugin-dev', desc:'可视化API调试器，REST/GraphQL/gRPC全覆盖。', fullDesc:'一站式API开发调试工具。支持REST/GraphQL/gRPC/WebSocket协议，环境变量管理、前置脚本、断言测试、团队协作空间。自动生成API文档和OpenAPI规范，一键导出Postman集合。', icon:'🔧', iconBg:'rgba(34,211,238,.12)', rating:4.6, downloads:10500, recs:90, version:'3.1.0', pros:['全协议覆盖','团队协作实用','自动生成文档'], cons:['WebSocket调试功能弱','免费版有协作人数限制'], pricing:'paid', pricing_detail:'免费版3人，Pro ¥15/月', installed:true, tags:['REST','GraphQL','gRPC','协作'], features:['REST/GraphQL/gRPC全协议','环境变量+前置脚本','自动生成OpenAPI文档','团队协作空间'] },
+  { id:'scheduler', name:'智能日程', type:'plugin', cat:'plugin-productivity', desc:'自然语言创建提醒和日程，自动解析时间意图。', fullDesc:'用自然语言管理日程。"明天下午3点和产品开会"即可自动创建日历事件。支持重复规则智能识别、跨时区转换、会前提醒。与系统日历和Google Calendar双向实时同步。', icon:'📅', iconBg:'rgba(52,211,153,.12)', rating:4.4, downloads:7800, recs:87, version:'1.6.1', pros:['NLP日程解析智能','双日历实时同步','跨时区自动转换'], cons:['需授权日历权限','部分重复规则不支持'], pricing:'free', pricing_detail:'完全免费', installed:true, tags:['日历同步','NLP','提醒','时区'], features:['自然语言创建日程','重复规则智能识别','双日历实时同步','会前智能提醒'] },
+  { id:'web-snapshot', name:'网页快照', type:'plugin', cat:'plugin-productivity', desc:'一键保存网页为PDF/Markdown，定时抓取和变更监控。', fullDesc:'保存网页为高质量PDF或Markdown格式。支持定时抓取、内容变更监控与通知、多页批量保存。自动去除广告和无关元素，保留核心阅读内容。内置版本对比功能直观展示内容变化。', icon:'🌐', iconBg:'rgba(167,139,250,.12)', rating:4.3, downloads:5100, recs:81, version:'1.2.0', pros:['去广告干净','版本对比直观','定时监控可靠'], cons:['JS渲染页面偶有缺失','大站抓取可能受限'], pricing:'paid', pricing_detail:'免费试用7天，¥8/月', installed:false, tags:['PDF','Markdown','监控','版本对比'], features:['高质量PDF/Markdown保存','定时抓取+变更通知','智能去除广告','内容版本对比'] },
+  { id:'video-gif', name:'视频转GIF', type:'plugin', cat:'plugin-creative', desc:'视频片段转高质量GIF，支持裁剪、调速、文字叠加。', fullDesc:'视频片段快速转高质量GIF动图。可视时间轴选取片段，支持变速、裁剪画幅、文字水印叠加。内置调色板优化算法保证画质同时控制文件大小，适合社交媒体分享。', icon:'🎬', iconBg:'rgba(244,114,182,.12)', rating:4.6, downloads:4400, recs:84, version:'2.0.1', pros:['调色板优化画质好','可视时间轴易用','帧率最高30FPS'], cons:['不支持4K视频','导出速度中等'], pricing:'free', pricing_detail:'完全免费', installed:false, tags:['GIF','裁剪','文字','优化'], features:['可视时间轴选取','智能调色板优化','文字水印叠加','30FPS高帧率'] },
+  { id:'speech-text', name:'语音转文字', type:'plugin', cat:'plugin-productivity', desc:'多语言语音识别，实时转录，支持离线模式。', fullDesc:'基于Whisper模型的语音识别插件。支持50+语言实时转录，离线模式无需联网保护隐私。自动说话人分割、时间戳标注、术语库定制。导出SRT/VTT/TXT多种格式。', icon:'🎙️', iconBg:'rgba(251,191,36,.12)', rating:4.8, downloads:11600, recs:95, version:'3.3.0', pros:['50+语言实时转录','离线模式保护隐私','Whisper识别准'], cons:['离线模式需下载模型(~3GB)','嘈杂环境准确率下降'], pricing:'paid', pricing_detail:'基础免费 5h/月，Pro ¥12/月无限', installed:true, tags:['实时','多语言','离线','Whisper'], features:['50+语言实时转录','离线模式保护隐私','自动说话人分割','SRT/VTT/TXT导出'] },
+  { id:'db-manager', name:'数据库管理', type:'plugin', cat:'plugin-data', desc:'SQL/NoSQL可视化客户端，智能补全和ER图生成。', fullDesc:'支持MySQL/PostgreSQL/MongoDB/Redis的统一数据库管理工具。AI辅助SQL编写与优化建议，可视化ER关系图自动生成，数据导出支持10+格式。内置查询性能分析器。', icon:'🗄️', iconBg:'rgba(34,211,238,.12)', rating:4.5, downloads:8200, recs:86, version:'4.0.1', pros:['统一多数据库管理','AI SQL辅助实用','ER图自动生成'], cons:['Redis功能较基础','MongoDB聚合管道支持不全'], pricing:'paid', pricing_detail:'免费版仅SQLite，Pro ¥20/月', installed:false, tags:['SQL','NoSQL','ER图','性能'], features:['AI辅助SQL编写','可视化ER图生成','查询性能分析','10+导出格式'] },
+  { id:'icon-lab', name:'设计素材库', type:'plugin', cat:'plugin-creative', desc:'AI生成图标、插画、配色方案，导出SVG/PNG。', fullDesc:'AI驱动的设计素材生成器。输入描述即可生成图标和插画，支持品牌色一键适配、多尺寸批量导出。内置配色方案推荐引擎，提供互补色、邻近色等专业配色组合。', icon:'🎨', iconBg:'rgba(244,114,182,.12)', rating:4.7, downloads:6300, recs:89, version:'1.9.0', pros:['AI生成质量高','品牌色适配实用','配色方案专业'], cons:['生成结果偶有重复','精细调整自由度不足'], pricing:'free', pricing_detail:'基础免费，商用许可 ¥5/月', installed:true, tags:['图标','插画','配色','SVG'], features:['AI生成图标插画','品牌色一键适配','专业配色方案','SVG/PNG批量导出'] },
+  { id:'code-reviewer', name:'代码审查', type:'plugin', cat:'plugin-dev', desc:'AI代码审查，自动检测Bug和安全漏洞。', fullDesc:'支持30+语言的AI代码审查工具。自动检测逻辑Bug、安全漏洞、性能问题和代码异味。生成详细审查报告含修复建议代码片段。支持Git PR自动审查和CI/CD流水线集成。', icon:'🔍', iconBg:'rgba(167,139,250,.12)', rating:4.9, downloads:14100, recs:97, version:'5.2.0', pros:['30+语言全覆盖','CI/CD集成简单','修复建议可直接用'], cons:['复杂逻辑误报率~8%','自定义规则门槛高'], pricing:'paid', pricing_detail:'开源免费，企业版 ¥25/月', installed:true, tags:['安全','30+语言','CI','PR审查'], features:['30+语言漏洞检测','自动修复建议代码','Git PR自动审查','CI/CD无缝集成'] },
+  { id:'meeting-notes', name:'会议纪要', type:'plugin', cat:'plugin-productivity', desc:'实时录音转文字，自动生成结构化纪要和待办。', fullDesc:'集成Zoom/Teams/腾讯会议的智能纪要工具。实时转录并自动识别发言人，AI提取关键决策、行动项和截止日期，生成结构化会议纪要。支持全文搜索历史会议内容。', icon:'📋', iconBg:'rgba(129,140,248,.12)', rating:4.6, downloads:9700, recs:93, version:'2.5.0', pros:['Zoom/Teams一键集成','行动项提取准确','全文搜索方便'], cons:['非英语会议准确率下降','需授权录制权限'], pricing:'paid', pricing_detail:'免费版30min/次，Pro ¥18/月', installed:false, tags:['录音','纪要','待办','Zoom'], features:['Zoom/Teams集成','自动提取行动项','结构化纪要模板','全文搜索历史'] },
 ];
 
 const models = [
-  { id:'claude4', name:'Claude 4 Opus', type:'model', cat:'model-cloud', desc:'Anthropic旗舰推理模型。编程、长文分析、复杂逻辑推理。200K上下文窗口。', fullDesc:'Anthropic最新旗舰推理模型，在编程、长文分析、复杂逻辑推理任务上表现卓越。200K上下文窗口可处理超长文档和全量代码库。支持函数调用和多模态输入，是企业级AI应用的首选。', icon:'C4', iconBg:'rgba(167,139,250,.12)', rating:4.9, downloads:24500, recs:99, version:'4.0', active:true, tags:['推理','编程','200K','多模态'], features:['200K超长上下文','函数调用','多模态输入','企业级API'] },
-  { id:'gpt5', name:'GPT-5', type:'model', cat:'model-cloud', desc:'OpenAI多模态全能模型。创意写作、图像理解、数据分析。', fullDesc:'OpenAI最新多模态旗舰。统一处理文本、图像、音频输入，在创意写作、代码生成、数据分析和图像理解等综合场景中表现全面。256K上下文窗口支持超长文档处理。', icon:'G5', iconBg:'rgba(34,211,238,.12)', rating:4.8, downloads:32100, recs:96, version:'5.0', active:false, tags:['多模态','创意','256K','全能'], features:['256K上下文','文本/图像/音频','创意写作','数据分析'] },
-  { id:'gemini25', name:'Gemini 2.5 Pro', type:'model', cat:'model-cloud', desc:'Google超长上下文模型。100万token窗口，代码库分析。', fullDesc:'Google DeepMind的超长上下文模型。百万token级别窗口让全量代码库分析和超长文档处理成为可能。多模态理解能力覆盖文本、图像、音频和视频，适合大规模数据综合分析。', icon:'G2', iconBg:'rgba(244,114,182,.12)', rating:4.7, downloads:18300, recs:94, version:'2.5', active:false, tags:['1M上下文','代码库','视频','搜索'], features:['100万token窗口','视频理解','Google搜索集成','代码库分析'] },
-  { id:'deepseekv4', name:'DeepSeek-V4 Pro', type:'model', cat:'model-cloud', desc:'代码与数学特化。MoE架构，编程竞赛级水平。', fullDesc:'DeepSeek最新MoE架构模型。在编程竞赛和数学推理任务上对标顶级闭源模型。极高性价比，API价格仅为同类产品的1/10。支持128K上下文和函数调用，是目前性价比之王。', icon:'DS', iconBg:'rgba(167,139,250,.12)', rating:4.8, downloads:21600, recs:95, version:'4.0', active:false, tags:['代码','数学','MoE','高性价比'], features:['竞赛级编程能力','MoE高效推理','API极低价格','128K上下文'] },
-  { id:'qwen3', name:'Qwen3 本地版', type:'model', cat:'model-local', desc:'本地运行的开源模型。零数据泄露，完全免费。', fullDesc:'通过Ollama本地运行的Qwen3模型。72B参数版本在多项基准测试中媲美云端模型。零数据泄露，完全免费，支持离线使用。适合处理敏感数据和需要隐私保护的场景。', icon:'Q3', iconBg:'rgba(52,211,153,.12)', rating:4.6, downloads:8700, recs:91, version:'3.0', active:false, tags:['本地','免费','开源','72B'], features:['零数据泄露','完全免费','离线可用','72B参数'] },
-  { id:'llama4', name:'Llama 4', type:'model', cat:'model-local', desc:'Meta最新开源旗舰。400B参数，可本地部署微调。', fullDesc:'Meta最新开源旗舰模型。400B参数通过Ollama本地部署，社区生态最活跃。支持多模态输入和自定义微调，可用于构建垂直领域专用模型。完全掌控数据和推理过程。', icon:'L4', iconBg:'rgba(251,191,36,.12)', rating:4.5, downloads:7200, recs:88, version:'4.0', active:false, tags:['开源','400B','可微调','本地'], features:['400B参数本地运行','自定义微调','活跃社区','多模态'] },
+  { id:'claude4', name:'Claude 4 Opus', type:'model', cat:'model-cloud', desc:'Anthropic旗舰推理模型。编程、长文分析、复杂逻辑推理。200K上下文窗口。', fullDesc:'Anthropic最新旗舰推理模型，在编程、长文分析、复杂逻辑推理任务上表现卓越。200K上下文窗口可处理超长文档和全量代码库。支持函数调用和多模态输入，是企业级AI应用的首选。', icon:'C4', iconBg:'rgba(167,139,250,.12)', rating:4.9, downloads:24500, recs:99, version:'4.0', pros:['推理能力顶级','编程能力业界第一','200K超长上下文'], cons:['API价格偏高','响应速度中等','国内访问需代理'], pricing:'paid', pricing_detail:'输入$15/M tokens · 输出$75/M tokens', token_limit:'200K', active:true, tags:['推理','编程','200K','多模态'], features:['200K超长上下文','函数调用','多模态输入','企业级API'] },
+  { id:'gpt5', name:'GPT-5', type:'model', cat:'model-cloud', desc:'OpenAI多模态全能模型。创意写作、图像理解、数据分析。', fullDesc:'OpenAI最新多模态旗舰。统一处理文本、图像、音频输入，在创意写作、代码生成、数据分析和图像理解等综合场景中表现全面。256K上下文窗口支持超长文档处理。', icon:'G5', iconBg:'rgba(34,211,238,.12)', rating:4.8, downloads:32100, recs:96, version:'5.0', pros:['多模态全能','创意写作出色','生态最完善'], cons:['价格较贵','高峰期排队','政策限制较多'], pricing:'paid', pricing_detail:'输入$5/M tokens · 输出$20/M tokens', token_limit:'256K', active:false, tags:['多模态','创意','256K','全能'], features:['256K上下文','文本/图像/音频','创意写作','数据分析'] },
+  { id:'gemini25', name:'Gemini 2.5 Pro', type:'model', cat:'model-cloud', desc:'Google超长上下文模型。100万token窗口，代码库分析。', fullDesc:'Google DeepMind的超长上下文模型。百万token级别窗口让全量代码库分析和超长文档处理成为可能。多模态理解能力覆盖文本、图像、音频和视频，适合大规模数据综合分析。', icon:'G2', iconBg:'rgba(244,114,182,.12)', rating:4.7, downloads:18300, recs:94, version:'2.5', pros:['100万token超长窗口','视频理解独有','Google搜索集成'], cons:['中文能力弱于竞品','API稳定性一般','部分地区不可用'], pricing:'paid', pricing_detail:'输入$3.5/M tokens · 输出$10.5/M tokens', token_limit:'1M', active:false, tags:['1M上下文','代码库','视频','搜索'], features:['100万token窗口','视频理解','Google搜索集成','代码库分析'] },
+  { id:'deepseekv4', name:'DeepSeek-V4 Pro', type:'model', cat:'model-cloud', desc:'代码与数学特化。MoE架构，编程竞赛级水平。', fullDesc:'DeepSeek最新MoE架构模型。在编程竞赛和数学推理任务上对标顶级闭源模型。极高性价比，API价格仅为同类产品的1/10。支持128K上下文和函数调用，是目前性价比之王。', icon:'DS', iconBg:'rgba(167,139,250,.12)', rating:4.8, downloads:21600, recs:95, version:'4.0', pros:['性价比之王','编程数学极强','开源协议友好'], cons:['创意写作中等','生态不够完善','服务器偶有过载'], pricing:'paid', pricing_detail:'输入¥1/M tokens · 输出¥3/M tokens（约GPT-5的1/10）', token_limit:'128K', active:false, tags:['代码','数学','MoE','高性价比'], features:['竞赛级编程能力','MoE高效推理','API极低价格','128K上下文'] },
+  { id:'qwen3', name:'Qwen3 本地版', type:'model', cat:'model-local', desc:'本地运行的开源模型。零数据泄露，完全免费。', fullDesc:'通过Ollama本地运行的Qwen3模型。72B参数版本在多项基准测试中媲美云端模型。零数据泄露，完全免费，支持离线使用。适合处理敏感数据和需要隐私保护的场景。', icon:'Q3', iconBg:'rgba(52,211,153,.12)', rating:4.6, downloads:8700, recs:91, version:'3.0', pros:['零数据泄露','完全免费','72B参数本地跑'], cons:['需GPU 24GB+','推理速度中等','多模态能力有限'], pricing:'free', pricing_detail:'完全免费（Ollama本地部署）', token_limit:'128K', active:false, tags:['本地','免费','开源','72B'], features:['零数据泄露','完全免费','离线可用','72B参数'] },
+  { id:'llama4', name:'Llama 4', type:'model', cat:'model-local', desc:'Meta最新开源旗舰。400B参数，可本地部署微调。', fullDesc:'Meta最新开源旗舰模型。400B参数通过Ollama本地部署，社区生态最活跃。支持多模态输入和自定义微调，可用于构建垂直领域专用模型。完全掌控数据和推理过程。', icon:'L4', iconBg:'rgba(251,191,36,.12)', rating:4.5, downloads:7200, recs:88, version:'4.0', pros:['400B参数最强开源','可自定义微调','社区最活跃'], cons:['需GPU 80GB+部署','中文微调效果一般','下载量大(~200GB)'], pricing:'free', pricing_detail:'完全免费（Ollama本地部署）', token_limit:'128K', active:false, tags:['开源','400B','可微调','本地'], features:['400B参数本地运行','自定义微调','活跃社区','多模态'] },
 ];
 
 // Merge items
@@ -951,6 +1087,72 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
 
 // ===== INIT =====
 renderGrid();
+
+
+// ===== REVIEW SECTION =====
+const reviewData = {
+  models: models.map(m => ({
+    id: m.id, name: m.name, icon: m.icon, iconBg: m.iconBg,
+    provider: m.cat === 'model-cloud' ? '云端 API' : '本地运行',
+    rating: m.rating, recs: m.recs,
+    features: m.features, pros: m.pros || [], cons: m.cons || [],
+    pricing: m.pricing || 'free', pricingDetail: m.pricing_detail || '无',
+    tokenLimit: m.token_limit || '-'
+  })),
+  plugins: plugins.map(p => ({
+    id: p.id, name: p.name, icon: p.icon, iconBg: p.iconBg,
+    category: p.cat.replace('plugin-',''),
+    rating: p.rating, recs: p.recs, installed: p.installed,
+    features: p.features, pros: p.pros || [], cons: p.cons || [],
+    pricing: p.pricing || 'free', pricingDetail: p.pricing_detail || '无',
+    tokenLimit: '-'
+  }))
+};
+
+let activeReviewTab = 'models';
+
+function renderReviewTable() {
+  const wrap = document.getElementById('review-table-wrap');
+  const items = reviewData[activeReviewTab];
+  const isModel = activeReviewTab === 'models';
+
+  let html = '<table class="review-table"><thead><tr>';
+  html += '<th style="min-width:180px;">名称</th>';
+  html += '<th style="min-width:100px;">评分</th>';
+  html += '<th style="min-width:220px;">核心功能</th>';
+  html += '<th style="min-width:200px;">优点</th>';
+  html += '<th style="min-width:200px;">缺点</th>';
+  if (isModel) html += '<th style="min-width:140px;">Token 窗口</th>';
+  html += '<th style="min-width:200px;">费用</th>';
+  html += '</tr></thead><tbody>';
+
+  items.forEach(item => {
+    html += '<tr>';
+    html += `<td><div class="review-model-header"><div class="review-model-icon" style="background:${item.iconBg};">${item.icon}</div><div><div class="review-model-name">${item.name}</div><div class="review-model-provider">${isModel ? item.provider : item.category}</div></div></div></td>`;
+    html += `<td style="white-space:nowrap;"><span style="color:var(--accent-amber);">★ ${item.rating}</span><br><span style="font-size:11px;color:var(--text-muted);">推荐 ${item.recs}</span></td>`;
+    html += `<td><ul style="list-style:none;padding:0;font-size:12px;color:var(--text-secondary);">${item.features.map(f=>`<li style="margin-bottom:2px;">• ${f}</li>`).join('')}</ul></td>`;
+    html += `<td><ul class="review-pros" style="list-style:none;padding:0;">${item.pros.map(p=>`<li>${p}</li>`).join('')}</ul></td>`;
+    html += `<td><ul class="review-cons" style="list-style:none;padding:0;">${item.cons.map(c=>`<li>${c}</li>`).join('')}</ul></td>`;
+    if (isModel) html += `<td class="review-tokens"><span>${item.tokenLimit}</span></td>`;
+    html += `<td><div class="review-pricing ${item.pricing}">${item.pricing === 'free' ? '免费' : '付费'}</div><div class="review-pricing-detail">${item.pricingDetail}</div></td>`;
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+// Review tab switching
+document.getElementById('review-tabs').addEventListener('click', function(e) {
+  if (!e.target.classList.contains('review-tab')) return;
+  document.querySelectorAll('.review-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  activeReviewTab = e.target.dataset.reviewTab;
+  renderReviewTable();
+});
+
+renderReviewTable();
+
 </script>
 </body>
 </html>
