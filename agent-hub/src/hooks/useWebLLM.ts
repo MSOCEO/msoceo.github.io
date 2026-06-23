@@ -1,10 +1,15 @@
 import { useCallback, useRef, useState } from 'react';
-import { CreateMLCEngine, type MLCEngine } from '@mlc-ai/web-llm';
 import type { ModelEntry, ModelLoadState, ChatMessage, ToolCall, SkillDefinition } from '../types';
 import { BUILTIN_SKILLS, getSkillById } from '../lib/skills';
 
+// Dynamic import — avoid crashing the entire app if CDN is down
+async function loadWebLLM() {
+  const mod = await import('@mlc-ai/web-llm');
+  return mod;
+}
+
 export function useWebLLM() {
-  const engineRef = useRef<MLCEngine | null>(null);
+  const engineRef = useRef<any | null>(null);
   const [loadState, setLoadState] = useState<ModelLoadState>({ status: 'idle' });
   const [currentModel, setCurrentModel] = useState<ModelEntry | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -17,6 +22,7 @@ export function useWebLLM() {
     setCurrentModel(model);
     setStreamingContent(''); setReasoningContent('');
     try {
+      const { CreateMLCEngine } = await loadWebLLM();
       const engine = await CreateMLCEngine(model.modelId, {
         initProgressCallback: (p) => setLoadState({ status: 'downloading', progress: p.progress }),
         logLevel: 'WARN',
