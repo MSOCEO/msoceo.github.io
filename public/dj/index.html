@@ -360,6 +360,10 @@ body::before {
   background:var(--accent-glow);color:var(--accent);
   flex-shrink:0;
 }
+.sr-tag.qq { background:rgba(49,194,124,0.15);color:#31c27c; }
+.sr-tag.kugou { background:rgba(45,140,240,0.15);color:#2d8cf0; }
+.sr-tag.kuwo { background:rgba(255,152,0,0.15);color:#ff9800; }
+.sr-tag.migu { background:rgba(233,30,99,0.15);color:#e91e63; }
 
 /* 空状态 */
 .empty {
@@ -1027,7 +1031,7 @@ function renderRankList(songs) {
         <div class="sr-title">${esc(s.title)}</div>
         <div class="sr-artist">${esc(s.artist)}</div>
       </div>
-      <span class="sr-tag">${s.source}</span>
+      ${sourceTag(s.source)}
     </div>
   `).join('');
 }
@@ -1041,12 +1045,17 @@ function renderSearchList(songs) {
         <div class="sr-title">${esc(s.title)}</div>
         <div class="sr-artist">${esc(s.artist)}</div>
       </div>
-      <span class="sr-tag">${s.source}</span>
+      ${sourceTag(s.source)}
     </div>
   `).join('');
 }
 
 function esc(s) { return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function sourceTag(src) {
+  const map = { netease:'网易云', qq:'QQ', tencent:'QQ', kugou:'酷狗', kuwo:'酷我', migu:'咪咕' };
+  const cls = src === 'netease' ? '' : src === 'tencent' ? 'qq' : src;
+  return `<span class="sr-tag ${cls}">${map[src] || src}</span>`;
+}
 
 // ==================== 播放列表 ====================
 function addAndPlay(song) {
