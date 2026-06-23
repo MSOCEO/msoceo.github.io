@@ -884,14 +884,36 @@ async function searchQQ(kw) {
   } catch (e) { return []; }
 }
 
+const METING_API = 'https://meting-api.msoceo.workers.dev';
+
 async function searchAll(kw) {
   if (!kw.trim()) return [];
-  const results = await searchNetease(kw);
-  // 可以扩展QQ、酷狗等
-  return results;
+  const results = [];
+  const servers = ['netease', 'tencent', 'kugou', 'kuwo', 'migu'];
+  const searches = servers.map(async s => {
+    try {
+      const res = await fetch(`${METING_API}?server=${s}&type=search&id=${encodeURIComponent(kw)}`);
+      const data = await res.json();
+      return data;
+    } catch (e) { return []; }
+  });
+  const all = await Promise.all(searches);
+  return all.flat();
 }
 
 async function getPlayUrl(song) {
+  // Worker server 名映射
+  const serverMap = { qq: 'tencent' };
+  const server = serverMap[song.source] || song.source;
+
+  // 优先用 Worker 聚合 API
+  try {
+    const res = await fetch(`${METING_API}?server=${server}&type=url&id=${song.id}`);
+    const d = await res.json();
+    if (d.url) return d.url;
+  } catch (e) { /* fallback */ }
+
+  // 网易云降级
   if (song.source === 'netease') {
     try {
       const res = await fetch(`${NETEAST_API}/song/url?id=${song.id}`);
@@ -899,10 +921,7 @@ async function getPlayUrl(song) {
       if (d.data && d.data[0] && d.data[0].url) {
         return d.data[0].url;
       }
-    } catch (e) {
-      console.warn('Get play URL failed:', e.message);
-    }
-    // 降级：直接尝试标准 URL
+    } catch (e) { console.warn('Get play URL failed:', e.message); }
     return `https://music.163.com/song/media/outer/url?id=${song.id}.mp3`;
   }
   return null;

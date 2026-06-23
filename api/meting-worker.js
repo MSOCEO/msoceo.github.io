@@ -56,11 +56,12 @@ async function searchMusic(server, keyword) {
   k = encodeURIComponent(keyword)
   switch (server) {
     case 'netease': {
-      const r = await fetch(`https://music.163.com/api/search/get?type=1&limit=20&s=${k}`)
+      const r = await fetch(`https://marvis-netease-api.vercel.app/search?keywords=${k}&type=1&limit=20`)
       const d = await r.json()
-      return (d.result?.songs || []).map(s => ({
-        id: s.id, title: s.name, artist: (s.ar||[]).map(a=>a.name).join('/'),
-        album: s.al?.name||'', cover: s.al?.picUrl||'', source: 'netease', duration: s.dt||0,
+      return ((d.result && d.result.songs) || []).map(s => ({
+        id: s.id, title: s.name, artist: (s.artists||[]).map(a=>a.name).join('/'),
+        album: (s.album && s.album.name)||'', cover: (s.album && s.album.picUrl)||'',
+        source: 'netease', duration: s.duration||0,
       }))
     }
     case 'tencent': {
@@ -105,8 +106,10 @@ async function searchMusic(server, keyword) {
 async function getPlayUrl(server, id) {
   switch (server) {
     case 'netease': {
-      // 网易云播放URL通过专属API获取（cloudMusic-api-enhanced）
-      return { url: '', note: 'netease_requires_dedicated_api' }
+      const r = await fetch(`https://marvis-netease-api.vercel.app/song/url?id=${id}`)
+      const d = await r.json()
+      const url = (d.data && d.data[0] && d.data[0].url) || ''
+      return { url }
     }
     case 'tencent': {
       const r = await fetch(`https://u.y.qq.com/cgi-bin/musicu.fcg?data={"req":{"module":"CDN.SrfCdnDispatchServer","method":"GetCdnDispatch","param":{"guid":"0","calltype":0,"userip":""}},"req_0":{"module":"vkey.GetVkey","method":"CgiGetVkey","param":{"guid":"0","songmid":["${id}"],"songtype":[0],"uin":"0","loginflag":1,"platform":"20"}},"comm":{"uin":0,"format":"json","ct":24,"cv":0}}`)
