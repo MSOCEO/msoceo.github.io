@@ -9,6 +9,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
@@ -164,7 +169,7 @@ body{font-family:'SF Pro Display',-apple-system,'PingFang SC','Microsoft YaHei',
 </div>
 <footer class="footer">
   <div class="footer-inner"><div class="footer-brand"><h4>即刻办公</h4><p>PDF 处理、格式转换、视频音频工具、图片处理、OCR。所有处理在浏览器本地完成，文件即用即焚。</p></div></div>
-  <div class="footer-bottom"><span>&copy; 2026 即刻办公</span><span>86 款工具，79 款浏览器端运行</span></div>
+  <div class="footer-bottom"><span>&copy; 2026 即刻办公</span><span>75 款工具，70 款浏览器端运行</span></div>
 </footer>
 </div>
 
@@ -197,35 +202,31 @@ const tools=[
   {id:'pdf-extract-text',name:'提取文本',desc:'从 PDF 中提取纯文本内容',icon:'📝',cat:'pdf',badge:'live',m:'m'},
   {id:'pdf-extract-img',name:'提取图片',desc:'从 PDF 中提取嵌入的图片',icon:'🖼️',cat:'pdf',m:'h'},
   {id:'pdf-ocr',name:'PDF OCR 识别',desc:'扫描件/图片 PDF 文字识别',icon:'👁️',cat:'pdf',badge:'ai',m:'h'},
-  {id:'pdf-to-word',name:'PDF 转 Word',desc:'将 PDF 转换为可编辑的 Word',icon:'📄→📝',cat:'pdf',badge:'hot',wip:true},
-  {id:'pdf-to-excel',name:'PDF 转 Excel',desc:'提取 PDF 表格到 Excel',icon:'📊',cat:'pdf',wip:true},
-  {id:'pdf-to-ppt',name:'PDF 转 PPT',desc:'将 PDF 转为可编辑的演示文稿',icon:'📽️',cat:'pdf',wip:true},
+  {id:'pdf-to-word',name:'PDF 转 Word',desc:'将 PDF 转换为可编辑的 Word',icon:'📄→📝',cat:'pdf',badge:'hot',m:'h'},
+  {id:'pdf-to-excel',name:'PDF 转 Excel',desc:'提取 PDF 表格到 Excel',icon:'📊',cat:'pdf',badge:'new',m:'h'},
   {id:'pdf-to-jpg',name:'PDF 转 JPG',desc:'将 PDF 页面导出为 JPG 图片',icon:'🖼️',cat:'pdf',m:'h'},
   {id:'pdf-to-png',name:'PDF 转 PNG',desc:'将 PDF 页面导出为 PNG 图片',icon:'🖼️',cat:'pdf',m:'h'},
-  {id:'pdf-to-html',name:'PDF 转 HTML',desc:'将 PDF 转换为 HTML',icon:'🌐',cat:'pdf',wip:true},
-  {id:'pdf-to-epub',name:'PDF 转 EPUB',desc:'PDF 转 EPUB 电子书',icon:'📖',cat:'pdf',wip:true},
+  {id:'pdf-to-html',name:'PDF 转 HTML',desc:'将 PDF 转换为 HTML',icon:'🌐',cat:'pdf',badge:'new',m:'h'},
   {id:'word-to-pdf',name:'Word 转 PDF',desc:'将 Word 文档转换为 PDF',icon:'📝→📄',cat:'pdf',badge:'hot',m:'m'},
   {id:'excel-to-pdf',name:'Excel 转 PDF',desc:'将 Excel 表格转为 PDF',icon:'📊→📄',cat:'pdf',m:'m'},
   {id:'ppt-to-pdf',name:'PPT 转 PDF',desc:'将演示文稿转为 PDF',icon:'📽️→📄',cat:'pdf',m:'m'},
   {id:'jpg-to-pdf',name:'JPG 转 PDF',desc:'将 JPG 图片合并为 PDF',icon:'🖼️→📄',cat:'pdf',badge:'live',m:'m'},
   {id:'png-to-pdf',name:'PNG 转 PDF',desc:'将 PNG 图片合并为 PDF',icon:'🖼️→📄',cat:'pdf',badge:'live',m:'m'},
-  {id:'pdf-chat',name:'AI PDF 对话',desc:'与 PDF 内容智能对话问答',icon:'🤖',cat:'pdf',badge:'ai',wip:true},
-  {id:'pdf-summarize',name:'AI PDF 摘要',desc:'智能生成 PDF 内容摘要',icon:'📋',cat:'pdf',badge:'ai',wip:true},
-  {id:'pdf-translate-ai',name:'AI PDF 翻译',desc:'智能翻译 PDF 文档保留排版',icon:'🌍',cat:'pdf',badge:'ai',wip:true},
+  {id:'pdf-chat',name:'AI PDF 对话',desc:'与 PDF 内容智能对话问答',icon:'🤖',cat:'pdf',badge:'ai',m:'h'},
+  {id:'pdf-summarize',name:'AI PDF 摘要',desc:'智能生成 PDF 内容摘要',icon:'📋',cat:'pdf',badge:'ai',m:'h'},
+  {id:'pdf-translate-ai',name:'AI PDF 翻译',desc:'智能翻译 PDF 文档保留排版',icon:'🌍',cat:'pdf',badge:'ai',m:'h'},
   {id:'pdf-flatten',name:'扁平化 PDF',desc:'将注释和表单字段合并到文档',icon:'📄',cat:'pdf',m:'l'},
   {id:'pdf-resize',name:'调整页面尺寸',desc:'修改 PDF 页面大小',icon:'📐',cat:'pdf',m:'m'},
   {id:'pdf-metadata',name:'编辑元数据',desc:'修改 PDF 的标题、作者等信息',icon:'🏷️',cat:'pdf',m:'l'},
-  {id:'pdf-to-mobi',name:'PDF 转 MOBI',desc:'PDF 转 Kindle MOBI',icon:'📖',cat:'pdf',wip:true},
 
-  {id:'conv-doc',name:'文档格式转换',desc:'Word/Excel/PPT/PDF/TXT/Markdown 互转',icon:'📑',cat:'convert',badge:'hot',wip:true},
   {id:'conv-img',name:'图片格式转换',desc:'JPG/PNG/WebP/GIF/BMP/SVG 互转',icon:'🖼️',cat:'convert',badge:'live',m:'m'},
   {id:'conv-video',name:'视频格式转换',desc:'视频转 WebM/GIF（浏览器端）',icon:'🎬',cat:'convert',badge:'live',m:'h',note:'浏览器端处理，输出 WebM'},
   {id:'conv-audio',name:'音频格式转换',desc:'任意音频转 WAV（浏览器端）',icon:'🎵',cat:'convert',badge:'live',m:'m',note:'浏览器解码后输出 WAV'},
-  {id:'conv-ebook',name:'电子书转换',desc:'EPUB/MOBI/AZW3/PDF/TXT 互转',icon:'📚',cat:'convert',wip:true},
   {id:'conv-archive',name:'压缩包解压',desc:'ZIP 压缩包在线解压提取文件',icon:'📦',cat:'convert',badge:'live',m:'m'},
-  {id:'conv-font',name:'字体转换',desc:'TTF/OTF/WOFF/WOFF2 字体格式互转',icon:'🔤',cat:'convert',wip:true},
+  {id:'conv-font',name:'字体转换',desc:'TTF/OTF/WOFF/WOFF2 字体格式互转',icon:'🔤',cat:'convert',badge:'new',m:'m'},
   {id:'conv-heic',name:'HEIC 转换',desc:'HEIC/HEIF 图片转 JPG/PNG',icon:'📸',cat:'convert',badge:'live',m:'m'},
   {id:'conv-html-pdf',name:'HTML 转 PDF',desc:'将网页或 HTML 文件转为 PDF',icon:'🌐→📄',cat:'convert',badge:'live',m:'m'},
+  {id:'ebook-reader',name:'电子书阅读器',desc:'浏览器内阅读 EPUB/MOBI 电子书',icon:'📖',cat:'convert',badge:'new',m:'m'},
 
   {id:'vid-edit',name:'视频编辑器',desc:'修剪/合并/变速/调音量（浏览器端）',icon:'🎞️',cat:'video',badge:'hot',m:'h',note:'Canvas+MediaRecorder 实时处理'},
   {id:'vid-trim',name:'修剪视频',desc:'剪切视频片段（浏览器端）',icon:'✂️',cat:'video',badge:'live',m:'h',note:'实时1倍速处理'},
@@ -236,7 +237,6 @@ const tools=[
   {id:'vid-resize',name:'调整尺寸',desc:'修改视频分辨率大小',icon:'📏',cat:'video',m:'h'},
   {id:'vid-speed',name:'调整速度',desc:'加速或减速视频播放',icon:'⏩',cat:'video',badge:'live',m:'h',note:'实时变速处理'},
   {id:'vid-volume',name:'调整音量',desc:'增大或减小视频音量',icon:'🔊',cat:'video',badge:'live',m:'h',note:'实时调音处理'},
-  {id:'vid-stabilize',name:'视频稳定',desc:'消除画面抖动',icon:'📹',cat:'video',wip:true},
   {id:'vid-add-audio',name:'添加音频',desc:'为视频添加背景音乐',icon:'🎵',cat:'video',wip:true},
   {id:'vid-add-text',name:'添加文字',desc:'在视频上添加字幕',icon:'📝',cat:'video',wip:true},
   {id:'vid-add-img',name:'添加图片',desc:'在视频中叠加图片/水印',icon:'🖼️',cat:'video',wip:true},
@@ -261,21 +261,13 @@ const tools=[
   {id:'img-rotate',name:'图片旋转',desc:'旋转图片方向',icon:'🔄',cat:'image',badge:'live',m:'m'},
   {id:'img-flip',name:'图片翻转',desc:'水平或垂直翻转图片',icon:'🪞',cat:'image',badge:'live',m:'m'},
 
-  {id:'trans-pdf',name:'PDF 翻译',desc:'翻译 PDF 文档并保留原始排版',icon:'📄🌍',cat:'translate',badge:'new',wip:true},
-  {id:'trans-word',name:'Word 翻译',desc:'翻译 Word 文档保留格式',icon:'📝🌍',cat:'translate',wip:true},
-  {id:'trans-excel',name:'Excel 翻译',desc:'翻译 Excel 表格内容',icon:'📊🌍',cat:'translate',wip:true},
-  {id:'trans-ppt',name:'PPT 翻译',desc:'翻译演示文稿保留排版',icon:'📽️🌍',cat:'translate',wip:true},
-
-  {id:'office-doc',name:'在线文档',desc:'在线创建和编辑文档',icon:'📝',cat:'office',badge:'new',wip:true},
-  {id:'office-sheet',name:'在线表格',desc:'在线编辑电子表格',icon:'📊',cat:'office',wip:true},
-  {id:'office-slide',name:'在线演示',desc:'在线制作演示文稿',icon:'📽️',cat:'office',wip:true},
-  {id:'office-pdf-reader',name:'PDF 阅读器',desc:'在线 PDF 阅读和批注',icon:'📖',cat:'office',badge:'live',m:'h'},
+  {id:'trans-pdf',name:'PDF 翻译',desc:'翻译 PDF 文档并保留原始排版',icon:'📄🌍',cat:'translate',badge:'new',m:'h'},
 ];
 
 const categories=[
   {id:'all',name:'全部工具',icon:'🏠'},{id:'pdf',name:'PDF 工具',icon:'📄'},{id:'convert',name:'格式转换',icon:'🔄'},
   {id:'video',name:'视频工具',icon:'🎬'},{id:'audio',name:'音频工具',icon:'🎵'},
-  {id:'image',name:'图片处理',icon:'🖼️'},{id:'translate',name:'文档翻译',icon:'🌍'},{id:'office',name:'在线 Office',icon:'💼'}
+  {id:'image',name:'图片处理',icon:'🖼️'},{id:'translate',name:'文档翻译',icon:'🌍'}
 ];
 
 const sidebarNav=document.getElementById('sidebarNav');
@@ -316,17 +308,19 @@ function renderWorkspace(){const b=document.getElementById('wsBody');const t=wsT
     'pdf-merge','pdf-split','pdf-compress','pdf-edit','pdf-rotate','pdf-crop','pdf-unlock','pdf-protect',
     'pdf-sign','pdf-watermark','pdf-pagenum','pdf-header-footer','pdf-rearrange','pdf-extract-text','pdf-extract-img',
     'pdf-ocr','pdf-flatten','pdf-resize','pdf-metadata',
-    'pdf-to-jpg','pdf-to-png','word-to-pdf','excel-to-pdf','ppt-to-pdf','jpg-to-pdf','png-to-pdf',
-    'conv-img','conv-video','conv-audio','conv-archive','conv-heic',
+    'pdf-to-jpg','pdf-to-png','pdf-to-word','pdf-to-excel','pdf-to-html','word-to-pdf','excel-to-pdf','ppt-to-pdf','jpg-to-pdf','png-to-pdf',
+    'conv-img','conv-video','conv-audio','conv-archive','conv-font','conv-heic','ebook-reader',
     'vid-trim','vid-merge','vid-crop','vid-rotate','vid-flip','vid-resize','vid-speed','vid-volume','vid-edit',
     'aud-trim','aud-merge','aud-speed','aud-pitch','aud-eq','aud-reverse','aud-volume',
     'img-compress','img-resize','img-crop','img-rotate','img-flip',
+    'pdf-chat','pdf-summarize','pdf-translate-ai','trans-pdf',
   ].includes(id);
   const multi=['pdf-merge','jpg-to-pdf','png-to-pdf','aud-merge','vid-merge'].includes(id);
-  const amap={'pdf-merge':'application/pdf','pdf-split':'application/pdf','pdf-compress':'application/pdf','pdf-edit':'application/pdf','pdf-rotate':'application/pdf','pdf-crop':'application/pdf','pdf-unlock':'application/pdf','pdf-protect':'application/pdf','pdf-sign':'application/pdf','pdf-watermark':'application/pdf','pdf-pagenum':'application/pdf','pdf-header-footer':'application/pdf','pdf-rearrange':'application/pdf','pdf-extract-text':'application/pdf','pdf-extract-img':'application/pdf','pdf-ocr':'application/pdf','pdf-flatten':'application/pdf','pdf-resize':'application/pdf','pdf-metadata':'application/pdf','pdf-to-jpg':'application/pdf','pdf-to-png':'application/pdf','word-to-pdf':'.doc,.docx','excel-to-pdf':'.xls,.xlsx','ppt-to-pdf':'.ppt,.pptx','jpg-to-pdf':'image/*','png-to-pdf':'image/*','conv-img':'image/*','conv-video':'video/*','conv-audio':'audio/*','conv-archive':'.zip','conv-heic':'.heic,.heif','vid-trim':'video/*','vid-merge':'video/*','vid-crop':'video/*','vid-rotate':'video/*','vid-flip':'video/*','vid-resize':'video/*','vid-speed':'video/*','vid-volume':'video/*','vid-edit':'video/*','aud-trim':'audio/*','aud-merge':'audio/*','aud-speed':'audio/*','aud-pitch':'audio/*','aud-eq':'audio/*','aud-reverse':'audio/*','aud-volume':'audio/*','img-compress':'image/*','img-resize':'image/*','img-crop':'image/*','img-rotate':'image/*','img-flip':'image/*'};
+  const amap={'pdf-merge':'application/pdf','pdf-split':'application/pdf','pdf-compress':'application/pdf','pdf-edit':'application/pdf','pdf-rotate':'application/pdf','pdf-crop':'application/pdf','pdf-unlock':'application/pdf','pdf-protect':'application/pdf','pdf-sign':'application/pdf','pdf-watermark':'application/pdf','pdf-pagenum':'application/pdf','pdf-header-footer':'application/pdf','pdf-rearrange':'application/pdf','pdf-extract-text':'application/pdf','pdf-extract-img':'application/pdf','pdf-ocr':'application/pdf','pdf-flatten':'application/pdf','pdf-resize':'application/pdf','pdf-metadata':'application/pdf','pdf-to-jpg':'application/pdf','pdf-to-png':'application/pdf','pdf-to-word':'application/pdf','pdf-to-excel':'application/pdf','pdf-to-html':'application/pdf','word-to-pdf':'.doc,.docx','excel-to-pdf':'.xls,.xlsx','ppt-to-pdf':'.ppt,.pptx','jpg-to-pdf':'image/*','png-to-pdf':'image/*','conv-img':'image/*','conv-video':'video/*','conv-audio':'audio/*','conv-archive':'.zip','conv-font':'.ttf,.otf,.woff,.woff2','conv-heic':'.heic,.heif','ebook-reader':'.epub,.mobi','vid-trim':'video/*','vid-merge':'video/*','vid-crop':'video/*','vid-rotate':'video/*','vid-flip':'video/*','vid-resize':'video/*','vid-speed':'video/*','vid-volume':'video/*','vid-edit':'video/*','aud-trim':'audio/*','aud-merge':'audio/*','aud-speed':'audio/*','aud-pitch':'audio/*','aud-eq':'audio/*','aud-reverse':'audio/*','aud-volume':'audio/*','img-compress':'image/*','img-resize':'image/*','img-crop':'image/*','img-rotate':'image/*','img-flip':'image/*','pdf-chat':'application/pdf','pdf-summarize':'application/pdf','pdf-translate-ai':'application/pdf','trans-pdf':'application/pdf'};
   const accept=amap[id]||'*/*';
   if(needsUpload){html+=`<div class="upload-zone" id="uploadZone" onclick="document.getElementById('wsFileInput').click()"><span class="upload-icon">${multi?'📂':'📤'}</span><div class="upload-text">${multi?'拖拽或点击上传多个文件':'拖拽或点击上传文件'}</div><div class="upload-hint">${accept}</div></div><input type="file" id="wsFileInput" ${multi?'multiple':''} accept="${accept}" style="display:none" onchange="wsAddFiles(this.files)"><div class="ws-file-list" id="wsFileList"></div>`}
   if(id==='pdf-sign'||id==='office-pdf-reader')html+='<div id="wsExtra"></div>';
+  if(id==='ebook-reader')html+='<div id="wsExtra" style="min-height:500px"></div>';
   html+='<div class="ws-options" id="wsOptions"></div><div class="ws-result" id="wsResult"></div>';
   html+='<div class="ws-progress" id="wsProgress"><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><div class="prog-text" id="progText">处理中...</div></div>';
   html+='<div class="ws-actions" id="wsActions"></div>';
@@ -349,6 +343,15 @@ function updateActions(){const el=document.getElementById('wsActions');if(!el)re
   else if(['pdf-sign'].includes(id))h=`<button class="btn-primary" onclick="doSignPdf()">🖊️ 签名并保存</button><button class="btn-secondary" onclick="clearSignature()">清除签名</button>`;
   else if(['pdf-ocr'].includes(id))h=wsFiles.length?`<button class="btn-primary" id="btnOcr" onclick="doOcr()">👁️ 开始识别</button>`:'';
   else if(['pdf-to-jpg','pdf-to-png'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="doPdfToImage()">🖼️ 导出图片</button>`:'';
+  else if(id==='pdf-to-word')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfToWord()">📄 转为 Word</button>`:'';
+  else if(id==='pdf-to-excel')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfToExcel()">📊 转为 Excel</button>`:'';
+  else if(id==='pdf-to-html')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfToHtml()">🌐 转为 HTML</button>`:'';
+  else if(id==='pdf-chat')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfChat()">🤖 开始对话</button>`:'';
+  else if(id==='pdf-summarize')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfSummarize()">📋 生成摘要</button>`:'';
+  else if(id==='pdf-translate-ai')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfTranslateAI()">🌍 AI 翻译</button>`:'';
+  else if(id==='trans-pdf')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfTranslate()">🌍 翻译并生成 PDF</button>`:'';
+  else if(id==='conv-font')h=wsFiles.length?`<button class="btn-primary" onclick="handleFontConvert()">🔤 转换字体</button>`:'';
+  else if(id==='ebook-reader')h=wsFiles.length?`<span style="font-size:.8rem;color:rgba(255,255,255,.35)">EPUB 已加载</span>`:'';
   else if(['pdf-extract-img'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="doPdfExtractImages()">🖼️ 提取图片</button>`:'';
   else if(['vid-trim','vid-merge','vid-speed','vid-volume','vid-crop','vid-rotate','vid-flip','vid-resize','vid-edit'].includes(id))h=wsFiles.length?`<button class="btn-primary" id="btnVidProc" onclick="processVideo()">🎬 处理视频</button>`:'';
   else if(['conv-video'].includes(id))h=wsFiles.length?`<button class="btn-primary" id="btnVidConv" onclick="convertVideo()">🔄 转换为 WebM</button>`:'';
@@ -386,6 +389,9 @@ function setupToolConfig(id){const o=document.getElementById('wsOptions');if(!o)
     case'aud-volume':h='<label>音量倍数</label><div class="slider-row"><input type="range" id="optVol" min="10" max="300" value="100" oninput="document.getElementById(\'vv\').textContent=(this.value/100).toFixed(2)+\'x\'"><span class="slider-val" id="vv">1.00x</span></div>';break;
     case'aud-eq':h='<label>低音增益（dB）</label><div class="slider-row"><input type="range" id="eqLow" min="-24" max="24" value="0" oninput="document.getElementById(\'el\').textContent=this.value+\'dB\'"><span class="slider-val" id="el">0dB</span></div><label style="margin-top:12px">中音增益（dB）</label><div class="slider-row"><input type="range" id="eqMid" min="-24" max="24" value="0" oninput="document.getElementById(\'em\').textContent=this.value+\'dB\'"><span class="slider-val" id="em">0dB</span></div><label style="margin-top:12px">高音增益（dB）</label><div class="slider-row"><input type="range" id="eqHigh" min="-24" max="24" value="0" oninput="document.getElementById(\'eh\').textContent=this.value+\'dB\'"><span class="slider-val" id="eh">0dB</span></div>';break;
     case'conv-html-pdf':h='<label>HTML 代码</label><textarea id="optHtml" placeholder="粘贴 HTML 代码..."></textarea>';break;
+    case'conv-font':h='<label>目标格式</label><select id="optFontFmt"><option value="woff">WOFF</option><option value="woff2">WOFF2</option><option value="otf">OTF</option><option value="ttf">TTF</option></select>';break;
+    case'trans-pdf':h='<label>目标语言</label><select id="optTransLang"><option value="zh">中文</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option></select>';break;
+    case'pdf-chat':h='<div id="chatBox" style="max-height:300px;overflow-y:auto;margin-bottom:12px"></div><div style="display:flex;gap:8px"><input type="text" id="chatInput" placeholder="输入问题..." style="flex:1"><button class="btn-primary" onclick="sendChatMsg()" style="padding:8px 16px">发送</button></div>';break;
     case'vid-speed':h='<label>播放速率</label><div class="slider-row"><input type="range" id="optVSpeed" min="25" max="400" value="100" oninput="document.getElementById(\'vsv\').textContent=(this.value/100).toFixed(2)+\'x\'"><span class="slider-val" id="vsv">1.00x</span></div>';break;
     case'vid-volume':h='<label>音量倍数</label><div class="slider-row"><input type="range" id="optVVol" min="10" max="300" value="100" oninput="document.getElementById(\'vvv\').textContent=(this.value/100).toFixed(2)+\'x\'"><span class="slider-val" id="vvv">1.00x</span></div>';break;
     case'vid-trim':h='<label>开始时间（秒）</label><input type="number" id="optVStart" value="0" min="0" step="0.1"><label style="margin-top:12px">结束时间（秒，留空=末尾）</label><input type="number" id="optVEnd" placeholder="留空则到末尾" min="0" step="0.1">';break;
@@ -564,12 +570,262 @@ async function pdfCompressClick(){const q=parseFloat(document.getElementById('op
 const searchInput=document.getElementById('searchInput'),searchClear=document.getElementById('searchClear');
 searchInput.addEventListener('input',function(){searchQuery=this.value.trim();searchClear.classList.toggle('visible',searchQuery.length>0);renderTools()});
 searchClear.addEventListener('click',function(){searchInput.value='';searchQuery='';searchClear.classList.remove('visible');renderTools();searchInput.focus()});
+// ===== NEW TOOLS: PDF Conversion & AI & Font =====
+async function extractPdfText(file){
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+  let text='';
+  for(let i=1;i<=doc.numPages;i++){
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const lines={};
+    content.items.forEach(item=>{
+      const y=Math.round(item.transform[5]);
+      if(!lines[y])lines[y]=[];
+      lines[y].push(item);
+    });
+    const sortedYs=Object.keys(lines).sort((a,b)=>b-a);
+    for(const y of sortedYs){
+      const lineItems=lines[y].sort((a,b)=>a.transform[4]-b.transform[4]);
+      text+=lineItems.map(it=>it.str).join(' ')+'\n';
+    }
+    text+='\n';
+  }
+  return text;
+}
+
+function checkAI(msg){
+  if(typeof window.ai==='undefined'||!window.ai.languageModel){
+    document.getElementById('wsResult').innerHTML='<div class="result-text" style="color:#fbbf24">⚠️ '+msg+'</div>';
+    return false;
+  }
+  return true;
+}
+
+async function handlePdfToWord(){
+  if(!wsFiles.length)return;
+  setProgress(10,'提取 PDF 文本...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  const {Document,Packer,Paragraph,TextRun}=docx;
+  const children=[];
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`处理 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const lines={};
+    content.items.forEach(item=>{
+      const y=Math.round(item.transform[5]);
+      if(!lines[y])lines[y]=[];
+      lines[y].push(item);
+    });
+    const sortedYs=Object.keys(lines).sort((a,b)=>b-a);
+    for(const y of sortedYs){
+      const lineItems=lines[y].sort((a,b)=>a.transform[4]-b.transform[4]);
+      const text=lineItems.map(it=>it.str).join(' ').trim();
+      if(text)children.push(new Paragraph({children:[new TextRun({text,size:22})]}));
+    }
+  }
+  setProgress(90,'生成 Word 文档...');
+  const d=new Document({sections:[{children}]});
+  const blob=await Packer.toBlob(d);
+  downloadBlob(blob,wsFiles[0].name.replace(/\.pdf$/i,'.docx'),'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+  setProgress(100,'完成！');
+}
+
+async function handlePdfToExcel(){
+  if(!wsFiles.length)return;
+  setProgress(10,'提取 PDF 文本...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  const rows=[];
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`处理 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const lines={};
+    content.items.forEach(item=>{
+      const y=Math.round(item.transform[5]);
+      if(!lines[y])lines[y]=[];
+      lines[y].push(item);
+    });
+    const sortedYs=Object.keys(lines).sort((a,b)=>b-a);
+    for(const y of sortedYs){
+      const lineItems=lines[y].sort((a,b)=>a.transform[4]-b.transform[4]);
+      rows.push(lineItems.map(it=>it.str));
+    }
+  }
+  setProgress(90,'生成 Excel...');
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'PDF内容');
+  XLSX.writeFile(wb,wsFiles[0].name.replace(/\.pdf$/i,'.xlsx'));
+  setProgress(100,'完成！');
+}
+
+async function handlePdfToHtml(){
+  if(!wsFiles.length)return;
+  setProgress(10,'提取 PDF 内容...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  let html='<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;margin:40px}.page{position:relative;margin-bottom:20px;border:1px solid #ddd;overflow:hidden}.text-block{position:absolute;white-space:pre-wrap}</style></head><body>';
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`渲染 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const vp=page.getViewport({scale:1});
+    const content=await page.getTextContent();
+    html+=`<div class="page" style="width:${vp.width}px;height:${vp.height}px">`;
+    content.items.forEach(item=>{
+      const x=item.transform[4];
+      const y=vp.height-item.transform[5];
+      html+=`<div class="text-block" style="left:${x}px;top:${y}px;font-size:${Math.max(10,Math.abs(item.transform[0])*0.8)}px">${item.str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+    });
+    html+='</div>';
+  }
+  html+='</body></html>';
+  setProgress(95,'下载中...');
+  const blob=new Blob([html],{type:'text/html'});
+  downloadBlob(blob,wsFiles[0].name.replace(/\.pdf$/i,'.html'),'text/html');
+  setProgress(100,'完成！');
+}
+
+// AI PDF tools
+let pdfChatText='',pdfChatSession=null;
+async function initPdfChat(){
+  const r=document.getElementById('wsResult');
+  if(!wsFiles.length){r.innerHTML='<div class="status-wip">请先上传 PDF 文件</div>';return}
+  try{
+    setProgress(10,'提取 PDF 文本...');
+    pdfChatText=await extractPdfText(wsFiles[0]);
+    setProgress(100,'');document.getElementById('wsProgress').classList.remove('show');
+    r.innerHTML=`<div class="result-text" style="max-height:150px">PDF 已加载，共 ${pdfChatText.length} 字符。请在下方输入问题。</div>`;
+  }catch(e){r.innerHTML=`<div style="color:#ef4444;font-size:.85rem">提取失败：${e.message}</div>`}
+}
+async function sendChatMsg(){
+  const input=document.getElementById('chatInput');
+  if(!input||!input.value.trim())return;
+  const msg=input.value.trim();input.value='';
+  const box=document.getElementById('chatBox');
+  box.innerHTML+=`<div style="margin-bottom:8px;color:#818cf8;font-size:.85rem"><b>你：</b>${msg}</div>`;
+  box.scrollTop=box.scrollHeight;
+  if(!checkAI('此功能需要 Chrome 127+ 并开启内置 AI 功能（chrome://flags/#prompt-api-for-gemini-nano），或使用支持 WebLLM 的浏览器。'))return;
+  try{
+    if(!pdfChatSession)pdfChatSession=await window.ai.languageModel.create({systemPrompt:'你是一个PDF文档助手，根据用户上传的PDF内容回答问题。回答要简洁准确。PDF内容：'+pdfChatText.substring(0,5000)});
+    const res=await pdfChatSession.prompt(msg);
+    box.innerHTML+=`<div style="margin-bottom:8px;color:#e1e2e9;font-size:.85rem"><b>AI：</b>${res}</div>`;
+  }catch(e){box.innerHTML+=`<div style="margin-bottom:8px;color:#ef4444;font-size:.85rem">错误：${e.message}</div>`}
+  box.scrollTop=box.scrollHeight;
+}
+
+async function handlePdfChat(){
+  if(!wsFiles.length)return;
+  initPdfChat();
+}
+
+async function handlePdfSummarize(){
+  if(!wsFiles.length)return;
+  if(!checkAI('此功能需要 Chrome 127+ 并开启内置 AI 功能（chrome://flags/#summarization-api-for-gemini-nano），或使用支持 WebLLM 的浏览器。'))return;
+  setProgress(10,'提取 PDF 文本...');
+  const text=await extractPdfText(wsFiles[0]);
+  setProgress(40,'AI 分析中...');
+  try{
+    const summarizer=await window.ai.summarizer.create({type:'key-points',format:'markdown',length:'medium'});
+    const summary=await summarizer.summarize(text.substring(0,10000));
+    document.getElementById('wsProgress').classList.remove('show');
+    document.getElementById('wsResult').innerHTML=`<div class="result-text">${summary||'未能生成摘要'}</div>`;
+  }catch(e){setProgress(0,'失败');document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">AI 摘要失败：${e.message}</div>`}
+}
+
+async function handlePdfTranslateAI(){
+  if(!wsFiles.length)return;
+  if(!checkAI('此功能需要 Chrome 127+ 并开启内置 AI 功能（chrome://flags/#translator-api），或使用支持 WebLLM 的浏览器。'))return;
+  setProgress(10,'提取 PDF 文本...');
+  const text=await extractPdfText(wsFiles[0]);
+  setProgress(40,'AI 翻译中...');
+  try{
+    const translator=await window.ai.translator.create({sourceLanguage:'en',targetLanguage:'zh'});
+    const translated=await translator.translate(text.substring(0,8000));
+    document.getElementById('wsProgress').classList.remove('show');
+    document.getElementById('wsResult').innerHTML=`<div class="result-text">${translated||'未能翻译'}</div>`;
+  }catch(e){setProgress(0,'失败');document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">AI 翻译失败：${e.message}</div>`}
+}
+
+async function handlePdfTranslate(){
+  if(!wsFiles.length)return;
+  const lang=document.getElementById('optTransLang')?.value||'zh';
+  setProgress(10,'提取 PDF 文本...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  const pdfDoc=await PDFLib.PDFDocument.create();
+  const font=await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`翻译 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const {width,height}=page.getViewport({scale:1});
+    const p=pdfDoc.addPage([width,height]);
+    for(const item of content.items){
+      const txt=item.str.trim();
+      if(!txt)continue;
+      let translated=txt;
+      try{
+        const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${lang}&dt=t&q=${encodeURIComponent(txt)}`;
+        const res=await fetch(url);
+        const json=await res.json();
+        const trText=json[0]?.map(s=>s[0]).join('')||txt;
+        translated=trText;
+      }catch(e){}
+      const x=item.transform[4],y=height-item.transform[5],fs=Math.abs(item.transform[0])*0.8;
+      p.drawText(translated,{x,y,size:Math.max(6,Math.min(fs,16)),font,color:PDFLib.rgb(0,0,0)});
+    }
+  }
+  setProgress(90,'生成 PDF...');
+  const b=await pdfDoc.save();
+  downloadBlob(b,wsFiles[0].name.replace(/\.pdf$/i,'_translated.pdf'),'application/pdf');
+  setProgress(100,'完成！');
+}
+
+async function handleFontConvert(){
+  if(!wsFiles.length)return;
+  const fmt=document.getElementById('optFontFmt')?.value||'woff';
+  setProgress(10,'加载字体...');
+  const ab=await wsFiles[0].arrayBuffer();
+  let font;
+  try{font=opentype.parse(ab);}catch(e){document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">字体解析失败：${e.message}<br>请确认上传的是有效的 TTF/OTF/WOFF 字体文件。</div>`;return}
+  setProgress(50,'转换中...');
+  try{
+    let out;
+    if(fmt==='woff')out=font.toArrayBuffer({type:'woff'});
+    else if(fmt==='woff2')out=font.toArrayBuffer({type:'woff2'});
+    else if(fmt==='otf')out=font.toArrayBuffer({type:'opentype'});
+    else out=font.toArrayBuffer({type:'truetype'});
+    const blob=new Blob([out],{type:'application/octet-stream'});
+    downloadBlob(blob,wsFiles[0].name.replace(/\.[^.]+$/,'.'+fmt),'application/octet-stream');
+    setProgress(100,'完成！');
+  }catch(e){setProgress(0,'失败');document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">转换失败：${e.message}</div>`}
+}
+
+// EPUB Reader
+async function initEbookReader(){
+  const ext=document.getElementById('wsExtra');
+  if(!ext||!wsFiles.length)return;
+  if(typeof ePub==='undefined'){
+    ext.innerHTML='<p style="color:#fbbf24;font-size:.85rem">⚠️ EPUB.js 库加载失败，请刷新页面重试。</p>';
+    return;
+  }
+  ext.innerHTML='<div id="ebookViewer" style="width:100%;min-height:500px;background:#fff;border-radius:10px;overflow:hidden"></div><div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button class="btn-secondary" onclick="ebookPrev()">◀ 上一页</button><button class="btn-secondary" onclick="ebookNext()">下一页 ▶</button></div>';
+  try{
+    const book=ePub(URL.createObjectURL(wsFiles[0]));
+    window._ebookRendition=book.renderTo('ebookViewer',{width:'100%',height:500});
+    window._ebookRendition.display();
+  }catch(e){
+    ext.innerHTML=`<p style="color:#ef4444;font-size:.85rem">EPUB 加载失败：${e.message}<br>请确认文件是有效的 EPUB 格式。</p>`;
+  }
+}
+function ebookPrev(){if(window._ebookRendition)window._ebookRendition.prev()}
+function ebookNext(){if(window._ebookRendition)window._ebookRendition.next()}
+
 sidebarNav.addEventListener('click',function(e){const a=e.target.closest('a[data-cat]');if(!a)return;currentCategory=a.dataset.cat;document.querySelectorAll('.sidebar-nav a').forEach(l=>l.classList.remove('active'));a.classList.add('active');renderTools();document.getElementById('sidebar').classList.remove('open')});
 document.getElementById('mobileNavToggle').addEventListener('click',function(){document.getElementById('sidebar').classList.toggle('open')});
 document.addEventListener('click',function(e){const sb=document.getElementById('sidebar'),tg=document.getElementById('mobileNavToggle');if(!sb.contains(e.target)&&e.target!==tg&&!tg.contains(e.target))sb.classList.remove('open')});
 
 // Wire special tools that need init after render
-const origRO=openWorkspace;openWorkspace=function(id){origRO(id);setTimeout(()=>{if(wsTool){if(wsTool.id==='pdf-sign')initSignPad();if(wsTool.id==='office-pdf-reader'&&wsFiles.length)initPdfViewer();if(wsTool.id==='vid-tts'){document.getElementById('wsResult').innerHTML=`<p style="font-size:.85rem;color:rgba(255,255,255,.4);margin-bottom:12px">浏览器内置语音合成（Web Speech API）</p><button class="btn-primary" onclick="startTts()">🗣️ 输入文字并朗读</button><p style="font-size:.75rem;color:rgba(255,255,255,.25);margin-top:12px">提示：浏览器朗读不支持直接导出音频文件</p>`}if(wsTool.id==='pdf-edit'&&wsFiles.length)doPdfEdit();}},100)}
+const origRO=openWorkspace;openWorkspace=function(id){origRO(id);setTimeout(()=>{if(wsTool){if(wsTool.id==='pdf-sign')initSignPad();if(wsTool.id==='office-pdf-reader'&&wsFiles.length)initPdfViewer();if(wsTool.id==='vid-tts'){document.getElementById('wsResult').innerHTML=`<p style="font-size:.85rem;color:rgba(255,255,255,.4);margin-bottom:12px">浏览器内置语音合成（Web Speech API）</p><button class="btn-primary" onclick="startTts()">🗣️ 输入文字并朗读</button><p style="font-size:.75rem;color:rgba(255,255,255,.25);margin-top:12px">提示：浏览器朗读不支持直接导出音频文件</p>`}if(wsTool.id==='pdf-edit'&&wsFiles.length)doPdfEdit();if(wsTool.id==='ebook-reader'&&wsFiles.length)initEbookReader();if(wsTool.id==='pdf-chat')initPdfChat();}},100)}
 
 renderTools();
 </script>
