@@ -31,12 +31,9 @@ jobs:
         run: npm run build
       - name: Copy startrails
         run: cp -r startrails dist/
-      - name: Install agent-hub dependencies
+      - name: Build agent-hub (static)
         working-directory: ./agent-hub
-        run: npm ci
-      - name: Build agent-hub
-        working-directory: ./agent-hub
-        run: npm run build
+        run: mkdir -p dist && cp -r static/* dist/
       - name: Copy agent-hub to dist
         run: mkdir -p dist/agent-hub && cp -r agent-hub/dist/* dist/agent-hub/
       - name: Upload artifact
