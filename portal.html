@@ -1,20 +1,98 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MSOCEO — Build with Purpose</title>
 <style>
+/* ===== CSS Variables (Theme) ===== */
+:root {
+  --bg: #08080c;
+  --bg-card: rgba(255,255,255,.015);
+  --bg-card-hover: rgba(255,255,255,.025);
+  --border: rgba(255,255,255,.04);
+  --border-card: rgba(255,255,255,.05);
+  --border-card-hover: rgba(255,255,255,.1);
+  --text-primary: #e8e8f0;
+  --text-body: #c8c8d4;
+  --text-muted: rgba(255,255,255,.35);
+  --text-dim: rgba(255,255,255,.25);
+  --text-faint: rgba(255,255,255,.15);
+  --text-nav: rgba(255,255,255,.35);
+  --text-nav-hover: rgba(255,255,255,.7);
+  --text-brand: rgba(255,255,255,.7);
+  --text-brand-hover: rgba(255,255,255,.9);
+  --text-h2: rgba(255,255,255,.2);
+  --text-about: rgba(255,255,255,.35);
+  --gradient-hero: linear-gradient(135deg,#b4a0d4 0%,#c89860 100%);
+  --btn-bg: rgba(255,255,255,.05);
+  --btn-bg-hover: rgba(255,255,255,.1);
+  --btn-text: rgba(255,255,255,.55);
+  --btn-text-hover: rgba(255,255,255,.85);
+  --toggle-bg: rgba(255,255,255,.08);
+  --toggle-border: rgba(255,255,255,.1);
+  --nav-bg: rgba(8,8,12,.8);
+  --shadow-card: 0 12px 40px -16px rgba(0,0,0,.4);
+  --tag-bg: rgba(255,255,255,.03);
+  --tag-text: rgba(255,255,255,.28);
+  --tag-border: rgba(255,255,255,.05);
+  --link-color: rgba(200,180,160,.6);
+  --link-color-hover: rgba(200,180,160,.9);
+  --divider: rgba(255,255,255,.04);
+  --ambient1: rgba(120,100,180,.04);
+  --ambient2: rgba(180,130,80,.035);
+  --glow-card: rgba(180,160,210,.04);
+}
+
+html.light {
+  --bg: #f8f7f4;
+  --bg-card: rgba(0,0,0,.015);
+  --bg-card-hover: rgba(0,0,0,.025);
+  --border: rgba(0,0,0,.06);
+  --border-card: rgba(0,0,0,.06);
+  --border-card-hover: rgba(0,0,0,.12);
+  --text-primary: #1a1a24;
+  --text-body: #3a3a48;
+  --text-muted: rgba(0,0,0,.45);
+  --text-dim: rgba(0,0,0,.35);
+  --text-faint: rgba(0,0,0,.2);
+  --text-nav: rgba(0,0,0,.45);
+  --text-nav-hover: rgba(0,0,0,.75);
+  --text-brand: rgba(0,0,0,.75);
+  --text-brand-hover: rgba(0,0,0,.9);
+  --text-h2: rgba(0,0,0,.3);
+  --text-about: rgba(0,0,0,.5);
+  --gradient-hero: linear-gradient(135deg,#6b5b9e 0%,#a07240 100%);
+  --btn-bg: rgba(0,0,0,.04);
+  --btn-bg-hover: rgba(0,0,0,.08);
+  --btn-text: rgba(0,0,0,.5);
+  --btn-text-hover: rgba(0,0,0,.8);
+  --toggle-bg: rgba(0,0,0,.06);
+  --toggle-border: rgba(0,0,0,.1);
+  --nav-bg: rgba(248,247,244,.85);
+  --shadow-card: 0 4px 24px -8px rgba(0,0,0,.08);
+  --tag-bg: rgba(0,0,0,.03);
+  --tag-text: rgba(0,0,0,.35);
+  --tag-border: rgba(0,0,0,.06);
+  --link-color: rgba(140,110,80,.65);
+  --link-color-hover: rgba(140,110,80,.9);
+  --divider: rgba(0,0,0,.06);
+  --ambient1: rgba(120,100,180,.02);
+  --ambient2: rgba(180,130,80,.015);
+  --glow-card: rgba(180,160,210,.02);
+}
+
 /* ===== Reset & Base ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{
   font-family:'SF Pro Display',-apple-system,'PingFang SC','Noto Serif SC','Microsoft YaHei',serif;
-  background:#08080c;
-  color:#c8c8d4;
+  background:var(--bg);
+  color:var(--text-body);
   min-height:100vh;
   overflow-x:hidden;
   line-height:1.6;
+  transition:background .4s,color .4s;
 }
 ::selection{background:rgba(180,130,80,.25);color:#f0e6d8}
 ::-webkit-scrollbar{width:0}
@@ -25,11 +103,11 @@ body{
 }
 .bg-ambient::before{
   content:'';position:absolute;top:-20%;left:-10%;width:50%;height:60%;
-  background:radial-gradient(ellipse at center,rgba(120,100,180,.04) 0%,transparent 70%);
+  background:radial-gradient(ellipse at center,var(--ambient1) 0%,transparent 70%);
 }
 .bg-ambient::after{
   content:'';position:absolute;bottom:-10%;right:-10%;width:45%;height:50%;
-  background:radial-gradient(ellipse at center,rgba(180,130,80,.035) 0%,transparent 70%);
+  background:radial-gradient(ellipse at center,var(--ambient2) 0%,transparent 70%);
 }
 
 /* ===== Outer Frame ===== */
@@ -41,7 +119,7 @@ body{
   .outer-frame{margin:12px;border-radius:20px;overflow:hidden}
   .outer-frame::before{
     content:'';position:absolute;inset:0;border-radius:20px;
-    border:1px solid rgba(255,255,255,.04);pointer-events:none;z-index:10;
+    border:1px solid var(--border);pointer-events:none;z-index:10;
   }
 }
 
@@ -54,28 +132,63 @@ body{
   position:sticky;top:0;z-index:100;
   padding:0 40px;height:56px;
   display:flex;align-items:center;justify-content:space-between;
-  background:rgba(8,8,12,.8);
+  background:var(--nav-bg);
   backdrop-filter:blur(24px);
   -webkit-backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(255,255,255,.04);
+  border-bottom:1px solid var(--border);
+  transition:background .4s,border-color .4s;
 }
 @media(max-width:768px){.nav{padding:0 24px}}
 .nav-brand{
   font-family:'SF Pro Display',-apple-system,sans-serif;
   font-size:.875rem;font-weight:600;letter-spacing:.06em;
-  color:rgba(255,255,255,.7);
-  text-decoration:none;
+  color:var(--text-brand);
+  text-decoration:none;transition:color .2s;
 }
-.nav-brand:hover{color:rgba(255,255,255,.9)}
+.nav-brand:hover{color:var(--text-brand-hover)}
 .nav-links{
-  display:flex;gap:28px;align-items:center;
+  display:flex;gap:24px;align-items:center;
 }
 .nav-links a{
   font-family:'SF Pro Display',-apple-system,sans-serif;
-  font-size:.8rem;color:rgba(255,255,255,.35);text-decoration:none;
+  font-size:.8rem;color:var(--text-nav);text-decoration:none;
   transition:color .2s;letter-spacing:.02em;
 }
-.nav-links a:hover{color:rgba(255,255,255,.7)}
+.nav-links a:hover{color:var(--text-nav-hover)}
+@media(max-width:640px){
+  .nav-links{gap:16px}
+}
+
+/* ===== Theme Toggle ===== */
+.theme-toggle-btn{
+  position:relative;width:48px;height:26px;border-radius:13px;
+  background:var(--toggle-bg);
+  border:1px solid var(--toggle-border);
+  cursor:pointer;padding:0;outline:none;
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+  flex-shrink:0;
+}
+.theme-toggle-btn:hover{
+  border-color:var(--text-nav-hover);
+}
+.theme-toggle-btn:focus-visible{
+  outline:2px solid var(--link-color);outline-offset:3px;
+}
+.theme-toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--text-primary);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  display:flex;align-items:center;justify-content:center;
+}
+html.light .theme-toggle-thumb{transform:translateX(22px)}
+.theme-toggle-thumb svg{
+  width:10px;height:10px;fill:none;stroke:var(--bg);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:opacity .2s;
+}
+.toggle-sun{opacity:1} html.light .toggle-sun{opacity:0}
+.toggle-moon{opacity:0;position:absolute} html.light .toggle-moon{opacity:1}
 
 /* ===== Hero ===== */
 .hero{
@@ -83,30 +196,68 @@ body{
 }
 .hero-eyebrow{
   font-size:.75rem;font-weight:500;letter-spacing:.12em;
-  color:rgba(255,255,255,.25);text-transform:uppercase;
+  color:var(--text-dim);text-transform:uppercase;
   margin-bottom:24px;
 }
 .hero h1{
   font-family:'SF Pro Display',-apple-system,'PingFang SC',sans-serif;
   font-size:clamp(2.4rem,5vw,4rem);
   font-weight:700;letter-spacing:-.03em;
-  color:#e8e8f0;line-height:1.1;margin-bottom:20px;
+  color:var(--text-primary);line-height:1.1;margin-bottom:20px;
 }
 .hero h1 em{
   font-style:normal;
-  background:linear-gradient(135deg,#b4a0d4 0%,#c89860 100%);
+  background:var(--gradient-hero);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;
 }
 .hero-subtitle{
-  font-size:1.05rem;color:rgba(255,255,255,.35);
+  font-size:1.05rem;color:var(--text-muted);
   max-width:560px;line-height:1.8;
-  font-weight:400;
+  font-weight:400;margin-bottom:40px;
 }
+
+/* CTA Button */
+.hero-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 22px;border-radius:10px;
+  background:var(--btn-bg);
+  border:1px solid var(--border);
+  color:var(--btn-text);
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:.85rem;font-weight:500;letter-spacing:.01em;
+  text-decoration:none;cursor:pointer;
+  transition:all .25s cubic-bezier(.22,1,.36,1);
+}
+.hero-cta:hover{
+  background:var(--btn-bg-hover);
+  color:var(--btn-text-hover);
+  border-color:var(--text-nav-hover);
+}
+.hero-cta svg{width:16px;height:16px;transition:transform .25s}
+.hero-cta:hover svg{transform:translateY(2px)}
+
 .hero-divider{
   width:40px;height:1px;
-  background:linear-gradient(90deg,rgba(255,255,255,.15),transparent);
-  margin:48px 0;
+  background:linear-gradient(90deg,var(--text-faint),transparent);
+  margin:48px 0 0 0;
+}
+
+/* ===== Stats Bar ===== */
+.stats-bar{
+  display:flex;gap:40px;flex-wrap:wrap;
+  padding:0 0 40px;
+}
+@media(max-width:640px){.stats-bar{gap:24px}}
+.stat-item{text-align:left}
+.stat-number{
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:1.6rem;font-weight:700;color:var(--text-primary);
+  letter-spacing:-.02em;line-height:1;
+}
+.stat-label{
+  font-size:.72rem;color:var(--text-faint);
+  margin-top:4px;letter-spacing:.04em;
 }
 
 /* ===== Products Section ===== */
@@ -119,11 +270,11 @@ body{
 .section-header h2{
   font-family:'SF Pro Display',-apple-system,sans-serif;
   font-size:.75rem;font-weight:600;letter-spacing:.1em;
-  color:rgba(255,255,255,.2);text-transform:uppercase;
+  color:var(--text-h2);text-transform:uppercase;
   margin-bottom:8px;
 }
 .section-header .count{
-  font-size:.8rem;color:rgba(255,255,255,.15);
+  font-size:.8rem;color:var(--text-faint);
 }
 
 .product-grid{
@@ -138,33 +289,40 @@ body{
 /* ===== Product Card ===== */
 .product-card{
   position:relative;
-  background:rgba(255,255,255,.015);
-  border:1px solid rgba(255,255,255,.05);
+  background:var(--bg-card);
+  border:1px solid var(--border-card);
   border-radius:16px;
   padding:28px 28px 24px;
   transition:all .35s cubic-bezier(.22,1,.36,1);
   overflow:hidden;
   display:flex;flex-direction:column;
+  /* scroll animation initial state */
+  opacity:0;transform:translateY(20px);
+}
+.product-card.visible{
+  opacity:1;transform:translateY(0);
 }
 .product-card::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 80% at 50% -30%,rgba(180,160,210,.04),transparent 70%);
+  background:radial-gradient(ellipse 80% 80% at 50% -30%,var(--glow-card),transparent 70%);
   opacity:0;transition:opacity .4s;
 }
 .product-card:hover{
-  background:rgba(255,255,255,.025);
-  border-color:rgba(255,255,255,.1);
+  background:var(--bg-card-hover);
+  border-color:var(--border-card-hover);
   transform:translateY(-2px);
-  box-shadow:0 12px 40px -16px rgba(0,0,0,.4);
+  box-shadow:var(--shadow-card);
 }
+.product-card.visible:hover{transform:translateY(-2px)}
 .product-card:hover::before{opacity:1}
 .product-card:active{transform:translateY(0);transition:transform .1s}
+.product-card.visible:active{transform:translateY(0)}
 
 .card-icon{
   width:40px;height:40px;border-radius:10px;
   display:flex;align-items:center;justify-content:center;
   font-size:1.15rem;margin-bottom:20px;
-  background:rgba(255,255,255,.04);
+  background:var(--tag-bg);
   transition:transform .3s cubic-bezier(.34,1.56,.64,1);
 }
 .product-card:hover .card-icon{transform:scale(1.06)}
@@ -172,15 +330,15 @@ body{
 .card-body{flex:1}
 .card-body h3{
   font-family:'SF Pro Display',-apple-system,sans-serif;
-  font-size:1.05rem;font-weight:650;color:#e0e0ea;
+  font-size:1.05rem;font-weight:650;color:var(--text-primary);
   margin-bottom:6px;letter-spacing:-.01em;
 }
 .card-body .subtitle{
-  font-size:.8rem;color:rgba(255,255,255,.25);
+  font-size:.8rem;color:var(--text-dim);
   margin-bottom:14px;font-weight:450;
 }
 .card-body p{
-  font-size:.88rem;color:rgba(255,255,255,.4);
+  font-size:.88rem;color:var(--text-muted);
   line-height:1.7;margin-bottom:20px;
 }
 .card-tags{
@@ -188,19 +346,19 @@ body{
 }
 .card-tags span{
   font-size:.68rem;padding:3px 9px;border-radius:5px;
-  background:rgba(255,255,255,.03);
-  color:rgba(255,255,255,.28);
-  border:1px solid rgba(255,255,255,.05);
+  background:var(--tag-bg);
+  color:var(--tag-text);
+  border:1px solid var(--tag-border);
   letter-spacing:.02em;
 }
 .card-link{
   display:inline-flex;align-items:center;gap:6px;
   font-family:'SF Pro Display',-apple-system,sans-serif;
-  font-size:.8rem;font-weight:550;color:rgba(200,180,160,.6);
+  font-size:.8rem;font-weight:550;color:var(--link-color);
   text-decoration:none;transition:color .2s,gap .2s;
   letter-spacing:.01em;
 }
-.card-link:hover{color:rgba(200,180,160,.9);gap:10px}
+.card-link:hover{color:var(--link-color-hover);gap:10px}
 .card-link::after{content:'→';transition:transform .2s}
 .card-link:hover::after{transform:translateX(2px)}
 
@@ -209,7 +367,7 @@ body{
   padding:0 0 120px;
 }
 .about-inner{
-  border-top:1px solid rgba(255,255,255,.04);
+  border-top:1px solid var(--divider);
   padding-top:64px;
   display:grid;grid-template-columns:1fr 1fr;gap:60px;
 }
@@ -217,11 +375,11 @@ body{
 .about-col h3{
   font-family:'SF Pro Display',-apple-system,sans-serif;
   font-size:.75rem;font-weight:600;letter-spacing:.1em;
-  color:rgba(255,255,255,.2);text-transform:uppercase;
+  color:var(--text-h2);text-transform:uppercase;
   margin-bottom:20px;
 }
 .about-col p{
-  font-size:.92rem;color:rgba(255,255,255,.35);line-height:1.8;
+  font-size:.92rem;color:var(--text-about);line-height:1.8;
 }
 
 /* ===== Footer ===== */
@@ -229,14 +387,34 @@ body{
   padding:0 0 48px;
 }
 .footer-inner{
-  border-top:1px solid rgba(255,255,255,.04);
+  border-top:1px solid var(--divider);
   padding-top:32px;
   display:flex;justify-content:space-between;
   align-items:center;flex-wrap:wrap;gap:16px;
-  font-size:.75rem;color:rgba(255,255,255,.15);
+  font-size:.75rem;color:var(--text-faint);
 }
-.footer-inner a{color:rgba(255,255,255,.25);text-decoration:none;transition:color .2s}
-.footer-inner a:hover{color:rgba(255,255,255,.5)}
+.footer-inner a{color:var(--text-dim);text-decoration:none;transition:color .2s}
+.footer-inner a:hover{color:var(--text-nav-hover)}
+
+/* ===== Back to Top ===== */
+.back-to-top{
+  position:fixed;bottom:32px;right:32px;z-index:90;
+  width:40px;height:40px;border-radius:12px;
+  background:var(--bg-card);
+  border:1px solid var(--border-card);
+  color:var(--text-dim);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+}
+.back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.back-to-top:hover{
+  background:var(--bg-card-hover);
+  border-color:var(--border-card-hover);
+  color:var(--text-nav-hover);
+}
+.back-to-top svg{width:18px;height:18px}
 
 /* ===== Animations ===== */
 @keyframes fadeUp{
@@ -244,14 +422,10 @@ body{
   to{opacity:1;transform:translateY(0)}
 }
 .hero{animation:fadeUp .8s cubic-bezier(.22,1,.36,1) both}
-.product-card:nth-child(1){animation:fadeUp .7s .1s cubic-bezier(.22,1,.36,1) both}
-.product-card:nth-child(2){animation:fadeUp .7s .2s cubic-bezier(.22,1,.36,1) both}
-.product-card:nth-child(3){animation:fadeUp .7s .3s cubic-bezier(.22,1,.36,1) both}
-.product-card:nth-child(4){animation:fadeUp .7s .4s cubic-bezier(.22,1,.36,1) both}
-.product-card:nth-child(5){animation:fadeUp .7s .5s cubic-bezier(.22,1,.36,1) both}
 
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
+  .product-card{opacity:1;transform:none}
 }
 </style>
 </head>
@@ -264,7 +438,15 @@ body{
 <nav class="nav">
   <a class="nav-brand" href="/">MSOCEO</a>
   <div class="nav-links">
+    <a href="#products">项目</a>
+    <a href="#about">关于</a>
     <a href="https://github.com/msoceo" target="_blank" rel="noopener">GitHub</a>
+    <button class="theme-toggle-btn" id="themeToggle" aria-label="切换主题">
+      <span class="theme-toggle-thumb">
+        <svg class="toggle-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="toggle-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
   </div>
 </nav>
 
@@ -277,11 +459,37 @@ body{
     <p class="hero-subtitle">
       从博客引擎到 AI 工作台，从独立博客网络到在线工具集——五个自研项目，围绕书写、工具与连接展开。每个项目都在自己的垂直领域做到克制且完整。
     </p>
+    <a href="#products" class="hero-cta">
+      探索项目
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </a>
     <div class="hero-divider"></div>
   </section>
 
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number">5</div>
+      <div class="stat-label">开源项目</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">自托管</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">GitHub</div>
+      <div class="stat-label">Pages 部署</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">2024–</div>
+      <div class="stat-label">持续构建中</div>
+    </div>
+  </div>
+
   <!-- Products -->
-  <section class="products">
+  <section class="products" id="products">
     <div class="section-header">
       <h2>Projects</h2>
       <span class="count">5 个项目，全部开源或免费可用</span>
@@ -292,7 +500,7 @@ body{
   </section>
 
   <!-- About -->
-  <section class="about">
+  <section class="about" id="about">
     <div class="about-inner">
       <div class="about-col">
         <h3>理念</h3>
@@ -321,47 +529,64 @@ body{
 
 </div><!-- /outer-frame -->
 
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" aria-label="回到顶部">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
+
 <script>
+// ===== Theme Toggle =====
+(function(){
+  const html = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+
+  function applyTheme(dark){
+    if(dark){html.classList.remove('light');html.classList.add('dark')}
+    else{html.classList.remove('dark');html.classList.add('light')}
+    try{localStorage.setItem('msoceo-theme', dark?'dark':'light')}catch(e){}
+  }
+
+  const saved = (function(){
+    try{return localStorage.getItem('msoceo-theme')}catch(e){return null}
+  })();
+
+  if(saved === 'light'){applyTheme(false)}
+  else if(saved === 'dark'){applyTheme(true)}
+  else if(window.matchMedia('(prefers-color-scheme: light)').matches){applyTheme(false)}
+
+  btn.addEventListener('click',function(){
+    applyTheme(html.classList.contains('dark'));
+  });
+})();
+
+// ===== Product Cards =====
 const products = [
   {
-    name:'叙溯 Xusu',
-    subtitle:'开源博客引擎',
+    name:'叙溯 Xusu',subtitle:'开源博客引擎',
     desc:'为书写而生的极简博客引擎。Markdown 写作，双主题引擎（朱墨 &times; 溯光），零运行时依赖，一键部署至任意静态服务器。',
-    tags:['开源','Next.js','双主题'],
-    url:'https://msoceo.github.io/xusu/',
-    icon:'&#9998;'
+    tags:['开源','Next.js','双主题'],url:'https://msoceo.github.io/xusu/',icon:'&#9998;'
   },
   {
-    name:'溯文 Blog',
-    subtitle:'技术思考与创作',
+    name:'溯文 Blog',subtitle:'技术思考与创作',
     desc:'基于叙溯构建的个人博客。记录关于工具哲学、设计审美与不妥协的工程实践。文章不多，但每一篇都经过打磨。',
-    tags:['博客','技术','设计'],
-    url:'https://msoceo.github.io/blog/',
-    icon:'&#9733;'
+    tags:['博客','技术','设计'],url:'https://msoceo.github.io/blog/',icon:'&#9733;'
   },
   {
-    name:'能力工坊 Agent Hub',
-    subtitle:'AI 智能体工作台',
+    name:'能力工坊 Agent Hub',subtitle:'AI 智能体工作台',
     desc:'专业 AI 智能体矩阵。File / Search / Browser / Computer 四大 Agent，覆盖文件处理、深度搜索、网页交互与系统管理。应用商店式界面，一键调度。',
-    tags:['AI Agent','自动化','工具'],
-    url:'https://msoceo.github.io/agent-hub/',
-    icon:'&#9883;'
+    tags:['AI Agent','自动化','工具'],url:'https://msoceo.github.io/agent-hub/',icon:'&#9883;'
   },
   {
-    name:'星迹互联 StarTrails',
-    subtitle:'独立博客星际网络',
+    name:'星迹互联 StarTrails',subtitle:'独立博客星际网络',
     desc:'连接中文独立博客的去中心化网络。随机穿梭、社区收录、RSS 聚合三大引擎——让每颗独立博客的星彼此照亮。',
-    tags:['独立博客','社区','RSS'],
-    url:'https://msoceo.github.io/startrails/',
-    icon:'&#10022;'
+    tags:['独立博客','社区','RSS'],url:'https://msoceo.github.io/startrails/',icon:'&#10022;'
   },
   {
-    name:'即刻办公 Workbox',
-    subtitle:'在线办公工具箱',
+    name:'即刻办公 Workbox',subtitle:'在线办公工具箱',
     desc:'86 款在线工具，覆盖 PDF 处理、格式转换、视频音频编辑、图片处理、文档翻译与在线 Office。文件即用即焚，全浏览器端运行。',
-    tags:['工具集','PDF','在线办公'],
-    url:'https://msoceo.github.io/workbox/',
-    icon:'&#9874;'
+    tags:['工具集','PDF','在线办公'],url:'https://msoceo.github.io/workbox/',icon:'&#9874;'
   }
 ];
 
@@ -381,6 +606,39 @@ products.forEach(p => {
   `;
   grid.appendChild(card);
 });
+
+// ===== Scroll Animations (IntersectionObserver) =====
+(function(){
+  const cards = document.querySelectorAll('.product-card');
+  if(!('IntersectionObserver' in window)){
+    cards.forEach(c => c.classList.add('visible'));
+    return;
+  }
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.1,rootMargin:'0px 0px -30px 0px'});
+
+  cards.forEach(function(c,i){
+    c.style.transitionDelay = (i*0.08)+'s';
+    observer.observe(c);
+  });
+})();
+
+// ===== Back to Top =====
+(function(){
+  const btn = document.getElementById('backToTop');
+  function toggle(){
+    if(window.scrollY > 400){btn.classList.add('visible')}
+    else{btn.classList.remove('visible')}
+  }
+  window.addEventListener('scroll',toggle,{passive:true});
+  btn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+})();
 </script>
 
 </body>
