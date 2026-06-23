@@ -10,7 +10,7 @@
   --bg-deep: #06060e;
   --bg-surface: rgba(255,255,255,0.025);
   --bg-elevated: rgba(255,255,255,0.05);
-  --bg-floating: rgba(14,14,26,0.9);
+  --bg-floating: rgba(14,14,26,0.95);
   --border-subtle: rgba(255,255,255,0.05);
   --border-medium: rgba(255,255,255,0.1);
   --border-accent: rgba(167,139,250,0.25);
@@ -25,10 +25,10 @@
   --accent-rose: #fb7185;
   --accent-indigo: #818cf8;
   --gradient-hero: linear-gradient(135deg, #a78bfa 0%, #818cf8 30%, #22d3ee 70%, #34d399 100%);
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
   --font-display: 'Clash Display', system-ui, sans-serif;
   --font-body: 'Satoshi', system-ui, sans-serif;
   --font-grotesk: 'Cabinet Grotesk', system-ui, sans-serif;
@@ -36,12 +36,12 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-@keyframes viewEnter { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
+@keyframes viewEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)} }
 @keyframes pulse-glow { 0%,100%{opacity:0.35}50%{opacity:0.75} }
 @keyframes gradient-shift { 0%,100%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(12deg)} }
-@keyframes shimmer { 0%{background-position:-200% 0}100%{background-position:200% 0} }
-@keyframes scaleIn { from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)} }
+@keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes fadeIn { from{opacity:0}to{opacity:1} }
 
 html {
   scroll-behavior: smooth;
@@ -55,478 +55,514 @@ html {
 body { min-height:100vh; overflow-x:hidden; position:relative; }
 
 body::before {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.022;
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.02;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .ambient-orb { position:fixed; border-radius:50%; filter:blur(140px); pointer-events:none; z-index:0; }
-.orb-purple { width:700px; height:700px; background:rgba(167,139,250,.1); top:-250px; left:-150px; animation:float 22s ease-in-out infinite; }
-.orb-cyan { width:550px; height:550px; background:rgba(34,211,238,.06); bottom:-200px; right:-120px; animation:float 26s ease-in-out infinite reverse; }
-.orb-pink { width:450px; height:450px; background:rgba(244,114,182,.05); top:55%; left:55%; transform:translate(-50%,-50%); animation:pulse-glow 10s ease-in-out infinite; }
+.orb-purple { width:650px; height:650px; background:rgba(167,139,250,.09); top:-200px; left:-120px; animation:float 22s ease-in-out infinite; }
+.orb-cyan { width:500px; height:500px; background:rgba(34,211,238,.05); bottom:-150px; right:-100px; animation:float 26s ease-in-out infinite reverse; }
 
-.container { position:relative; z-index:1; max-width:1320px; margin:0 auto; padding:0 36px; }
+.container { position:relative; z-index:1; max-width:1340px; margin:0 auto; padding:0 32px; }
 
 /* Nav */
 .nav {
-  position:sticky; top:0; z-index:100; padding:14px 0;
+  position:sticky; top:0; z-index:100; padding:12px 0;
   backdrop-filter:blur(28px) saturate(180%);
   -webkit-backdrop-filter:blur(28px) saturate(180%);
   background:rgba(6,6,14,.78);
   border-bottom:1px solid var(--border-subtle);
 }
-.nav-inner { display:flex; align-items:center; justify-content:space-between; max-width:1320px; margin:0 auto; padding:0 36px; }
+.nav-inner { display:flex; align-items:center; justify-content:space-between; max-width:1340px; margin:0 auto; padding:0 32px; }
 .nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
 .nav-logo {
-  width:34px; height:34px; border-radius:10px; background:var(--gradient-hero);
+  width:32px; height:32px; border-radius:9px; background:var(--gradient-hero);
   display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-display); font-weight:700; font-size:17px; color:#fff;
-  box-shadow:0 0 24px rgba(167,139,250,.3);
+  font-family:var(--font-display); font-weight:700; font-size:16px; color:#fff;
+  box-shadow:0 0 20px rgba(167,139,250,.3);
 }
-.nav-title { font-family:var(--font-display); font-weight:600; font-size:19px; letter-spacing:-.02em; }
-.nav-version { font-size:11px; color:var(--accent-purple); font-weight:500; background:rgba(167,139,250,.1); padding:2px 8px; border-radius:100px; }
-.nav-links { display:flex; gap:4px; }
-.nav-link { padding:8px 16px; border-radius:8px; font-size:14px; font-weight:500; color:var(--text-secondary); text-decoration:none; transition:all .2s; }
+.nav-title { font-family:var(--font-display); font-weight:600; font-size:18px; letter-spacing:-.02em; }
+.nav-version { font-size:10px; color:var(--accent-purple); font-weight:500; background:rgba(167,139,250,.1); padding:2px 7px; border-radius:100px; }
+.nav-links { display:flex; gap:2px; }
+.nav-link { padding:7px 14px; border-radius:7px; font-size:13px; font-weight:500; color:var(--text-secondary); text-decoration:none; transition:all .2s; }
 .nav-link:hover { color:var(--text-primary); background:var(--bg-elevated); }
 .nav-link.active { color:var(--accent-purple); background:rgba(167,139,250,.08); }
-.nav-status { display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:100px; background:rgba(52,211,153,.08); border:1px solid rgba(52,211,153,.15); font-size:13px; color:var(--accent-green); font-weight:500; }
-.nav-status-dot { width:7px; height:7px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 8px rgba(52,211,153,.6); animation:pulse-glow 2s ease-in-out infinite; }
+.nav-status { display:flex; align-items:center; gap:7px; padding:5px 12px; border-radius:100px; background:rgba(52,211,153,.08); border:1px solid rgba(52,211,153,.15); font-size:12px; color:var(--accent-green); font-weight:500; }
+.nav-status-dot { width:6px; height:6px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 8px rgba(52,211,153,.6); animation:pulse-glow 2s ease-in-out infinite; }
 
 /* Hero */
-.hero { padding:90px 0 60px; text-align:center; }
-.hero-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 16px; border-radius:100px; background:rgba(167,139,250,.06); border:1px solid var(--border-accent); font-size:13px; color:var(--accent-purple); font-weight:500; margin-bottom:28px; animation:viewEnter .6s ease-out; }
-.hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--accent-purple); animation:pulse-glow 2s ease-in-out infinite; }
-.hero-title { font-family:var(--font-display); font-size:clamp(40px,6vw,68px); font-weight:700; letter-spacing:-.03em; line-height:1.08; margin-bottom:16px; animation:viewEnter .6s ease-out .1s both; }
+.hero { padding:80px 0 48px; text-align:center; }
+.hero-badge { display:inline-flex; align-items:center; gap:5px; padding:5px 14px; border-radius:100px; background:rgba(167,139,250,.06); border:1px solid var(--border-accent); font-size:12px; color:var(--accent-purple); font-weight:500; margin-bottom:24px; animation:viewEnter .6s ease-out; }
+.hero-badge-dot { width:5px; height:5px; border-radius:50%; background:var(--accent-purple); animation:pulse-glow 2s ease-in-out infinite; }
+.hero-title { font-family:var(--font-display); font-size:clamp(36px,5.5vw,60px); font-weight:700; letter-spacing:-.03em; line-height:1.08; margin-bottom:14px; animation:viewEnter .6s ease-out .1s both; }
 .hero-title-gradient { background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:gradient-shift 8s ease-in-out infinite; background-size:200% auto; }
-.hero-subtitle { font-size:17px; color:var(--text-secondary); max-width:540px; margin:0 auto 36px; font-weight:400; line-height:1.7; animation:viewEnter .6s ease-out .2s both; }
-.hero-cta { display:inline-flex; gap:14px; animation:viewEnter .6s ease-out .3s both; }
-.btn { padding:12px 28px; border-radius:11px; font-family:var(--font-body); font-size:15px; font-weight:600; border:none; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:all .25s cubic-bezier(.4,0,.2,1); }
-.btn-primary { background:var(--gradient-hero); color:#fff; box-shadow:0 4px 24px rgba(167,139,250,.3),0 0 60px rgba(167,139,250,.1); }
-.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(167,139,250,.45),0 0 80px rgba(167,139,250,.15); }
+.hero-subtitle { font-size:16px; color:var(--text-secondary); max-width:500px; margin:0 auto 32px; font-weight:400; line-height:1.7; animation:viewEnter .6s ease-out .2s both; }
+.hero-cta { display:inline-flex; gap:12px; animation:viewEnter .6s ease-out .3s both; }
+.btn { padding:11px 24px; border-radius:10px; font-family:var(--font-body); font-size:14px; font-weight:600; border:none; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:7px; transition:all .25s cubic-bezier(.4,0,.2,1); }
+.btn-primary { background:var(--gradient-hero); color:#fff; box-shadow:0 4px 20px rgba(167,139,250,.3); }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(167,139,250,.45); }
 .btn-ghost { background:rgba(255,255,255,.03); color:var(--text-primary); border:1px solid var(--border-medium); }
-.btn-ghost:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.18); transform:translateY(-1px); }
+.btn-ghost:hover { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.16); transform:translateY(-1px); }
 
 /* Section */
-.section { padding:64px 0; }
-.section-header { margin-bottom:36px; }
-.section-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.13em; color:var(--accent-purple); margin-bottom:6px; }
-.section-title { font-family:var(--font-display); font-size:clamp(26px,3.5vw,38px); font-weight:600; letter-spacing:-.02em; }
+.section { padding:56px 0; }
+.section-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.13em; color:var(--accent-purple); margin-bottom:5px; }
+.section-title { font-family:var(--font-display); font-size:clamp(24px,3vw,34px); font-weight:600; letter-spacing:-.02em; margin-bottom:28px; }
 
 /* Stats */
-.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:48px; }
-.stat-card { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:22px; text-align:center; transition:all .3s; }
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:40px; }
+.stat-card { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:20px; text-align:center; transition:all .3s; }
 .stat-card:hover { border-color:var(--border-medium); background:var(--bg-elevated); }
-.stat-value { font-family:var(--font-display); font-size:34px; font-weight:700; letter-spacing:-.03em; background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.stat-label { font-size:13px; color:var(--text-muted); margin-top:4px; font-weight:500; }
+.stat-value { font-family:var(--font-display); font-size:32px; font-weight:700; letter-spacing:-.03em; background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.stat-label { font-size:12px; color:var(--text-muted); margin-top:2px; font-weight:500; }
 
 /* Bento */
-.bento-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; }
-.bento-card {
-  background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg);
-  padding:22px; position:relative; overflow:hidden; transition:all .3s cubic-bezier(.4,0,.2,1);
-}
-.bento-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top left, rgba(167,139,250,.06) 0%,transparent 70%); opacity:0; transition:opacity .4s; }
-.bento-card:hover::before { opacity:1; }
-.bento-card:hover { border-color:var(--border-accent); transform:translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,.5),0 16px 48px rgba(0,0,0,.4),0 0 0 1px rgba(167,139,250,.12); }
+.bento-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; }
 .col-span-2 { grid-column:span 2; }
 .col-span-3 { grid-column:span 3; }
-.col-span-4 { grid-column:span 4; }
 .col-span-6 { grid-column:span 6; }
 
 /* Chat Panel */
-.chat-panel { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; display:flex; flex-direction:column; height:460px; }
-.chat-header { padding:14px 18px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between; }
-.chat-header-title { font-family:var(--font-display); font-weight:600; font-size:14px; }
-.chat-header-badge { font-size:11px; padding:3px 10px; border-radius:100px; background:rgba(167,139,250,.1); color:var(--accent-purple); font-weight:500; }
-.chat-messages { flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:14px; }
-.chat-msg { display:flex; gap:10px; max-width:84%; animation:viewEnter .4s ease-out; }
+.chat-panel { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; display:flex; flex-direction:column; height:440px; }
+.chat-header { padding:12px 16px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between; }
+.chat-header-title { font-family:var(--font-display); font-weight:600; font-size:13px; }
+.chat-header-badge { font-size:10px; padding:2px 9px; border-radius:100px; background:rgba(167,139,250,.1); color:var(--accent-purple); font-weight:500; }
+.chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+.chat-msg { display:flex; gap:8px; max-width:84%; animation:viewEnter .3s ease-out; }
 .chat-msg.assistant { align-self:flex-start; }
 .chat-msg.user { align-self:flex-end; flex-direction:row-reverse; }
-.chat-avatar { width:30px; height:30px; border-radius:9px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; }
+.chat-avatar { width:28px; height:28px; border-radius:8px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; }
 .chat-avatar.marvis { background:linear-gradient(135deg,#a78bfa,#818cf8); }
-.chat-avatar.user-av { background:rgba(255,255,255,.1); }
-.chat-bubble { padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.55; }
-.chat-msg.assistant .chat-bubble { background:rgba(167,139,250,.08); border:1px solid rgba(167,139,250,.12); border-bottom-left-radius:4px; }
-.chat-msg.user .chat-bubble { background:var(--bg-elevated); border:1px solid var(--border-medium); border-bottom-right-radius:4px; }
-.quick-prompts { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
-.quick-prompt { padding:5px 12px; border-radius:7px; font-size:12px; font-weight:500; color:var(--text-secondary); background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.04); cursor:pointer; transition:all .2s; }
-.quick-prompt:hover { color:var(--accent-purple); border-color:rgba(167,139,250,.2); background:rgba(167,139,250,.06); }
-.chat-input-area { padding:14px; border-top:1px solid var(--border-subtle); display:flex; gap:8px; }
-.chat-input { flex:1; padding:9px 14px; border-radius:9px; background:rgba(255,255,255,.03); border:1px solid var(--border-subtle); color:var(--text-primary); font-family:var(--font-body); font-size:13px; outline:none; transition:border-color .2s; }
+.chat-avatar.user-av { background:rgba(255,255,255,.08); }
+.chat-bubble { padding:9px 12px; border-radius:10px; font-size:13px; line-height:1.5; }
+.chat-msg.assistant .chat-bubble { background:rgba(167,139,250,.07); border:1px solid rgba(167,139,250,.1); border-bottom-left-radius:3px; }
+.chat-msg.user .chat-bubble { background:var(--bg-elevated); border:1px solid var(--border-medium); border-bottom-right-radius:3px; }
+.quick-prompts { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; }
+.quick-prompt { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:500; color:var(--text-secondary); background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.03); cursor:pointer; transition:all .2s; }
+.quick-prompt:hover { color:var(--accent-purple); border-color:rgba(167,139,250,.18); background:rgba(167,139,250,.05); }
+.chat-input-area { padding:12px; border-top:1px solid var(--border-subtle); display:flex; gap:7px; }
+.chat-input { flex:1; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,.03); border:1px solid var(--border-subtle); color:var(--text-primary); font-family:var(--font-body); font-size:13px; outline:none; transition:border-color .2s; }
 .chat-input:focus { border-color:var(--accent-purple); }
 .chat-input::placeholder { color:var(--text-muted); }
-.chat-send { padding:9px 16px; border-radius:9px; background:linear-gradient(135deg,#a78bfa,#818cf8); color:#fff; border:none; font-weight:600; font-size:13px; cursor:pointer; transition:all .2s; }
+.chat-send { padding:8px 14px; border-radius:8px; background:linear-gradient(135deg,#a78bfa,#818cf8); color:#fff; border:none; font-weight:600; font-size:13px; cursor:pointer; transition:all .2s; }
 .chat-send:hover { filter:brightness(1.1); }
 
 /* Agent Card */
-.agent-card { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:18px; transition:all .3s; cursor:pointer; display:flex; flex-direction:column; }
+.agent-card { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; transition:all .3s; cursor:pointer; display:flex; flex-direction:column; }
 .agent-card:hover { border-color:var(--border-accent); background:var(--bg-elevated); }
-.agent-card-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
-.agent-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.agent-card-header { display:flex; align-items:center; gap:9px; margin-bottom:7px; }
+.agent-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; }
 .agent-icon.purple { background:rgba(167,139,250,.15); color:var(--accent-purple); }
 .agent-icon.cyan { background:rgba(34,211,238,.15); color:var(--accent-cyan); }
 .agent-icon.pink { background:rgba(244,114,182,.15); color:var(--accent-pink); }
 .agent-icon.amber { background:rgba(251,191,36,.15); color:var(--accent-amber); }
-.agent-name { font-family:var(--font-display); font-weight:600; font-size:14px; }
+.agent-name { font-family:var(--font-display); font-weight:600; font-size:13px; }
 .agent-role { font-size:11px; color:var(--text-muted); }
 .agent-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; flex:1; }
-.agent-meta { margin-top:10px; display:flex; gap:5px; flex-wrap:wrap; }
-.agent-tag { font-size:10px; padding:2px 8px; border-radius:5px; background:rgba(255,255,255,.03); color:var(--text-muted); border:1px solid rgba(255,255,255,.04); }
+.agent-meta { margin-top:9px; display:flex; gap:4px; flex-wrap:wrap; }
+.agent-tag { font-size:10px; padding:2px 7px; border-radius:4px; background:rgba(255,255,255,.02); color:var(--text-muted); border:1px solid rgba(255,255,255,.03); }
 
-/* ==================== APP STORE STYLE MARKETPLACE ==================== */
-.marketplace {
-  background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(10,8,22,1) 100%);
+/* ═══════════ APP STORE STYLE ═══════════ */
+.store-section {
+  background: linear-gradient(180deg, rgba(8,8,18,1) 0%, rgba(6,6,14,1) 100%);
   border-top: 1px solid var(--border-subtle);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 80px 0;
-  position: relative;
-  overflow: hidden;
-}
-.marketplace::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 800px; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(167,139,250,.4), transparent);
+  padding: 0;
+  min-height: 100vh;
 }
 
-/* Featured Banner */
-.featured-banner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 48px;
-}
-.featured-card {
-  border-radius: var(--radius-xl);
-  padding: 32px;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all .4s cubic-bezier(.4,0,.2,1);
-  border: 1px solid transparent;
-  min-height: 220px;
+.store-container {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  gap: 0;
+  max-width: 1340px;
+  margin: 0 auto;
 }
-.featured-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-xl);
-  opacity: 0;
-  transition: opacity .4s;
+
+/* Sidebar */
+.store-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 32px 0;
+  border-right: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  overflow-y: auto;
+  background: rgba(6,6,14,.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
-.featured-card:hover::after { opacity: 1; }
-.featured-card:hover { transform: translateY(-4px); }
-.featured-card.plugin-featured {
-  background: linear-gradient(135deg, rgba(129,140,248,.12) 0%, rgba(167,139,250,.04) 60%, rgba(6,6,14,.8) 100%);
-  border-color: rgba(129,140,248,.15);
+.sidebar-section {
+  margin-bottom: 24px;
 }
-.featured-card.plugin-featured:hover {
-  border-color: rgba(167,139,250,.35);
-  box-shadow: 0 0 60px rgba(167,139,250,.15);
-}
-.featured-card.model-featured {
-  background: linear-gradient(135deg, rgba(34,211,238,.1) 0%, rgba(34,211,238,.03) 60%, rgba(6,6,14,.8) 100%);
-  border-color: rgba(34,211,238,.15);
-}
-.featured-card.model-featured:hover {
-  border-color: rgba(34,211,238,.35);
-  box-shadow: 0 0 60px rgba(34,211,238,.12);
-}
-.featured-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 100px;
-  font-size: 11px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  width: fit-content;
-}
-.featured-badge.plugin { background: rgba(167,139,250,.15); color: var(--accent-purple); }
-.featured-badge.model { background: rgba(34,211,238,.15); color: var(--accent-cyan); }
-.featured-title {
-  font-family: var(--font-display);
-  font-size: 28px;
+.sidebar-label {
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: -.02em;
-  margin-bottom: 8px;
-  color: #fff;
-}
-.featured-desc {
-  font-size: 14px;
-  color: var(--text-secondary);
-  max-width: 380px;
-  line-height: 1.6;
-}
-.featured-footer {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 16px;
-}
-.featured-btn {
-  padding: 10px 22px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all .25s;
-}
-.featured-btn.plugin-btn { background: linear-gradient(135deg, #a78bfa, #818cf8); color: #fff; }
-.featured-btn.plugin-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
-.featured-btn.model-btn { background: linear-gradient(135deg, #22d3ee, #38bdf8); color: #0a0a14; }
-.featured-btn.model-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
-.featured-stats {
-  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
   color: var(--text-muted);
-  display: flex;
-  gap: 12px;
+  padding: 0 16px;
+  margin-bottom: 10px;
 }
-.featured-stats span { display:flex; align-items:center; gap:4px; }
-
-/* Category Pills */
-.category-bar {
+.sidebar-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
-}
-.category-pill {
-  padding: 7px 16px;
-  border-radius: 100px;
+  gap: 10px;
+  padding: 8px 16px;
   font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--border-medium);
   cursor: pointer;
-  transition: all .25s;
-  white-space: nowrap;
+  transition: all .2s;
+  border-left: 2px solid transparent;
+  margin: 1px 0;
 }
-.category-pill:hover {
-  color: var(--text-primary);
-  border-color: rgba(255,255,255,.2);
-  background: var(--bg-elevated);
+.sidebar-item:hover { color: var(--text-primary); background: rgba(255,255,255,.02); }
+.sidebar-item.active {
+  color: var(--accent-purple);
+  background: rgba(167,139,250,.06);
+  border-left-color: var(--accent-purple);
 }
-.category-pill.active {
-  color: #fff;
-  background: rgba(167,139,250,.15);
-  border-color: rgba(167,139,250,.35);
-}
-.category-pill .count {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-left: 4px;
-  opacity: .7;
+.sidebar-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.sidebar-count { font-size: 10px; color: var(--text-muted); margin-left: auto; }
+
+/* Main Content */
+.store-main {
+  flex: 1;
+  padding: 32px 36px;
+  min-width: 0;
 }
 
-/* App Store Grid */
+/* Store Tabs */
+.store-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.store-tab {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all .2s;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: var(--font-body);
+}
+.store-tab:hover { color: var(--text-secondary); }
+.store-tab.active {
+  color: var(--accent-purple);
+  border-bottom-color: var(--accent-purple);
+}
+
+/* Ranking Bar */
+.ranking-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.rank-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all .2s;
+}
+.rank-pill:hover { border-color: var(--border-medium); color: var(--text-primary); }
+.rank-pill.active {
+  background: rgba(167,139,250,.1);
+  border-color: rgba(167,139,250,.25);
+  color: var(--accent-purple);
+}
+.rank-pill .rank-medal { font-size: 14px; }
+.rank-pill.gold .rank-medal { filter: drop-shadow(0 0 4px rgba(251,191,36,.5)); }
+
+/* Store Grid */
 .store-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
 }
 
-/* Plugin Card - App Store Style */
+/* App Card */
 .app-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 0;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  transition: all .35s cubic-bezier(.4,0,.2,1);
+  transition: all .3s cubic-bezier(.4,0,.2,1);
   cursor: pointer;
-  position: relative;
 }
-.app-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(167,139,250,.25), transparent);
-  opacity: 0;
-  transition: opacity .3s;
-  z-index: 1;
-}
-.app-card:hover::before { opacity: 1; }
 .app-card:hover {
   border-color: var(--border-accent);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(167,139,250,.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(0,0,0,.45), 0 0 0 1px rgba(167,139,250,.08);
 }
-.app-card-inner { padding: 20px; }
-.app-card-hero {
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-.app-card-hero.plugin-hero { background: linear-gradient(135deg, rgba(167,139,250,.08) 0%, rgba(129,140,248,.03) 100%); }
-.app-card-hero.model-hero { background: linear-gradient(135deg, rgba(34,211,238,.06) 0%, rgba(56,189,248,.02) 100%); }
-.app-card-icon {
-  width: 56px; height: 56px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  position: relative;
-  z-index: 1;
-  box-shadow: 0 8px 24px rgba(0,0,0,.3);
-}
-.app-card-hero-bg {
-  position: absolute;
-  inset: 0;
-  opacity: .15;
-  background: radial-gradient(circle at 30% 50%, var(--accent-purple) 0%, transparent 60%);
-}
-.app-card-header {
+.app-card-top {
+  padding: 16px 16px 0;
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  gap: 12px;
 }
+.app-card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  position: relative;
+}
+.app-card-icon.rank-badge::after {
+  content: attr(data-rank);
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #000;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(251,191,36,.3);
+}
+.app-card-info { flex: 1; min-width: 0; }
 .app-card-name {
   font-family: var(--font-grotesk);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-primary);
-  letter-spacing: -.01em;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.app-card-version {
+.app-card-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 11px;
   color: var(--text-muted);
-  font-weight: 500;
 }
+.app-card-rating { color: var(--accent-amber); font-weight: 600; }
+.app-card-recs { color: var(--accent-purple); font-weight: 500; }
 .app-card-desc {
-  font-size: 13px;
+  padding: 10px 16px;
+  font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.55;
-  margin-bottom: 14px;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.app-card-meta {
+.app-card-bottom {
+  padding: 0 16px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.app-card-rating {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.app-card-stars { color: var(--accent-amber); font-size: 13px; letter-spacing: 1px; }
-.app-card-downloads { font-size: 11px; color: var(--text-muted); }
-.app-card-action {
-  padding: 7px 16px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all .2s;
-}
-.app-card-action.install {
-  background: rgba(167,139,250,.12);
-  color: var(--accent-purple);
-  border: 1px solid rgba(167,139,250,.2);
-}
-.app-card-action.install:hover { background: rgba(167,139,250,.2); }
-.app-card-action.installed {
-  background: rgba(52,211,153,.1);
-  color: var(--accent-green);
-  border: 1px solid rgba(52,211,153,.15);
 }
 .app-card-tags {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-  margin-top: 10px;
 }
 .app-tag {
   font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: 3px;
   background: rgba(255,255,255,.03);
   color: var(--text-muted);
   border: 1px solid rgba(255,255,255,.04);
 }
-
-/* Model Card variant */
-.model-card-app .app-card-hero {
-  background: linear-gradient(135deg, rgba(34,211,238,.06) 0%, rgba(56,189,248,.02) 100%);
+.app-card-btn {
+  padding: 6px 16px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  flex-shrink: 0;
 }
-.model-card-app .app-card-icon {
-  background: rgba(34,211,238,.12);
-  font-size: 14px;
-  font-family: var(--font-grotesk);
-  font-weight: 700;
-  color: var(--accent-cyan);
-}
-.model-card-app .app-card-action.use {
-  background: rgba(34,211,238,.12);
-  color: var(--accent-cyan);
-  border: 1px solid rgba(34,211,238,.2);
-}
-.model-card-app .app-card-action.use:hover { background: rgba(34,211,238,.2); }
-.model-card-app .app-card-action.active-model {
-  background: rgba(167,139,250,.15);
+.app-card-btn.install {
+  background: rgba(167,139,250,.12);
   color: var(--accent-purple);
-  border: 1px solid rgba(167,139,250,.25);
+  border: 1px solid rgba(167,139,250,.2);
 }
-.model-provider {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 500;
+.app-card-btn.install:hover { background: rgba(167,139,250,.22); }
+.app-card-btn.installed {
+  background: rgba(52,211,153,.08);
+  color: var(--accent-green);
+  border: 1px solid rgba(52,211,153,.12);
+}
+.app-card-btn.use-model {
+  background: rgba(34,211,238,.1);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(34,211,238,.18);
+}
+.app-card-btn.active-model {
+  background: rgba(167,139,250,.12);
+  color: var(--accent-purple);
+  border: 1px solid rgba(167,139,250,.2);
+}
+
+/* Detail Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  justify-content: center;
+  animation: fadeIn .2s ease-out;
 }
-.model-provider-dot {
-  width: 5px; height: 5px;
+.modal-overlay.hidden { display: none; }
+.modal-dialog {
+  background: var(--bg-floating);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  width: 560px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  animation: modalIn .3s cubic-bezier(.4,0,.2,1);
+}
+.modal-hero {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.modal-hero.plugin-bg { background: linear-gradient(135deg, rgba(167,139,250,.15) 0%, rgba(129,140,248,.05) 100%); }
+.modal-hero.model-bg { background: linear-gradient(135deg, rgba(34,211,238,.12) 0%, rgba(56,189,248,.04) 100%); }
+.modal-hero-icon {
+  width: 72px; height: 72px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+}
+.modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 32px; height: 32px;
   border-radius: 50%;
-  background: var(--accent-green);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--text-secondary);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  z-index: 2;
 }
+.modal-close:hover { background: rgba(255,255,255,.12); color: var(--text-primary); }
+.modal-body { padding: 24px; }
+.modal-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.modal-version { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+.modal-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+.modal-stat {
+  text-align: center;
+}
+.modal-stat-val { font-family: var(--font-grotesk); font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.modal-stat-label { font-size: 10px; color: var(--text-muted); }
+.modal-divider { height: 1px; background: var(--border-subtle); margin: 16px 0; }
+.modal-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
+.modal-features { margin-bottom: 16px; }
+.modal-features-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.modal-feature-item { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-secondary); padding:5px 0; }
+.modal-feature-item::before { content:'✓'; color:var(--accent-green); font-weight:700; }
+.modal-footer { display:flex; gap:10px; padding-top:16px; border-top:1px solid var(--border-subtle); }
+.modal-btn {
+  flex:1; padding:10px 20px; border-radius:9px; font-size:13px; font-weight:600;
+  border:none; cursor:pointer; transition:all .2s; font-family:var(--font-body);
+  text-align:center;
+}
+.modal-btn.primary { background:linear-gradient(135deg,#a78bfa,#818cf8); color:#fff; }
+.modal-btn.primary:hover { filter:brightness(1.1); }
+.modal-btn.secondary { background:rgba(255,255,255,.04); color:var(--text-primary); border:1px solid var(--border-medium); }
+.modal-btn.secondary:hover { background:rgba(255,255,255,.08); }
 
-/* Footer */
-.footer { padding:48px 0; border-top:1px solid var(--border-subtle); text-align:center; }
-.footer-text { font-size:13px; color:var(--text-muted); }
-.footer-accent { color:var(--accent-purple); font-weight:500; }
+/* Search Bar */
+.store-search {
+  margin-bottom: 20px;
+  position: relative;
+}
+.store-search input {
+  width: 100%;
+  padding: 10px 16px 10px 38px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  transition: border-color .2s;
+}
+.store-search input:focus { border-color: var(--accent-purple); }
+.store-search input::placeholder { color: var(--text-muted); }
+.store-search::before {
+  content: '🔍';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: .5;
+}
 
 /* Scrollbar */
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:rgba(255,255,255,.07); border-radius:3px; }
-::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,.12); }
+::-webkit-scrollbar-thumb { background:rgba(255,255,255,.06); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,.1); }
 
-/* Responsive */
-@media (max-width:900px) {
+@media (max-width:960px) {
+  .store-container { flex-direction: column; }
+  .store-sidebar { width:100%; position:static; height:auto; border-right:none; border-bottom:1px solid var(--border-subtle); padding:16px 0; display:flex; overflow-x:auto; gap:4px; }
+  .sidebar-section { display:flex; gap:4px; margin-bottom:0; }
+  .sidebar-label { display:none; }
+  .sidebar-item { border-left:none; border-bottom:2px solid transparent; white-space:nowrap; }
+  .sidebar-item.active { border-left:none; border-bottom-color:var(--accent-purple); }
+  .store-main { padding:20px 16px; }
+  .store-grid { grid-template-columns:1fr; }
   .bento-grid { grid-template-columns:1fr; }
-  .col-span-2,.col-span-3,.col-span-4,.col-span-6 { grid-column:span 1; }
+  .col-span-2,.col-span-3,.col-span-6 { grid-column:span 1; }
   .stats-row { grid-template-columns:repeat(2,1fr); }
   .nav-links { display:none; }
-  .chat-panel { height:380px; }
-  .store-grid { grid-template-columns:1fr; }
-  .featured-banner { grid-template-columns:1fr; }
-}
-@media (max-width:540px) {
-  .container { padding:0 18px; }
-  .hero { padding:56px 0 36px; }
-  .stats-row { grid-template-columns:1fr 1fr; }
 }
 ::selection { background:rgba(167,139,250,.3); color:#fff; }
 </style>
@@ -535,7 +571,6 @@ body::before {
 
 <div class="ambient-orb orb-purple"></div>
 <div class="ambient-orb orb-cyan"></div>
-<div class="ambient-orb orb-pink"></div>
 
 <!-- Navigation -->
 <nav class="nav">
@@ -546,39 +581,28 @@ body::before {
       <span class="nav-version">v3.0</span>
     </a>
     <div class="nav-links">
-      <a href="#workbench" class="nav-link active">工作台</a>
-      <a href="#plugins" class="nav-link">插件商店</a>
-      <a href="#models" class="nav-link">模型中心</a>
+      <a href="#workbench" class="nav-link">工作台</a>
+      <a href="#store" class="nav-link active">应用商店</a>
     </div>
-    <div class="nav-status">
-      <span class="nav-status-dot"></span>
-      在线
-    </div>
+    <div class="nav-status"><span class="nav-status-dot"></span>在线</div>
   </div>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">
-      <span class="hero-badge-dot"></span>
-      本地智能 · 零数据泄露
-    </div>
-    <h1 class="hero-title">
-      <span class="hero-title-gradient">Your AI Command Center</span>
-    </h1>
-    <p class="hero-subtitle">
-      聚合顶尖模型与智能体，一个工作台掌控所有 AI 能力。本地优先，隐私至上。
-    </p>
+    <div class="hero-badge"><span class="hero-badge-dot"></span>本地智能 · 零数据泄露</div>
+    <h1 class="hero-title"><span class="hero-title-gradient">Your AI Command Center</span></h1>
+    <p class="hero-subtitle">聚合顶尖模型与智能体，一个工作台掌控所有 AI 能力。本地优先，隐私至上。</p>
     <div class="hero-cta">
       <a href="#workbench" class="btn btn-primary">进入工作台</a>
-      <a href="#plugins" class="btn btn-ghost">浏览插件商店</a>
+      <a href="#store" class="btn btn-ghost">浏览应用商店</a>
     </div>
   </div>
 </section>
 
 <!-- Stats -->
-<div class="container" style="animation: viewEnter .6s ease-out .35s both;">
+<div class="container" style="animation:viewEnter .6s ease-out .35s both;">
   <div class="stats-row">
     <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">可用模型</div></div>
     <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">智能体</div></div>
@@ -590,313 +614,327 @@ body::before {
 <!-- Workbench -->
 <section class="section" id="workbench">
   <div class="container">
-    <div class="section-header">
-      <div class="section-label">Central Workbench</div>
-      <h2 class="section-title">中央工作台</h2>
-    </div>
+    <div class="section-label">Central Workbench</div>
+    <h2 class="section-title">中央工作台</h2>
     <div class="bento-grid">
       <div class="col-span-3">
         <div class="chat-panel">
-          <div class="chat-header">
-            <span class="chat-header-title">Marvis 智能助手</span>
-            <span class="chat-header-badge">在线</span>
-          </div>
+          <div class="chat-header"><span class="chat-header-title">Marvis 智能助手</span><span class="chat-header-badge">在线</span></div>
           <div class="chat-messages">
-            <div class="quick-prompts">
-              <span class="quick-prompt">整理桌面文件</span>
-              <span class="quick-prompt">分析日志报告</span>
-              <span class="quick-prompt">搜索论文资料</span>
-              <span class="quick-prompt">生成周报</span>
-            </div>
-            <div class="chat-msg assistant">
-              <div class="chat-avatar marvis">M</div>
-              <div class="chat-bubble">老板，我是 Marvis，Agent Hub 的中央智能体。我可以调度所有 Agent、模型和插件。试试问我点什么？</div>
-            </div>
-            <div class="chat-msg user">
-              <div class="chat-avatar user-av">U</div>
-              <div class="chat-bubble">帮我分析最近的项目日志</div>
-            </div>
-            <div class="chat-msg assistant">
-              <div class="chat-avatar marvis">M</div>
-              <div class="chat-bubble">收到。调度 File Agent 搜索日志文件，Search Agent 做内容分析。全程本地处理，数据不外泄。</div>
-            </div>
+            <div class="quick-prompts"><span class="quick-prompt">整理桌面文件</span><span class="quick-prompt">分析日志报告</span><span class="quick-prompt">搜索论文资料</span><span class="quick-prompt">生成周报</span></div>
+            <div class="chat-msg assistant"><div class="chat-avatar marvis">M</div><div class="chat-bubble">老板，我是 Marvis。我可以调度所有 Agent、模型和插件。试试问我点什么？</div></div>
+            <div class="chat-msg user"><div class="chat-avatar user-av">U</div><div class="chat-bubble">帮我分析最近的项目日志</div></div>
+            <div class="chat-msg assistant"><div class="chat-avatar marvis">M</div><div class="chat-bubble">收到。调度 File Agent 搜索日志文件，Search Agent 做内容分析。全程本地处理，数据不外泄。</div></div>
           </div>
-          <div class="chat-input-area">
-            <input type="text" class="chat-input" placeholder="输入消息，Marvis 调度智能体执行..." value="帮我整理桌面文件" />
-            <button class="chat-send">发送</button>
-          </div>
+          <div class="chat-input-area"><input type="text" class="chat-input" placeholder="输入消息..." value="帮我整理桌面文件" /><button class="chat-send">发送</button></div>
         </div>
       </div>
       <div class="col-span-3">
-        <div class="bento-grid" style="grid-template-columns:1fr 1fr; height:460px;">
-          <div class="agent-card">
-            <div class="agent-card-header"><div class="agent-icon purple">F</div><div><div class="agent-name">File Agent</div><div class="agent-role">文件管理</div></div></div>
-            <div class="agent-desc">本地文件搜索、分析、整理、格式转换。支持 PDF/Word/Excel 等所有类型。</div>
-            <div class="agent-meta"><span class="agent-tag">本地执行</span><span class="agent-tag">OCR</span><span class="agent-tag">格式转换</span></div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-header"><div class="agent-icon cyan">R</div><div><div class="agent-name">Search Agent</div><div class="agent-role">深度搜索</div></div></div>
-            <div class="agent-desc">多轮联网检索与综合总结。适合调研、对比分析、论文综述。</div>
-            <div class="agent-meta"><span class="agent-tag">联网检索</span><span class="agent-tag">深度总结</span></div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-header"><div class="agent-icon pink">B</div><div><div class="agent-name">Browser Agent</div><div class="agent-role">浏览器操控</div></div></div>
-            <div class="agent-desc">模拟人类浏览器操作：自动登录、填表、点击、页面跳转、截图。</div>
-            <div class="agent-meta"><span class="agent-tag">自动登录</span><span class="agent-tag">表单填写</span></div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-header"><div class="agent-icon amber">C</div><div><div class="agent-name">Computer Agent</div><div class="agent-role">系统管理</div></div></div>
-            <div class="agent-desc">macOS 系统配置、窗口管理、进程监控、故障排查修复。</div>
-            <div class="agent-meta"><span class="agent-tag">系统设置</span><span class="agent-tag">故障修复</span></div>
-          </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;height:440px;">
+          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon purple">F</div><div><div class="agent-name">File Agent</div><div class="agent-role">文件管理</div></div></div><div class="agent-desc">本地文件搜索、分析、整理、格式转换。支持所有文件类型。</div><div class="agent-meta"><span class="agent-tag">本地执行</span><span class="agent-tag">OCR</span><span class="agent-tag">格式转换</span></div></div>
+          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon cyan">R</div><div><div class="agent-name">Search Agent</div><div class="agent-role">深度搜索</div></div></div><div class="agent-desc">多轮联网检索与综合总结。调研、对比分析、论文综述。</div><div class="agent-meta"><span class="agent-tag">联网检索</span><span class="agent-tag">深度总结</span></div></div>
+          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon pink">B</div><div><div class="agent-name">Browser Agent</div><div class="agent-role">浏览器操控</div></div></div><div class="agent-desc">模拟浏览器操作：登录、填表、点击、截图。</div><div class="agent-meta"><span class="agent-tag">自动登录</span><span class="agent-tag">表单填写</span></div></div>
+          <div class="agent-card"><div class="agent-card-header"><div class="agent-icon amber">C</div><div><div class="agent-name">Computer Agent</div><div class="agent-role">系统管理</div></div></div><div class="agent-desc">macOS 系统配置、窗口管理、进程监控、故障修复。</div><div class="agent-meta"><span class="agent-tag">系统设置</span><span class="agent-tag">故障修复</span></div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== PLUGIN STORE ===== -->
-<section class="marketplace" id="plugins">
-  <div class="container">
-    <div class="section-header" style="margin-bottom: 20px;">
-      <div class="section-label">Plugin Marketplace</div>
-      <h2 class="section-title">插件商店</h2>
-    </div>
+<!-- ═══════════ APP STORE ═══════════ -->
+<section class="store-section" id="store">
+  <div class="store-container">
 
-    <!-- Featured Plugin Banner -->
-    <div class="featured-banner">
-      <div class="featured-card plugin-featured" onclick="document.getElementById('plugin-grid').scrollIntoView({behavior:'smooth'})">
-        <div>
-          <div class="featured-badge plugin">编辑推荐</div>
-          <div class="featured-title">PDF 智能解析</div>
-          <div class="featured-desc">一键提取 PDF 文字、表格、图片，支持批量处理和 OCR 识别。自然语言查询文档内容。</div>
-          <div class="featured-footer">
-            <button class="featured-btn plugin-btn">立即安装</button>
-            <div class="featured-stats">
-              <span>4.9</span><span>12.3k 安装</span>
-            </div>
-          </div>
-        </div>
+    <!-- Sidebar -->
+    <aside class="store-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">分类浏览</div>
+        <div class="sidebar-item active" data-store-cat="all"><span class="sidebar-icon">🏠</span>全部<span class="sidebar-count">20</span></div>
+        <div class="sidebar-item" data-store-cat="plugin-productivity"><span class="sidebar-icon">⚡</span>效率工具<span class="sidebar-count">5</span></div>
+        <div class="sidebar-item" data-store-cat="plugin-dev"><span class="sidebar-icon">💻</span>开发工具<span class="sidebar-count">4</span></div>
+        <div class="sidebar-item" data-store-cat="plugin-creative"><span class="sidebar-icon">🎨</span>创意设计<span class="sidebar-count">3</span></div>
+        <div class="sidebar-item" data-store-cat="plugin-data"><span class="sidebar-icon">📊</span>数据处理<span class="sidebar-count">2</span></div>
+        <div class="sidebar-item" data-store-cat="model-cloud"><span class="sidebar-icon">☁️</span>云端模型<span class="sidebar-count">4</span></div>
+        <div class="sidebar-item" data-store-cat="model-local"><span class="sidebar-icon">🖥️</span>本地模型<span class="sidebar-count">2</span></div>
       </div>
-      <div class="featured-card plugin-featured" style="background:linear-gradient(135deg, rgba(244,114,182,.1) 0%, rgba(167,139,250,.03) 60%, rgba(6,6,14,.8) 100%);">
-        <div>
-          <div class="featured-badge plugin" style="background:rgba(244,114,182,.15);color:var(--accent-pink);">本周热门</div>
-          <div class="featured-title">图片智能处理</div>
-          <div class="featured-desc">批量压缩、格式转换、智能去背景、超分辨率增强。AI 驱动的图片工作流自动化。</div>
-          <div class="featured-footer">
-            <button class="featured-btn plugin-btn">立即安装</button>
-            <div class="featured-stats">
-              <span>4.7</span><span>8.9k 安装</span>
-            </div>
-          </div>
-        </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">快捷排行</div>
+        <div class="sidebar-item" data-rank="hot"><span class="sidebar-icon">🔥</span>热门推荐</div>
+        <div class="sidebar-item" data-rank="new"><span class="sidebar-icon">🆕</span>最新上架</div>
+        <div class="sidebar-item" data-rank="top"><span class="sidebar-icon">⭐</span>评分最高</div>
       </div>
-    </div>
+    </aside>
 
-    <!-- Category Bar -->
-    <div class="category-bar" id="plugin-categories">
-      <button class="category-pill active" data-cat="all">全部<span class="count">14</span></button>
-      <button class="category-pill" data-cat="productivity">效率工具<span class="count">5</span></button>
-      <button class="category-pill" data-cat="dev">开发工具<span class="count">4</span></button>
-      <button class="category-pill" data-cat="creative">创意设计<span class="count">3</span></button>
-      <button class="category-pill" data-cat="data">数据处理<span class="count">2</span></button>
-    </div>
+    <!-- Main Content -->
+    <main class="store-main">
+      <!-- Tabs -->
+      <div class="store-tabs" id="store-tabs">
+        <button class="store-tab active" data-tab="all">全部</button>
+        <button class="store-tab" data-tab="plugins">插件</button>
+        <button class="store-tab" data-tab="models">模型</button>
+      </div>
 
-    <!-- Plugin Grid -->
-    <div class="store-grid" id="plugin-grid"></div>
+      <!-- Search -->
+      <div class="store-search">
+        <input type="text" id="store-search-input" placeholder="搜索插件、模型、工具..." />
+      </div>
+
+      <!-- Ranking Pills -->
+      <div class="ranking-bar" id="ranking-bar">
+        <span class="rank-pill gold" data-rank-sort="hot"><span class="rank-medal">🥇</span>热门排行</span>
+        <span class="rank-pill" data-rank-sort="recommend"><span class="rank-medal">💎</span>推荐指数</span>
+        <span class="rank-pill" data-rank-sort="rating"><span class="rank-medal">⭐</span>评分排行</span>
+        <span class="rank-pill" data-rank-sort="new"><span class="rank-medal">🆕</span>最新上架</span>
+      </div>
+
+      <!-- Grid -->
+      <div class="store-grid" id="store-grid"></div>
+    </main>
+
   </div>
 </section>
 
-<!-- ===== MODEL CENTER ===== -->
-<section class="marketplace" id="models">
-  <div class="container">
-    <div class="section-header" style="margin-bottom: 20px;">
-      <div class="section-label">Model Hub</div>
-      <h2 class="section-title">模型中心</h2>
-    </div>
-
-    <!-- Featured Model Banner -->
-    <div class="featured-banner">
-      <div class="featured-card model-featured">
-        <div>
-          <div class="featured-badge model">当前使用</div>
-          <div class="featured-title">Claude 4 Opus</div>
-          <div class="featured-desc">Anthropic 旗舰推理模型。编程、长文分析、复杂逻辑推理的首选。200K 上下文窗口。</div>
-          <div class="featured-footer">
-            <button class="featured-btn model-btn">切换模型</button>
-            <div class="featured-stats"><span>200K ctx</span><span>推理 · 编程 · 分析</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="featured-card model-featured" style="background:linear-gradient(135deg, rgba(52,211,153,.08) 0%, rgba(34,211,238,.02) 60%, rgba(6,6,14,.8) 100%);">
-        <div>
-          <div class="featured-badge model" style="background:rgba(52,211,153,.15);color:var(--accent-green);">本地运行</div>
-          <div class="featured-title">Qwen3 · 本地版</div>
-          <div class="featured-desc">通过 Ollama 本地运行，零延迟、零数据外泄。适合敏感数据和离线场景，完全免费。</div>
-          <div class="featured-footer">
-            <button class="featured-btn model-btn">启动本地模型</button>
-            <div class="featured-stats"><span>Ollama</span><span>隐私 · 免费 · 离线</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category Bar -->
-    <div class="category-bar" id="model-categories">
-      <button class="category-pill active" data-mcat="all">全部<span class="count">6</span></button>
-      <button class="category-pill" data-mcat="cloud">云端模型<span class="count">3</span></button>
-      <button class="category-pill" data-mcat="local">本地模型<span class="count">2</span></button>
-      <button class="category-pill" data-mcat="opensource">开源模型<span class="count">2</span></button>
-    </div>
-
-    <!-- Model Grid -->
-    <div class="store-grid" id="model-grid"></div>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-  <div class="container">
-    <p class="footer-text"><span class="footer-accent">Agent Hub v3.0</span> — 本地智能 · 零数据泄露 · Powered by Marvis &amp; DeepSeek-V4 Pro</p>
-  </div>
-</footer>
+<!-- Detail Modal -->
+<div class="modal-overlay hidden" id="detail-modal">
+  <div class="modal-dialog" id="modal-content"></div>
+</div>
 
 <script>
-// ===== PLUGIN DATA =====
+// ===== DATA =====
 const plugins = [
-  { id:'pdf-parser', name:'PDF 智能解析', desc:'提取PDF文字、表格、图片，支持批量处理和OCR识别。自然语言查询文档内容。', cat:'productivity', icon:'📄', iconBg:'rgba(244,114,182,.15)', rating:4.9, downloads:'12.3k', version:'2.4.1', installed:true, tags:['OCR','批量','导出'] },
-  { id:'excel-analytics', name:'Excel 数据分析', desc:'自然语言生成透视表和图表，自动发现数据洞察并生成分析报告。', cat:'data', icon:'📊', iconBg:'rgba(52,211,153,.15)', rating:4.7, downloads:'9.1k', version:'1.8.0', installed:true, tags:['透视表','图表','NLP'] },
-  { id:'image-processor', name:'图片智能处理', desc:'批量压缩、格式转换、智能去背景、超分辨率增强，AI工作流自动化。', cat:'creative', icon:'🖼️', iconBg:'rgba(167,139,250,.15)', rating:4.7, downloads:'8.9k', version:'3.0.2', installed:false, tags:['去背景','超分','批量'] },
-  { id:'markdown-editor', name:'Markdown Pro', desc:'实时预览MD编辑器，支持导出PDF/HTML/Word，内置图表和数学公式渲染。', cat:'dev', icon:'📝', iconBg:'rgba(34,211,238,.15)', rating:4.8, downloads:'15.2k', version:'2.2.0', installed:true, tags:['预览','导出','LaTeX'] },
-  { id:'git-viz', name:'Git 可视化', desc:'图形化Git操作界面，分支管理、diff对比、提交历史一目了然。', cat:'dev', icon:'🔀', iconBg:'rgba(244,114,182,.15)', rating:4.5, downloads:'6.7k', version:'1.4.3', installed:false, tags:['分支','Diff','历史'] },
-  { id:'api-tester', name:'API 调试工坊', desc:'可视化API调试器，支持REST/GraphQL/gRPC，环境变量管理和团队协作。', cat:'dev', icon:'🔧', iconBg:'rgba(34,211,238,.15)', rating:4.6, downloads:'10.5k', version:'3.1.0', installed:true, tags:['REST','GraphQL','环境'] },
-  { id:'scheduler', name:'智能日程', desc:'自然语言创建提醒和日程，自动解析时间意图，与系统日历双向同步。', cat:'productivity', icon:'📅', iconBg:'rgba(52,211,153,.15)', rating:4.4, downloads:'7.8k', version:'1.6.1', installed:true, tags:['日历同步','NLP','提醒'] },
-  { id:'web-snapshot', name:'网页快照', desc:'一键保存网页为PDF或Markdown，定时抓取和变更监控。', cat:'productivity', icon:'🌐', iconBg:'rgba(167,139,250,.15)', rating:4.3, downloads:'5.1k', version:'1.2.0', installed:false, tags:['PDF','Markdown','监控'] },
-  { id:'video-gif', name:'视频转GIF', desc:'视频片段转高质量GIF动图，支持裁剪、调速、文字叠加。', cat:'creative', icon:'🎬', iconBg:'rgba(244,114,182,.15)', rating:4.6, downloads:'4.4k', version:'2.0.1', installed:false, tags:['GIF','裁剪','文字'] },
-  { id:'speech-text', name:'语音转文字', desc:'多语言语音识别，支持实时转录和离线模式，准确率行业领先。', cat:'productivity', icon:'🎙️', iconBg:'rgba(251,191,36,.15)', rating:4.8, downloads:'11.6k', version:'3.3.0', installed:true, tags:['实时','多语言','离线'] },
-  { id:'db-manager', name:'数据库管理', desc:'SQL/NoSQL可视化客户端，支持MySQL/PostgreSQL/MongoDB，智能补全。', cat:'data', icon:'🗄️', iconBg:'rgba(34,211,238,.15)', rating:4.5, downloads:'8.2k', version:'4.0.1', installed:false, tags:['SQL','NoSQL','补全'] },
-  { id:'icon-lab', name:'设计素材库', desc:'AI生成图标、插画、配色方案，直接导出SVG/PNG，支持品牌色一键适配。', cat:'creative', icon:'🎨', iconBg:'rgba(244,114,182,.15)', rating:4.7, downloads:'6.3k', version:'1.9.0', installed:true, tags:['图标','插画','配色'] },
-  { id:'code-reviewer', name:'代码审查', desc:'AI驱动的代码审查工具，自动检测Bug、安全漏洞和代码异味，支持30+语言。', cat:'dev', icon:'🔍', iconBg:'rgba(167,139,250,.15)', rating:4.9, downloads:'14.1k', version:'5.2.0', installed:true, tags:['安全','30+语言','CI'] },
-  { id:'meeting-notes', name:'会议纪要', desc:'实时录音转文字，自动生成结构化会议纪要和待办事项，支持Zoom/Teams。', cat:'productivity', icon:'📋', iconBg:'rgba(129,140,248,.15)', rating:4.6, downloads:'9.7k', version:'2.5.0', installed:false, tags:['录音','纪要','待办'] },
+  { id:'pdf-parser', name:'PDF 智能解析', type:'plugin', cat:'plugin-productivity', desc:'提取PDF文字、表格、图片，支持批量处理和OCR识别。', fullDesc:'基于AI视觉模型的PDF智能解析工具。支持扫描件OCR识别、表格结构化提取、多语言混合文档处理。批量导入文件夹后自动分类输出，可导出为Markdown/Excel/JSON格式。内置自然语言查询引擎，直接向文档提问即可定位关键信息。', icon:'📄', iconBg:'rgba(244,114,182,.12)', rating:4.9, downloads:12300, recs:98, version:'2.4.1', installed:true, tags:['OCR','批量','导出','NLP查询'], features:['扫描件OCR识别准确率99.2%','支持50+语言混合文档','一键导出Markdown/Excel/JSON','自然语言文档问答'] },
+  { id:'excel-analytics', name:'Excel 数据分析', type:'plugin', cat:'plugin-data', desc:'自然语言生成透视表和图表，自动发现数据洞察。', fullDesc:'告别手动拖拽透视表。直接描述你想看的数据关系，插件自动生成交互式透视表和可视化图表。内置异常检测算法会自动标注数据中的离群点和趋势变化，并生成自然语言分析报告。', icon:'📊', iconBg:'rgba(52,211,153,.12)', rating:4.7, downloads:9100, recs:92, version:'1.8.0', installed:true, tags:['透视表','图表','NLP','洞察'], features:['自然语言生成透视表','自动异常检测与标注','导出交互式HTML报告','支持CSV/XLSX/JSON'] },
+  { id:'image-processor', name:'图片智能处理', type:'plugin', cat:'plugin-creative', desc:'批量压缩、格式转换、智能去背景、超分辨率增强。', fullDesc:'AI驱动的图片处理工作流。批量导入后一键完成压缩、格式转换、去背景、超分辨率增强等操作。支持创建自定义处理流水线并保存为预设。智能去背景采用最新分割模型，发丝级精度。', icon:'🖼️', iconBg:'rgba(167,139,250,.12)', rating:4.7, downloads:8900, recs:91, version:'3.0.2', installed:false, tags:['去背景','超分','批量','流水线'], features:['发丝级智能去背景','4x超分辨率增强','自定义处理流水线','WebP/AVIF/PNG全格式'] },
+  { id:'markdown-editor', name:'Markdown Pro', type:'plugin', cat:'plugin-dev', desc:'实时预览MD编辑器，支持导出PDF/HTML/Word。', fullDesc:'为技术写作打造的Markdown编辑器。实时分屏预览、内置Mermaid图表渲染、LaTeX数学公式支持、代码高亮涵盖30+语言。一键导出为PDF/HTML/Word，支持自定义CSS模板和品牌水印。', icon:'📝', iconBg:'rgba(34,211,238,.12)', rating:4.8, downloads:15200, recs:96, version:'2.2.0', installed:true, tags:['预览','导出','LaTeX','Mermaid'], features:['实时分屏预览','Mermaid图表+LaTeX公式','自定义导出CSS模板','30+语言代码高亮'] },
+  { id:'git-viz', name:'Git 可视化', type:'plugin', cat:'plugin-dev', desc:'图形化Git操作界面，分支管理、diff对比、提交历史。', fullDesc:'告别命令行Git。可视化分支拓扑图、拖拽式合并操作、逐行diff对比、时间线提交历史浏览。支持GitFlow工作流模板一键初始化，冲突解决有图形化三方对比视图。', icon:'🔀', iconBg:'rgba(244,114,182,.12)', rating:4.5, downloads:6700, recs:85, version:'1.4.3', installed:false, tags:['分支','Diff','历史','GitFlow'], features:['可视化分支拓扑','三方对比冲突解决','GitFlow模板','拖拽式合并'] },
+  { id:'api-tester', name:'API 调试工坊', type:'plugin', cat:'plugin-dev', desc:'可视化API调试器，REST/GraphQL/gRPC全覆盖。', fullDesc:'一站式API开发调试工具。支持REST/GraphQL/gRPC/WebSocket协议，环境变量管理、前置脚本、断言测试、团队协作空间。自动生成API文档和OpenAPI规范，一键导出Postman集合。', icon:'🔧', iconBg:'rgba(34,211,238,.12)', rating:4.6, downloads:10500, recs:90, version:'3.1.0', installed:true, tags:['REST','GraphQL','gRPC','协作'], features:['REST/GraphQL/gRPC全协议','环境变量+前置脚本','自动生成OpenAPI文档','团队协作空间'] },
+  { id:'scheduler', name:'智能日程', type:'plugin', cat:'plugin-productivity', desc:'自然语言创建提醒和日程，自动解析时间意图。', fullDesc:'用自然语言管理日程。"明天下午3点和产品开会"即可自动创建日历事件。支持重复规则智能识别、跨时区转换、会前提醒。与系统日历和Google Calendar双向实时同步。', icon:'📅', iconBg:'rgba(52,211,153,.12)', rating:4.4, downloads:7800, recs:87, version:'1.6.1', installed:true, tags:['日历同步','NLP','提醒','时区'], features:['自然语言创建日程','重复规则智能识别','双日历实时同步','会前智能提醒'] },
+  { id:'web-snapshot', name:'网页快照', type:'plugin', cat:'plugin-productivity', desc:'一键保存网页为PDF/Markdown，定时抓取和变更监控。', fullDesc:'保存网页为高质量PDF或Markdown格式。支持定时抓取、内容变更监控与通知、多页批量保存。自动去除广告和无关元素，保留核心阅读内容。内置版本对比功能直观展示内容变化。', icon:'🌐', iconBg:'rgba(167,139,250,.12)', rating:4.3, downloads:5100, recs:81, version:'1.2.0', installed:false, tags:['PDF','Markdown','监控','版本对比'], features:['高质量PDF/Markdown保存','定时抓取+变更通知','智能去除广告','内容版本对比'] },
+  { id:'video-gif', name:'视频转GIF', type:'plugin', cat:'plugin-creative', desc:'视频片段转高质量GIF，支持裁剪、调速、文字叠加。', fullDesc:'视频片段快速转高质量GIF动图。可视时间轴选取片段，支持变速、裁剪画幅、文字水印叠加。内置调色板优化算法保证画质同时控制文件大小，适合社交媒体分享。', icon:'🎬', iconBg:'rgba(244,114,182,.12)', rating:4.6, downloads:4400, recs:84, version:'2.0.1', installed:false, tags:['GIF','裁剪','文字','优化'], features:['可视时间轴选取','智能调色板优化','文字水印叠加','30FPS高帧率'] },
+  { id:'speech-text', name:'语音转文字', type:'plugin', cat:'plugin-productivity', desc:'多语言语音识别，实时转录，支持离线模式。', fullDesc:'基于Whisper模型的语音识别插件。支持50+语言实时转录，离线模式无需联网保护隐私。自动说话人分割、时间戳标注、术语库定制。导出SRT/VTT/TXT多种格式。', icon:'🎙️', iconBg:'rgba(251,191,36,.12)', rating:4.8, downloads:11600, recs:95, version:'3.3.0', installed:true, tags:['实时','多语言','离线','Whisper'], features:['50+语言实时转录','离线模式保护隐私','自动说话人分割','SRT/VTT/TXT导出'] },
+  { id:'db-manager', name:'数据库管理', type:'plugin', cat:'plugin-data', desc:'SQL/NoSQL可视化客户端，智能补全和ER图生成。', fullDesc:'支持MySQL/PostgreSQL/MongoDB/Redis的统一数据库管理工具。AI辅助SQL编写与优化建议，可视化ER关系图自动生成，数据导出支持10+格式。内置查询性能分析器。', icon:'🗄️', iconBg:'rgba(34,211,238,.12)', rating:4.5, downloads:8200, recs:86, version:'4.0.1', installed:false, tags:['SQL','NoSQL','ER图','性能'], features:['AI辅助SQL编写','可视化ER图生成','查询性能分析','10+导出格式'] },
+  { id:'icon-lab', name:'设计素材库', type:'plugin', cat:'plugin-creative', desc:'AI生成图标、插画、配色方案，导出SVG/PNG。', fullDesc:'AI驱动的设计素材生成器。输入描述即可生成图标和插画，支持品牌色一键适配、多尺寸批量导出。内置配色方案推荐引擎，提供互补色、邻近色等专业配色组合。', icon:'🎨', iconBg:'rgba(244,114,182,.12)', rating:4.7, downloads:6300, recs:89, version:'1.9.0', installed:true, tags:['图标','插画','配色','SVG'], features:['AI生成图标插画','品牌色一键适配','专业配色方案','SVG/PNG批量导出'] },
+  { id:'code-reviewer', name:'代码审查', type:'plugin', cat:'plugin-dev', desc:'AI代码审查，自动检测Bug和安全漏洞。', fullDesc:'支持30+语言的AI代码审查工具。自动检测逻辑Bug、安全漏洞、性能问题和代码异味。生成详细审查报告含修复建议代码片段。支持Git PR自动审查和CI/CD流水线集成。', icon:'🔍', iconBg:'rgba(167,139,250,.12)', rating:4.9, downloads:14100, recs:97, version:'5.2.0', installed:true, tags:['安全','30+语言','CI','PR审查'], features:['30+语言漏洞检测','自动修复建议代码','Git PR自动审查','CI/CD无缝集成'] },
+  { id:'meeting-notes', name:'会议纪要', type:'plugin', cat:'plugin-productivity', desc:'实时录音转文字，自动生成结构化纪要和待办。', fullDesc:'集成Zoom/Teams/腾讯会议的智能纪要工具。实时转录并自动识别发言人，AI提取关键决策、行动项和截止日期，生成结构化会议纪要。支持全文搜索历史会议内容。', icon:'📋', iconBg:'rgba(129,140,248,.12)', rating:4.6, downloads:9700, recs:93, version:'2.5.0', installed:false, tags:['录音','纪要','待办','Zoom'], features:['Zoom/Teams集成','自动提取行动项','结构化纪要模板','全文搜索历史'] },
 ];
 
-// ===== MODEL DATA =====
 const models = [
-  { id:'claude4', name:'Claude 4 Opus', provider:'Anthropic', cat:'cloud', desc:'旗舰推理模型。编程、长文分析、复杂逻辑推理的首选。200K上下文窗口。', icon:'C4', iconBg:'rgba(167,139,250,.15)', rating:4.9, users:'24.5k', version:'4.0', active:true, tags:['推理','编程','200K'], paramSize:'-', context:'200K' },
-  { id:'gpt5', name:'GPT-5', provider:'OpenAI', cat:'cloud', desc:'多模态全能模型。创意写作、图像理解、数据分析，综合能力业界领先。', icon:'G5', iconBg:'rgba(34,211,238,.15)', rating:4.8, users:'32.1k', version:'5.0', active:false, tags:['多模态','创意','综合'], paramSize:'-', context:'256K' },
-  { id:'gemini25', name:'Gemini 2.5 Pro', provider:'Google', cat:'cloud', desc:'超长上下文模型。100万token窗口，适合全量代码库分析和超长文档处理。', icon:'G2', iconBg:'rgba(244,114,182,.15)', rating:4.7, users:'18.3k', version:'2.5', active:false, tags:['1M上下文','代码库','长文'], paramSize:'-', context:'1M' },
-  { id:'qwen3', name:'Qwen3', provider:'Alibaba · Ollama', cat:'local', desc:'本地运行的开源模型。零数据泄露，支持代码、数学、通用对话，完全免费。', icon:'Q3', iconBg:'rgba(52,211,153,.15)', rating:4.6, users:'8.7k', version:'3.0', active:false, tags:['本地','免费','开源'], paramSize:'72B', context:'128K' },
-  { id:'deepseekv4', name:'DeepSeek-V4 Pro', provider:'DeepSeek', cat:'cloud', desc:'代码与数学特化模型。MoE架构，编程竞赛水平，数学推理能力出众。', icon:'DS', iconBg:'rgba(167,139,250,.15)', rating:4.8, users:'21.6k', version:'4.0', active:false, tags:['代码','数学','MoE'], paramSize:'-', context:'128K' },
-  { id:'llama4', name:'Llama 4', provider:'Meta · Ollama', cat:'opensource', desc:'Meta最新开源旗舰。可本地部署的多模态模型，社区生态最活跃。', icon:'L4', iconBg:'rgba(251,191,36,.15)', rating:4.5, users:'7.2k', version:'4.0', active:false, tags:['开源','多模态','可微调'], paramSize:'400B', context:'256K' },
+  { id:'claude4', name:'Claude 4 Opus', type:'model', cat:'model-cloud', desc:'Anthropic旗舰推理模型。编程、长文分析、复杂逻辑推理。200K上下文窗口。', fullDesc:'Anthropic最新旗舰推理模型，在编程、长文分析、复杂逻辑推理任务上表现卓越。200K上下文窗口可处理超长文档和全量代码库。支持函数调用和多模态输入，是企业级AI应用的首选。', icon:'C4', iconBg:'rgba(167,139,250,.12)', rating:4.9, downloads:24500, recs:99, version:'4.0', active:true, tags:['推理','编程','200K','多模态'], features:['200K超长上下文','函数调用','多模态输入','企业级API'] },
+  { id:'gpt5', name:'GPT-5', type:'model', cat:'model-cloud', desc:'OpenAI多模态全能模型。创意写作、图像理解、数据分析。', fullDesc:'OpenAI最新多模态旗舰。统一处理文本、图像、音频输入，在创意写作、代码生成、数据分析和图像理解等综合场景中表现全面。256K上下文窗口支持超长文档处理。', icon:'G5', iconBg:'rgba(34,211,238,.12)', rating:4.8, downloads:32100, recs:96, version:'5.0', active:false, tags:['多模态','创意','256K','全能'], features:['256K上下文','文本/图像/音频','创意写作','数据分析'] },
+  { id:'gemini25', name:'Gemini 2.5 Pro', type:'model', cat:'model-cloud', desc:'Google超长上下文模型。100万token窗口，代码库分析。', fullDesc:'Google DeepMind的超长上下文模型。百万token级别窗口让全量代码库分析和超长文档处理成为可能。多模态理解能力覆盖文本、图像、音频和视频，适合大规模数据综合分析。', icon:'G2', iconBg:'rgba(244,114,182,.12)', rating:4.7, downloads:18300, recs:94, version:'2.5', active:false, tags:['1M上下文','代码库','视频','搜索'], features:['100万token窗口','视频理解','Google搜索集成','代码库分析'] },
+  { id:'deepseekv4', name:'DeepSeek-V4 Pro', type:'model', cat:'model-cloud', desc:'代码与数学特化。MoE架构，编程竞赛级水平。', fullDesc:'DeepSeek最新MoE架构模型。在编程竞赛和数学推理任务上对标顶级闭源模型。极高性价比，API价格仅为同类产品的1/10。支持128K上下文和函数调用，是目前性价比之王。', icon:'DS', iconBg:'rgba(167,139,250,.12)', rating:4.8, downloads:21600, recs:95, version:'4.0', active:false, tags:['代码','数学','MoE','高性价比'], features:['竞赛级编程能力','MoE高效推理','API极低价格','128K上下文'] },
+  { id:'qwen3', name:'Qwen3 本地版', type:'model', cat:'model-local', desc:'本地运行的开源模型。零数据泄露，完全免费。', fullDesc:'通过Ollama本地运行的Qwen3模型。72B参数版本在多项基准测试中媲美云端模型。零数据泄露，完全免费，支持离线使用。适合处理敏感数据和需要隐私保护的场景。', icon:'Q3', iconBg:'rgba(52,211,153,.12)', rating:4.6, downloads:8700, recs:91, version:'3.0', active:false, tags:['本地','免费','开源','72B'], features:['零数据泄露','完全免费','离线可用','72B参数'] },
+  { id:'llama4', name:'Llama 4', type:'model', cat:'model-local', desc:'Meta最新开源旗舰。400B参数，可本地部署微调。', fullDesc:'Meta最新开源旗舰模型。400B参数通过Ollama本地部署，社区生态最活跃。支持多模态输入和自定义微调，可用于构建垂直领域专用模型。完全掌控数据和推理过程。', icon:'L4', iconBg:'rgba(251,191,36,.12)', rating:4.5, downloads:7200, recs:88, version:'4.0', active:false, tags:['开源','400B','可微调','本地'], features:['400B参数本地运行','自定义微调','活跃社区','多模态'] },
 ];
 
-// ===== RENDER PLUGINS =====
-function renderPlugins(filter='all') {
-  const grid = document.getElementById('plugin-grid');
-  const list = filter==='all' ? plugins : plugins.filter(p=>p.cat===filter);
-  grid.innerHTML = list.map(p=>`
-    <div class="app-card" data-cat="${p.cat}">
-      <div class="app-card-hero plugin-hero">
-        <div class="app-card-icon" style="background:${p.iconBg}; color:${p.tags.length?getIconColor(p.iconBg):'#fff'};">${p.icon}</div>
-      </div>
-      <div class="app-card-inner">
-        <div class="app-card-header">
-          <span class="app-card-name">${p.name}</span>
-          <span class="app-card-version">v${p.version}</span>
+// Merge items
+const allItems = [...plugins, ...models];
+
+// ===== STATE =====
+let activeTab = 'all';
+let activeCat = 'all';
+let activeRank = 'recommend';
+
+// ===== RENDER =====
+function filterItems() {
+  let items = [...allItems];
+
+  // Tab filter
+  if (activeTab === 'plugins') items = items.filter(i => i.type === 'plugin');
+  else if (activeTab === 'models') items = items.filter(i => i.type === 'model');
+
+  // Category filter
+  if (activeCat !== 'all') items = items.filter(i => i.cat === activeCat);
+
+  // Search filter
+  const q = document.getElementById('store-search-input').value.toLowerCase().trim();
+  if (q) items = items.filter(i => i.name.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q) || i.tags.some(t => t.toLowerCase().includes(q)));
+
+  // Rank sort
+  if (activeRank === 'hot') items.sort((a,b) => b.downloads - a.downloads);
+  else if (activeRank === 'recommend') items.sort((a,b) => b.recs - a.recs);
+  else if (activeRank === 'rating') items.sort((a,b) => b.rating - a.rating);
+  else if (activeRank === 'new') items.sort((a,b) => parseFloat(b.version) - parseFloat(a.version));
+
+  return items;
+}
+
+function renderGrid() {
+  const items = filterItems();
+  const grid = document.getElementById('store-grid');
+
+  grid.innerHTML = items.map((item, idx) => {
+    const rankNum = activeRank === 'hot' || activeRank === 'recommend' || activeRank === 'rating' ? idx + 1 : null;
+    const isPlugin = item.type === 'plugin';
+    const isModel = item.type === 'model';
+    const btnClass = isModel ? (item.active ? 'active-model' : 'use-model') : (item.installed ? 'installed' : 'install');
+    const btnText = isModel ? (item.active ? '使用中' : '使用') : (item.installed ? '已安装' : '安装');
+
+    return `
+    <div class="app-card" onclick="openDetail('${item.id}')">
+      <div class="app-card-top">
+        <div class="app-card-icon ${rankNum && rankNum <= 3 ? 'rank-badge' : ''}" style="background:${item.iconBg};" data-rank="${rankNum||''}">
+          ${item.icon}
         </div>
-        <div class="app-card-desc">${p.desc}</div>
-        <div class="app-card-meta">
-          <div class="app-card-rating">
-            <span class="app-card-stars">${starStr(p.rating)}</span>
-            <span>${p.rating}</span>
-            <span class="app-card-downloads">· ${p.downloads} 安装</span>
+        <div class="app-card-info">
+          <div class="app-card-name">${item.name}</div>
+          <div class="app-card-meta-line">
+            <span class="app-card-rating">★ ${item.rating}</span>
+            <span>|</span>
+            <span class="app-card-recs">推荐 ${item.recs}</span>
+            <span>|</span>
+            <span>${isPlugin ? (item.downloads/1000).toFixed(1)+'k 安装' : (item.downloads/1000).toFixed(1)+'k 用户'}</span>
           </div>
-          <button class="app-card-action ${p.installed?'installed':'install'}" onclick="togglePlugin('${p.id}',this)">${p.installed?'已安装':'安装'}</button>
         </div>
-        <div class="app-card-tags">${p.tags.map(t=>`<span class="app-tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="app-card-desc">${item.desc}</div>
+      <div class="app-card-bottom">
+        <div class="app-card-tags">${item.tags.slice(0,3).map(t=>`<span class="app-tag">${t}</span>`).join('')}</div>
+        <button class="app-card-btn ${btnClass}" onclick="event.stopPropagation(); handleBtnClick('${item.id}')">${btnText}</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  if (items.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted);font-size:14px;">没有找到匹配的结果</div>';
+  }
+}
+
+function handleBtnClick(id) {
+  const item = allItems.find(i => i.id === id);
+  if (!item) return;
+  if (item.type === 'model') {
+    models.forEach(m => m.active = false);
+    item.active = true;
+  } else {
+    item.installed = !item.installed;
+  }
+  renderGrid();
+}
+
+// ===== DETAIL MODAL =====
+function openDetail(id) {
+  const item = allItems.find(i => i.id === id);
+  if (!item) return;
+  const isPlugin = item.type === 'plugin';
+  const modal = document.getElementById('detail-modal');
+  const content = document.getElementById('modal-content');
+
+  content.innerHTML = `
+    <div class="modal-hero ${isPlugin ? 'plugin-bg' : 'model-bg'}">
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+      <div class="modal-hero-icon" style="background:${item.iconBg}; font-family:${isPlugin?'var(--font-body)':'var(--font-grotesk)'};">${item.icon}</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title">${item.name}</div>
+      <div class="modal-version">${isPlugin ? '插件' : '模型'} · v${item.version}${item.type==='model'?' · '+(item.cat==='model-local'?'本地运行':'云端API'):''}</div>
+      <div class="modal-stats">
+        <div class="modal-stat"><div class="modal-stat-val">${item.rating}</div><div class="modal-stat-label">评分</div></div>
+        <div class="modal-stat"><div class="modal-stat-val">${item.recs}</div><div class="modal-stat-label">推荐指数</div></div>
+        <div class="modal-stat"><div class="modal-stat-val">${isPlugin?(item.downloads/1000).toFixed(1)+'k':(item.downloads/1000).toFixed(1)+'k'}</div><div class="modal-stat-label">${isPlugin?'安装量':'用户数'}</div></div>
+        <div class="modal-stat"><div class="modal-stat-val">v${item.version}</div><div class="modal-stat-label">版本</div></div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-desc">${item.fullDesc}</div>
+      <div class="modal-features">
+        <div class="modal-features-label">核心特性</div>
+        ${item.features.map(f=>`<div class="modal-feature-item">${f}</div>`).join('')}
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn primary" onclick="handleBtnClick('${item.id}');closeDetail();">${isPlugin?(item.installed?'已安装':'立即安装'):(item.active?'使用中':'使用此模型')}</button>
+        <button class="modal-btn secondary" onclick="closeDetail()">返回商店</button>
       </div>
     </div>
-  `).join('');
-}
-function getIconColor(bg){ return bg.includes('244')?'var(--accent-pink)':bg.includes('52')?'var(--accent-green)':bg.includes('167')?'var(--accent-purple)':bg.includes('34')?'var(--accent-cyan)':bg.includes('251')?'var(--accent-amber)':'var(--accent-indigo)'; }
-function starStr(r){ const full=Math.floor(r), half=r%1>=.5; return '★'.repeat(full)+(half?'½':''); }
-function togglePlugin(id,btn){
-  const p = plugins.find(x=>x.id===id);
-  p.installed = !p.installed;
-  btn.textContent = p.installed?'已安装':'安装';
-  btn.className = 'app-card-action '+(p.installed?'installed':'install');
+  `;
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
 }
 
-// ===== RENDER MODELS =====
-function renderModels(filter='all') {
-  const grid = document.getElementById('model-grid');
-  const list = filter==='all' ? models : models.filter(m=>m.cat===filter);
-  grid.innerHTML = list.map(m=>`
-    <div class="app-card model-card-app">
-      <div class="app-card-hero model-hero">
-        <div class="app-card-icon">${m.icon}</div>
-      </div>
-      <div class="app-card-inner">
-        <div class="model-provider"><span class="model-provider-dot"></span>${m.provider}</div>
-        <div class="app-card-header">
-          <span class="app-card-name">${m.name}</span>
-          <span class="app-card-version">v${m.version}</span>
-        </div>
-        <div class="app-card-desc">${m.desc}</div>
-        <div class="app-card-meta">
-          <div class="app-card-rating">
-            <span class="app-card-stars">${starStr(m.rating)}</span>
-            <span>${m.rating}</span>
-            <span class="app-card-downloads">· ${m.users} 用户</span>
-          </div>
-          <button class="app-card-action ${m.active?'active-model':'use'}" onclick="activateModel('${m.id}',this)">${m.active?'使用中':'使用'}</button>
-        </div>
-        <div class="app-card-tags">${m.tags.map(t=>`<span class="app-tag">${t}</span>`).join('')}</div>
-      </div>
-    </div>
-  `).join('');
-}
-function activateModel(id,btn){
-  models.forEach(m=>m.active=false);
-  const m = models.find(x=>x.id===id);
-  m.active = true;
-  renderModels(document.querySelector('#model-categories .category-pill.active').dataset.mcat);
+function closeDetail() {
+  document.getElementById('detail-modal').classList.add('hidden');
+  document.body.style.overflow = '';
 }
 
-// ===== CATEGORY FILTERS =====
-document.getElementById('plugin-categories').addEventListener('click',e=>{
-  if(!e.target.classList.contains('category-pill')) return;
-  document.querySelectorAll('#plugin-categories .category-pill').forEach(b=>b.classList.remove('active'));
-  e.target.classList.add('active');
-  renderPlugins(e.target.dataset.cat);
-});
-document.getElementById('model-categories').addEventListener('click',e=>{
-  if(!e.target.classList.contains('category-pill')) return;
-  document.querySelectorAll('#model-categories .category-pill').forEach(b=>b.classList.remove('active'));
-  e.target.classList.add('active');
-  renderModels(e.target.dataset.mcat);
+document.getElementById('detail-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeDetail();
 });
 
-// ===== INIT =====
-renderPlugins();
-renderModels();
+// ===== EVENT HANDLERS =====
+document.getElementById('store-tabs').addEventListener('click', function(e) {
+  if (!e.target.classList.contains('store-tab')) return;
+  document.querySelectorAll('#store-tabs .store-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTab = e.target.dataset.tab;
+  renderGrid();
+});
 
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(link=>{
-  link.addEventListener('click',e=>{
+document.querySelector('.store-sidebar').addEventListener('click', function(e) {
+  const item = e.target.closest('.sidebar-item');
+  if (!item) return;
+
+  // Category items
+  if (item.dataset.storeCat) {
+    document.querySelectorAll('.sidebar-item[data-store-cat]').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    activeCat = item.dataset.storeCat;
+    // Also switch tab
+    if (activeCat.startsWith('model-')) {
+      activeTab = 'models';
+      document.querySelectorAll('#store-tabs .store-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('#store-tabs .store-tab[data-tab="models"]').classList.add('active');
+    } else if (activeCat.startsWith('plugin-')) {
+      activeTab = 'plugins';
+      document.querySelectorAll('#store-tabs .store-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('#store-tabs .store-tab[data-tab="plugins"]').classList.add('active');
+    } else {
+      activeTab = 'all';
+      document.querySelectorAll('#store-tabs .store-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('#store-tabs .store-tab[data-tab="all"]').classList.add('active');
+    }
+  }
+
+  // Ranking shortcut items
+  if (item.dataset.rank) {
+    activeRank = item.dataset.rank === 'top' ? 'rating' : item.dataset.rank;
+    document.querySelectorAll('#ranking-bar .rank-pill').forEach(p => p.classList.remove('active'));
+    const pillMap = { hot: 'hot', new: 'new', top: 'rating' };
+    const targetRank = pillMap[item.dataset.rank];
+    const pill = document.querySelector(`#ranking-bar .rank-pill[data-rank-sort="${targetRank}"]`);
+    if (pill) pill.classList.add('active');
+  }
+
+  renderGrid();
+});
+
+document.getElementById('ranking-bar').addEventListener('click', function(e) {
+  const pill = e.target.closest('.rank-pill');
+  if (!pill) return;
+  document.querySelectorAll('#ranking-bar .rank-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  activeRank = pill.dataset.rankSort;
+  renderGrid();
+});
+
+document.getElementById('store-search-input').addEventListener('input', function() {
+  renderGrid();
+});
+
+// ESC to close modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeDetail();
+});
+
+// Nav smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
     e.preventDefault();
-    const t=document.querySelector(link.getAttribute('href'));
-    if(t) t.scrollIntoView({behavior:'smooth'});
+    const t = document.querySelector(link.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
   });
 });
 
-// Active nav
-const secs=document.querySelectorAll('section[id], .marketplace[id]');
-window.addEventListener('scroll',()=>{
-  let cur='';
-  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur));
-});
+// ===== INIT =====
+renderGrid();
 </script>
 </body>
 </html>
