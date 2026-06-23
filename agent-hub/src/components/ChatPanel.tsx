@@ -57,7 +57,7 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
       const errorMsg: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: `Error: ${message}`,
+        content: `错误: ${message}`,
         timestamp: Date.now(),
       };
       await agent.addMessage(sessionWithUser, errorMsg);
@@ -71,18 +71,24 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
     }
   };
 
-  // Empty state
+  // 空状态 — 图形化
   if (!session && !isLoading) {
     return (
-      <div className="flex-1 flex flex-col min-h-0">
-        <div className="flex-1 flex flex-col items-center justify-center px-6 animate-view-enter">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 animate-float"
-            style={{
-              background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
-              boxShadow: '0 0 32px rgba(139, 92, 246, 0.3)',
-            }}>
-            <span className="text-3xl select-none">{agent.activeAgent.icon}</span>
+      <div className="flex-1 flex flex-col min-h-0 animate-view-enter">
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          {/* 浮动 Logo */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 rounded-2xl blur-xl opacity-30 animate-glow-pulse"
+              style={{ background: 'linear-gradient(135deg, var(--accent), var(--cyan))' }} />
+            <div className="relative w-16 h-16 rounded-2xl flex items-center justify-center animate-float"
+              style={{
+                background: 'linear-gradient(135deg, #7C3AED, #8B5CF6, #06B6D4)',
+                boxShadow: '0 0 40px rgba(139, 92, 246, 0.3)',
+              }}>
+              <span className="text-3xl select-none">{agent.activeAgent.icon}</span>
+            </div>
           </div>
+
           <h2 className="text-xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
             {agent.activeAgent.name}
           </h2>
@@ -90,32 +96,26 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
             {agent.activeAgent.description}
           </p>
 
-          {/* Quick prompt suggestions */}
+          {/* 快捷提问 */}
           <div className="grid grid-cols-1 gap-2 w-full max-w-md">
-            <QuickPrompt onClick={() => setInput('What can you help me with?')}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
-              </svg>
-              What can you help me with?
+            <QuickPrompt onClick={() => setInput('你能帮我做什么？')} color="#8B5CF6">
+              <span className="text-base">💡</span>
+              你能帮我做什么？
             </QuickPrompt>
-            <QuickPrompt onClick={() => setInput('Explain how WebLLM works')}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3"/>
-              </svg>
-              Explain how WebLLM works
+            <QuickPrompt onClick={() => setInput('介绍一下 WebLLM 的工作原理')} color="#06B6D4">
+              <span className="text-base">🧠</span>
+              介绍一下 WebLLM 的工作原理
+            </QuickPrompt>
+            <QuickPrompt onClick={() => setInput('帮我写一段代码')} color="#10B981">
+              <span className="text-base">💻</span>
+              帮我写一段代码
             </QuickPrompt>
           </div>
         </div>
 
         <ChatInput
-          input={input}
-          setInput={setInput}
-          onSend={handleSend}
-          onKeyDown={handleKeyDown}
-          isLoading={isLoading}
-          isGenerating={false}
-          skillReg={skillReg}
-          inputRef={inputRef}
+          input={input} setInput={setInput} onSend={handleSend} onKeyDown={handleKeyDown}
+          isLoading={isLoading} isGenerating={false} skillReg={skillReg} inputRef={inputRef}
         />
       </div>
     );
@@ -123,27 +123,27 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
-      {/* Loading state */}
+      {/* 加载状态 */}
       {isLoading && !session?.messages.length && (
         <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <div className="relative w-14 h-14 mb-4">
-            <div className="absolute inset-0 rounded-xl animate-spin-slow opacity-40"
-              style={{ background: 'conic-gradient(var(--accent), var(--cyan), var(--accent))', filter: 'blur(8px)' }} />
-            <div className="absolute inset-0.5 rounded-xl flex items-center justify-center"
+          <div className="relative w-16 h-16 mb-5">
+            <div className="absolute inset-0 rounded-2xl animate-spin-slow opacity-40"
+              style={{ background: 'conic-gradient(var(--accent), var(--cyan), var(--accent))', filter: 'blur(10px)' }} />
+            <div className="absolute inset-[2px] rounded-2xl flex items-center justify-center"
               style={{ background: 'var(--bg-root)' }}>
-              <span className="text-xl">{agent.activeAgent.icon}</span>
+              <span className="text-2xl">{agent.activeAgent.icon}</span>
             </div>
           </div>
           <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
-            Loading model
+            正在加载模型
           </p>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             {webLLM.loadState.status === 'downloading'
-              ? `Downloading... ${Math.round((webLLM.loadState as {progress: number}).progress * 100)}%`
-              : 'Initializing engine...'}
+              ? `下载中... ${Math.round((webLLM.loadState as {progress: number}).progress * 100)}%`
+              : '初始化引擎...'}
           </p>
           {webLLM.loadState.status === 'downloading' && (
-            <div className="mt-3 w-48 h-1 rounded-full overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
+            <div className="mt-4 w-56 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
               <div className="h-full rounded-full transition-all duration-500"
                 style={{
                   background: 'linear-gradient(90deg, var(--accent), var(--cyan))',
@@ -154,7 +154,7 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
         </div>
       )}
 
-      {/* Messages */}
+      {/* 消息列表 */}
       <div className="flex-1 overflow-y-auto px-4 py-6">
         <div className="max-w-3xl mx-auto space-y-5">
           {session?.messages.map(msg => (
@@ -165,8 +165,8 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
             <div className="flex gap-3 animate-fade-in">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 mt-1"
                 style={{
-                  background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
-                  boxShadow: '0 0 12px rgba(139, 92, 246, 0.25)',
+                  background: 'linear-gradient(135deg, #7C3AED, #8B5CF6)',
+                  boxShadow: '0 0 16px rgba(139, 92, 246, 0.25)',
                 }}>
                 <span className="text-base">{agent.activeAgent.icon}</span>
               </div>
@@ -181,7 +181,7 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
                         className={`transition-transform duration-200 ${showReasoning ? 'rotate-90' : ''}`}>
                         <path d="M9 18l6-6-6-6"/>
                       </svg>
-                      {showReasoning ? 'Hide reasoning' : 'Show reasoning'}
+                      {showReasoning ? '收起推理' : '查看推理'}
                     </button>
                     {showReasoning && (
                       <div className="p-3 rounded-xl text-xs whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto mb-3 animate-slide-down"
@@ -199,10 +199,15 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
                 <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--text-primary)' }}>
                   {streamingContent}
                 </div>
-                <div className="flex items-center gap-1 mt-1.5">
+                <div className="flex items-center gap-1.5 mt-2">
                   <span className="inline-block w-1.5 h-4 rounded-sm animate-pulse" style={{ background: 'var(--accent)' }} />
-                  <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                    Generating...
+                  <span className="text-[10px] flex items-center gap-1" style={{ color: 'var(--text-muted)' }}>
+                    生成中
+                    <span className="inline-flex gap-0.5">
+                      <span className="w-1 h-1 rounded-full animate-pulse-dot" style={{ background: 'var(--accent)' }} />
+                      <span className="w-1 h-1 rounded-full animate-pulse-dot" style={{ background: 'var(--accent)', animationDelay: '0.2s' }} />
+                      <span className="w-1 h-1 rounded-full animate-pulse-dot" style={{ background: 'var(--accent)', animationDelay: '0.4s' }} />
+                    </span>
                   </span>
                 </div>
               </div>
@@ -213,14 +218,8 @@ export function ChatPanel({ webLLM, agent, skillReg }: ChatPanelProps) {
       </div>
 
       <ChatInput
-        input={input}
-        setInput={setInput}
-        onSend={handleSend}
-        onKeyDown={handleKeyDown}
-        isLoading={isLoading}
-        isGenerating={webLLM.isGenerating}
-        skillReg={skillReg}
-        inputRef={inputRef}
+        input={input} setInput={setInput} onSend={handleSend} onKeyDown={handleKeyDown}
+        isLoading={isLoading} isGenerating={webLLM.isGenerating} skillReg={skillReg} inputRef={inputRef}
       />
     </div>
   );
@@ -241,7 +240,7 @@ function ChatInput({
   return (
     <div className="border-t px-4 py-3" style={{ borderColor: 'var(--border-subtle)', background: 'var(--bg-secondary)' }}>
       <div className="max-w-3xl mx-auto">
-        {/* Active Skills */}
+        {/* 激活的插件 */}
         {skillReg.activeSkills.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-2.5">
             {skillReg.activeSkills.map(id => {
@@ -249,7 +248,7 @@ function ChatInput({
               if (!skill) return null;
               return (
                 <span key={id} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium"
-                  style={{ background: 'var(--accent-bg)', color: 'var(--accent-light)' }}>
+                  style={{ background: 'var(--accent-bg)', color: 'var(--accent-light)', border: '1px solid var(--border-accent)' }}>
                   {skill.icon} {skill.name}
                 </span>
               );
@@ -266,7 +265,7 @@ function ChatInput({
               onChange={e => setInput(e.target.value)}
               onKeyDown={onKeyDown}
               disabled={isLoading || isGenerating}
-              placeholder={isLoading ? 'Load a model first...' : 'Ask anything...'}
+              placeholder={isLoading ? '请先加载模型...' : '输入问题，按 Enter 发送...'}
               className="w-full px-4 py-3 rounded-2xl text-sm transition-all duration-200 disabled:opacity-40"
               style={{
                 background: 'var(--bg-tertiary)',
@@ -276,7 +275,7 @@ function ChatInput({
               }}
               onFocus={e => {
                 e.currentTarget.style.borderColor = 'var(--accent)';
-                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.15)';
               }}
               onBlur={e => {
                 e.currentTarget.style.borderColor = 'var(--border-default)';
@@ -287,20 +286,25 @@ function ChatInput({
           <button
             onClick={onSend}
             disabled={isLoading || isGenerating || !input.trim()}
-            className="px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 disabled:opacity-30 active:scale-95 shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
-              color: '#fff',
-              boxShadow: input.trim() ? '0 0 20px rgba(139, 92, 246, 0.25)' : 'none',
-            }}
-          >
+            className="px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 disabled:opacity-30 active:scale-95 shrink-0 relative overflow-hidden group"
+            style={{ color: '#fff' }}>
+            <div className="absolute inset-0 rounded-2xl"
+              style={{
+                background: input.trim() ? 'linear-gradient(135deg, #7C3AED, #8B5CF6, #06B6D4)' : 'linear-gradient(135deg, #7C3AED, #8B5CF6)',
+                backgroundSize: input.trim() ? '200% 200%' : '100% 100%',
+                animation: input.trim() ? 'gradient-flow 3s ease infinite' : 'none',
+              }} />
+            {input.trim() && (
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08), transparent)' }} />
+            )}
             {isGenerating ? (
-              <span className="flex items-center gap-1.5">
+              <span className="relative z-10 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-dot" />
-                Wait
+                等待
               </span>
             ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="relative z-10">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
               </svg>
             )}
@@ -308,30 +312,32 @@ function ChatInput({
         </div>
 
         <p className="text-[10px] mt-2 text-center" style={{ color: 'var(--text-muted)' }}>
-          All processing happens locally. Your data never leaves this machine.
+          全部在本地处理 · 数据永不离开设备
         </p>
       </div>
     </div>
   );
 }
 
-function QuickPrompt({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function QuickPrompt({ children, onClick, color }: { children: React.ReactNode; onClick: () => void; color: string }) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2.5 px-4 py-3 rounded-xl text-xs text-left transition-all duration-200 hover:scale-[1.01]"
+      className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-left transition-all duration-200 group"
       style={{
         background: 'var(--bg-card)',
         color: 'var(--text-secondary)',
         border: '1px solid var(--border-subtle)',
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.borderColor = 'var(--border-accent)';
+        e.currentTarget.style.borderColor = `${color}40`;
         e.currentTarget.style.color = 'var(--text-primary)';
+        e.currentTarget.style.transform = 'translateX(4px)';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border-subtle)';
         e.currentTarget.style.color = 'var(--text-secondary)';
+        e.currentTarget.style.transform = 'translateX(0)';
       }}
     >
       {children}
@@ -350,8 +356,8 @@ function MessageBubble({ msg, icon }: { msg: ChatMessage; icon: string }) {
         isUser ? 'bg-[var(--bg-tertiary)]' : ''
       }`}
         style={isUser ? {} : {
-          background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
-          boxShadow: '0 0 10px rgba(139, 92, 246, 0.2)',
+          background: 'linear-gradient(135deg, #7C3AED, #8B5CF6)',
+          boxShadow: '0 0 12px rgba(139, 92, 246, 0.2)',
         }}>
         {isUser ? (
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
@@ -365,12 +371,10 @@ function MessageBubble({ msg, icon }: { msg: ChatMessage; icon: string }) {
       </div>
       <div className={`flex-1 min-w-0 ${isUser ? 'text-right' : ''}`}>
         <div className={`inline-block text-sm leading-relaxed whitespace-pre-wrap px-4 py-3 rounded-2xl ${
-          isUser
-            ? 'rounded-tr-md text-white'
-            : 'rounded-tl-md'
+          isUser ? 'rounded-tr-md text-white' : 'rounded-tl-md'
         }`}
           style={isUser ? {
-            background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
+            background: 'linear-gradient(135deg, #7C3AED, #8B5CF6)',
           } : {
             background: 'var(--bg-card)',
             color: 'var(--text-primary)',
@@ -379,7 +383,6 @@ function MessageBubble({ msg, icon }: { msg: ChatMessage; icon: string }) {
           {msg.content}
         </div>
 
-        {/* Tool calls */}
         {msg.toolCalls && msg.toolCalls.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1.5 justify-end">
             {msg.toolCalls.map(tc => (
@@ -394,7 +397,6 @@ function MessageBubble({ msg, icon }: { msg: ChatMessage; icon: string }) {
           </div>
         )}
 
-        {/* Timestamp */}
         <div className={`text-[10px] mt-1 ${isUser ? 'text-right' : ''}`} style={{ color: 'var(--text-muted)' }}>
           {timeStr}
         </div>

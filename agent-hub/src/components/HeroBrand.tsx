@@ -7,26 +7,26 @@ export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
   return (
     <div className="relative flex-1 flex items-center justify-center overflow-hidden animate-view-enter"
       style={{ background: 'var(--bg-root)' }}>
-      {/* Ambient background gradients */}
+      {/* 环境光背景 */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-[0.06] blur-3xl"
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-[0.06] blur-3xl"
           style={{ background: 'radial-gradient(circle, var(--accent), transparent)' }} />
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full opacity-[0.05] blur-3xl"
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full opacity-[0.05] blur-3xl"
           style={{ background: 'radial-gradient(circle, var(--cyan), transparent)' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.03] blur-3xl"
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full opacity-[0.03] blur-3xl"
           style={{ background: 'radial-gradient(circle, var(--accent-light), transparent 70%)' }} />
       </div>
 
-      {/* Grid pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+      {/* 网格纹理 */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
         style={{
           backgroundImage: 'linear-gradient(var(--border-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
         }} />
 
-      {/* Content */}
+      {/* 内容 */}
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-        {/* Badge */}
+        {/* 版本标签 */}
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 animate-fade-in"
           style={{
             background: 'rgba(139, 92, 246, 0.08)',
@@ -34,15 +34,15 @@ export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
           }}>
           <span className="w-2 h-2 rounded-full animate-pulse-dot" style={{ background: 'var(--success)' }} />
           <span className="text-xs font-medium" style={{ color: 'var(--accent-light)' }}>
-            v4.0 · Aggregation Console
+            v4.0 · 聚合控制台
           </span>
         </div>
 
-        {/* Headline */}
+        {/* 主标题 */}
         <h1 className="text-[42px] leading-[1.05] font-bold tracking-[-0.03em] mb-5 animate-slide-up"
           style={{ fontFamily: 'var(--font-display)' }}>
           <span className="block" style={{ color: 'var(--text-primary)' }}>
-            All Your AI Tools.
+            所有 AI 工具
           </span>
           <span className="block"
             style={{
@@ -50,7 +50,7 @@ export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-            One Console.
+            一个控制台
           </span>
         </h1>
 
@@ -60,44 +60,44 @@ export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
           一键安装，本地运行，零数据泄漏。
         </p>
 
-        {/* Feature Bento Grid */}
+        {/* 特性 Bento 网格 */}
         <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto mb-10 animate-slide-up stagger-2">
           <BentoCard
             icon={<ShieldIcon />}
-            title="100% Private"
+            title="100% 隐私"
             description="一切运行在本地浏览器，数据永不离开你的设备。"
           />
           <BentoCard
             icon={<ChipIcon />}
-            title="6 Models"
-            description="从 Gemma 3 270M 到 Llama 3.1 8B，随时切换。"
+            title="6 个模型"
+            description="从 Gemma 270M 到 Llama 8B，随时切换。"
           />
           <BentoCard
             icon={<BoltIcon />}
-            title="WebGPU Fast"
+            title="WebGPU 加速"
             description="硬件加速推理，零云端延迟。"
           />
         </div>
 
-        {/* Tech Tags */}
+        {/* 技术标签 */}
         <div className="flex items-center justify-center gap-3 animate-slide-up stagger-3">
           <Tag label="WebGPU" />
-          <Tag label="IndexedDB Cache" />
+          <Tag label="IndexedDB 缓存" />
           <Tag label="Apache 2.0" />
-          <Tag label="No API Keys" />
+          <Tag label="无需 API Key" />
         </div>
 
-        {/* CTA */}
-        <div className="flex items-center justify-center gap-3 mb-10 animate-slide-up stagger-3">
+        {/* 操作按钮 */}
+        <div className="flex items-center justify-center gap-3 mt-6 mb-10 animate-slide-up stagger-3">
           <button
             onClick={onExplore}
-            className="px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 active:scale-95"
-            style={{
-              background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
-              color: '#fff',
-              boxShadow: '0 0 32px rgba(139, 92, 246, 0.35)',
-            }}>
-            进入控制台
+            className="px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 active:scale-95 relative overflow-hidden group"
+            style={{ color: '#fff' }}>
+            <div className="absolute inset-0 rounded-2xl"
+              style={{ background: 'linear-gradient(135deg, #7C3AED, #8B5CF6, #06B6D4)', backgroundSize: '200% 200%', animation: 'gradient-flow 3s ease infinite' }} />
+            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.1), transparent)' }} />
+            <span className="relative z-10">进入控制台</span>
           </button>
           <button
             onClick={onDismiss}
@@ -111,7 +111,7 @@ export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
           </button>
         </div>
 
-        {/* Dismiss */}
+        {/* 关闭 */}
         <button
           onClick={onDismiss}
           className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:bg-[var(--bg-tertiary)]"
@@ -123,7 +123,7 @@ export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
         </button>
       </div>
 
-      {/* Bottom gradient fade */}
+      {/* 底部渐变淡出 */}
       <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
         style={{ background: 'linear-gradient(to top, var(--bg-root), transparent)' }} />
     </div>
@@ -132,7 +132,7 @@ export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
 
 function BentoCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <div className="rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.02] group"
+    <div className="rounded-2xl p-4 text-center transition-all duration-300 hover:scale-[1.03] group"
       style={{
         background: 'var(--bg-card)',
         border: '1px solid var(--border-subtle)',
