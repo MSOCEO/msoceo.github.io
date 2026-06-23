@@ -3,9 +3,11 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import type { ChatMessage, ModelEntry } from '../types';
 import { MODEL_REGISTRY } from '../lib/models';
+import { CLOUD_MODELS, getCloudModelById, type CloudModel } from '../lib/cloud-models';
 import { BUILTIN_AGENTS } from '../lib/agents';
 import { BUILTIN_SKILLS } from '../lib/skills';
 import { useWebLLM } from '../hooks/useWebLLM';
+import { useCloudModel } from '../hooks/useCloudModel';
 import { useAgent } from '../hooks/useAgent';
 import { useSkillRegistry } from '../hooks/useSkillRegistry';
 import SessionList from './SessionList';
@@ -40,7 +42,8 @@ interface WorkspaceProps { onOpenStore: (tab?: string) => void; }
 
 export default function Workspace({ onOpenStore }: WorkspaceProps) {
   // ─── Hooks ───
-  const { loadModel, sendMessage, loadState, currentModel, isGenerating, streamingContent, reasoningContent, unloadModel } = useWebLLM();
+  const webLLM = useWebLLM();
+  const cloudM = useCloudModel();
   const { activeAgent, switchAgent, sessions, activeSession, createSession, loadSessions, loadSession, addMessage, removeSession } = useAgent();
   const { activeSkills, toggleSkill } = useSkillRegistry();
 
@@ -69,10 +72,16 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
 
   const chatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const selectedModel = MODEL_REGISTRY.find(m => m.id === selectedModelId)!;
+
+  // ─── Engine selection ───
+  const isCloud = selectedModelId.startsWith('cloud-');
+  const activeEngine = isCloud ? cloudM : webLLM;
+  const selectedLocalModel = MODEL_REGISTRY.find(m => m.id === selectedModelId);
+  const selectedCloudModel = isCloud ? getCloudModelById(selectedModelId) : null;
+  const displayModelName = selectedLocalModel?.name || selectedCloudModel?.name || '未选择';
   const activeSkillDefs = BUILTIN_SKILLS.filter(s => activeSkills.includes(s.id));
-  const isLoading = loadState.status === 'loading' || loadState.status === 'downloading';
-  const isReady = loadState.status === 'ready';
+  const isLoading = activeEngine.loadState.status === 'loading' || activeEngine.loadState.status === 'downloading';
+  const isReady = activeEngine.loadState.status === 'ready';
 
   // ─── Load sessions on mount ───
   useEffect(() => { loadSessions(); }, []);
@@ -94,13 +103,13 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
         else if (agentOpen) setAgentOpen(false);
         else if (modelOpen) setModelOpen(false);
         else if (slashOpen) setSlashOpen(false);
-        else if (isGenerating) {} // handled separately
+        else if (activeEngine.isGenerating) {} // handled separately
         // Don't close panels on Esc
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [cmdPaletteOpen, agentOpen, modelOpen, slashOpen, isGenerating]);
+  }, [cmdPaletteOpen, agentOpen, modelOpen, slashOpen, activeEngine.isGenerating]);
 
   // ─── Side effect padding ───
   useEffect(() => {
@@ -114,14 +123,21 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
 
   // ─── Load model handler ───
   const handleLoadModel = useCallback(async () => {
-    if (currentModel?.id === selectedModelId && isReady) return;
-    await loadModel(selectedModel);
-  }, [selectedModelId, currentModel, isReady, selectedModel, loadModel]);
+    if (!isCloud) {
+      // Local model
+      if (webLLM.currentModel?.id === selectedModelId && webLLM.loadState.status === 'ready') return;
+      if (selectedLocalModel) await webLLM.loadModel(selectedLocalModel);
+    } else {
+      // Cloud model
+      if (cloudM.currentModel?.id === selectedModelId && cloudM.loadState.status === 'ready') return;
+      if (selectedCloudModel) await cloudM.loadModel(selectedCloudModel);
+    }
+  }, [selectedModelId, isCloud, selectedLocalModel, selectedCloudModel, webLLM, cloudM]);
 
   // ─── Send message ───
   const handleSend = useCallback(async (overrideInput?: string) => {
     const text = (overrideInput || input).trim();
-    if (!text || isGenerating || !isReady) return;
+    if (!text || activeEngine.isGenerating || !isReady) return;
     setInput('');
     setStreamError('');
 
@@ -142,7 +158,7 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
         ? `${activeAgent.systemPrompt}\n\n请先进行深度思考分析，用<思考>标签包裹你的推理过程，然后给出最终答案。`
         : activeAgent.systemPrompt;
 
-      const reply = await sendMessage(text, messages, activeSkills, sysPrompt);
+      const reply = await activeEngine.sendMessage(text, messages, activeSkills, sysPrompt);
       clearInterval(tracker);
       setTotalStreamTokens(reply.content.length);
       const finalElapsed = performance.now() - streamingStartRef.current;
@@ -155,7 +171,7 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
       const errMsg: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: `❌ 错误: ${errStr}`, timestamp: Date.now() };
       setMessages(prev => [...prev, errMsg]);
     }
-  }, [input, isGenerating, isReady, messages, sendMessage, activeSkills, thinkingMode, activeAgent.systemPrompt]);
+  }, [input, activeEngine.isGenerating, isReady, messages, activeEngine, activeSkills, thinkingMode, activeAgent.systemPrompt]);
 
   // ─── Key handler for input ───
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -230,16 +246,16 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
   // ─── Stop generation ───
   const handleStop = () => {
     // Force stop by unloading/reloading (simplified)
-    if (isGenerating) {
+    if (activeEngine.isGenerating) {
       // This is a best-effort stop
       setInput('');
     }
   };
 
-  // ─── Model load progress circle ───
-  const progressPct = loadState.status === 'downloading' ? Math.round((loadState.progress || 0) * 100) : 0;
+  // ─── Model load progress circle (local models only) ───
+  const progressPct = webLLM.loadState.status === 'downloading' ? Math.round((webLLM.loadState as {progress: number}).progress * 100) : 0;
   const progressCircle = useMemo(() => {
-    if (loadState.status !== 'downloading') return null;
+    if (webLLM.loadState.status !== 'downloading') return null;
     const size = 64; const sw = 5; const r = (size - sw) / 2;
     const circ = 2 * Math.PI * r; const offset = circ - (progressPct / 100) * circ;
     return (
@@ -250,7 +266,7 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
           style={{ filter: 'drop-shadow(0 0 6px rgba(0,102,255,0.4))' }} />
       </svg>
     );
-  }, [loadState.status, progressPct]);
+  }, [webLLM.loadState.status, progressPct]);
 
   // ─── Merged messages (consecutive same-role) ───
   const mergedMessages = useMemo(() => {
@@ -294,7 +310,7 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
         isOpen={contextOpen}
         onToggle={() => setContextOpen(p => !p)}
         activeAgent={activeAgent}
-        currentModelName={selectedModel.name}
+        currentModelName={displayModelName}
         loadState={loadState}
         activeSkills={activeSkillDefs}
         messageCount={messages.length}
@@ -319,17 +335,17 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
                 0 12px 40px rgba(0,0,0,0.5)
               `,
               transition: 'all 0.4s var(--ease-spring)',
-              transform: isGenerating ? 'translateY(-2px)' : 'translateY(0)',
+              transform: activeEngine.isGenerating ? 'translateY(-2px)' : 'translateY(0)',
               willChange: 'transform, box-shadow',
             }}
             onMouseEnter={(e) => {
-              if (!isGenerating) {
+              if (!activeEngine.isGenerating) {
                 e.currentTarget.style.transform = 'translateY(-2px)';
                 e.currentTarget.style.boxShadow = `0 2px 8px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.5), 0 16px 48px rgba(0,0,0,0.6), 0 0 40px rgba(0,102,255,0.06)`;
               }
             }}
             onMouseLeave={(e) => {
-              if (!isGenerating) {
+              if (!activeEngine.isGenerating) {
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = `0 1px 4px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.4), 0 12px 40px rgba(0,0,0,0.5)`;
               }
@@ -378,13 +394,13 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
                   className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13px] font-medium cursor-pointer border-none transition-all duration-200"
                   style={{ background: isReady ? 'rgba(16, 185, 129, 0.08)' : 'var(--bg-card)', color: isReady ? 'var(--success)' : 'var(--text-primary)' }}
                 >
-                  <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>🧠</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{isCloud ? '☁️' : '🧠'}</span>
                   <span>
-                    {loadState.status === 'idle' && '未加载'}
-                    {loadState.status === 'loading' && '初始化中…'}
-                    {loadState.status === 'downloading' && `下载 ${progressPct}%`}
-                    {loadState.status === 'error' && '加载失败'}
-                    {loadState.status === 'ready' && `${selectedModel.name} 就绪`}
+                    {activeEngine.loadState.status === 'idle' && (isCloud ? '云端未连接' : '未加载')}
+                    {activeEngine.loadState.status === 'loading' && '初始化中…'}
+                    {activeEngine.loadState.status === 'downloading' && `下载 ${progressPct}%`}
+                    {activeEngine.loadState.status === 'error' && '加载失败'}
+                    {activeEngine.loadState.status === 'ready' && `${displayModelName}${isCloud ? ' (云端)' : ' 就绪'}`}
                   </span>
                   {isLoading && (
                     <span className="inline-block w-3 h-3 border-2 rounded-full" style={{ borderColor: 'var(--border-default)', borderTopColor: 'var(--accent)', animation: 'spin 0.6s linear infinite' }} />
@@ -394,8 +410,9 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
                   </svg>
                 </button>
                 {modelOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-72 py-1.5 rounded-xl z-20 anim-fade-up"
+                  <div className="absolute top-full left-0 mt-2 w-80 py-1.5 rounded-xl z-20 anim-fade-up max-h-80 overflow-y-auto"
                     style={{ background: 'rgba(15,25,45,0.96)', backdropFilter: 'blur(24px)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}>
+                    {/* 本地模型 */}
                     {MODEL_REGISTRY.map(m => (
                       <button key={m.id}
                         onClick={() => { setSelectedModelId(m.id); handleLoadModel(); setModelOpen(false); }}
@@ -411,7 +428,28 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
                             {m.provider} · {m.description.slice(0, 30)}
                           </div>
                         </div>
-                        {currentModel?.id === m.id && isReady && <span style={{ color: 'var(--success)', fontSize: 11, fontWeight: 600 }}>✓</span>}
+                        {webLLM.currentModel?.id === m.id && webLLM.loadState.status === 'ready' && <span style={{ color: 'var(--success)', fontSize: 11, fontWeight: 600 }}>✓</span>}
+                      </button>
+                    ))}
+                    {/* 分隔线 */}
+                    <div className="mx-3 my-1" style={{ borderTop: '1px solid var(--border-subtle)' }} />
+                    {/* 云端模型 */}
+                    {CLOUD_MODELS.map(m => (
+                      <button key={m.id}
+                        onClick={() => { setSelectedModelId(m.id); handleLoadModel(); setModelOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-left cursor-pointer border-none transition-all duration-150"
+                        style={{ background: m.id === selectedModelId ? 'var(--accent-bg)' : 'transparent', color: 'var(--text-primary)' }}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span style={{ fontWeight: 500, fontSize: 13 }}>{m.icon} {m.name}</span>
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-medium" style={{ background: 'rgba(59,130,246,0.1)', color: '#60A5FA' }}>云端</span>
+                          </div>
+                          <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
+                            {m.provider} · {m.description.slice(0, 30)}
+                          </div>
+                        </div>
+                        {cloudM.currentModel?.id === m.id && cloudM.loadState.status === 'ready' && <span style={{ color: 'var(--success)', fontSize: 11, fontWeight: 600 }}>✓</span>}
                       </button>
                     ))}
                   </div>
@@ -423,13 +461,13 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
                 <button onClick={handleLoadModel} disabled={isLoading}
                   className="px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer border-none transition-all duration-200"
                   style={{ background: 'var(--accent-bg)', color: 'var(--text-accent)', opacity: isLoading ? 0.5 : 1 }}>
-                  {isLoading ? '加载中…' : '加载模型'}
+                  {isLoading ? '加载中…' : (isCloud ? '连接云端' : '加载模型')}
                 </button>
               ) : (
-                <button onClick={unloadModel}
+                <button onClick={() => activeEngine.unloadModel()}
                   className="px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer border-none transition-all duration-200"
                   style={{ background: 'rgba(239, 68, 68, 0.08)', color: 'var(--error)' }}>
-                  卸载
+                  {isCloud ? '断开' : '卸载'}
                 </button>
               )}
 
@@ -466,20 +504,20 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
               </button>
             </div>
 
-            {/* ─── Circular progress overlay ─── */}
-            {loadState.status === 'downloading' && (
+            {/* ─── Circular progress overlay (local models only) ─── */}
+            {webLLM.loadState.status === 'downloading' && (
               <div className="flex items-center justify-center gap-4 py-16 anim-fade-up">
                 {progressCircle}
                 <div>
                   <div className="text-[15px] mb-1" style={{ fontWeight: 500, color: 'var(--text-primary)' }}>
-                    下载模型: {selectedModel.name}
+                    下载模型: {selectedLocalModel?.name || '模型'}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-[28px] font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}>
                       {progressPct}%
                     </span>
                     <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>
-                      {selectedModel.size} · 下载中…
+                      {selectedLocalModel?.size || ''} · 下载中…
                     </span>
                   </div>
                 </div>
@@ -487,16 +525,16 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
             )}
 
             {/* ─── Chat Area ─── */}
-            {loadState.status !== 'downloading' && (
+            {webLLM.loadState.status !== 'downloading' && (
               <div ref={chatRef} className="px-6 py-6 overflow-y-auto" style={{ minHeight: 300, maxHeight: 420 }}>
                 {/* Empty state */}
-                {messages.length === 0 && !streamingContent ? (
+                {messages.length === 0 && !activeEngine.streamingContent ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center anim-fade-up">
                     {/* 3-step guide */}
                     <div className="flex items-center gap-4 mb-8">
                       {[
                         { step: 1, label: '选择 Agent', done: true, desc: activeAgent.name },
-                        { step: 2, label: '加载模型', done: isReady, desc: isReady ? selectedModel.name : '未加载', action: isReady ? undefined : () => handleLoadModel() },
+                        { step: 2, label: '加载模型', done: isReady, desc: isReady ? displayModelName : '未加载', action: isReady ? undefined : () => handleLoadModel() },
                         { step: 3, label: '开始对话', done: false, desc: '输入你的问题' },
                       ].map(s => (
                         <div key={s.step} className="flex flex-col items-center gap-2">
@@ -742,14 +780,14 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
                     ))}
 
                     {/* Streaming */}
-                    {streamingContent && (
+                    {activeEngine.streamingContent && (
                       <div className="flex gap-3">
                         <div className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-[11px]"
                           style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}>AI</div>
                         <div className="max-w-[80%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed"
                           style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', borderRadius: '18px 18px 18px 4px' }}>
                           <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                            {streamingContent}
+                            {activeEngine.streamingContent}
                             <span className="inline-block w-1.5 h-4 ml-0.5 align-middle rounded-sm"
                               style={{ background: 'var(--accent)', animation: 'dot-pulse 0.6s ease-in-out infinite' }} />
                           </div>
@@ -763,7 +801,7 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
 
             {/* ─── Status Bar ─── */}
             <StatusBar
-              isGenerating={isGenerating}
+              isGenerating={activeEngine.isGenerating}
               tokensPerSec={tokPerSec}
               totalTokens={totalStreamTokens}
               elapsedMs={elapsedMs}
@@ -814,15 +852,15 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
                 />
                 <button
                   onClick={() => handleSend()}
-                  disabled={!isReady || isGenerating || !input.trim()}
+                  disabled={!isReady || activeEngine.isGenerating || !input.trim()}
                   className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer border-none transition-all duration-200"
                   style={{
-                    background: isReady && input.trim() && !isGenerating
+                    background: isReady && input.trim() && !activeEngine.isGenerating
                       ? 'linear-gradient(135deg, var(--accent), #0080FF)'
                       : 'var(--bg-card)',
-                    color: isReady && input.trim() && !isGenerating ? '#fff' : 'var(--text-tertiary)',
-                    opacity: isReady && input.trim() && !isGenerating ? 1 : 0.5,
-                    boxShadow: isReady && input.trim() && !isGenerating ? '0 4px 16px rgba(0, 102, 255, 0.3)' : 'none',
+                    color: isReady && input.trim() && !activeEngine.isGenerating ? '#fff' : 'var(--text-tertiary)',
+                    opacity: isReady && input.trim() && !activeEngine.isGenerating ? 1 : 0.5,
+                    boxShadow: isReady && input.trim() && !activeEngine.isGenerating ? '0 4px 16px rgba(0, 102, 255, 0.3)' : 'none',
                     transform: isReady && input.trim() ? 'scale(1)' : 'scale(0.98)',
                   }}
                 >
@@ -836,7 +874,7 @@ export default function Workspace({ onOpenStore }: WorkspaceProps) {
               <div className="flex items-center justify-between mt-2.5 px-1">
                 <div className="flex items-center gap-3">
                   <span className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
-                    {isReady ? selectedModel.name : '模型未加载'}
+                    {isReady ? displayModelName : '模型未加载'}
                   </span>
                   {thinkingMode && (
                     <span className="text-[11px] font-medium" style={{ color: 'var(--thinking)' }}>💭 深度思考</span>
