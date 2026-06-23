@@ -3,15 +3,18 @@ import { Sidebar } from './components/Sidebar';
 import { ChatPanel } from './components/ChatPanel';
 import ModelSwitcher from './components/ModelSwitcher';
 import SkillMarket from './components/SkillMarket';
+import ToolStore from './components/ToolStore';
+import Dashboard from './components/Dashboard';
 import HeroBrand from './components/HeroBrand';
 import { useWebLLM } from './hooks/useWebLLM';
 import { useAgent } from './hooks/useAgent';
 import { useSkillRegistry } from './hooks/useSkillRegistry';
+import { useToolRegistry } from './hooks/useToolRegistry';
 
-type View = 'chat' | 'models' | 'skills';
+type View = 'dashboard' | 'chat' | 'models' | 'skills' | 'store';
 
 function App() {
-  const [view, setView] = useState<View>('chat');
+  const [view, setView] = useState<View>('dashboard');
   const [showHero, setShowHero] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [viewKey, setViewKey] = useState(0);
@@ -19,6 +22,7 @@ function App() {
   const webLLM = useWebLLM();
   const agent = useAgent();
   const skillReg = useSkillRegistry();
+  const toolReg = useToolRegistry();
 
   useEffect(() => {
     agent.loadSessions();
@@ -26,7 +30,7 @@ function App() {
 
   useEffect(() => {
     const saved = localStorage.getItem('agent-hub-view');
-    if (saved === 'models' || saved === 'skills') {
+    if (saved === 'chat' || saved === 'models' || saved === 'skills' || saved === 'store') {
       setView(saved);
       setShowHero(false);
     }
@@ -70,13 +74,15 @@ function App() {
             </svg>
           </button>
         )}
-        {showHero && view === 'chat' && (
+        {showHero && view === 'dashboard' && (
           <HeroBrand onDismiss={() => setShowHero(false)} />
         )}
         <div className="flex-1 overflow-hidden" key={viewKey}>
+          {view === 'dashboard' && <Dashboard />}
           {view === 'chat' && <ChatPanel webLLM={webLLM} agent={agent} skillReg={skillReg} />}
           {view === 'models' && <ModelSwitcher />}
           {view === 'skills' && <SkillMarket />}
+          {view === 'store' && <ToolStore />}
         </div>
       </main>
     </div>

@@ -33,7 +33,7 @@ export default function HeroBrand({ onDismiss }: HeroBrandProps) {
           }}>
           <span className="w-2 h-2 rounded-full animate-pulse-dot" style={{ background: 'var(--success)' }} />
           <span className="text-xs font-medium" style={{ color: 'var(--accent-light)' }}>
-            v3.0 Now Available
+            v4.0 · Aggregation Console
           </span>
         </div>
 
@@ -41,7 +41,7 @@ export default function HeroBrand({ onDismiss }: HeroBrandProps) {
         <h1 className="text-[42px] leading-[1.05] font-bold tracking-[-0.03em] mb-5 animate-slide-up"
           style={{ fontFamily: 'var(--font-display)' }}>
           <span className="block" style={{ color: 'var(--text-primary)' }}>
-            Local Intelligence.
+            All Your AI Tools.
           </span>
           <span className="block"
             style={{
@@ -49,14 +49,14 @@ export default function HeroBrand({ onDismiss }: HeroBrandProps) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-            Zero Leakage.
+            One Console.
           </span>
         </h1>
 
         <p className="text-base leading-relaxed mb-8 animate-slide-up stagger-1 max-w-xl mx-auto"
           style={{ color: 'var(--text-secondary)' }}>
-          Every model runs entirely in your browser via WebGPU.
-          No server. No API keys. No telemetry. Nothing leaves your machine.
+          从 LLM 对话到文生图、图生 UI、代码 Agent — 所有 AI 工具汇聚于此。
+          一键安装，本地运行，零数据泄漏。
         </p>
 
         {/* Feature Bento Grid */}
@@ -64,17 +64,17 @@ export default function HeroBrand({ onDismiss }: HeroBrandProps) {
           <BentoCard
             icon={<ShieldIcon />}
             title="100% Private"
-            description="Runs locally in your browser. All data stays on your device."
+            description="一切运行在本地浏览器，数据永不离开你的设备。"
           />
           <BentoCard
             icon={<ChipIcon />}
             title="6 Models"
-            description="From Gemma 3 270M to Llama 3.1 8B. Switch anytime."
+            description="从 Gemma 3 270M 到 Llama 3.1 8B，随时切换。"
           />
           <BentoCard
             icon={<BoltIcon />}
             title="WebGPU Fast"
-            description="Hardware-accelerated inference. No cloud latency."
+            description="硬件加速推理，零云端延迟。"
           />
         </div>
 

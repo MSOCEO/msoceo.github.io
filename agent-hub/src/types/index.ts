@@ -16,6 +16,21 @@ export interface ModelEntry {
   builtinTools?: string[]; // tool names this model supports natively
 }
 
+// Extended model types for non-text models in the console
+export type ModelCategory = 'text' | 'image' | 'ui' | 'code' | 'voice' | 'video';
+
+export interface ExternalModel {
+  id: string;
+  name: string;
+  provider: string;
+  category: ModelCategory;
+  description: string;
+  icon: string;          // emoji
+  size?: string;
+  requires: string[];     // tool IDs that can run this model
+  tags: string[];
+}
+
 export interface SkillDefinition {
   id: string;
   name: string;
@@ -83,3 +98,30 @@ export type ModelLoadState =
   | { status: 'loading' }
   | { status: 'ready' }
   | { status: 'error'; error: string };
+
+// ============================================================
+// App Store — Installable AI Tools
+// ============================================================
+
+export type ToolCategory = 'llm' | 'image-gen' | 'ui-gen' | 'code' | 'voice' | 'video' | 'productivity';
+
+export interface ToolDefinition {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;            // emoji
+  category: ToolCategory;
+  tags: string[];           // 'local','cloud','open-source','free', etc.
+  defaultUrl: string;       // local default URL (e.g. http://localhost:7860)
+  cloudUrl?: string;        // optional cloud version URL
+  docsUrl: string;          // GitHub / docs
+  requiresLocal: boolean;   // needs local install
+  size?: string;            // approx install size
+}
+
+export interface InstalledTool {
+  toolId: string;
+  customUrl?: string;       // user can override URL
+  installedAt: number;
+  isPinned: boolean;
+}

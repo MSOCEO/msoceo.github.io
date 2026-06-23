@@ -3,26 +3,33 @@
 // ============================================================
 
 import { openDB, type IDBPDatabase } from 'idb';
-import type { ConversationSession, SkillDefinition } from '../types';
+import type { ConversationSession, SkillDefinition, InstalledTool } from '../types';
 
 const DB_NAME = 'agent-hub';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbInstance: IDBPDatabase | null = null;
 
 async function getDB(): Promise<IDBPDatabase> {
   if (dbInstance) return dbInstance;
   dbInstance = await openDB(DB_NAME, DB_VERSION, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('conversations')) {
-        const store = db.createObjectStore('conversations', { keyPath: 'id' });
-        store.createIndex('updatedAt', 'updatedAt');
+    upgrade(db, oldVersion) {
+      if (oldVersion < 1) {
+        if (!db.objectStoreNames.contains('conversations')) {
+          const store = db.createObjectStore('conversations', { keyPath: 'id' });
+          store.createIndex('updatedAt', 'updatedAt');
+        }
+        if (!db.objectStoreNames.contains('customSkills')) {
+          db.createObjectStore('customSkills', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('settings')) {
+          db.createObjectStore('settings', { keyPath: 'key' });
+        }
       }
-      if (!db.objectStoreNames.contains('customSkills')) {
-        db.createObjectStore('customSkills', { keyPath: 'id' });
-      }
-      if (!db.objectStoreNames.contains('settings')) {
-        db.createObjectStore('settings', { keyPath: 'key' });
+      if (oldVersion < 2) {
+        if (!db.objectStoreNames.contains('installedTools')) {
+          db.createObjectStore('installedTools', { keyPath: 'toolId' });
+        }
       }
     },
   });
@@ -107,4 +114,26 @@ export async function importAllData(json: string): Promise<void> {
     for (const s of data.settings) await tx.objectStore('settings').put(s);
   }
   await tx.done;
+}
+
+// ---- Installed Tools ----
+
+export async function saveInstalledTool(tool: InstalledTool): Promise<void> {
+  const db = await getDB();
+  await db.put('installedTools', tool);
+}
+
+export async function getInstalledTools(): Promise<InstalledTool[]> {
+  const db = await getDB();
+  return db.getAll('installedTools');
+}
+
+export async function getInstalledTool(toolId: string): Promise<InstalledTool | undefined> {
+  const db = await getDB();
+  return db.get('installedTools', toolId);
+}
+
+export async function removeInstalledTool(toolId: string): Promise<void> {
+  const db = await getDB();
+  await db.delete('installedTools', toolId);
 }

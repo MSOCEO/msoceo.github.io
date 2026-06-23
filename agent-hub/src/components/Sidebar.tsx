@@ -2,7 +2,7 @@ import type { ConversationSession } from '../types';
 
 interface SidebarProps {
   view: string;
-  onViewChange: (v: 'chat' | 'models' | 'skills') => void;
+  onViewChange: (v: 'dashboard' | 'chat' | 'models' | 'skills' | 'store') => void;
   sessions: ConversationSession[];
   activeSession: ConversationSession | null;
   onSessionSelect: (id: string) => void;
@@ -36,7 +36,7 @@ export function Sidebar({
             Agent Hub
           </h1>
           <p className="text-[10px]" style={{ color: 'var(--text-muted)', lineHeight: 1.2 }}>
-            v3.0 · Local AI
+            v4.0 · AI Console
           </p>
         </div>
         <button
@@ -53,25 +53,39 @@ export function Sidebar({
       {/* Navigation */}
       <nav className="px-3 py-3 space-y-0.5">
         <NavItem
+          label="Dashboard"
+          active={view === 'dashboard'}
+          onClick={() => onViewChange('dashboard')}
+          icon={<DashboardIcon />}
+          shortcut="1"
+        />
+        <NavItem
           label="Chat"
           active={view === 'chat'}
           onClick={() => onViewChange('chat')}
           icon={<ChatIcon />}
-          shortcut="1"
+          shortcut="2"
         />
         <NavItem
           label="Models"
           active={view === 'models'}
           onClick={() => onViewChange('models')}
           icon={<CpuIcon />}
-          shortcut="2"
+          shortcut="3"
         />
         <NavItem
           label="Plugins"
           active={view === 'skills'}
           onClick={() => onViewChange('skills')}
           icon={<PluginIcon />}
-          shortcut="3"
+          shortcut="4"
+        />
+        <NavItem
+          label="App Store"
+          active={view === 'store'}
+          onClick={() => onViewChange('store')}
+          icon={<StoreIcon />}
+          shortcut="5"
         />
       </nav>
 
@@ -235,6 +249,20 @@ const ChatIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
     <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
     <path d="M8 9h8M8 13h5" opacity="0.5"/>
+  </svg>
+);
+
+const DashboardIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+    <rect x="3" y="16" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/>
+  </svg>
+);
+
+const StoreIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+    <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
   </svg>
 );
 
