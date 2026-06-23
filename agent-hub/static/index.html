@@ -544,6 +544,16 @@ body::before {
   opacity: .5;
 }
 
+/* Store Branding */
+.store-branding {
+  text-align: center;
+  padding: 48px 0 24px;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 24px;
+}
+.store-branding .section-label { margin-bottom: 6px; }
+.store-branding .section-title { margin-bottom: 0; }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
@@ -613,9 +623,9 @@ body::before {
 
 <!-- Workbench -->
 <section class="section" id="workbench">
-  <div class="container">
-    <div class="section-label">Central Workbench</div>
-    <h2 class="section-title">中央工作台</h2>
+  <div class="container" style="text-align:center;">
+    <div class="section-label">AI Orchestration Hub</div>
+    <h2 class="section-title">AI 调度中心</h2>
     <div class="bento-grid">
       <div class="col-span-3">
         <div class="chat-panel">
@@ -689,6 +699,12 @@ body::before {
 
       <!-- Grid -->
       <div class="store-grid" id="store-grid"></div>
+
+      <!-- Store Branding -->
+      <div class="store-branding">
+        <div class="section-label">AI Capability Market</div>
+        <h2 class="section-title">能力工坊</h2>
+      </div>
     </main>
 
   </div>
