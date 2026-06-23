@@ -1,0 +1,102 @@
+/**
+ * Meting API — Vercel Serverless 版
+ * 聚合网易云/QQ/酷狗/酷我/咪咕 5平台搜索+播放URL
+ * 路由: /api/meting?server=xxx&type=search|url&id=xxx
+ */
+
+export default async function handler(req, res) {
+  const { server = 'netease', type = 'search', id = '' } = req.query;
+
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  let result = [];
+  try {
+    if (type === 'search') {
+      result = await searchMusic(server, id);
+    } else if (type === 'url') {
+      result = await getPlayUrl(server, id);
+    }
+  } catch (e) {
+    result = [];
+  }
+
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600');
+  res.status(200).json(result);
+}
+
+async function searchMusic(server, keyword) {
+  const k = encodeURIComponent(keyword);
+  switch (server) {
+    case 'netease': {
+      const r = await fetch(`https://marvis-netease-api.vercel.app/search?keywords=${k}&type=1&limit=20`);
+      const d = await r.json();
+      return ((d.result && d.result.songs) || []).map(s => ({
+        id: s.id, title: s.name, artist: (s.artists||[]).map(a=>a.name).join('/'),
+        album: (s.album && s.album.name)||'', cover: (s.album && s.album.picUrl)||'',
+        source: 'netease', duration: s.duration||0,
+      }));
+    }
+    case 'tencent': {
+      const r = await fetch(`https://c.y.qq.com/soso/fcgi-bin/client_search_cp?format=json&n=20&w=${k}`);
+      const d = await r.json();
+      return (d.data?.song?.list||[]).map(s => ({
+        id: s.songmid, title: s.songname, artist: (s.singer||[]).map(a=>a.name).join('/'),
+        album: s.albumname||'', cover: s.albummid?`https://y.gtimg.cn/music/photo_new/T002R300x300M000${s.albummid}.jpg`:'',
+        source: 'qq', duration: s.interval||0,
+      }));
+    }
+    case 'kugou': {
+      const r = await fetch(`https://songsearch.kugou.com/song_search_v2?keyword=${k}&page=1&pagesize=20`);
+      const d = await r.json();
+      return (d.data?.lists||[]).map(s => ({
+        id: s.FileHash, title: s.SongName, artist: s.SingerName,
+        album: s.AlbumName||'', cover: '', source: 'kugou', duration: s.Duration||0,
+      }));
+    }
+    case 'kuwo': {
+      const r = await fetch(`https://search.kuwo.cn/r.s?all=${k}&pn=0&rn=20&ft=music&format=json`);
+      const d = await r.json();
+      return (d.abslist||[]).map(s => ({
+        id: s.MUSICRID, title: s.SONGNAME||s.name, artist: s.ARTIST||s.singer,
+        album: s.ALBUM||'', cover: '', source: 'kuwo', duration: s.DURATION||0,
+      }));
+    }
+    case 'migu': {
+      const r = await fetch(`https://m.music.migu.cn/migu/remoting/scr_search_tag?keyword=${k}&type=2&pgc=1&rows=20`);
+      const d = await r.json();
+      return ((d.musics||d.songs||[])).map(s => ({
+        id: s.id||s.songId, title: s.songName||s.name,
+        artist: (s.singerName||s.artist||'').replace(/\|/g,'/'),
+        album: s.albumName||s.album||'', cover: s.cover||s.img||'',
+        source: 'migu', duration: 0,
+      }));
+    }
+    default: return [];
+  }
+}
+
+async function getPlayUrl(server, id) {
+  switch (server) {
+    case 'netease': {
+      const r = await fetch(`https://marvis-netease-api.vercel.app/song/url?id=${id}`);
+      const d = await r.json();
+      return { url: (d.data && d.data[0] && d.data[0].url) || '' };
+    }
+    case 'tencent': {
+      const r = await fetch(`https://u.y.qq.com/cgi-bin/musicu.fcg?data={"req":{"module":"CDN.SrfCdnDispatchServer","method":"GetCdnDispatch","param":{"guid":"0","calltype":0,"userip":""}},"req_0":{"module":"vkey.GetVkey","method":"CgiGetVkey","param":{"guid":"0","songmid":["${id}"],"songtype":[0],"uin":"0","loginflag":1,"platform":"20"}},"comm":{"uin":0,"format":"json","ct":24,"cv":0}}`);
+      const d = await r.json();
+      const purl = d.req_0?.data?.midurlinfo?.[0]?.purl;
+      if (purl) return { url: `http://isure.stream.qqmusic.qq.com/${purl}` };
+      return { url: '' };
+    }
+    case 'kugou': {
+      const r = await fetch(`https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=${id}`);
+      const d = await r.json();
+      return { url: d.data?.play_url||'' };
+    }
+    default: return { url: '' };
+  }
+}
