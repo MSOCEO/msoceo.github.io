@@ -36,6 +36,17 @@ jobs:
         run: mkdir -p dist && cp -r static/* dist/
       - name: Copy agent-hub to dist
         run: mkdir -p dist/agent-hub && cp -r agent-hub/dist/* dist/agent-hub/
+      - name: List dist structure (diagnostic)
+        run: |
+          echo "=== Root files ==="
+          ls -la dist/
+          echo "=== blog/index.html head ==="
+          head -c 200 dist/blog/index.html
+          echo ""
+          echo "=== archive/index.html head ==="
+          head -c 200 dist/archive/index.html 2>/dev/null || echo "(not found)"
+          echo "=== Navigation link check ==="
+          grep -c 'href="/archive"' dist/blog/index.html && echo "✓ /archive link found" || echo "✗ /archive link NOT found"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -50,4 +61,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
