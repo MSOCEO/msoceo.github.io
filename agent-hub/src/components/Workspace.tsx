@@ -1,484 +1,456 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import type { ModelEntry, ChatMessage, SkillDefinition } from '../types';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { MODEL_REGISTRY } from '../lib/models';
+import { BUILTIN_AGENTS } from '../lib/agents';
+import { BUILTIN_SKILLS } from '../lib/skills';
 import { useWebLLM } from '../hooks/useWebLLM';
 import { useAgent } from '../hooks/useAgent';
 import { useSkillRegistry } from '../hooks/useSkillRegistry';
-import { MODEL_REGISTRY } from '../lib/models';
-import { BUILTIN_AGENTS } from '../lib/agents';
+import type { ChatMessage, ModelEntry, AgentConfig } from '../types';
 
 interface WorkspaceProps {
-  onOpenStore: () => void;
-  onOpenSkills: () => void;
+  onOpenStore: (tab?: string) => void;
 }
 
-export function Workspace({ onOpenStore, onOpenSkills }: WorkspaceProps) {
-  const webLLM = useWebLLM();
-  const agent = useAgent();
-  const skillReg = useSkillRegistry();
+export default function Workspace({ onOpenStore }: WorkspaceProps) {
+  // Hooks
+  const { loadModel, sendMessage, loadState, currentModel, isGenerating, streamingContent, reasoningContent, unloadModel } = useWebLLM();
+  const { activeAgent, switchAgent, activeSession, createSession, addMessage } = useAgent();
+  const { activeSkills, toggleSkill } = useSkillRegistry();
+
+  // UI state
+  const [input, setInput] = useState('');
   const [thinkingMode, setThinkingMode] = useState(false);
-  const [msgInput, setMsgInput] = useState('');
+  const [selectedModelId, setSelectedModelId] = useState('qwen2.5-7b');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [showAgentMenu, setShowAgentMenu] = useState(false);
-  const [showModelMenu, setShowModelMenu] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const [agentOpen, setAgentOpen] = useState(false);
+  const [modelOpen, setModelOpen] = useState(false);
+
+  const chatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => { agent.loadSessions(); }, []);
-  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, webLLM.streamingContent]);
+  const selectedModel = MODEL_REGISTRY.find(m => m.id === selectedModelId)!;
+  const activeSkillDefs = BUILTIN_SKILLS.filter(s => activeSkills.includes(s.id));
+  const isLoading = loadState.status === 'loading' || loadState.status === 'downloading';
 
-  const activeSkills = skillReg.skills.filter(s => skillReg.activeSkills.includes(s.id));
-
-  const sendMessage = useCallback(async () => {
-    const text = msgInput.trim();
-    if (!text || !webLLM.currentModel || webLLM.isGenerating) return;
-    const userMsg: ChatMessage = { id: crypto.randomUUID(), role: 'user', content: text, timestamp: Date.now() };
-    setMessages(prev => [...prev, userMsg]);
-    setMsgInput('');
-    try {
-      const sys = thinkingMode
-        ? `${agent.activeAgent.systemPrompt}\n\n请在回答前进行深度思考分析，展示推理过程。`
-        : agent.activeAgent.systemPrompt;
-      const reply = await webLLM.sendMessage(text, messages, skillReg.activeSkills, sys);
-      setMessages(prev => [...prev, reply]);
-    } catch (e) {
-      setMessages(prev => [...prev, {
-        id: crypto.randomUUID(), role: 'assistant',
-        content: `❌ 错误：${e instanceof Error ? e.message : String(e)}`,
-        timestamp: Date.now()
-      }]);
+  // Scroll to bottom
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [msgInput, webLLM, messages, agent.activeAgent, skillReg.activeSkills, thinkingMode]);
+  }, [messages, streamingContent]);
 
+  // Load model handler
+  const handleLoadModel = useCallback(async () => {
+    if (currentModel?.id === selectedModelId && loadState.status === 'ready') return;
+    await loadModel(selectedModel);
+  }, [selectedModelId, currentModel, loadState.status, selectedModel, loadModel]);
+
+  // Send message
+  const handleSend = useCallback(async () => {
+    const text = input.trim();
+    if (!text || isGenerating || loadState.status !== 'ready') return;
+    setInput('');
+
+    const userMsg: ChatMessage = { id: crypto.randomUUID(), role: 'user', content: text, timestamp: Date.now() };
+    const history = [...messages, userMsg];
+    setMessages(history);
+
+    try {
+      const sysPrompt = thinkingMode
+        ? `${activeAgent.systemPrompt}\n\n请先进行深度思考分析，用<思考>标签包裹你的推理过程，然后给出最终答案。`
+        : activeAgent.systemPrompt;
+
+      const reply = await sendMessage(text, messages, activeSkills, sysPrompt);
+      setMessages(prev => [...prev, reply]);
+    } catch (err) {
+      const errMsg: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: `错误: ${err instanceof Error ? err.message : String(err)}`, timestamp: Date.now() };
+      setMessages(prev => [...prev, errMsg]);
+    }
+  }, [input, isGenerating, loadState.status, messages, sendMessage, activeSkills, thinkingMode, activeAgent.systemPrompt]);
+
+  // Key handler
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  };
+
+  // Model progress display
+  const modelStatusText = () => {
+    if (loadState.status === 'idle') return '未加载';
+    if (loadState.status === 'loading') return '初始化中…';
+    if (loadState.status === 'downloading' && loadState.progress) return `下载中 ${Math.round(loadState.progress * 100)}%`;
+    if (loadState.status === 'error') return '加载失败';
+    if (loadState.status === 'ready') return `${selectedModel.name} 就绪`;
+    return '未知';
   };
 
   return (
-    <div className="flex flex-col w-full h-full">
-      {/* === Toolbar: Agent + Model + Skills + Thinking === */}
-      <div
-        className="px-5 py-3 flex flex-wrap items-center gap-2.5 flex-shrink-0"
-        style={{ borderBottom: '1px solid var(--border-subtle)' }}
-      >
-        {/* Agent Picker */}
-        <div className="relative">
-          <button
-            onClick={() => { setShowAgentMenu(!showAgentMenu); setShowModelMenu(false); }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
-            style={{
-              background: 'var(--bg-tertiary)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-subtle)',
-            }}
+    <section id="workspace" className="relative py-20 px-6">
+      <div className="max-w-[900px] mx-auto">
+        {/* Section header */}
+        <div className="text-center mb-12 anim-fade-up">
+          <h2
+            className="text-[32px] tracking-[-0.01em] mb-3"
+            style={{ fontFamily: 'var(--font-display)', fontWeight: 600, color: 'var(--text-primary)' }}
           >
-            <span>{agent.activeAgent.icon}</span>
-            <span style={{ fontFamily: 'var(--font-body)' }}>{agent.activeAgent.name}</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          {showAgentMenu && (
-            <div
-              className="absolute top-full mt-1 left-0 w-52 rounded-xl py-1 z-30 animate-fade-in"
-              style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border-default)',
-                boxShadow: 'var(--shadow-lg)',
-              }}
-            >
-              {BUILTIN_AGENTS.map(a => (
-                <button key={a.id} onClick={() => { agent.switchAgent(a.id); setShowAgentMenu(false); }}
-                  className="w-full px-3 py-2 text-left flex items-center gap-2.5 text-sm transition-colors"
-                  style={{
-                    color: agent.activeAgent.id === a.id ? 'var(--accent-light)' : 'var(--text-secondary)',
-                    background: agent.activeAgent.id === a.id ? 'var(--accent-bg)' : 'transparent',
-                  }}
-                  onMouseEnter={e => { if (agent.activeAgent.id !== a.id) e.currentTarget.style.background = 'var(--bg-tertiary)'; }}
-                  onMouseLeave={e => { if (agent.activeAgent.id !== a.id) e.currentTarget.style.background = 'transparent'; }}
-                >
-                  <span className="text-base">{a.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium truncate" style={{ fontFamily: 'var(--font-body)' }}>{a.name}</div>
-                    <div className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{a.description}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
+            AI 工作台
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 15 }}>
+            选择模型和技能，开始本地 AI 对话
+          </p>
         </div>
 
-        {/* Model Picker */}
-        <div className="relative">
-          <button
-            onClick={() => { setShowModelMenu(!showModelMenu); setShowAgentMenu(false); }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
-            style={{
-              background: webLLM.currentModel ? 'var(--accent-bg)' : 'var(--bg-tertiary)',
-              color: webLLM.currentModel ? 'var(--accent-light)' : 'var(--text-secondary)',
-              border: webLLM.currentModel ? '1px solid var(--border-accent)' : '1px solid var(--border-subtle)',
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-            </svg>
-            <span style={{ fontFamily: 'var(--font-body)' }}>
-              {webLLM.currentModel ? webLLM.currentModel.name : '选择模型'}
-            </span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          {showModelMenu && (
-            <div
-              className="absolute top-full mt-1 left-0 w-72 rounded-xl py-1 z-30 max-h-80 overflow-y-auto animate-fade-in"
-              style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border-default)',
-                boxShadow: 'var(--shadow-lg)',
-              }}
-            >
-              {MODEL_REGISTRY.map(m => (
-                <button key={m.id}
-                  onClick={() => { webLLM.loadModel(m); setShowModelMenu(false); }}
-                  disabled={webLLM.loadState.status === 'loading' || webLLM.loadState.status === 'downloading'}
-                  className="w-full px-3 py-2.5 text-left flex items-center gap-3 text-sm transition-colors"
-                  style={{
-                    color: webLLM.currentModel?.id === m.id ? 'var(--accent-light)' : 'var(--text-secondary)',
-                    background: webLLM.currentModel?.id === m.id ? 'var(--accent-bg)' : 'transparent',
-                    opacity: (webLLM.loadState.status === 'loading' || webLLM.loadState.status === 'downloading') ? 0.5 : 1,
-                  }}
-                  onMouseEnter={e => { if (webLLM.currentModel?.id !== m.id) e.currentTarget.style.background = 'var(--bg-tertiary)'; }}
-                  onMouseLeave={e => { if (webLLM.currentModel?.id !== m.id) e.currentTarget.style.background = 'transparent'; }}
-                >
-                  <span
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
-                    style={{ background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
-                  >
-                    {m.provider[0]}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium truncate" style={{ fontFamily: 'var(--font-body)' }}>{m.name}</div>
-                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.size} · {m.description}</div>
-                  </div>
-                  {webLLM.currentModel?.id === m.id && (
-                    <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--accent-bg)', color: 'var(--accent-light)' }}>当前</span>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Loading indicator */}
-        {(webLLM.loadState.status === 'loading' || webLLM.loadState.status === 'downloading') && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs" style={{ background: 'var(--warning-bg)', color: 'var(--warning)' }}>
-            <span className="animate-spin-slow inline-block w-3 h-3 border-2 border-current border-t-transparent rounded-full"/>
-            加载中 {webLLM.loadState.status === 'downloading' ? `${Math.round((webLLM.loadState as any).progress * 100)}%` : '...'}
-          </div>
-        )}
-
-        {/* Separator */}
-        <div className="w-px h-6" style={{ background: 'var(--border-subtle)' }} />
-
-        {/* Active Skills */}
-        <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto">
-          <button
-            onClick={onOpenSkills}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
-            style={{
-              background: 'var(--accent-bg)',
-              color: 'var(--accent-light)',
-              border: '1px solid var(--border-accent)',
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            技能
-          </button>
-          {activeSkills.slice(0, 6).map(skill => (
-            <button
-              key={skill.id}
-              onClick={() => skillReg.toggleSkill(skill.id)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200"
-              style={{
-                background: 'var(--bg-tertiary)',
-                color: 'var(--text-secondary)',
-                border: '1px solid var(--border-subtle)',
-              }}
-              title={skill.description}
-            >
-              <span>{skill.icon}</span>
-              <span>{skill.name}</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-          ))}
-          {activeSkills.length > 6 && (
-            <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
-              +{activeSkills.length - 6}
-            </span>
-          )}
-        </div>
-
-        {/* Thinking Mode Toggle */}
-        <button
-          onClick={() => setThinkingMode(!thinkingMode)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
-          style={{
-            background: thinkingMode ? 'var(--accent-bg)' : 'var(--bg-tertiary)',
-            color: thinkingMode ? 'var(--accent-light)' : 'var(--text-muted)',
-            border: thinkingMode ? '1px solid var(--border-accent)' : '1px solid var(--border-subtle)',
-            boxShadow: thinkingMode ? '0 0 12px rgba(139,92,246,0.15)' : 'none',
-          }}
+        {/* Workspace Card */}
+        <div
+          className="glass anim-scale-in"
+          style={{ position: 'relative', overflow: 'hidden' }}
         >
-          <span>💭</span>
-          <span>思考模式</span>
+          {/* ─── Toolbar ─── */}
           <div
-            className="w-5 h-3 rounded-full relative transition-colors duration-200"
-            style={{ background: thinkingMode ? 'var(--accent)' : 'var(--border-default)' }}
+            className="flex flex-wrap items-center gap-3 px-6 py-4"
+            style={{ borderBottom: '1px solid var(--border-subtle)' }}
           >
-            <div
-              className="absolute top-0.5 w-2 h-2 rounded-full bg-white transition-transform duration-200"
-              style={{ left: thinkingMode ? '10px' : '2px' }}
-            />
-          </div>
-        </button>
-
-        {/* Store button */}
-        <button
-          onClick={onOpenStore}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
-          style={{
-            background: 'var(--bg-tertiary)',
-            color: 'var(--text-muted)',
-            border: '1px solid var(--border-subtle)',
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          工具商店
-        </button>
-
-        {/* Unload model */}
-        {webLLM.currentModel && (
-          <button
-            onClick={() => webLLM.unloadModel()}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
-            style={{ color: 'var(--text-muted)' }}
-            title="卸载模型释放内存"
-            onMouseEnter={e => { e.currentTarget.style.color = 'var(--error)'; e.currentTarget.style.background = 'var(--error-bg)'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14"/></svg>
-          </button>
-        )}
-      </div>
-
-      {/* === Chat Messages === */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-0">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center" style={{ color: 'var(--text-muted)' }}>
-            {/* Empty state */}
-            <div
-              className="w-20 h-20 rounded-2xl flex items-center justify-center mb-5 relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(6,182,212,0.1))',
-                border: '1px solid var(--border-subtle)',
-              }}
-            >
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
-                style={{ color: 'var(--accent-light)' }}>
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                <path d="M8 9h8M8 13h6" opacity="0.5"/>
-              </svg>
-              <div className="absolute inset-0 rounded-2xl opacity-20"
-                style={{ background: 'radial-gradient(ellipse at 30% 20%, var(--accent), transparent 70%)' }}/>
-            </div>
-            <div className="text-base font-semibold mb-1" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-display)' }}>
-              {webLLM.currentModel ? '开始对话' : '加载模型开始'}
-            </div>
-            <div className="text-sm max-w-sm leading-relaxed">
-              {webLLM.currentModel
-                ? `当前模型 ${webLLM.currentModel.name} · 已就绪，输入问题即可对话`
-                : '从上方选择一个大模型，加载完成后即可开始本地 AI 对话。所有数据都在你的设备上运行。'}
-            </div>
-            {/* Quick prompts */}
-            {webLLM.currentModel && (
-              <div className="flex flex-wrap gap-2 mt-5 max-w-md justify-center">
-                {['介绍一下 WebGPU 本地推理', '用 Python 写一个快速排序', '今天有哪些 AI 新闻？'].map((q, i) => (
-                  <button key={i} onClick={() => { setMsgInput(q); inputRef.current?.focus(); }}
-                    className="px-3 py-1.5 rounded-full text-xs transition-all duration-200 hover:scale-105"
-                    style={{
-                      background: 'var(--bg-tertiary)',
-                      color: 'var(--text-secondary)',
-                      border: '1px solid var(--border-subtle)',
-                    }}
-                  >{q}</button>
-                ))}
-              </div>
-            )}
-            {!webLLM.currentModel && (
+            {/* Agent Selector */}
+            <div className="relative">
               <button
-                onClick={() => setShowModelMenu(true)}
-                className="mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
-                  color: 'white',
-                  boxShadow: 'var(--shadow-glow)',
-                }}
+                onClick={() => { setAgentOpen(!agentOpen); setModelOpen(false); }}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13px] font-medium cursor-pointer border-none transition-all duration-200"
+                style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-card-hover)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; }}
               >
-                选择模型 →
+                <span>{activeAgent.icon}</span>
+                <span>{activeAgent.name}</span>
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--text-tertiary)' }}>
+                  <path d="M2 3.5L5 6.5L8 3.5"/>
+                </svg>
+              </button>
+              {agentOpen && (
+                <div
+                  className="absolute top-full left-0 mt-2 w-44 py-1.5 rounded-xl z-20 anim-fade-up"
+                  style={{ background: 'rgba(15,25,45,0.95)', backdropFilter: 'blur(24px)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}
+                >
+                  {BUILTIN_AGENTS.map(a => (
+                    <button
+                      key={a.id}
+                      onClick={() => { switchAgent(a.id); setAgentOpen(false); }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] text-left cursor-pointer border-none transition-all duration-150"
+                      style={{ background: a.id === activeAgent.id ? 'var(--accent-bg)' : 'transparent', color: a.id === activeAgent.id ? 'var(--text-accent)' : 'var(--text-secondary)' }}
+                    >
+                      <span>{a.icon}</span>
+                      <div>
+                        <div style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: 13 }}>{a.name}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{a.description}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Model Selector */}
+            <div className="relative">
+              <button
+                onClick={() => { setModelOpen(!modelOpen); setAgentOpen(false); }}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13px] font-medium cursor-pointer border-none transition-all duration-200"
+                style={{ background: loadState.status === 'ready' ? 'rgba(16, 185, 129, 0.08)' : 'var(--bg-card)', color: loadState.status === 'ready' ? 'var(--success)' : 'var(--text-primary)' }}
+              >
+                <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>🧠</span>
+                <span>{modelStatusText()}</span>
+                {isLoading && (
+                  <span className="inline-block w-3 h-3 border-2 rounded-full anim-spin" style={{ borderColor: 'var(--border-default)', borderTopColor: 'var(--accent)', animation: 'spin 0.6s linear infinite' }} />
+                )}
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--text-tertiary)' }}>
+                  <path d="M2 3.5L5 6.5L8 3.5"/>
+                </svg>
+              </button>
+              {modelOpen && (
+                <div
+                  className="absolute top-full left-0 mt-2 w-72 py-1.5 rounded-xl z-20 anim-fade-up"
+                  style={{ background: 'rgba(15,25,45,0.95)', backdropFilter: 'blur(24px)', border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-xl)' }}
+                >
+                  {MODEL_REGISTRY.map(m => (
+                    <button
+                      key={m.id}
+                      onClick={() => { setSelectedModelId(m.id); handleLoadModel(); setModelOpen(false); }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left cursor-pointer border-none transition-all duration-150"
+                      style={{ background: m.id === selectedModelId ? 'var(--accent-bg)' : 'transparent', color: 'var(--text-primary)' }}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span style={{ fontWeight: 500, fontSize: 13 }}>{m.name}</span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium" style={{ background: 'var(--bg-elevated)', color: 'var(--text-tertiary)' }}>
+                            {m.size}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 11, color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {m.provider} · {m.description}
+                        </div>
+                      </div>
+                      {currentModel?.id === m.id && loadState.status === 'ready' && (
+                        <span style={{ color: 'var(--success)', fontSize: 11, fontWeight: 600 }}>✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Load/Unload */}
+            {loadState.status !== 'ready' ? (
+              <button
+                onClick={handleLoadModel}
+                disabled={isLoading}
+                className="px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer border-none transition-all duration-200"
+                style={{ background: 'var(--accent-bg)', color: 'var(--text-accent)', opacity: isLoading ? 0.5 : 1 }}
+              >
+                {isLoading ? '加载中…' : '加载模型'}
+              </button>
+            ) : (
+              <button
+                onClick={unloadModel}
+                className="px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer border-none transition-all duration-200"
+                style={{ background: 'rgba(239, 68, 68, 0.08)', color: 'var(--error)' }}
+              >
+                卸载
               </button>
             )}
-          </div>
-        )}
 
-        {messages.map(msg => (
-          <div key={msg.id} className={`flex gap-3 animate-fade-in ${msg.role === 'user' ? 'justify-end' : ''}`}>
-            {msg.role === 'assistant' && (
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-1"
-                style={{ background: 'var(--accent-bg)', color: 'var(--accent-light)' }}>
-                {agent.activeAgent.icon}
-              </div>
-            )}
-            <div className={`max-w-[80%] ${msg.role === 'user' ? 'order-first' : ''}`}>
-              {/* Reasoning content */}
-              {msg.reasoningContent && (
-                <div
-                  className="text-xs px-3 py-1.5 rounded-t-xl border-l-2 mb-1"
-                  style={{
-                    background: 'var(--bg-tertiary)',
-                    color: 'var(--text-muted)',
-                    borderLeftColor: 'var(--accent)',
-                    fontFamily: 'var(--font-body)',
-                  }}
-                >
-                  <span className="font-medium" style={{ color: 'var(--accent-light)' }}>💭 思考过程：</span>
-                  {(msg.reasoningContent || '').slice(0, 200)}
-                  {(msg.reasoningContent || '').length > 200 ? '...' : ''}
-                </div>
-              )}
-              <div
-                className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap break-words ${
-                  msg.role === 'user'
-                    ? 'rounded-br-md'
-                    : 'rounded-bl-md'
-                }`}
-                style={{
-                  background: msg.role === 'user'
-                    ? 'var(--accent-deep)'
-                    : 'var(--bg-secondary)',
-                  color: msg.role === 'user' ? 'white' : 'var(--text-primary)',
-                  border: msg.role === 'assistant' ? '1px solid var(--border-subtle)' : 'none',
-                  fontFamily: 'var(--font-body)',
-                }}
-              >
-                {msg.content}
-              </div>
-            </div>
-            {msg.role === 'user' && (
-              <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-1"
-                style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}>
-                👤
-              </div>
-            )}
-          </div>
-        ))}
+            <div className="flex-1" />
 
-        {/* Streaming message */}
-        {webLLM.isGenerating && (
-          <div className="flex gap-3 animate-fade-in">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-1"
-              style={{ background: 'var(--accent-bg)', color: 'var(--accent-light)' }}>
-              {agent.activeAgent.icon}
-            </div>
-            <div className="max-w-[80%]">
-              {webLLM.reasoningContent && (
-                <div
-                  className="text-xs px-3 py-1.5 rounded-t-xl border-l-2 mb-1"
-                  style={{
-                    background: 'var(--bg-tertiary)',
-                    color: 'var(--text-muted)',
-                    borderLeftColor: 'var(--accent)',
-                  }}
+            {/* Skills tags */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {activeSkillDefs.slice(0, 3).map(s => (
+                <span
+                  key={s.id}
+                  onClick={() => toggleSkill(s.id)}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200"
+                  style={{ background: 'var(--accent-bg)', color: 'var(--text-accent)' }}
+                  title={`点击移除 ${s.name}`}
                 >
-                  <span className="font-medium" style={{ color: 'var(--accent-light)' }}>💭 思考过程：</span>
-                  {webLLM.reasoningContent}
-                </div>
-              )}
-              <div
-                className="px-4 py-2.5 rounded-2xl rounded-bl-md text-sm leading-relaxed"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-subtle)',
-                }}
+                  {s.icon} {s.name}
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5"/></svg>
+                </span>
+              ))}
+              <button
+                onClick={() => onOpenStore('skills')}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium cursor-pointer border-none transition-all duration-200"
+                style={{ background: 'var(--bg-card)', color: 'var(--text-tertiary)' }}
               >
-                {webLLM.streamingContent || (
-                  <span className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
-                    <span className="animate-pulse-dot inline-block w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }}/>
-                    <span className="animate-pulse-dot inline-block w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)', animationDelay: '0.2s' }}/>
-                    <span className="animate-pulse-dot inline-block w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)', animationDelay: '0.4s' }}/>
-                  </span>
+                + 技能
+              </button>
+            </div>
+
+            {/* Thinking mode */}
+            <button
+              onClick={() => setThinkingMode(!thinkingMode)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer border-none transition-all duration-200"
+              style={{
+                background: thinkingMode ? 'var(--thinking-bg)' : 'var(--bg-card)',
+                color: thinkingMode ? 'var(--thinking)' : 'var(--text-tertiary)',
+              }}
+              title="深度思考模式"
+            >
+              <span style={{ fontSize: 14 }}>💭</span>
+              <span>思考</span>
+              <div
+                className="w-7 h-4 rounded-full relative transition-all duration-300"
+                style={{ background: thinkingMode ? 'var(--thinking)' : 'var(--border-default)' }}
+              >
+                <div
+                  className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-300"
+                  style={{ left: thinkingMode ? '14px' : '2px' }}
+                />
+              </div>
+            </button>
+          </div>
+
+          {/* ─── Chat Area ─── */}
+          <div
+            ref={chatRef}
+            className="px-6 py-6 overflow-y-auto"
+            style={{ minHeight: 320, maxHeight: 480 }}
+          >
+            {messages.length === 0 && !streamingContent ? (
+              /* Empty state */
+              <div className="flex flex-col items-center justify-center py-16 text-center anim-fade-up">
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
+                  style={{ background: 'var(--accent-bg)' }}
+                >
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ color: 'var(--accent)' }}>
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+                  </svg>
+                </div>
+                <p className="text-[15px] mb-1" style={{ fontWeight: 500, color: 'var(--text-primary)' }}>
+                  开始对话
+                </p>
+                <p className="text-[13px] mb-8" style={{ color: 'var(--text-tertiary)' }}>
+                  选择模型并加载后，即可在浏览器中与本地 AI 对话
+                </p>
+                {/* Quick prompts */}
+                <div className="grid grid-cols-2 gap-2 max-w-sm">
+                  {['介绍一下你自己', '写一段 Python 代码', '帮我翻译一段英文', '解释什么是 WebGPU'].map(q => (
+                    <button
+                      key={q}
+                      onClick={() => { setInput(q); inputRef.current?.focus(); }}
+                      className="px-3 py-2 rounded-lg text-[12px] text-left cursor-pointer border-none transition-all duration-200"
+                      style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-card-hover)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* Messages */
+              <div className="flex flex-col gap-5">
+                {messages.map(msg => (
+                  <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
+                    {msg.role === 'assistant' && (
+                      <div
+                        className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-[11px]"
+                        style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}
+                      >
+                        AI
+                      </div>
+                    )}
+                    <div
+                      className={`max-w-[75%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed`}
+                      style={{
+                        background: msg.role === 'user' ? 'var(--accent-bg)' : 'var(--bg-card)',
+                        color: 'var(--text-primary)',
+                        border: msg.role === 'user' ? '1px solid var(--border-accent)' : '1px solid var(--border-subtle)',
+                        borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                      }}
+                    >
+                      {msg.reasoningContent && (
+                        <details className="mb-2" open>
+                          <summary className="text-[11px] cursor-pointer" style={{ color: 'var(--thinking)', fontWeight: 500 }}>
+                            思考过程
+                          </summary>
+                          <p className="mt-1.5 text-[12px] leading-relaxed" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap' }}>
+                            {msg.reasoningContent}
+                          </p>
+                        </details>
+                      )}
+                      <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{msg.content}</div>
+                      {msg.toolCalls && msg.toolCalls.length > 0 && (
+                        <div className="mt-2 pt-2 flex flex-wrap gap-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                          {msg.toolCalls.map(tc => (
+                            <span key={tc.id} className="px-2 py-0.5 rounded text-[11px]" style={{ background: 'var(--accent-bg)', color: 'var(--text-accent)' }}>
+                              🔧 {tc.name}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    {msg.role === 'user' && (
+                      <div
+                        className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-[11px]"
+                        style={{ background: 'var(--cyan-bg)', color: 'var(--cyan)' }}
+                      >
+                        你
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Streaming content */}
+                {streamingContent && (
+                  <div className="flex gap-3">
+                    <div
+                      className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-[11px]"
+                      style={{ background: 'var(--accent-bg)', color: 'var(--accent)' }}
+                    >
+                      AI
+                    </div>
+                    <div
+                      className="max-w-[75%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed"
+                      style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', borderRadius: '18px 18px 18px 4px' }}
+                    >
+                      <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                        {streamingContent}
+                        <span
+                          className="inline-block w-1.5 h-4 ml-0.5 align-middle"
+                          style={{ background: 'var(--accent)', animation: 'dot-pulse 0.8s ease-in-out infinite' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
+            )}
+          </div>
+
+          {/* ─── Input Area ─── */}
+          <div
+            className="px-6 py-4"
+            style={{ borderTop: '1px solid var(--border-subtle)' }}
+          >
+            <div className="flex items-end gap-3">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={loadState.status === 'ready' ? '输入你的问题…' : '请先加载模型'}
+                rows={2}
+                disabled={loadState.status !== 'ready'}
+                className="flex-1 px-4 py-3 rounded-xl text-[14px] leading-relaxed resize-none outline-none transition-all duration-200"
+                style={{
+                  background: 'var(--bg-card)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-subtle)',
+                  fontFamily: 'var(--font-body)',
+                  maxHeight: '120px',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--border-accent)'; e.currentTarget.style.boxShadow = '0 0 0 3px var(--accent-bg)'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.boxShadow = 'none'; }}
+              />
+              <button
+                onClick={handleSend}
+                disabled={loadState.status !== 'ready' || isGenerating || !input.trim()}
+                className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer border-none transition-all duration-200"
+                style={{
+                  background: loadState.status === 'ready' && input.trim()
+                    ? 'linear-gradient(135deg, var(--accent), #0080FF)'
+                    : 'var(--bg-card)',
+                  color: loadState.status === 'ready' && input.trim() ? '#fff' : 'var(--text-tertiary)',
+                  opacity: loadState.status === 'ready' && input.trim() ? 1 : 0.5,
+                  boxShadow: loadState.status === 'ready' && input.trim() ? '0 4px 16px rgba(0, 102, 255, 0.3)' : 'none',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M2 9l14-7-3.5 7L16 16z"/>
+                </svg>
+              </button>
+            </div>
+            {/* Status bar */}
+            <div className="flex items-center justify-between mt-2.5 px-1">
+              <div className="flex items-center gap-3">
+                <span className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
+                  {loadState.status === 'ready' ? `${selectedModel.name}` : '模型未加载'}
+                </span>
+                {thinkingMode && (
+                  <span className="text-[11px] font-medium" style={{ color: 'var(--thinking)' }}>💭 深度思考</span>
+                )}
+              </div>
+              <button
+                onClick={() => onOpenStore('tools')}
+                className="text-[11px] px-2.5 py-1 rounded-lg cursor-pointer border-none transition-all duration-200"
+                style={{ background: 'var(--bg-card)', color: 'var(--text-tertiary)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-accent)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}
+              >
+                + 工具商店
+              </button>
             </div>
           </div>
-        )}
-
-        <div ref={chatEndRef} />
-      </div>
-
-      {/* === Input Area === */}
-      <div className="px-5 py-3 flex-shrink-0" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-        <div className="flex gap-2">
-          <textarea
-            ref={inputRef}
-            value={msgInput}
-            onChange={e => setMsgInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={webLLM.currentModel ? '输入问题，Enter 发送，Shift+Enter 换行...' : '请先加载模型...'}
-            disabled={!webLLM.currentModel || webLLM.isGenerating}
-            rows={1}
-            className="flex-1 px-4 py-3 rounded-xl text-sm resize-none outline-none transition-all duration-200"
-            style={{
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-subtle)',
-              fontFamily: 'var(--font-body)',
-              maxHeight: '120px',
-            }}
-            onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,92,246,0.1)'; }}
-            onBlur={e => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.boxShadow = 'none'; }}
-            onInput={e => {
-              const t = e.currentTarget;
-              t.style.height = 'auto';
-              t.style.height = Math.min(t.scrollHeight, 120) + 'px';
-            }}
-          />
-          <button
-            onClick={sendMessage}
-            disabled={!webLLM.currentModel || !msgInput.trim() || webLLM.isGenerating}
-            className="px-5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{
-              background: (webLLM.currentModel && msgInput.trim() && !webLLM.isGenerating)
-                ? 'linear-gradient(135deg, var(--accent-deep), var(--accent))'
-                : 'var(--bg-tertiary)',
-              color: (webLLM.currentModel && msgInput.trim() && !webLLM.isGenerating) ? 'white' : 'var(--text-muted)',
-              boxShadow: (webLLM.currentModel && msgInput.trim() && !webLLM.isGenerating) ? 'var(--shadow-glow)' : 'none',
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
-            </svg>
-            发送
-          </button>
-        </div>
-        <div className="flex items-center gap-4 mt-2 px-1">
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {webLLM.currentModel
-              ? `${webLLM.currentModel.name} · ${webLLM.currentModel.size} · ${thinkingMode ? '思考模式' : '标准模式'}`
-              : '尚未加载模型'}
-          </span>
-          <div className="flex-1"/>
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            100% 本地 · 数据不出设备
-          </span>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
