@@ -27,6 +27,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Copy DJ Portal
+        run: cp -r public/dj dist/
+
       - name: Copy startrails
         run: cp -r startrails dist/
 
