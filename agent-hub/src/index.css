@@ -101,9 +101,7 @@
 }
 
 html, body, #root {
-  height: 100%;
   width: 100%;
-  overflow: hidden;
   background: var(--bg-root);
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -242,22 +240,6 @@ body::after {
 /* ===== View Transition ===== */
 .view-enter {
   animation: view-enter var(--duration-slow) var(--ease-out) both;
-}
-
-/* ===== Main Area Ambient Glow ===== */
-main {
-  position: relative;
-}
-main::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.04;
-  background:
-    radial-gradient(ellipse 60% 50% at 30% 20%, var(--accent), transparent),
-    radial-gradient(ellipse 50% 40% at 70% 80%, var(--cyan), transparent);
 }
 
 /* ===== Card hover lift ===== */
