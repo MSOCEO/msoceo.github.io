@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages"
@@ -56,12 +54,3 @@ jobs:
           publish_dir: ./dist
           publish_branch: gh-pages
           force_orphan: true
-          # No custom domain - using default github.io
-
-      - name: Configure Pages source to gh-pages branch
-        run: |
-          curl -s -X PUT \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/MSOCEO/msoceo.github.io/pages \
-            -d '{"source":{"branch":"gh-pages","path":"/"}}'
