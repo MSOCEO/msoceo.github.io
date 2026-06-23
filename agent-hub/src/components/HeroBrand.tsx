@@ -1,8 +1,9 @@
 interface HeroBrandProps {
   onDismiss: () => void;
+  onExplore: () => void;
 }
 
-export default function HeroBrand({ onDismiss }: HeroBrandProps) {
+export default function HeroBrand({ onDismiss, onExplore }: HeroBrandProps) {
   return (
     <div className="relative flex-1 flex items-center justify-center overflow-hidden animate-view-enter"
       style={{ background: 'var(--bg-root)' }}>
@@ -84,6 +85,30 @@ export default function HeroBrand({ onDismiss }: HeroBrandProps) {
           <Tag label="IndexedDB Cache" />
           <Tag label="Apache 2.0" />
           <Tag label="No API Keys" />
+        </div>
+
+        {/* CTA */}
+        <div className="flex items-center justify-center gap-3 mb-10 animate-slide-up stagger-3">
+          <button
+            onClick={onExplore}
+            className="px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 active:scale-95"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent-deep), var(--accent))',
+              color: '#fff',
+              boxShadow: '0 0 32px rgba(139, 92, 246, 0.35)',
+            }}>
+            进入控制台
+          </button>
+          <button
+            onClick={onDismiss}
+            className="px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200 hover:bg-[var(--bg-tertiary)]"
+            style={{
+              background: 'var(--bg-card)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border-subtle)',
+            }}>
+            快速开始
+          </button>
         </div>
 
         {/* Dismiss */}

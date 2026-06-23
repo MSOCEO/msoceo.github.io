@@ -243,3 +243,43 @@ body::after {
 .view-enter {
   animation: view-enter var(--duration-slow) var(--ease-out) both;
 }
+
+/* ===== Main Area Ambient Glow ===== */
+main {
+  position: relative;
+}
+main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 20%, var(--accent), transparent),
+    radial-gradient(ellipse 50% 40% at 70% 80%, var(--cyan), transparent);
+}
+
+/* ===== Card hover lift ===== */
+.hover-lift {
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== Glass card variant ===== */
+.glass-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-subtle);
+}
+
+/* ===== Section divider ===== */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+  margin: var(--space-4) 0;
+}

@@ -6,10 +6,12 @@ import SkillMarket from './components/SkillMarket';
 import ToolStore from './components/ToolStore';
 import Dashboard from './components/Dashboard';
 import HeroBrand from './components/HeroBrand';
+import TopBar from './components/TopBar';
 import { useWebLLM } from './hooks/useWebLLM';
 import { useAgent } from './hooks/useAgent';
 import { useSkillRegistry } from './hooks/useSkillRegistry';
 import { useToolRegistry } from './hooks/useToolRegistry';
+import { TOOL_CATALOG } from './lib/tools';
 
 type View = 'dashboard' | 'chat' | 'models' | 'skills' | 'store';
 
@@ -18,11 +20,21 @@ function App() {
   const [showHero, setShowHero] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [viewKey, setViewKey] = useState(0);
+  const [webgpuSupported, setWebgpuSupported] = useState(false);
 
   const webLLM = useWebLLM();
   const agent = useAgent();
   const skillReg = useSkillRegistry();
   const toolReg = useToolRegistry();
+
+  // Detect WebGPU support
+  useEffect(() => {
+    if ('gpu' in navigator) {
+      (navigator as any).gpu.requestAdapter?.().then((adapter: any) => {
+        setWebgpuSupported(!!adapter);
+      }).catch(() => setWebgpuSupported(false));
+    }
+  }, []);
 
   useEffect(() => {
     agent.loadSessions();
@@ -53,11 +65,15 @@ function App() {
           activeSession={agent.activeSession}
           onSessionSelect={(id) => agent.loadSession(id)}
           onSessionDelete={(id) => agent.removeSession(id)}
-          onNewChat={() => agent.createSession(agent.activeAgent.id, webLLM.currentModel?.id || '')}
+          onNewChat={() => {
+            agent.createSession(agent.activeAgent.id, webLLM.currentModel?.id || '');
+            handleViewChange('chat');
+          }}
           onClose={() => setSidebarOpen(false)}
         />
       )}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden" style={{ background: 'var(--bg-root)' }}>
+        {/* Sidebar toggle when collapsed */}
         {!sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
@@ -74,11 +90,44 @@ function App() {
             </svg>
           </button>
         )}
+
+        {/* Hero (landing intro) */}
         {showHero && view === 'dashboard' && (
-          <HeroBrand onDismiss={() => setShowHero(false)} />
+          <HeroBrand
+            onDismiss={() => setShowHero(false)}
+            onExplore={() => {
+              setShowHero(false);
+            }}
+          />
         )}
+
+        {/* Top Bar — persistent across non-hero views */}
+        {(!showHero || view !== 'dashboard') && (
+          <TopBar
+            view={view}
+            currentModel={webLLM.currentModel?.name || null}
+            webgpuSupported={webgpuSupported}
+            toolsInstalled={toolReg.installed.length}
+            totalTools={TOOL_CATALOG.length}
+            sessionsCount={agent.sessions.length}
+            activeSkills={skillReg.activeSkills.length}
+            onNewChat={() => {
+              agent.createSession(agent.activeAgent.id, webLLM.currentModel?.id || '');
+              handleViewChange('chat');
+            }}
+          />
+        )}
+
+        {/* Main content area */}
         <div className="flex-1 overflow-hidden" key={viewKey}>
-          {view === 'dashboard' && <Dashboard />}
+          {view === 'dashboard' && (
+            <Dashboard
+              currentModel={webLLM.currentModel?.name || null}
+              webgpuSupported={webgpuSupported}
+              sessionsCount={agent.sessions.length}
+              onNavigate={handleViewChange}
+            />
+          )}
           {view === 'chat' && <ChatPanel webLLM={webLLM} agent={agent} skillReg={skillReg} />}
           {view === 'models' && <ModelSwitcher />}
           {view === 'skills' && <SkillMarket />}
