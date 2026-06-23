@@ -31,6 +31,7 @@ jobs:
         run: |
           cp -r public/dj dist/
           cp dj.html dist/
+          cp music-station.html dist/
           cp -r public/marvis-dj dist/
 
       - name: Copy startrails
