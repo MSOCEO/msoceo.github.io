@@ -46,6 +46,9 @@ jobs:
       - name: Copy agent-hub to dist
         run: mkdir -p dist/agent-hub && cp -r agent-hub/dist/* dist/agent-hub/
 
+      - name: Copy workbox to dist
+        run: cp -r workbox dist/
+
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 

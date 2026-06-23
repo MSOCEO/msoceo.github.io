@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>即刻办公 — 一站式在线工具箱</title>
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'SF Pro Display',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:#0a0a0f;
+  color:#e1e2e9;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+
+/* ===== Decorative BG ===== */
+.bg-grid{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%,rgba(99,102,241,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%,rgba(139,92,246,.05) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%,rgba(6,182,212,.03) 0%,transparent 60%);
+}
+.bg-grid::after{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,black 30%,transparent 70%);
+}
+
+/* ===== Outer Frame ===== */
+.outer-frame{
+  position:relative;z-index:1;
+  max-width:100%;
+  margin:0;
+  padding:0;
+}
+.outer-frame::before{
+  content:'';position:absolute;inset:0;
+  border:1px solid rgba(99,102,241,.12);
+  border-radius:0;
+  pointer-events:none;
+}
+@media(min-width:1200px){
+  .outer-frame{margin:16px;border-radius:16px;overflow:hidden}
+  .outer-frame::before{border-radius:16px;inset:0}
+}
+
+/* ===== Header ===== */
+.header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,10,15,.85);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:0 24px;height:64px;
+  display:flex;align-items:center;gap:24px;
+}
+.header-brand{
+  display:flex;align-items:center;gap:10px;
+  font-size:1.125rem;font-weight:700;letter-spacing:-.02em;
+  color:#e1e2e9;white-space:nowrap;
+  text-decoration:none;
+}
+.header-brand .logo{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:#fff;font-weight:800;
+}
+.header-tagline{
+  font-size:.75rem;color:rgba(255,255,255,.35);
+  margin-left:-14px;white-space:nowrap;
+  display:none;
+}
+@media(min-width:768px){.header-tagline{display:block}}
+
+.search-wrap{
+  flex:1;max-width:480px;position:relative;
+}
+.search-wrap input{
+  width:100%;height:40px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  padding:0 16px 0 40px;
+  font-size:.875rem;color:#e1e2e9;
+  outline:none;transition:all .2s ease;
+}
+.search-wrap input:focus{
+  border-color:rgba(99,102,241,.4);
+  background:rgba(255,255,255,.06);
+  box-shadow:0 0 0 3px rgba(99,102,241,.1);
+}
+.search-wrap input::placeholder{color:rgba(255,255,255,.25)}
+.search-wrap .search-icon{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:rgba(255,255,255,.25);font-size:.875rem;pointer-events:none;
+}
+.search-clear{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;
+  font-size:1rem;display:none;padding:4px;border-radius:50%;
+}
+.search-clear:hover{color:rgba(255,255,255,.6);background:rgba(255,255,255,.06)}
+.search-clear.visible{display:flex;align-items:center;justify-content:center}
+
+/* ===== Layout ===== */
+.app-layout{
+  display:flex;position:relative;z-index:1;min-height:calc(100vh - 64px);
+}
+
+/* ===== Sidebar ===== */
+.sidebar{
+  width:220px;flex-shrink:0;
+  background:rgba(10,10,15,.6);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-right:1px solid rgba(255,255,255,.05);
+  padding:20px 12px;
+  overflow-y:auto;position:sticky;top:64px;
+  max-height:calc(100vh - 64px);
+  transition:transform .3s ease;
+}
+.sidebar-title{
+  font-size:.7rem;text-transform:uppercase;
+  letter-spacing:.1em;color:rgba(255,255,255,.2);
+  padding:0 12px 12px;
+}
+.sidebar-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
+.sidebar-nav li a{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;
+  font-size:.85rem;color:rgba(255,255,255,.5);
+  text-decoration:none;transition:all .2s ease;
+  cursor:pointer;
+}
+.sidebar-nav li a:hover{color:#e1e2e9;background:rgba(255,255,255,.04)}
+.sidebar-nav li a.active{
+  color:#e1e2e9;background:rgba(99,102,241,.12);
+  font-weight:600;
+}
+.sidebar-nav li a .nav-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:currentColor;opacity:0;
+  transition:opacity .2s;
+}
+.sidebar-nav li a.active .nav-dot{opacity:1;background:#6366f1}
+.sidebar-count{
+  margin-left:auto;font-size:.7rem;
+  background:rgba(255,255,255,.04);
+  padding:2px 7px;border-radius:6px;
+}
+
+/* Mobile sidebar toggle */
+.mobile-nav-toggle{
+  display:none;
+  position:fixed;bottom:24px;right:24px;z-index:200;
+  width:48px;height:48px;border-radius:50%;
+  background:rgba(99,102,241,.9);border:none;cursor:pointer;
+  color:#fff;font-size:1.25rem;
+  box-shadow:0 4px 20px rgba(99,102,241,.4);
+  backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;
+}
+@media(max-width:900px){
+  .sidebar{
+    position:fixed;left:0;top:64px;bottom:0;z-index:150;
+    transform:translateX(-100%);
+    box-shadow:4px 0 30px rgba(0,0,0,.5);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .mobile-nav-toggle{display:flex}
+}
+
+/* ===== Main content ===== */
+.main-content{
+  flex:1;padding:32px 24px 64px;overflow-y:auto;
+  max-width:1400px;
+}
+
+/* Category section */
+.category-section{margin-bottom:48px}
+.category-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:24px;
+}
+.category-icon{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+  background:rgba(99,102,241,.1);
+  flex-shrink:0;
+}
+.category-header h2{
+  font-size:1.35rem;font-weight:700;letter-spacing:-.02em;
+  color:#e1e2e9;
+}
+.category-header .count{
+  font-size:.75rem;color:rgba(255,255,255,.25);
+  background:rgba(255,255,255,.04);
+  padding:3px 10px;border-radius:8px;
+}
+
+/* Tool grid */
+.tool-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:12px;
+}
+
+/* Tool card */
+.tool-card{
+  position:relative;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:20px;
+  cursor:pointer;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+.tool-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 100% at 50% -20%,rgba(99,102,241,.08),transparent 70%);
+  opacity:0;transition:opacity .3s;
+}
+.tool-card:hover{
+  background:rgba(255,255,255,.04);
+  border-color:rgba(99,102,241,.2);
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,0,0,.3),0 0 0 1px rgba(99,102,241,.1) inset;
+}
+.tool-card:hover::before{opacity:1}
+.tool-card:active{transform:translateY(0);transition:transform .1s}
+
+.tool-card-badge{
+  position:absolute;top:12px;right:12px;
+  font-size:.6rem;font-weight:700;text-transform:uppercase;
+  padding:3px 8px;border-radius:6px;letter-spacing:.05em;
+}
+.badge-ai{background:rgba(6,182,212,.15);color:#06b6d4}
+.badge-hot{background:rgba(139,92,246,.15);color:#a78bfa}
+.badge-new{background:rgba(99,102,241,.15);color:#818cf8}
+
+.tool-card-icon{
+  width:42px;height:42px;border-radius:12px;
+  background:rgba(99,102,241,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.15rem;margin-bottom:14px;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.tool-card:hover .tool-card-icon{transform:scale(1.08)}
+.tool-card h3{
+  font-size:.95rem;font-weight:600;color:#e1e2e9;
+  margin-bottom:6px;letter-spacing:-.01em;
+}
+.tool-card p{
+  font-size:.8rem;color:rgba(255,255,255,.35);
+  line-height:1.5;
+}
+
+/* ===== Modal ===== */
+.modal-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+  padding:24px;
+}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{
+  width:100%;max-width:520px;
+  background:rgba(20,20,28,.95);
+  backdrop-filter:blur(40px) saturate(200%);
+  -webkit-backdrop-filter:blur(40px) saturate(200%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  padding:32px;
+  transform:translateY(12px) scale(.97);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px}
+.modal-icon{
+  width:56px;height:56px;border-radius:16px;
+  background:rgba(99,102,241,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;flex-shrink:0;
+}
+.modal-header h3{font-size:1.25rem;font-weight:700;margin-bottom:4px}
+.modal-header .sub{font-size:.8rem;color:rgba(255,255,255,.35)}
+.modal-body p{font-size:.9rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:20px}
+.modal-formats{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px;
+}
+.modal-formats span{
+  font-size:.7rem;padding:4px 10px;border-radius:6px;
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.4);
+  border:1px solid rgba(255,255,255,.06);
+}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.modal-actions button{
+  padding:10px 22px;border-radius:10px;font-size:.85rem;
+  border:none;cursor:pointer;font-weight:600;
+  transition:all .2s ease;
+}
+.btn-close{background:rgba(255,255,255,.06);color:#e1e2e9}
+.btn-close:hover{background:rgba(255,255,255,.12)}
+.btn-go{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3);
+}
+.btn-go:hover{box-shadow:0 6px 20px rgba(99,102,241,.45);transform:translateY(-1px)}
+
+/* ===== Footer ===== */
+.footer{
+  border-top:1px solid rgba(255,255,255,.05);
+  background:rgba(10,10,15,.6);
+  backdrop-filter:blur(12px);
+  padding:40px 24px 32px;
+}
+.footer-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;flex-wrap:wrap;gap:40px;
+  justify-content:space-between;
+}
+.footer-brand h4{font-size:1rem;font-weight:700;margin-bottom:8px}
+.footer-brand p{font-size:.8rem;color:rgba(255,255,255,.3);max-width:280px;line-height:1.6}
+.footer-links{display:flex;flex-wrap:wrap;gap:48px}
+.footer-col h5{
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+  color:rgba(255,255,255,.2);margin-bottom:14px;
+}
+.footer-col a{
+  display:block;font-size:.82rem;color:rgba(255,255,255,.35);
+  text-decoration:none;margin-bottom:8px;transition:color .2s;
+}
+.footer-col a:hover{color:#818cf8}
+.footer-bottom{
+  max-width:1400px;margin:24px auto 0;padding-top:20px;
+  border-top:1px solid rgba(255,255,255,.04);
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;
+  font-size:.75rem;color:rgba(255,255,255,.18);
+}
+
+/* ===== Responsive ===== */
+@media(max-width:1200px){
+  .tool-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+}
+@media(max-width:900px){
+  .tool-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  .main-content{padding:20px 16px 48px}
+  .header{padding:0 16px}
+}
+@media(max-width:600px){
+  .tool-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .tool-card{padding:14px}
+  .tool-card h3{font-size:.85rem}
+  .search-wrap{max-width:200px}
+  .header-brand{font-size:.95rem}
+  .modal{padding:24px}
+}
+
+/* ===== No results ===== */
+.no-results{
+  text-align:center;padding:60px 20px;
+  color:rgba(255,255,255,.2);
+}
+.no-results .icon{font-size:3rem;margin-bottom:16px}
+.no-results p{font-size:.9rem}
+
+/* ===== Animations ===== */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<div class="outer-frame">
+
+<!-- Header -->
+<header class="header">
+  <a class="header-brand" href="#">
+    <span class="logo">M</span>
+    即刻办公
+  </a>
+  <span class="header-tagline">一站式在线办公工具箱</span>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="搜索工具...（如 PDF转Word、视频压缩）" autocomplete="off">
+    <button class="search-clear" id="searchClear">&times;</button>
+  </div>
+</header>
+
+<div class="app-layout">
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">工具分类</div>
+  <ul class="sidebar-nav" id="sidebarNav">
+    <li><a class="active" data-cat="all">全部工具<span class="sidebar-count">86</span></a></li>
+  </ul>
+</nav>
+
+<!-- Mobile nav toggle -->
+<button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="切换菜单">&#9776;</button>
+
+<!-- Main content -->
+<main class="main-content" id="mainContent">
+  <div class="no-results" id="noResults" style="display:none">
+    <div class="icon">&#128270;</div>
+    <p>未找到匹配的工具，试试其他关键词</p>
+  </div>
+</main>
+
+</div><!-- /app-layout -->
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h4>即刻办公</h4>
+      <p>集成 PDF 处理、格式转换、视频音频工具、图片处理、文档翻译与在线 Office 的一站式办公平台。</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h5>核心工具</h5>
+        <a href="#">PDF 转 Word</a>
+        <a href="#">PDF 合并</a>
+        <a href="#">格式转换</a>
+        <a href="#">视频编辑</a>
+      </div>
+      <div class="footer-col">
+        <h5>关于</h5>
+        <a href="#">隐私政策</a>
+        <a href="#">使用条款</a>
+        <a href="#">帮助中心</a>
+        <a href="#">联系我们</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 即刻办公. 文件即用即焚，用完自动清理.</span>
+    <span>86 款工具，全浏览器端运行</span>
+  </div>
+</footer>
+
+</div><!-- /outer-frame -->
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-icon" id="modalIcon"></div>
+      <div>
+        <h3 id="modalTitle"></h3>
+        <div class="sub" id="modalCat"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p id="modalDesc"></p>
+      <div class="modal-formats" id="modalFormats"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-close" onclick="closeModal()">关闭</button>
+      <button class="btn-go" id="modalGoBtn">开始使用</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== Tool Data =====
+const tools = [
+  // === PDF 工具 ===
+  {id:'pdf-merge',name:'PDF 合并',desc:'将多个 PDF 文档合并为一个文件',icon:'📎',cat:'pdf',badge:'hot',
+   formats:['PDF→PDF'],ref:'123apps/ILoveConvert/PDF24/PDFCandy'},
+  {id:'pdf-split',name:'PDF 拆分',desc:'分离 PDF 页面或提取特定部分',icon:'✂️',cat:'pdf',
+   formats:['PDF→PDF'],ref:'123apps/ILoveConvert/PDF24/PDFCandy'},
+  {id:'pdf-compress',name:'PDF 压缩',desc:'减小 PDF 文件大小，保持质量',icon:'🗜️',cat:'pdf',
+   formats:['PDF→PDF'],ref:'123apps/ILoveConvert/PDF24'},
+  {id:'pdf-edit',name:'PDF 编辑',desc:'在线编辑 PDF 文本和图片',icon:'✏️',cat:'pdf',badge:'hot',
+   formats:['PDF→PDF'],ref:'PDFCandy/PDFGear/LightPDF'},
+  {id:'pdf-rotate',name:'PDF 旋转',desc:'旋转 PDF 页面方向',icon:'🔄',cat:'pdf',
+   formats:['PDF→PDF'],ref:'123apps/PDF24/PDFCandy'},
+  {id:'pdf-crop',name:'PDF 裁剪',desc:'裁剪 PDF 页面边距和区域',icon:'✂️',cat:'pdf',
+   formats:['PDF→PDF'],ref:'PDFCandy/LightPDF'},
+  {id:'pdf-unlock',name:'PDF 解锁',desc:'移除 PDF 密码保护',icon:'🔓',cat:'pdf',
+   formats:['PDF→PDF'],ref:'123apps/PDFCandy'},
+  {id:'pdf-protect',name:'PDF 加密保护',desc:'为 PDF 添加密码保护',icon:'🔒',cat:'pdf',
+   formats:['PDF→PDF'],ref:'123apps/PDFCandy/PDF24'},
+  {id:'pdf-sign',name:'PDF 签名',desc:'在 PDF 文档中添加电子签名',icon:'🖊️',cat:'pdf',
+   formats:['PDF→PDF'],ref:'PDFCandy/PDFGear/LightPDF'},
+  {id:'pdf-watermark',name:'PDF 水印',desc:'为 PDF 添加文字或图片水印',icon:'💧',cat:'pdf',
+   formats:['PDF→PDF'],ref:'ILoveConvert/PDFCandy'},
+  {id:'pdf-pagenum',name:'PDF 页码',desc:'为 PDF 添加页码',icon:'🔢',cat:'pdf',
+   formats:['PDF→PDF'],ref:'123apps/PDFCandy'},
+  {id:'pdf-header-footer',name:'页眉页脚',desc:'添加自定义页眉和页脚',icon:'📋',cat:'pdf',
+   formats:['PDF→PDF'],ref:'PDFCandy'},
+  {id:'pdf-rearrange',name:'重排页面',desc:'重新排列 PDF 页面顺序',icon:'📑',cat:'pdf',
+   formats:['PDF→PDF'],ref:'PDFCandy'},
+  {id:'pdf-extract-text',name:'提取文本',desc:'从 PDF 中提取纯文本内容',icon:'📝',cat:'pdf',
+   formats:['PDF→TXT'],ref:'PDFCandy/PDFGear'},
+  {id:'pdf-extract-img',name:'提取图片',desc:'从 PDF 中提取嵌入的图片',icon:'🖼️',cat:'pdf',
+   formats:['PDF→Image'],ref:'PDFCandy'},
+  {id:'pdf-ocr',name:'PDF OCR 识别',desc:'扫描件/图片 PDF 文字识别',icon:'👁️',cat:'pdf',badge:'ai',
+   formats:['PDF→Text'],ref:'PDFCandy/FreeOCR/LightPDF'},
+  {id:'pdf-to-word',name:'PDF 转 Word',desc:'将 PDF 转换为可编辑的 Word 文档',icon:'📄→📝',cat:'pdf',badge:'hot',
+   formats:['PDF→DOC/DOCX'],ref:'AllToAll/123apps/ILoveConvert/PDFCandy/PDF24/Smallpdf'},
+  {id:'pdf-to-excel',name:'PDF 转 Excel',desc:'提取 PDF 表格到 Excel 电子表格',icon:'📊',cat:'pdf',
+   formats:['PDF→XLS/XLSX'],ref:'123apps/ILoveConvert/PDFCandy'},
+  {id:'pdf-to-ppt',name:'PDF 转 PPT',desc:'将 PDF 转为可编辑的演示文稿',icon:'📽️',cat:'pdf',
+   formats:['PDF→PPT/PPTX'],ref:'ILoveConvert/PDFCandy'},
+  {id:'pdf-to-jpg',name:'PDF 转 JPG',desc:'将 PDF 页面导出为 JPG 图片',icon:'🖼️',cat:'pdf',
+   formats:['PDF→JPG'],ref:'123apps/ILoveConvert/PDFCandy/AllToAll'},
+  {id:'pdf-to-png',name:'PDF 转 PNG',desc:'将 PDF 页面导出为 PNG 图片',icon:'🖼️',cat:'pdf',
+   formats:['PDF→PNG'],ref:'123apps/PDFCandy'},
+  {id:'pdf-to-html',name:'PDF 转 HTML',desc:'将 PDF 转换为 HTML 网页',icon:'🌐',cat:'pdf',
+   formats:['PDF→HTML'],ref:'123apps'},
+  {id:'pdf-to-epub',name:'PDF 转 EPUB',desc:'将 PDF 转为 EPUB 电子书',icon:'📖',cat:'pdf',
+   formats:['PDF→EPUB'],ref:'PDFCandy'},
+  {id:'word-to-pdf',name:'Word 转 PDF',desc:'将 Word 文档转换为 PDF',icon:'📝→📄',cat:'pdf',badge:'hot',
+   formats:['DOC/DOCX→PDF'],ref:'123apps/ILoveConvert/PDFCandy/AllToAll'},
+  {id:'excel-to-pdf',name:'Excel 转 PDF',desc:'将 Excel 表格转为 PDF',icon:'📊→📄',cat:'pdf',
+   formats:['XLS/XLSX→PDF'],ref:'123apps/ILoveConvert/PDFCandy'},
+  {id:'ppt-to-pdf',name:'PPT 转 PDF',desc:'将演示文稿转为 PDF',icon:'📽️→📄',cat:'pdf',
+   formats:['PPT/PPTX→PDF'],ref:'123apps/ILoveConvert/PDFCandy'},
+  {id:'jpg-to-pdf',name:'JPG 转 PDF',desc:'将 JPG 图片合并为 PDF',icon:'🖼️→📄',cat:'pdf',
+   formats:['JPG→PDF'],ref:'123apps/ILoveConvert/PDFCandy'},
+  {id:'png-to-pdf',name:'PNG 转 PDF',desc:'将 PNG 图片合并为 PDF',icon:'🖼️→📄',cat:'pdf',
+   formats:['PNG→PDF'],ref:'123apps/PDFCandy'},
+  {id:'pdf-chat',name:'AI PDF 对话',desc:'与 PDF 内容智能对话问答',icon:'🤖',cat:'pdf',badge:'ai',
+   formats:['AI功能'],ref:'PDFCandy/LightPDF/AI工具'},
+  {id:'pdf-summarize',name:'AI PDF 摘要',desc:'智能生成 PDF 内容摘要',icon:'📋',cat:'pdf',badge:'ai',
+   formats:['AI功能'],ref:'PDFCandy'},
+  {id:'pdf-translate-ai',name:'AI PDF 翻译',desc:'智能翻译 PDF 文档保留排版',icon:'🌍',cat:'pdf',badge:'ai',
+   formats:['AI功能'],ref:'PDFCandy/DocTranslator'},
+  {id:'pdf-flatten',name:'扁平化 PDF',desc:'将注释和表单字段合并到文档',icon:'📄',cat:'pdf',
+   formats:['PDF→PDF'],ref:'PDFCandy'},
+  {id:'pdf-resize',name:'调整页面尺寸',desc:'修改 PDF 页面大小',icon:'📐',cat:'pdf',
+   formats:['PDF→PDF'],ref:'PDFCandy/123apps'},
+  {id:'pdf-metadata',name:'编辑元数据',desc:'修改 PDF 的标题、作者等信息',icon:'🏷️',cat:'pdf',
+   formats:['PDF→PDF'],ref:'PDFCandy'},
+  {id:'pdf-to-mobi',name:'PDF 转 MOBI',desc:'PDF 转 Kindle MOBI 格式',icon:'📖',cat:'pdf',
+   formats:['PDF→MOBI'],ref:'PDFCandy'},
+
+  // === 格式转换 ===
+  {id:'conv-doc',name:'文档格式转换',desc:'Word/Excel/PPT/PDF/TXT/RTF/ODT/Markdown/HTML/Pages 互转',icon:'📑',cat:'convert',badge:'hot',
+   formats:['多格式互转'],ref:'AllToAll/FreeConvert/Convertio'},
+  {id:'conv-img',name:'图片格式转换',desc:'JPG/PNG/WebP/GIF/BMP/SVG/ICO/TIFF/PSD/RAW 互转',icon:'🖼️',cat:'convert',
+   formats:['多格式互转'],ref:'AllToAll/FreeConvert/123apps'},
+  {id:'conv-video',name:'视频格式转换',desc:'MP4/MOV/MKV/AVI/WMV/FLV/WEBM/GIF/3GP 互转',icon:'🎬',cat:'convert',
+   formats:['多格式互转'],ref:'AllToAll/123apps/FreeConvert'},
+  {id:'conv-audio',name:'音频格式转换',desc:'MP3/WAV/FLAC/AAC/OGG/WMA/M4A/AMR 互转',icon:'🎵',cat:'convert',
+   formats:['多格式互转'],ref:'AllToAll/123apps/FreeConvert'},
+  {id:'conv-ebook',name:'电子书转换',desc:'EPUB/MOBI/AZW3/PDF/TXT/FB2/CHM/LIT 互转',icon:'📚',cat:'convert',
+   formats:['多格式互转'],ref:'AllToAll/EaseConvert'},
+  {id:'conv-archive',name:'压缩包转换',desc:'ZIP/RAR/7Z/TAR/GZ/BZ2/XZ/CAB/ISO 互转与解压',icon:'📦',cat:'convert',
+   formats:['多格式互转'],ref:'AllToAll/123apps/Extract.me'},
+  {id:'conv-font',name:'字体转换',desc:'TTF/OTF/WOFF/WOFF2/EOT/SVG 字体格式互转',icon:'🔤',cat:'convert',
+   formats:['多格式互转'],ref:'123apps/FreeConvert'},
+  {id:'conv-heic',name:'HEIC 转换',desc:'HEIC/HEIF 图片转 JPG/PNG',icon:'📸',cat:'convert',
+   formats:['HEIC→JPG/PNG'],ref:'PDFCandy/FreeConvert'},
+  {id:'conv-html-pdf',name:'HTML 转 PDF',desc:'将网页或 HTML 文件转为 PDF',icon:'🌐→📄',cat:'convert',
+   formats:['HTML→PDF'],ref:'ILoveConvert/PDFCandy'},
+
+  // === 视频工具 ===
+  {id:'vid-edit',name:'视频编辑器',desc:'在线编辑视频：裁剪、合并、添加效果',icon:'🎞️',cat:'video',badge:'hot',
+   formats:['视频处理'],ref:'123apps/OnlineVideoCutter'},
+  {id:'vid-trim',name:'修剪视频',desc:'剪切视频片段，保留需要的部分',icon:'✂️',cat:'video',
+   formats:['视频处理'],ref:'123apps/OnlineVideoCutter'},
+  {id:'vid-merge',name:'合并视频',desc:'将多个视频片段合并为一个',icon:'🎬',cat:'video',
+   formats:['视频处理'],ref:'123apps/OnlineVideoCutter'},
+  {id:'vid-crop',name:'裁剪视频',desc:'裁剪视频画面区域',icon:'📐',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-rotate',name:'旋转视频',desc:'旋转视频方向 90°/180°/270°',icon:'🔄',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-flip',name:'翻转视频',desc:'水平或垂直翻转视频画面',icon:'🪞',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-resize',name:'调整尺寸',desc:'修改视频分辨率大小',icon:'📏',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-speed',name:'调整速度',desc:'加速或减速视频播放',icon:'⏩',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-volume',name:'调整音量',desc:'增大或减小视频音量',icon:'🔊',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-stabilize',name:'视频稳定',desc:'消除画面抖动，稳定视频',icon:'📹',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-add-audio',name:'添加音频',desc:'为视频添加背景音乐或音轨',icon:'🎵',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-add-text',name:'添加文字',desc:'在视频上添加字幕或文字',icon:'📝',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-add-img',name:'添加图片',desc:'在视频中叠加图片/水印',icon:'🖼️',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-remove-logo',name:'去水印',desc:'移除视频中的 LOGO 或水印',icon:'🧹',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-loop',name:'循环视频',desc:'将视频设置为循环播放',icon:'🔁',cat:'video',
+   formats:['视频处理'],ref:'123apps'},
+  {id:'vid-screen-record',name:'屏幕录制',desc:'录制电脑屏幕操作',icon:'🖥️',cat:'video',
+   formats:['录制工具'],ref:'123apps/OnlineScreenRecorder'},
+  {id:'vid-tts',name:'语音合成',desc:'文字转语音（TTS）',icon:'🗣️',cat:'video',badge:'ai',
+   formats:['AI功能'],ref:'123apps/TextToSpeech'},
+  {id:'vid-webcam',name:'视频录制器',desc:'通过摄像头录制视频',icon:'📷',cat:'video',
+   formats:['录制工具'],ref:'123apps/WebCamera'},
+
+  // === 音频工具 ===
+  {id:'aud-trim',name:'修剪音频',desc:'剪切音频片段',icon:'✂️',cat:'audio',
+   formats:['音频处理'],ref:'123apps/MP3Cut'},
+  {id:'aud-merge',name:'合并音频',desc:'将多个音频文件合并',icon:'🎵+🎵',cat:'audio',
+   formats:['音频处理'],ref:'123apps/AudioJoiner'},
+  {id:'aud-speed',name:'音频变速',desc:'调整音频播放速度',icon:'⏩',cat:'audio',
+   formats:['音频处理'],ref:'123apps/MP3Cut'},
+  {id:'aud-pitch',name:'音频变调',desc:'调整音高而不改变速度',icon:'🎹',cat:'audio',
+   formats:['音频处理'],ref:'123apps/MP3Cut'},
+  {id:'aud-eq',name:'均衡器',desc:'调整音频频段均衡',icon:'🎛️',cat:'audio',
+   formats:['音频处理'],ref:'123apps/MP3Cut'},
+  {id:'aud-reverse',name:'倒放音频',desc:'反转音频播放方向',icon:'◀️',cat:'audio',
+   formats:['音频处理'],ref:'123apps/MP3Cut'},
+  {id:'aud-record',name:'在线录音',desc:'通过麦克风在线录音',icon:'🎙️',cat:'audio',
+   formats:['录制工具'],ref:'123apps/OnlineVoiceRecorder'},
+  {id:'aud-volume',name:'调整音量',desc:'增大或减小音频音量',icon:'🔊',cat:'audio',
+   formats:['音频处理'],ref:'123apps/MP3Cut'},
+
+  // === 图片处理 ===
+  {id:'img-compress',name:'图片压缩',desc:'压缩图片大小，保持画质',icon:'🗜️',cat:'image',
+   formats:['图片处理'],ref:'FreeConvert/TinyPNG'},
+  {id:'img-resize',name:'调整尺寸',desc:'修改图片宽高尺寸',icon:'📏',cat:'image',
+   formats:['图片处理'],ref:'在线工具'},
+  {id:'img-crop',name:'图片裁剪',desc:'裁剪图片区域',icon:'✂️',cat:'image',
+   formats:['图片处理'],ref:'在线工具'},
+  {id:'img-rotate',name:'图片旋转',desc:'旋转图片方向',icon:'🔄',cat:'image',
+   formats:['图片处理'],ref:'在线工具'},
+  {id:'img-flip',name:'图片翻转',desc:'水平或垂直翻转图片',icon:'🪞',cat:'image',
+   formats:['图片处理'],ref:'在线工具'},
+
+  // === 文档翻译 ===
+  {id:'trans-pdf',name:'PDF 翻译',desc:'翻译 PDF 文档并保留原始排版',icon:'📄🌍',cat:'translate',badge:'new',
+   formats:['翻译'],ref:'DocTranslator/PDFCandy'},
+  {id:'trans-word',name:'Word 翻译',desc:'翻译 Word 文档保留格式',icon:'📝🌍',cat:'translate',
+   formats:['翻译'],ref:'DocTranslator'},
+  {id:'trans-excel',name:'Excel 翻译',desc:'翻译 Excel 表格内容',icon:'📊🌍',cat:'translate',
+   formats:['翻译'],ref:'DocTranslator'},
+  {id:'trans-ppt',name:'PPT 翻译',desc:'翻译演示文稿保留排版',icon:'📽️🌍',cat:'translate',
+   formats:['翻译'],ref:'DocTranslator'},
+
+  // === 在线 Office ===
+  {id:'office-doc',name:'在线文档',desc:'在线创建和编辑文档，多人协作',icon:'📝',cat:'office',badge:'new',
+   formats:['编辑工具'],ref:'ONLYOFFICE/GoogleDocs'},
+  {id:'office-sheet',name:'在线表格',desc:'在线编辑电子表格，公式计算',icon:'📊',cat:'office',
+   formats:['编辑工具'],ref:'ONLYOFFICE/GoogleSheets'},
+  {id:'office-slide',name:'在线演示',desc:'在线制作演示文稿，实时预览',icon:'📽️',cat:'office',
+   formats:['编辑工具'],ref:'ONLYOFFICE/GoogleSlides'},
+  {id:'office-pdf-reader',name:'PDF 阅读器',desc:'在线 PDF 阅读和批注',icon:'📖',cat:'office',
+   formats:['阅读工具'],ref:'PDFCandy/PDF24'},
+];
+
+// Category definitions
+const categories = [
+  {id:'all',name:'全部工具',icon:'🏠'},
+  {id:'pdf',name:'PDF 工具',icon:'📄'},
+  {id:'convert',name:'格式转换',icon:'🔄'},
+  {id:'video',name:'视频工具',icon:'🎬'},
+  {id:'audio',name:'音频工具',icon:'🎵'},
+  {id:'image',name:'图片处理',icon:'🖼️'},
+  {id:'translate',name:'文档翻译',icon:'🌍'},
+  {id:'office',name:'在线 Office',icon:'💼'},
+];
+
+// Build sidebar
+const sidebarNav = document.getElementById('sidebarNav');
+categories.forEach(cat => {
+  const count = cat.id === 'all' ? tools.length : tools.filter(t => t.cat === cat.id).length;
+  if (cat.id !== 'all') {
+    const li = document.createElement('li');
+    li.innerHTML = `<a data-cat="${cat.id}">${cat.icon} ${cat.name}<span class="sidebar-count">${count}</span></a>`;
+    sidebarNav.appendChild(li);
+  }
+});
+
+// Render tools
+let currentCategory = 'all';
+let searchQuery = '';
+
+function renderTools(){
+  const main = document.getElementById('mainContent');
+  const noResults = document.getElementById('noResults');
+  
+  let filtered = tools.filter(t => {
+    const matchCat = currentCategory === 'all' || t.cat === currentCategory;
+    const matchSearch = !searchQuery || 
+      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.ref.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCat && matchSearch;
+  });
+
+  // Remove category sections
+  const existingSections = main.querySelectorAll('.category-section');
+  existingSections.forEach(s => s.remove());
+
+  if (filtered.length === 0) {
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+
+  if (currentCategory === 'all') {
+    // Group by category
+    categories.filter(c => c.id !== 'all').forEach(cat => {
+      const catTools = filtered.filter(t => t.cat === cat.id);
+      if (catTools.length === 0) return;
+      
+      const section = document.createElement('div');
+      section.className = 'category-section';
+      section.id = 'cat-' + cat.id;
+      section.innerHTML = `
+        <div class="category-header">
+          <div class="category-icon">${cat.icon}</div>
+          <h2>${cat.name}</h2>
+          <span class="count">${catTools.length} 个工具</span>
+        </div>
+        <div class="tool-grid">
+          ${catTools.map(t => renderToolCard(t)).join('')}
+        </div>
+      `;
+      main.appendChild(section);
+    });
+  } else {
+    // Single category
+    const cat = categories.find(c => c.id === currentCategory);
+    const section = document.createElement('div');
+    section.className = 'category-section';
+    section.innerHTML = `
+      <div class="category-header">
+        <div class="category-icon">${cat?.icon || ''}</div>
+        <h2>${cat?.name || ''}</h2>
+        <span class="count">${filtered.length} 个工具</span>
+      </div>
+      <div class="tool-grid">
+        ${filtered.map(t => renderToolCard(t)).join('')}
+      </div>
+    `;
+    main.appendChild(section);
+  }
+}
+
+function renderToolCard(t){
+  const badge = t.badge ? `<span class="tool-card-badge badge-${t.badge}">${t.badge === 'ai' ? 'AI' : t.badge === 'hot' ? '热门' : '新品'}</span>` : '';
+  return `
+    <div class="tool-card" onclick="openTool('${t.id}')" data-id="${t.id}">
+      ${badge}
+      <div class="tool-card-icon">${t.icon}</div>
+      <h3>${t.name}</h3>
+      <p>${t.desc}</p>
+    </div>
+  `;
+}
+
+// ===== Modal =====
+function openTool(id){
+  const t = tools.find(x => x.id === id);
+  if (!t) return;
+  
+  const cat = categories.find(c => c.id === t.cat);
+  document.getElementById('modalIcon').textContent = t.icon;
+  document.getElementById('modalTitle').textContent = t.name;
+  document.getElementById('modalCat').textContent = (cat?.name || '') + '  ·  参考：' + t.ref;
+  document.getElementById('modalDesc').textContent = t.desc;
+  
+  const formatsEl = document.getElementById('modalFormats');
+  formatsEl.innerHTML = t.formats.map(f => `<span>${f}</span>`).join('');
+  
+  document.getElementById('modalGoBtn').onclick = () => {
+    closeModal();
+    // Scroll to category
+    const el = document.getElementById('cat-' + t.cat);
+    if (el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e){
+  if (e.target === this) closeModal();
+});
+
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeModal();
+});
+
+// ===== Search =====
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+
+searchInput.addEventListener('input', function(){
+  searchQuery = this.value.trim();
+  searchClear.classList.toggle('visible', searchQuery.length > 0);
+  renderTools();
+});
+
+searchClear.addEventListener('click', function(){
+  searchInput.value = '';
+  searchQuery = '';
+  searchClear.classList.remove('visible');
+  renderTools();
+  searchInput.focus();
+});
+
+// ===== Sidebar navigation =====
+sidebarNav.addEventListener('click', function(e){
+  const a = e.target.closest('a[data-cat]');
+  if (!a) return;
+  
+  const cat = a.dataset.cat;
+  currentCategory = cat;
+  
+  document.querySelectorAll('.sidebar-nav a').forEach(link => link.classList.remove('active'));
+  a.classList.add('active');
+  
+  renderTools();
+  
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+});
+
+// Mobile nav toggle
+document.getElementById('mobileNavToggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+// Close mobile sidebar on outside click
+document.addEventListener('click', function(e){
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('mobileNavToggle');
+  if (!sidebar.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)){
+    sidebar.classList.remove('open');
+  }
+});
+
+// Initial render
+renderTools();
+</script>
+</body>
+</html>
