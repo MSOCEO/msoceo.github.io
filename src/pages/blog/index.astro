@@ -72,7 +72,7 @@ const description = '在深夜书房里，拾取散落的光';
           const isEven = i % 2 === 0;
           return (
           <article class={`post-card ${!isEven ? 'post-card--reverse' : ''}`} style={`--anim-delay: ${i * 100}ms`} data-tags={JSON.stringify(post.data.tags || [])}>
-            <a href={`/blog/${post.id}`} class="post-card-link">
+            <a href={`/blog/${post.slug}`} class="post-card-link">
               <div class="post-card-body">
                 <time class="post-date" datetime={post.data.pubDate.toISOString()}>
                   {post.data.pubDate.toLocaleDateString('zh-CN', {
