@@ -830,6 +830,8 @@ function toggleMute() {
 }
 
 // ==================== 音源 API ====================
+const NETEAST_API = 'https://marvis-netease-api.vercel.app';
+
 function jsonp(url, param = 'callback') {
   return new Promise((resolve, reject) => {
     const cbName = '_mvdj_' + Date.now() + '_' + Math.random().toString(36).slice(2);
@@ -858,17 +860,15 @@ function jsonp(url, param = 'callback') {
 
 async function searchNetease(kw) {
   try {
-    const d = await jsonp(
-      `https://music.163.com/api/search/get?type=1&limit=30&s=${encodeURIComponent(kw)}`,
-      'callback'
-    );
-    return (d.result?.songs || []).map(s => ({
+    const res = await fetch(`${NETEAST_API}/search?keywords=${encodeURIComponent(kw)}&type=1&limit=30`);
+    const d = await res.json();
+    return ((d.result && d.result.songs) || []).map(s => ({
       id: s.id, title: s.name, artist: (s.artists||[]).map(a=>a.name).join('/'),
-      album: s.album?.name || '', cover: s.album?.picUrl || s.album?.artist?.img1v1Url || '',
+      album: s.album?.name || '', cover: (s.album && s.album.picUrl) || '',
       source: 'netease', duration: s.duration || 0,
     }));
   } catch (e) {
-    console.warn('Netease JSONP failed:', e.message);
+    console.warn('Netease API failed:', e.message);
     return [];
   }
 }
@@ -893,12 +893,17 @@ async function searchAll(kw) {
 
 async function getPlayUrl(song) {
   if (song.source === 'netease') {
-    // 尝试多个URL格式
-    const urls = [
-      `https://music.163.com/song/media/outer/url?id=${song.id}.mp3`,
-    ];
-    // 直接返回，让audio尝试加载
-    return urls[0];
+    try {
+      const res = await fetch(`${NETEAST_API}/song/url?id=${song.id}`);
+      const d = await res.json();
+      if (d.data && d.data[0] && d.data[0].url) {
+        return d.data[0].url;
+      }
+    } catch (e) {
+      console.warn('Get play URL failed:', e.message);
+    }
+    // 降级：直接尝试标准 URL
+    return `https://music.163.com/song/media/outer/url?id=${song.id}.mp3`;
   }
   return null;
 }
@@ -906,14 +911,12 @@ async function getPlayUrl(song) {
 // ==================== 榜单 ====================
 async function fetchToplist(id = 3778678) {
   try {
-    const d = await jsonp(
-      `https://music.163.com/api/playlist/detail?id=${id}`,
-      'callback'
-    );
-    const tracks = d.result?.tracks || [];
+    const res = await fetch(`${NETEAST_API}/playlist/detail?id=${id}`);
+    const d = await res.json();
+    const tracks = (d.playlist && d.playlist.tracks) || [];
     return tracks.map(s => ({
       id: s.id, title: s.name, artist: (s.ar||[]).map(a=>a.name).join('/'),
-      album: s.al?.name || '', cover: s.al?.picUrl || '',
+      album: (s.al && s.al.name) || '', cover: (s.al && s.al.picUrl) || '',
       source: 'netease', duration: s.dt || 0,
     }));
   } catch (e) { return []; }
