@@ -4,789 +4,531 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agent Hub — AI 智能体工作台</title>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&f[]=satoshi@300,400,500,700&f[]=cabinet-grotesk@400,500,700,800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-deep: #07070d;
+  --bg-deep: #06060e;
   --bg-surface: rgba(255,255,255,0.025);
   --bg-elevated: rgba(255,255,255,0.05);
-  --bg-floating: rgba(18,18,30,0.85);
-  --border-subtle: rgba(255,255,255,0.06);
+  --bg-floating: rgba(14,14,26,0.9);
+  --border-subtle: rgba(255,255,255,0.05);
   --border-medium: rgba(255,255,255,0.1);
   --border-accent: rgba(167,139,250,0.25);
   --text-primary: #e8ecf2;
-  --text-secondary: #8893a8;
-  --text-muted: #5c6678;
+  --text-secondary: #8b95a8;
+  --text-muted: #596478;
   --accent-purple: #a78bfa;
   --accent-cyan: #22d3ee;
   --accent-pink: #f472b6;
   --accent-green: #34d399;
   --accent-amber: #fbbf24;
+  --accent-rose: #fb7185;
+  --accent-indigo: #818cf8;
   --gradient-hero: linear-gradient(135deg, #a78bfa 0%, #818cf8 30%, #22d3ee 70%, #34d399 100%);
-  --gradient-card-purple: linear-gradient(135deg, rgba(167,139,250,0.12) 0%, rgba(129,140,248,0.04) 100%);
-  --gradient-card-cyan: linear-gradient(135deg, rgba(34,211,238,0.1) 0%, rgba(34,211,238,0.02) 100%);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
-  --shadow-glow-purple: 0 0 60px rgba(167,139,250,0.15), 0 0 120px rgba(167,139,250,0.06);
-  --shadow-glow-cyan: 0 0 60px rgba(34,211,238,0.12);
-  --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 8px 32px rgba(0,0,0,0.3);
-  --shadow-card-hover: 0 4px 8px rgba(0,0,0,0.5), 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(167,139,250,0.15);
   --font-display: 'Clash Display', system-ui, sans-serif;
   --font-body: 'Satoshi', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-grotesk: 'Cabinet Grotesk', system-ui, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 @keyframes viewEnter { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
-@keyframes pulse-glow { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
-@keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-@keyframes gradient-shift { 0%, 100% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(15deg); } }
-@keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
+@keyframes pulse-glow { 0%,100%{opacity:0.35}50%{opacity:0.75} }
+@keyframes gradient-shift { 0%,100%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(12deg)} }
+@keyframes shimmer { 0%{background-position:-200% 0}100%{background-position:200% 0} }
+@keyframes scaleIn { from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)} }
 
 html {
   scroll-behavior: smooth;
   background: var(--bg-deep);
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
-}
+body { min-height:100vh; overflow-x:hidden; position:relative; }
 
-/* Noise Texture Overlay */
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.028;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.022;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Ambient Orbs */
-.ambient-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-  z-index: 0;
-}
-.orb-purple {
-  width: 600px; height: 600px;
-  background: rgba(167,139,250,0.12);
-  top: -200px; left: -100px;
-  animation: float 20s ease-in-out infinite;
-}
-.orb-cyan {
-  width: 500px; height: 500px;
-  background: rgba(34,211,238,0.08);
-  bottom: -150px; right: -100px;
-  animation: float 25s ease-in-out infinite reverse;
-}
-.orb-pink {
-  width: 400px; height: 400px;
-  background: rgba(244,114,182,0.06);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  animation: pulse-glow 8s ease-in-out infinite;
-}
+.ambient-orb { position:fixed; border-radius:50%; filter:blur(140px); pointer-events:none; z-index:0; }
+.orb-purple { width:700px; height:700px; background:rgba(167,139,250,.1); top:-250px; left:-150px; animation:float 22s ease-in-out infinite; }
+.orb-cyan { width:550px; height:550px; background:rgba(34,211,238,.06); bottom:-200px; right:-120px; animation:float 26s ease-in-out infinite reverse; }
+.orb-pink { width:450px; height:450px; background:rgba(244,114,182,.05); top:55%; left:55%; transform:translate(-50%,-50%); animation:pulse-glow 10s ease-in-out infinite; }
 
-/* Container */
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
+.container { position:relative; z-index:1; max-width:1320px; margin:0 auto; padding:0 36px; }
 
 /* Nav */
 .nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 16px 0;
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  background: rgba(7,7,13,0.75);
-  border-bottom: 1px solid var(--border-subtle);
+  position:sticky; top:0; z-index:100; padding:14px 0;
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  background:rgba(6,6,14,.78);
+  border-bottom:1px solid var(--border-subtle);
 }
-.nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-}
+.nav-inner { display:flex; align-items:center; justify-content:space-between; max-width:1320px; margin:0 auto; padding:0 36px; }
+.nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
 .nav-logo {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  background: var(--gradient-hero);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 18px;
-  color: #fff;
-  box-shadow: 0 0 20px rgba(167,139,250,0.3);
+  width:34px; height:34px; border-radius:10px; background:var(--gradient-hero);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:700; font-size:17px; color:#fff;
+  box-shadow:0 0 24px rgba(167,139,250,.3);
 }
-.nav-title {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 20px;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-.nav-version {
-  font-size: 11px;
-  color: var(--accent-purple);
-  font-weight: 500;
-  background: rgba(167,139,250,0.1);
-  padding: 2px 8px;
-  border-radius: 100px;
-  margin-left: 4px;
-}
-.nav-links {
-  display: flex;
-  gap: 4px;
-}
-.nav-link {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-.nav-link:hover { color: var(--text-primary); background: var(--bg-elevated); }
-.nav-link.active { color: var(--accent-purple); background: rgba(167,139,250,0.08); }
-.nav-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: 100px;
-  background: rgba(52,211,153,0.08);
-  border: 1px solid rgba(52,211,153,0.15);
-  font-size: 13px;
-  color: var(--accent-green);
-  font-weight: 500;
-}
-.nav-status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--accent-green);
-  box-shadow: 0 0 8px rgba(52,211,153,0.6);
-  animation: pulse-glow 2s ease-in-out infinite;
-}
+.nav-title { font-family:var(--font-display); font-weight:600; font-size:19px; letter-spacing:-.02em; }
+.nav-version { font-size:11px; color:var(--accent-purple); font-weight:500; background:rgba(167,139,250,.1); padding:2px 8px; border-radius:100px; }
+.nav-links { display:flex; gap:4px; }
+.nav-link { padding:8px 16px; border-radius:8px; font-size:14px; font-weight:500; color:var(--text-secondary); text-decoration:none; transition:all .2s; }
+.nav-link:hover { color:var(--text-primary); background:var(--bg-elevated); }
+.nav-link.active { color:var(--accent-purple); background:rgba(167,139,250,.08); }
+.nav-status { display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:100px; background:rgba(52,211,153,.08); border:1px solid rgba(52,211,153,.15); font-size:13px; color:var(--accent-green); font-weight:500; }
+.nav-status-dot { width:7px; height:7px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 8px rgba(52,211,153,.6); animation:pulse-glow 2s ease-in-out infinite; }
 
 /* Hero */
-.hero {
-  padding: 100px 0 80px;
-  text-align: center;
-  position: relative;
-}
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 16px;
-  border-radius: 100px;
-  background: rgba(167,139,250,0.06);
-  border: 1px solid var(--border-accent);
-  font-size: 13px;
-  color: var(--accent-purple);
-  font-weight: 500;
-  margin-bottom: 32px;
-  animation: viewEnter 0.6s ease-out;
-}
-.hero-badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent-purple);
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(42px, 6vw, 72px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
-  margin-bottom: 20px;
-  animation: viewEnter 0.6s ease-out 0.1s both;
-}
-.hero-title-gradient {
-  background: var(--gradient-hero);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-shift 8s ease-in-out infinite;
-  background-size: 200% auto;
-}
-.hero-subtitle {
-  font-size: 18px;
-  color: var(--text-secondary);
-  max-width: 560px;
-  margin: 0 auto 40px;
-  font-weight: 400;
-  line-height: 1.6;
-  animation: viewEnter 0.6s ease-out 0.2s both;
-}
-.hero-cta {
-  display: inline-flex;
-  gap: 16px;
-  animation: viewEnter 0.6s ease-out 0.3s both;
-}
-.btn {
-  padding: 12px 28px;
-  border-radius: 12px;
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-.btn-primary {
-  background: var(--gradient-hero);
-  color: #fff;
-  box-shadow: 0 4px 24px rgba(167,139,250,0.3), 0 0 60px rgba(167,139,250,0.1);
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(167,139,250,0.45), 0 0 80px rgba(167,139,250,0.15);
-}
-.btn-ghost {
-  background: rgba(255,255,255,0.04);
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-}
-.btn-ghost:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.18);
-  transform: translateY(-1px);
-}
+.hero { padding:90px 0 60px; text-align:center; }
+.hero-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 16px; border-radius:100px; background:rgba(167,139,250,.06); border:1px solid var(--border-accent); font-size:13px; color:var(--accent-purple); font-weight:500; margin-bottom:28px; animation:viewEnter .6s ease-out; }
+.hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--accent-purple); animation:pulse-glow 2s ease-in-out infinite; }
+.hero-title { font-family:var(--font-display); font-size:clamp(40px,6vw,68px); font-weight:700; letter-spacing:-.03em; line-height:1.08; margin-bottom:16px; animation:viewEnter .6s ease-out .1s both; }
+.hero-title-gradient { background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:gradient-shift 8s ease-in-out infinite; background-size:200% auto; }
+.hero-subtitle { font-size:17px; color:var(--text-secondary); max-width:540px; margin:0 auto 36px; font-weight:400; line-height:1.7; animation:viewEnter .6s ease-out .2s both; }
+.hero-cta { display:inline-flex; gap:14px; animation:viewEnter .6s ease-out .3s both; }
+.btn { padding:12px 28px; border-radius:11px; font-family:var(--font-body); font-size:15px; font-weight:600; border:none; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:all .25s cubic-bezier(.4,0,.2,1); }
+.btn-primary { background:var(--gradient-hero); color:#fff; box-shadow:0 4px 24px rgba(167,139,250,.3),0 0 60px rgba(167,139,250,.1); }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(167,139,250,.45),0 0 80px rgba(167,139,250,.15); }
+.btn-ghost { background:rgba(255,255,255,.03); color:var(--text-primary); border:1px solid var(--border-medium); }
+.btn-ghost:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.18); transform:translateY(-1px); }
 
 /* Section */
-.section {
-  padding: 64px 0;
-}
-.section-header {
-  margin-bottom: 40px;
-}
-.section-label {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent-purple);
-  margin-bottom: 8px;
-}
-.section-title {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
-/* Bento Grid */
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
-}
-.bento-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.bento-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at top left, rgba(167,139,250,0.06) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-.bento-card:hover::before { opacity: 1; }
-.bento-card:hover {
-  border-color: var(--border-accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-}
-.col-span-2 { grid-column: span 2; }
-.col-span-3 { grid-column: span 3; }
-.col-span-4 { grid-column: span 4; }
-.col-span-6 { grid-column: span 6; }
+.section { padding:64px 0; }
+.section-header { margin-bottom:36px; }
+.section-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.13em; color:var(--accent-purple); margin-bottom:6px; }
+.section-title { font-family:var(--font-display); font-size:clamp(26px,3.5vw,38px); font-weight:600; letter-spacing:-.02em; }
 
 /* Stats */
-.stats-row {
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:48px; }
+.stat-card { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:22px; text-align:center; transition:all .3s; }
+.stat-card:hover { border-color:var(--border-medium); background:var(--bg-elevated); }
+.stat-value { font-family:var(--font-display); font-size:34px; font-weight:700; letter-spacing:-.03em; background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.stat-label { font-size:13px; color:var(--text-muted); margin-top:4px; font-weight:500; }
+
+/* Bento */
+.bento-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; }
+.bento-card {
+  background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg);
+  padding:22px; position:relative; overflow:hidden; transition:all .3s cubic-bezier(.4,0,.2,1);
+}
+.bento-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top left, rgba(167,139,250,.06) 0%,transparent 70%); opacity:0; transition:opacity .4s; }
+.bento-card:hover::before { opacity:1; }
+.bento-card:hover { border-color:var(--border-accent); transform:translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,.5),0 16px 48px rgba(0,0,0,.4),0 0 0 1px rgba(167,139,250,.12); }
+.col-span-2 { grid-column:span 2; }
+.col-span-3 { grid-column:span 3; }
+.col-span-4 { grid-column:span 4; }
+.col-span-6 { grid-column:span 6; }
+
+/* Chat Panel */
+.chat-panel { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; display:flex; flex-direction:column; height:460px; }
+.chat-header { padding:14px 18px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between; }
+.chat-header-title { font-family:var(--font-display); font-weight:600; font-size:14px; }
+.chat-header-badge { font-size:11px; padding:3px 10px; border-radius:100px; background:rgba(167,139,250,.1); color:var(--accent-purple); font-weight:500; }
+.chat-messages { flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:14px; }
+.chat-msg { display:flex; gap:10px; max-width:84%; animation:viewEnter .4s ease-out; }
+.chat-msg.assistant { align-self:flex-start; }
+.chat-msg.user { align-self:flex-end; flex-direction:row-reverse; }
+.chat-avatar { width:30px; height:30px; border-radius:9px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; }
+.chat-avatar.marvis { background:linear-gradient(135deg,#a78bfa,#818cf8); }
+.chat-avatar.user-av { background:rgba(255,255,255,.1); }
+.chat-bubble { padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.55; }
+.chat-msg.assistant .chat-bubble { background:rgba(167,139,250,.08); border:1px solid rgba(167,139,250,.12); border-bottom-left-radius:4px; }
+.chat-msg.user .chat-bubble { background:var(--bg-elevated); border:1px solid var(--border-medium); border-bottom-right-radius:4px; }
+.quick-prompts { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.quick-prompt { padding:5px 12px; border-radius:7px; font-size:12px; font-weight:500; color:var(--text-secondary); background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.04); cursor:pointer; transition:all .2s; }
+.quick-prompt:hover { color:var(--accent-purple); border-color:rgba(167,139,250,.2); background:rgba(167,139,250,.06); }
+.chat-input-area { padding:14px; border-top:1px solid var(--border-subtle); display:flex; gap:8px; }
+.chat-input { flex:1; padding:9px 14px; border-radius:9px; background:rgba(255,255,255,.03); border:1px solid var(--border-subtle); color:var(--text-primary); font-family:var(--font-body); font-size:13px; outline:none; transition:border-color .2s; }
+.chat-input:focus { border-color:var(--accent-purple); }
+.chat-input::placeholder { color:var(--text-muted); }
+.chat-send { padding:9px 16px; border-radius:9px; background:linear-gradient(135deg,#a78bfa,#818cf8); color:#fff; border:none; font-weight:600; font-size:13px; cursor:pointer; transition:all .2s; }
+.chat-send:hover { filter:brightness(1.1); }
+
+/* Agent Card */
+.agent-card { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:18px; transition:all .3s; cursor:pointer; display:flex; flex-direction:column; }
+.agent-card:hover { border-color:var(--border-accent); background:var(--bg-elevated); }
+.agent-card-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.agent-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.agent-icon.purple { background:rgba(167,139,250,.15); color:var(--accent-purple); }
+.agent-icon.cyan { background:rgba(34,211,238,.15); color:var(--accent-cyan); }
+.agent-icon.pink { background:rgba(244,114,182,.15); color:var(--accent-pink); }
+.agent-icon.amber { background:rgba(251,191,36,.15); color:var(--accent-amber); }
+.agent-name { font-family:var(--font-display); font-weight:600; font-size:14px; }
+.agent-role { font-size:11px; color:var(--text-muted); }
+.agent-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; flex:1; }
+.agent-meta { margin-top:10px; display:flex; gap:5px; flex-wrap:wrap; }
+.agent-tag { font-size:10px; padding:2px 8px; border-radius:5px; background:rgba(255,255,255,.03); color:var(--text-muted); border:1px solid rgba(255,255,255,.04); }
+
+/* ==================== APP STORE STYLE MARKETPLACE ==================== */
+.marketplace {
+  background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(10,8,22,1) 100%);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+.marketplace::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(167,139,250,.4), transparent);
+}
+
+/* Featured Banner */
+.featured-banner {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 48px;
 }
-.stat-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-.stat-card:hover {
-  border-color: var(--border-medium);
-  background: var(--bg-elevated);
-}
-.stat-value {
-  font-family: var(--font-display);
-  font-size: 36px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  background: var(--gradient-hero);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.stat-label {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 6px;
-  font-weight: 500;
-}
-
-/* Chat Panel */
-.chat-panel {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
+.featured-card {
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: all .4s cubic-bezier(.4,0,.2,1);
+  border: 1px solid transparent;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
-  height: 480px;
-}
-.chat-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex;
-  align-items: center;
   justify-content: space-between;
 }
-.chat-header-title {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--text-primary);
+.featured-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  opacity: 0;
+  transition: opacity .4s;
 }
-.chat-header-badge {
-  font-size: 11px;
-  padding: 3px 10px;
+.featured-card:hover::after { opacity: 1; }
+.featured-card:hover { transform: translateY(-4px); }
+.featured-card.plugin-featured {
+  background: linear-gradient(135deg, rgba(129,140,248,.12) 0%, rgba(167,139,250,.04) 60%, rgba(6,6,14,.8) 100%);
+  border-color: rgba(129,140,248,.15);
+}
+.featured-card.plugin-featured:hover {
+  border-color: rgba(167,139,250,.35);
+  box-shadow: 0 0 60px rgba(167,139,250,.15);
+}
+.featured-card.model-featured {
+  background: linear-gradient(135deg, rgba(34,211,238,.1) 0%, rgba(34,211,238,.03) 60%, rgba(6,6,14,.8) 100%);
+  border-color: rgba(34,211,238,.15);
+}
+.featured-card.model-featured:hover {
+  border-color: rgba(34,211,238,.35);
+  box-shadow: 0 0 60px rgba(34,211,238,.12);
+}
+.featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
   border-radius: 100px;
-  background: rgba(167,139,250,0.1);
-  color: var(--accent-purple);
-  font-weight: 500;
-}
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.chat-msg {
-  display: flex;
-  gap: 12px;
-  max-width: 85%;
-  animation: viewEnter 0.4s ease-out;
-}
-.chat-msg.assistant { align-self: flex-start; }
-.chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
-.chat-avatar {
-  width: 32px; height: 32px;
-  border-radius: 10px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-}
-.chat-avatar.marvis { background: linear-gradient(135deg, #a78bfa, #818cf8); }
-.chat-avatar.user-av { background: rgba(255,255,255,0.1); }
-.chat-bubble {
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-size: 14px;
-  line-height: 1.55;
-}
-.chat-msg.assistant .chat-bubble {
-  background: rgba(167,139,250,0.08);
-  border: 1px solid rgba(167,139,250,0.12);
-  color: var(--text-primary);
-  border-bottom-left-radius: 4px;
-}
-.chat-msg.user .chat-bubble {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-medium);
-  color: var(--text-primary);
-  border-bottom-right-radius: 4px;
-}
-.chat-input-area {
-  padding: 16px;
-  border-top: 1px solid var(--border-subtle);
-  display: flex;
-  gap: 10px;
-}
-.chat-input {
-  flex: 1;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.chat-input:focus { border-color: var(--accent-purple); }
-.chat-input::placeholder { color: var(--text-muted); }
-.chat-send {
-  padding: 10px 18px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #a78bfa, #818cf8);
-  color: #fff;
-  border: none;
+  font-size: 11px;
   font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
+  margin-bottom: 16px;
+  width: fit-content;
 }
-.chat-send:hover { filter: brightness(1.1); }
-
-/* Agent Card */
-.agent-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.agent-card:hover {
-  border-color: var(--border-accent);
-  background: var(--bg-elevated);
-}
-.agent-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-.agent-icon {
-  width: 40px; height: 40px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-.agent-icon.purple { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
-.agent-icon.cyan { background: rgba(34,211,238,0.15); color: var(--accent-cyan); }
-.agent-icon.pink { background: rgba(244,114,182,0.15); color: var(--accent-pink); }
-.agent-icon.amber { background: rgba(251,191,36,0.15); color: var(--accent-amber); }
-.agent-name {
+.featured-badge.plugin { background: rgba(167,139,250,.15); color: var(--accent-purple); }
+.featured-badge.model { background: rgba(34,211,238,.15); color: var(--accent-cyan); }
+.featured-title {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: 8px;
+  color: #fff;
 }
-.agent-role {
+.featured-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  max-width: 380px;
+  line-height: 1.6;
+}
+.featured-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+.featured-btn {
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all .25s;
+}
+.featured-btn.plugin-btn { background: linear-gradient(135deg, #a78bfa, #818cf8); color: #fff; }
+.featured-btn.plugin-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.featured-btn.model-btn { background: linear-gradient(135deg, #22d3ee, #38bdf8); color: #0a0a14; }
+.featured-btn.model-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.featured-stats {
   font-size: 12px;
   color: var(--text-muted);
-}
-.agent-desc {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-.agent-meta {
-  margin-top: 12px;
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 12px;
 }
-.agent-tag {
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.04);
-  color: var(--text-muted);
-  border: 1px solid rgba(255,255,255,0.04);
-}
+.featured-stats span { display:flex; align-items:center; gap:4px; }
 
-/* Plugin Store */
-.store-tabs {
+/* Category Pills */
+.category-bar {
   display: flex;
-  gap: 4px;
-  margin-bottom: 24px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
 }
-.store-tab {
-  padding: 8px 18px;
-  border-radius: 8px;
+.category-pill {
+  padding: 7px 16px;
+  border-radius: 100px;
   font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   background: transparent;
-  border: 1px solid transparent;
+  border: 1px solid var(--border-medium);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all .25s;
+  white-space: nowrap;
 }
-.store-tab:hover { color: var(--text-primary); background: var(--bg-elevated); }
-.store-tab.active {
-  color: var(--accent-purple);
-  background: rgba(167,139,250,0.08);
-  border-color: rgba(167,139,250,0.15);
+.category-pill:hover {
+  color: var(--text-primary);
+  border-color: rgba(255,255,255,.2);
+  background: var(--bg-elevated);
 }
-.store-tab-count {
-  font-size: 11px;
+.category-pill.active {
+  color: #fff;
+  background: rgba(167,139,250,.15);
+  border-color: rgba(167,139,250,.35);
+}
+.category-pill .count {
+  font-size: 10px;
   color: var(--text-muted);
   margin-left: 4px;
+  opacity: .7;
 }
+
+/* App Store Grid */
 .store-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 14px;
 }
-.plugin-card {
+
+/* Plugin Card - App Store Style */
+.app-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 20px;
-  transition: all 0.3s ease;
-  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 0;
   overflow: hidden;
+  transition: all .35s cubic-bezier(.4,0,.2,1);
+  cursor: pointer;
+  position: relative;
 }
-.plugin-card::after {
+.app-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(167,139,250,0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(167,139,250,.25), transparent);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity .3s;
+  z-index: 1;
 }
-.plugin-card:hover::after { opacity: 1; }
-.plugin-card:hover {
+.app-card:hover::before { opacity: 1; }
+.app-card:hover {
   border-color: var(--border-accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(167,139,250,.1);
 }
-.plugin-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.plugin-icon-wrap {
-  width: 40px; height: 40px;
-  border-radius: 12px;
+.app-card-inner { padding: 20px; }
+.app-card-hero {
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  position: relative;
+  overflow: hidden;
 }
-.plugin-name {
-  font-family: var(--font-display);
-  font-weight: 600;
+.app-card-hero.plugin-hero { background: linear-gradient(135deg, rgba(167,139,250,.08) 0%, rgba(129,140,248,.03) 100%); }
+.app-card-hero.model-hero { background: linear-gradient(135deg, rgba(34,211,238,.06) 0%, rgba(56,189,248,.02) 100%); }
+.app-card-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+}
+.app-card-hero-bg {
+  position: absolute;
+  inset: 0;
+  opacity: .15;
+  background: radial-gradient(circle at 30% 50%, var(--accent-purple) 0%, transparent 60%);
+}
+.app-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.app-card-name {
+  font-family: var(--font-grotesk);
+  font-weight: 700;
   font-size: 15px;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  letter-spacing: -.01em;
 }
-.plugin-desc {
+.app-card-version {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.app-card-desc {
   font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
   margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.plugin-footer {
+.app-card-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.plugin-author {
+.app-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
   color: var(--text-muted);
 }
-.toggle-switch {
-  width: 44px; height: 26px;
-  border-radius: 13px;
-  background: rgba(255,255,255,0.08);
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-.toggle-switch.active {
-  background: rgba(167,139,250,0.3);
-  border-color: rgba(167,139,250,0.4);
-}
-.toggle-switch::after {
-  content: '';
-  position: absolute;
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  top: 2px; left: 2px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-}
-.toggle-switch.active::after { transform: translateX(18px); }
-
-/* Quick Prompt */
-.quick-prompts {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.quick-prompt {
-  padding: 6px 14px;
+.app-card-stars { color: var(--accent-amber); font-size: 13px; letter-spacing: 1px; }
+.app-card-downloads { font-size: 11px; color: var(--text-muted); }
+.app-card-action {
+  padding: 7px 16px;
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.04);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.quick-prompt:hover {
-  color: var(--accent-purple);
-  border-color: rgba(167,139,250,0.2);
-  background: rgba(167,139,250,0.06);
-}
-
-/* Model Selector */
-.model-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-}
-.model-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.model-card:hover {
-  border-color: var(--border-medium);
-  background: var(--bg-elevated);
-}
-.model-card.active {
-  border-color: var(--accent-purple);
-  background: rgba(167,139,250,0.06);
-  box-shadow: 0 0 20px rgba(167,139,250,0.1);
-}
-.model-card-name {
-  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 15px;
-  color: var(--text-primary);
-  margin-bottom: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
 }
-.model-card-provider {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 8px;
+.app-card-action.install {
+  background: rgba(167,139,250,.12);
+  color: var(--accent-purple);
+  border: 1px solid rgba(167,139,250,.2);
 }
-.model-card-tags {
+.app-card-action.install:hover { background: rgba(167,139,250,.2); }
+.app-card-action.installed {
+  background: rgba(52,211,153,.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(52,211,153,.15);
+}
+.app-card-tags {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
+  margin-top: 10px;
 }
-.model-tag {
+.app-tag {
   font-size: 10px;
   padding: 2px 8px;
   border-radius: 4px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,.03);
+  color: var(--text-muted);
+  border: 1px solid rgba(255,255,255,.04);
+}
+
+/* Model Card variant */
+.model-card-app .app-card-hero {
+  background: linear-gradient(135deg, rgba(34,211,238,.06) 0%, rgba(56,189,248,.02) 100%);
+}
+.model-card-app .app-card-icon {
+  background: rgba(34,211,238,.12);
+  font-size: 14px;
+  font-family: var(--font-grotesk);
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+.model-card-app .app-card-action.use {
+  background: rgba(34,211,238,.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(34,211,238,.2);
+}
+.model-card-app .app-card-action.use:hover { background: rgba(34,211,238,.2); }
+.model-card-app .app-card-action.active-model {
+  background: rgba(167,139,250,.15);
+  color: var(--accent-purple);
+  border: 1px solid rgba(167,139,250,.25);
+}
+.model-provider {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.model-provider-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent-green);
 }
 
 /* Footer */
-.footer {
-  padding: 48px 0;
-  border-top: 1px solid var(--border-subtle);
-  text-align: center;
-}
-.footer-text {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-.footer-accent {
-  color: var(--accent-purple);
-  font-weight: 500;
-}
+.footer { padding:48px 0; border-top:1px solid var(--border-subtle); text-align:center; }
+.footer-text { font-size:13px; color:var(--text-muted); }
+.footer-accent { color:var(--accent-purple); font-weight:500; }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(255,255,255,.07); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,.12); }
 
-@media (max-width: 900px) {
-  .bento-grid { grid-template-columns: 1fr; }
-  .col-span-2, .col-span-3, .col-span-4, .col-span-6 { grid-column: span 1; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .nav-links { display: none; }
-  .chat-panel { height: 380px; }
-  .store-grid { grid-template-columns: 1fr; }
+/* Responsive */
+@media (max-width:900px) {
+  .bento-grid { grid-template-columns:1fr; }
+  .col-span-2,.col-span-3,.col-span-4,.col-span-6 { grid-column:span 1; }
+  .stats-row { grid-template-columns:repeat(2,1fr); }
+  .nav-links { display:none; }
+  .chat-panel { height:380px; }
+  .store-grid { grid-template-columns:1fr; }
+  .featured-banner { grid-template-columns:1fr; }
 }
-@media (max-width: 540px) {
-  .container { padding: 0 16px; }
-  .hero { padding: 60px 0 40px; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
+@media (max-width:540px) {
+  .container { padding:0 18px; }
+  .hero { padding:56px 0 36px; }
+  .stats-row { grid-template-columns:1fr 1fr; }
 }
-
-/* Selection */
-::selection { background: rgba(167,139,250,0.3); color: #fff; }
+::selection { background:rgba(167,139,250,.3); color:#fff; }
 </style>
 </head>
 <body>
@@ -806,8 +548,7 @@ body::before {
     <div class="nav-links">
       <a href="#workbench" class="nav-link active">工作台</a>
       <a href="#plugins" class="nav-link">插件商店</a>
-      <a href="#models" class="nav-link">模型</a>
-      <a href="#" class="nav-link">文档</a>
+      <a href="#models" class="nav-link">模型中心</a>
     </div>
     <div class="nav-status">
       <span class="nav-status-dot"></span>
@@ -837,24 +578,12 @@ body::before {
 </section>
 
 <!-- Stats -->
-<div class="container" style="animation: viewEnter 0.6s ease-out 0.35s both;">
+<div class="container" style="animation: viewEnter .6s ease-out .35s both;">
   <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-value">6</div>
-      <div class="stat-label">可用模型</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">4</div>
-      <div class="stat-label">智能体</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">12+</div>
-      <div class="stat-label">插件</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">100%</div>
-      <div class="stat-label">本地隐私</div>
-    </div>
+    <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">可用模型</div></div>
+    <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">智能体</div></div>
+    <div class="stat-card"><div class="stat-value">14</div><div class="stat-label">插件</div></div>
+    <div class="stat-card"><div class="stat-value">100%</div><div class="stat-label">本地隐私</div></div>
   </div>
 </div>
 
@@ -866,7 +595,6 @@ body::before {
       <h2 class="section-title">中央工作台</h2>
     </div>
     <div class="bento-grid">
-      <!-- Chat Panel -->
       <div class="col-span-3">
         <div class="chat-panel">
           <div class="chat-header">
@@ -874,75 +602,52 @@ body::before {
             <span class="chat-header-badge">在线</span>
           </div>
           <div class="chat-messages">
+            <div class="quick-prompts">
+              <span class="quick-prompt">整理桌面文件</span>
+              <span class="quick-prompt">分析日志报告</span>
+              <span class="quick-prompt">搜索论文资料</span>
+              <span class="quick-prompt">生成周报</span>
+            </div>
             <div class="chat-msg assistant">
               <div class="chat-avatar marvis">M</div>
-              <div class="chat-bubble">老板，我是 Marvis，Agent Hub 的中央智能体。我可以调度所有模型和插件，帮你完成搜索、编码、文件管理等各种任务。试试问我点什么？</div>
+              <div class="chat-bubble">老板，我是 Marvis，Agent Hub 的中央智能体。我可以调度所有 Agent、模型和插件。试试问我点什么？</div>
             </div>
             <div class="chat-msg user">
               <div class="chat-avatar user-av">U</div>
-              <div class="chat-bubble">帮我分析一下最近的日志文件</div>
+              <div class="chat-bubble">帮我分析最近的项目日志</div>
             </div>
             <div class="chat-msg assistant">
               <div class="chat-avatar marvis">M</div>
-              <div class="chat-bubble">收到。我会调度 File Agent 搜索最近的日志文件，然后用 Search Agent 进行内容分析。整个过程全部在本地完成，数据不会离开你的设备。</div>
+              <div class="chat-bubble">收到。调度 File Agent 搜索日志文件，Search Agent 做内容分析。全程本地处理，数据不外泄。</div>
             </div>
           </div>
           <div class="chat-input-area">
-            <input type="text" class="chat-input" placeholder="输入消息，Marvis 为你调度所有智能体..." value="帮我整理桌面文件" />
+            <input type="text" class="chat-input" placeholder="输入消息，Marvis 调度智能体执行..." value="帮我整理桌面文件" />
             <button class="chat-send">发送</button>
           </div>
         </div>
       </div>
-      <!-- Agent Cards -->
       <div class="col-span-3">
-        <div class="bento-grid" style="grid-template-columns: 1fr 1fr; height: 480px;">
-          <div class="agent-card" style="display:flex;flex-direction:column;">
-            <div class="agent-card-header">
-              <div class="agent-icon purple">F</div>
-              <div><div class="agent-name">File Agent</div><div class="agent-role">文件管理</div></div>
-            </div>
-            <div class="agent-desc">本地文件搜索、分析、整理、格式转换全能助手。支持 PDF/Word/Excel/图片等所有文件类型。</div>
-            <div class="agent-meta" style="margin-top:auto;">
-              <span class="agent-tag">本地执行</span>
-              <span class="agent-tag">OCR 识别</span>
-              <span class="agent-tag">格式转换</span>
-            </div>
+        <div class="bento-grid" style="grid-template-columns:1fr 1fr; height:460px;">
+          <div class="agent-card">
+            <div class="agent-card-header"><div class="agent-icon purple">F</div><div><div class="agent-name">File Agent</div><div class="agent-role">文件管理</div></div></div>
+            <div class="agent-desc">本地文件搜索、分析、整理、格式转换。支持 PDF/Word/Excel 等所有类型。</div>
+            <div class="agent-meta"><span class="agent-tag">本地执行</span><span class="agent-tag">OCR</span><span class="agent-tag">格式转换</span></div>
           </div>
-          <div class="agent-card" style="display:flex;flex-direction:column;">
-            <div class="agent-card-header">
-              <div class="agent-icon cyan">R</div>
-              <div><div class="agent-name">Search Agent</div><div class="agent-role">深度搜索</div></div>
-            </div>
-            <div class="agent-desc">多轮联网检索与综合总结，适合调研、对比分析、论文综述等复杂信息获取。</div>
-            <div class="agent-meta" style="margin-top:auto;">
-              <span class="agent-tag">联网检索</span>
-              <span class="agent-tag">深度总结</span>
-              <span class="agent-tag">论文搜索</span>
-            </div>
+          <div class="agent-card">
+            <div class="agent-card-header"><div class="agent-icon cyan">R</div><div><div class="agent-name">Search Agent</div><div class="agent-role">深度搜索</div></div></div>
+            <div class="agent-desc">多轮联网检索与综合总结。适合调研、对比分析、论文综述。</div>
+            <div class="agent-meta"><span class="agent-tag">联网检索</span><span class="agent-tag">深度总结</span></div>
           </div>
-          <div class="agent-card" style="display:flex;flex-direction:column;">
-            <div class="agent-card-header">
-              <div class="agent-icon pink">B</div>
-              <div><div class="agent-name">Browser Agent</div><div class="agent-role">浏览器操控</div></div>
-            </div>
-            <div class="agent-desc">模拟人类浏览器操作，自动登录、填表、点击、页面跳转。处理复杂网页交互场景。</div>
-            <div class="agent-meta" style="margin-top:auto;">
-              <span class="agent-tag">自动登录</span>
-              <span class="agent-tag">表单填写</span>
-              <span class="agent-tag">截图</span>
-            </div>
+          <div class="agent-card">
+            <div class="agent-card-header"><div class="agent-icon pink">B</div><div><div class="agent-name">Browser Agent</div><div class="agent-role">浏览器操控</div></div></div>
+            <div class="agent-desc">模拟人类浏览器操作：自动登录、填表、点击、页面跳转、截图。</div>
+            <div class="agent-meta"><span class="agent-tag">自动登录</span><span class="agent-tag">表单填写</span></div>
           </div>
-          <div class="agent-card" style="display:flex;flex-direction:column;">
-            <div class="agent-card-header">
-              <div class="agent-icon amber">C</div>
-              <div><div class="agent-name">Computer Agent</div><div class="agent-role">系统管理</div></div>
-            </div>
-            <div class="agent-desc">macOS 系统配置、窗口管理、进程监控、故障排查。掌控电脑一切系统级操作。</div>
-            <div class="agent-meta" style="margin-top:auto;">
-              <span class="agent-tag">系统设置</span>
-              <span class="agent-tag">故障修复</span>
-              <span class="agent-tag">窗口管理</span>
-            </div>
+          <div class="agent-card">
+            <div class="agent-card-header"><div class="agent-icon amber">C</div><div><div class="agent-name">Computer Agent</div><div class="agent-role">系统管理</div></div></div>
+            <div class="agent-desc">macOS 系统配置、窗口管理、进程监控、故障排查修复。</div>
+            <div class="agent-meta"><span class="agent-tag">系统设置</span><span class="agent-tag">故障修复</span></div>
           </div>
         </div>
       </div>
@@ -950,149 +655,247 @@ body::before {
   </div>
 </section>
 
-<!-- Plugin Store -->
-<section class="section" id="plugins">
+<!-- ===== PLUGIN STORE ===== -->
+<section class="marketplace" id="plugins">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" style="margin-bottom: 20px;">
       <div class="section-label">Plugin Marketplace</div>
       <h2 class="section-title">插件商店</h2>
     </div>
-    <div class="store-tabs">
-      <button class="store-tab active" data-category="all">全部 <span class="store-tab-count">12</span></button>
-      <button class="store-tab" data-category="productivity">效率工具 <span class="store-tab-count">4</span></button>
-      <button class="store-tab" data-category="dev">开发 <span class="store-tab-count">3</span></button>
-      <button class="store-tab" data-category="creative">创意 <span class="store-tab-count">3</span></button>
-      <button class="store-tab" data-category="data">数据处理 <span class="store-tab-count">2</span></button>
+
+    <!-- Featured Plugin Banner -->
+    <div class="featured-banner">
+      <div class="featured-card plugin-featured" onclick="document.getElementById('plugin-grid').scrollIntoView({behavior:'smooth'})">
+        <div>
+          <div class="featured-badge plugin">编辑推荐</div>
+          <div class="featured-title">PDF 智能解析</div>
+          <div class="featured-desc">一键提取 PDF 文字、表格、图片，支持批量处理和 OCR 识别。自然语言查询文档内容。</div>
+          <div class="featured-footer">
+            <button class="featured-btn plugin-btn">立即安装</button>
+            <div class="featured-stats">
+              <span>4.9</span><span>12.3k 安装</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="featured-card plugin-featured" style="background:linear-gradient(135deg, rgba(244,114,182,.1) 0%, rgba(167,139,250,.03) 60%, rgba(6,6,14,.8) 100%);">
+        <div>
+          <div class="featured-badge plugin" style="background:rgba(244,114,182,.15);color:var(--accent-pink);">本周热门</div>
+          <div class="featured-title">图片智能处理</div>
+          <div class="featured-desc">批量压缩、格式转换、智能去背景、超分辨率增强。AI 驱动的图片工作流自动化。</div>
+          <div class="featured-footer">
+            <button class="featured-btn plugin-btn">立即安装</button>
+            <div class="featured-stats">
+              <span>4.7</span><span>8.9k 安装</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Category Bar -->
+    <div class="category-bar" id="plugin-categories">
+      <button class="category-pill active" data-cat="all">全部<span class="count">14</span></button>
+      <button class="category-pill" data-cat="productivity">效率工具<span class="count">5</span></button>
+      <button class="category-pill" data-cat="dev">开发工具<span class="count">4</span></button>
+      <button class="category-pill" data-cat="creative">创意设计<span class="count">3</span></button>
+      <button class="category-pill" data-cat="data">数据处理<span class="count">2</span></button>
+    </div>
+
+    <!-- Plugin Grid -->
     <div class="store-grid" id="plugin-grid"></div>
   </div>
 </section>
 
-<!-- Models -->
-<section class="section" id="models">
+<!-- ===== MODEL CENTER ===== -->
+<section class="marketplace" id="models">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" style="margin-bottom: 20px;">
       <div class="section-label">Model Hub</div>
       <h2 class="section-title">模型中心</h2>
     </div>
-    <div class="model-grid">
-      <div class="model-card active">
-        <div class="model-card-name">Claude 4 Opus</div>
-        <div class="model-card-provider">Anthropic</div>
-        <div class="model-card-tags">
-          <span class="model-tag">推理</span><span class="model-tag">编程</span><span class="model-tag">长文</span>
+
+    <!-- Featured Model Banner -->
+    <div class="featured-banner">
+      <div class="featured-card model-featured">
+        <div>
+          <div class="featured-badge model">当前使用</div>
+          <div class="featured-title">Claude 4 Opus</div>
+          <div class="featured-desc">Anthropic 旗舰推理模型。编程、长文分析、复杂逻辑推理的首选。200K 上下文窗口。</div>
+          <div class="featured-footer">
+            <button class="featured-btn model-btn">切换模型</button>
+            <div class="featured-stats"><span>200K ctx</span><span>推理 · 编程 · 分析</span></div>
+          </div>
         </div>
       </div>
-      <div class="model-card">
-        <div class="model-card-name">GPT-5</div>
-        <div class="model-card-provider">OpenAI</div>
-        <div class="model-card-tags">
-          <span class="model-tag">多模态</span><span class="model-tag">创意</span>
-        </div>
-      </div>
-      <div class="model-card">
-        <div class="model-card-name">Gemini 2.5 Pro</div>
-        <div class="model-card-provider">Google</div>
-        <div class="model-card-tags">
-          <span class="model-tag">超长上下文</span><span class="model-tag">搜索</span>
-        </div>
-      </div>
-      <div class="model-card">
-        <div class="model-card-name">Qwen3</div>
-        <div class="model-card-provider">本地 · Ollama</div>
-        <div class="model-card-tags">
-          <span class="model-tag">本地运行</span><span class="model-tag">隐私</span><span class="model-tag">免费</span>
-        </div>
-      </div>
-      <div class="model-card">
-        <div class="model-card-name">DeepSeek-V4</div>
-        <div class="model-card-provider">DeepSeek</div>
-        <div class="model-card-tags">
-          <span class="model-tag">代码</span><span class="model-tag">数学</span><span class="model-tag">长文</span>
-        </div>
-      </div>
-      <div class="model-card">
-        <div class="model-card-name">Llama 4</div>
-        <div class="model-card-provider">Meta</div>
-        <div class="model-card-tags">
-          <span class="model-tag">开源</span><span class="model-tag">多模态</span>
+      <div class="featured-card model-featured" style="background:linear-gradient(135deg, rgba(52,211,153,.08) 0%, rgba(34,211,238,.02) 60%, rgba(6,6,14,.8) 100%);">
+        <div>
+          <div class="featured-badge model" style="background:rgba(52,211,153,.15);color:var(--accent-green);">本地运行</div>
+          <div class="featured-title">Qwen3 · 本地版</div>
+          <div class="featured-desc">通过 Ollama 本地运行，零延迟、零数据外泄。适合敏感数据和离线场景，完全免费。</div>
+          <div class="featured-footer">
+            <button class="featured-btn model-btn">启动本地模型</button>
+            <div class="featured-stats"><span>Ollama</span><span>隐私 · 免费 · 离线</span></div>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Category Bar -->
+    <div class="category-bar" id="model-categories">
+      <button class="category-pill active" data-mcat="all">全部<span class="count">6</span></button>
+      <button class="category-pill" data-mcat="cloud">云端模型<span class="count">3</span></button>
+      <button class="category-pill" data-mcat="local">本地模型<span class="count">2</span></button>
+      <button class="category-pill" data-mcat="opensource">开源模型<span class="count">2</span></button>
+    </div>
+
+    <!-- Model Grid -->
+    <div class="store-grid" id="model-grid"></div>
   </div>
 </section>
 
 <!-- Footer -->
 <footer class="footer">
   <div class="container">
-    <p class="footer-text">
-      <span class="footer-accent">Agent Hub v3.0</span> — 本地智能 · 零数据泄露 · 
-      Powered by Marvis & DeepSeek-V4 Pro
-    </p>
+    <p class="footer-text"><span class="footer-accent">Agent Hub v3.0</span> — 本地智能 · 零数据泄露 · Powered by Marvis &amp; DeepSeek-V4 Pro</p>
   </div>
 </footer>
 
 <script>
+// ===== PLUGIN DATA =====
 const plugins = [
-  { name: "PDF 智能解析", desc: "提取PDF文字、表格、图片，支持批量处理和OCR识别。", author: "Agent Hub", category: "productivity", icon: "📄", color: "rgba(244,114,182,0.15)", active: true },
-  { name: "Excel 数据分析", desc: "自动生成透视表、图表和数据分析报告，自然语言交互。", author: "Agent Hub", category: "data", icon: "📊", color: "rgba(52,211,153,0.15)", active: true },
-  { name: "图片智能处理", desc: "批量压缩、格式转换、智能去背景、超分辨率增强。", author: "Agent Hub", category: "creative", icon: "🖼️", color: "rgba(167,139,250,0.15)", active: false },
-  { name: "Markdown 编辑器", desc: "实时预览的 MD 编辑器，支持导出PDF/HTML/Word。", author: "Community", category: "dev", icon: "📝", color: "rgba(34,211,238,0.15)", active: true },
-  { name: "Git 可视化", desc: "图形化 Git 操作界面，分支管理、diff 对比、提交历史。", author: "Community", category: "dev", icon: "🔀", color: "rgba(244,114,182,0.15)", active: false },
-  { name: "API 测试工具", desc: "可视化 API 调试器，支持 REST/GraphQL/gRPC。", author: "Agent Hub", category: "dev", icon: "🔧", color: "rgba(34,211,238,0.15)", active: true },
-  { name: "日程管理", desc: "智能日程规划，自然语言创建提醒，与系统日历同步。", author: "Agent Hub", category: "productivity", icon: "📅", color: "rgba(52,211,153,0.15)", active: true },
-  { name: "网页快照", desc: "一键保存网页为PDF或Markdown，支持定时抓取。", author: "Community", category: "productivity", icon: "🌐", color: "rgba(167,139,250,0.15)", active: false },
-  { name: "视频转GIF", desc: "视频片段转高质量GIF动图，支持裁剪和速度调节。", author: "Community", category: "creative", icon: "🎬", color: "rgba(244,114,182,0.15)", active: false },
-  { name: "语音转文字", desc: "多语言语音识别，支持实时转录和离线模式。", author: "Agent Hub", category: "productivity", icon: "🎙️", color: "rgba(251,191,36,0.15)", active: true },
-  { name: "数据库管理", desc: "SQL/NoSQL 可视化客户端，支持 MySQL/PostgreSQL/MongoDB。", author: "Community", category: "data", icon: "🗄️", color: "rgba(34,211,238,0.15)", active: false },
-  { name: "设计素材库", desc: "AI 生成图标、插画、配色方案，直接导出 SVG/PNG。", author: "Agent Hub", category: "creative", icon: "🎨", color: "rgba(244,114,182,0.15)", active: true },
+  { id:'pdf-parser', name:'PDF 智能解析', desc:'提取PDF文字、表格、图片，支持批量处理和OCR识别。自然语言查询文档内容。', cat:'productivity', icon:'📄', iconBg:'rgba(244,114,182,.15)', rating:4.9, downloads:'12.3k', version:'2.4.1', installed:true, tags:['OCR','批量','导出'] },
+  { id:'excel-analytics', name:'Excel 数据分析', desc:'自然语言生成透视表和图表，自动发现数据洞察并生成分析报告。', cat:'data', icon:'📊', iconBg:'rgba(52,211,153,.15)', rating:4.7, downloads:'9.1k', version:'1.8.0', installed:true, tags:['透视表','图表','NLP'] },
+  { id:'image-processor', name:'图片智能处理', desc:'批量压缩、格式转换、智能去背景、超分辨率增强，AI工作流自动化。', cat:'creative', icon:'🖼️', iconBg:'rgba(167,139,250,.15)', rating:4.7, downloads:'8.9k', version:'3.0.2', installed:false, tags:['去背景','超分','批量'] },
+  { id:'markdown-editor', name:'Markdown Pro', desc:'实时预览MD编辑器，支持导出PDF/HTML/Word，内置图表和数学公式渲染。', cat:'dev', icon:'📝', iconBg:'rgba(34,211,238,.15)', rating:4.8, downloads:'15.2k', version:'2.2.0', installed:true, tags:['预览','导出','LaTeX'] },
+  { id:'git-viz', name:'Git 可视化', desc:'图形化Git操作界面，分支管理、diff对比、提交历史一目了然。', cat:'dev', icon:'🔀', iconBg:'rgba(244,114,182,.15)', rating:4.5, downloads:'6.7k', version:'1.4.3', installed:false, tags:['分支','Diff','历史'] },
+  { id:'api-tester', name:'API 调试工坊', desc:'可视化API调试器，支持REST/GraphQL/gRPC，环境变量管理和团队协作。', cat:'dev', icon:'🔧', iconBg:'rgba(34,211,238,.15)', rating:4.6, downloads:'10.5k', version:'3.1.0', installed:true, tags:['REST','GraphQL','环境'] },
+  { id:'scheduler', name:'智能日程', desc:'自然语言创建提醒和日程，自动解析时间意图，与系统日历双向同步。', cat:'productivity', icon:'📅', iconBg:'rgba(52,211,153,.15)', rating:4.4, downloads:'7.8k', version:'1.6.1', installed:true, tags:['日历同步','NLP','提醒'] },
+  { id:'web-snapshot', name:'网页快照', desc:'一键保存网页为PDF或Markdown，定时抓取和变更监控。', cat:'productivity', icon:'🌐', iconBg:'rgba(167,139,250,.15)', rating:4.3, downloads:'5.1k', version:'1.2.0', installed:false, tags:['PDF','Markdown','监控'] },
+  { id:'video-gif', name:'视频转GIF', desc:'视频片段转高质量GIF动图，支持裁剪、调速、文字叠加。', cat:'creative', icon:'🎬', iconBg:'rgba(244,114,182,.15)', rating:4.6, downloads:'4.4k', version:'2.0.1', installed:false, tags:['GIF','裁剪','文字'] },
+  { id:'speech-text', name:'语音转文字', desc:'多语言语音识别，支持实时转录和离线模式，准确率行业领先。', cat:'productivity', icon:'🎙️', iconBg:'rgba(251,191,36,.15)', rating:4.8, downloads:'11.6k', version:'3.3.0', installed:true, tags:['实时','多语言','离线'] },
+  { id:'db-manager', name:'数据库管理', desc:'SQL/NoSQL可视化客户端，支持MySQL/PostgreSQL/MongoDB，智能补全。', cat:'data', icon:'🗄️', iconBg:'rgba(34,211,238,.15)', rating:4.5, downloads:'8.2k', version:'4.0.1', installed:false, tags:['SQL','NoSQL','补全'] },
+  { id:'icon-lab', name:'设计素材库', desc:'AI生成图标、插画、配色方案，直接导出SVG/PNG，支持品牌色一键适配。', cat:'creative', icon:'🎨', iconBg:'rgba(244,114,182,.15)', rating:4.7, downloads:'6.3k', version:'1.9.0', installed:true, tags:['图标','插画','配色'] },
+  { id:'code-reviewer', name:'代码审查', desc:'AI驱动的代码审查工具，自动检测Bug、安全漏洞和代码异味，支持30+语言。', cat:'dev', icon:'🔍', iconBg:'rgba(167,139,250,.15)', rating:4.9, downloads:'14.1k', version:'5.2.0', installed:true, tags:['安全','30+语言','CI'] },
+  { id:'meeting-notes', name:'会议纪要', desc:'实时录音转文字，自动生成结构化会议纪要和待办事项，支持Zoom/Teams。', cat:'productivity', icon:'📋', iconBg:'rgba(129,140,248,.15)', rating:4.6, downloads:'9.7k', version:'2.5.0', installed:false, tags:['录音','纪要','待办'] },
 ];
 
-function renderPlugins(filter = 'all') {
+// ===== MODEL DATA =====
+const models = [
+  { id:'claude4', name:'Claude 4 Opus', provider:'Anthropic', cat:'cloud', desc:'旗舰推理模型。编程、长文分析、复杂逻辑推理的首选。200K上下文窗口。', icon:'C4', iconBg:'rgba(167,139,250,.15)', rating:4.9, users:'24.5k', version:'4.0', active:true, tags:['推理','编程','200K'], paramSize:'-', context:'200K' },
+  { id:'gpt5', name:'GPT-5', provider:'OpenAI', cat:'cloud', desc:'多模态全能模型。创意写作、图像理解、数据分析，综合能力业界领先。', icon:'G5', iconBg:'rgba(34,211,238,.15)', rating:4.8, users:'32.1k', version:'5.0', active:false, tags:['多模态','创意','综合'], paramSize:'-', context:'256K' },
+  { id:'gemini25', name:'Gemini 2.5 Pro', provider:'Google', cat:'cloud', desc:'超长上下文模型。100万token窗口，适合全量代码库分析和超长文档处理。', icon:'G2', iconBg:'rgba(244,114,182,.15)', rating:4.7, users:'18.3k', version:'2.5', active:false, tags:['1M上下文','代码库','长文'], paramSize:'-', context:'1M' },
+  { id:'qwen3', name:'Qwen3', provider:'Alibaba · Ollama', cat:'local', desc:'本地运行的开源模型。零数据泄露，支持代码、数学、通用对话，完全免费。', icon:'Q3', iconBg:'rgba(52,211,153,.15)', rating:4.6, users:'8.7k', version:'3.0', active:false, tags:['本地','免费','开源'], paramSize:'72B', context:'128K' },
+  { id:'deepseekv4', name:'DeepSeek-V4 Pro', provider:'DeepSeek', cat:'cloud', desc:'代码与数学特化模型。MoE架构，编程竞赛水平，数学推理能力出众。', icon:'DS', iconBg:'rgba(167,139,250,.15)', rating:4.8, users:'21.6k', version:'4.0', active:false, tags:['代码','数学','MoE'], paramSize:'-', context:'128K' },
+  { id:'llama4', name:'Llama 4', provider:'Meta · Ollama', cat:'opensource', desc:'Meta最新开源旗舰。可本地部署的多模态模型，社区生态最活跃。', icon:'L4', iconBg:'rgba(251,191,36,.15)', rating:4.5, users:'7.2k', version:'4.0', active:false, tags:['开源','多模态','可微调'], paramSize:'400B', context:'256K' },
+];
+
+// ===== RENDER PLUGINS =====
+function renderPlugins(filter='all') {
   const grid = document.getElementById('plugin-grid');
-  const filtered = filter === 'all' ? plugins : plugins.filter(p => p.category === filter);
-  grid.innerHTML = filtered.map(p => `
-    <div class="plugin-card">
-      <div class="plugin-header">
-        <div class="plugin-icon-wrap" style="background:${p.color}">${p.icon}</div>
-        <div class="toggle-switch ${p.active ? 'active' : ''}" onclick="this.classList.toggle('active')"></div>
+  const list = filter==='all' ? plugins : plugins.filter(p=>p.cat===filter);
+  grid.innerHTML = list.map(p=>`
+    <div class="app-card" data-cat="${p.cat}">
+      <div class="app-card-hero plugin-hero">
+        <div class="app-card-icon" style="background:${p.iconBg}; color:${p.tags.length?getIconColor(p.iconBg):'#fff'};">${p.icon}</div>
       </div>
-      <div class="plugin-name">${p.name}</div>
-      <div class="plugin-desc">${p.desc}</div>
-      <div class="plugin-footer">
-        <span class="plugin-author">${p.author}</span>
+      <div class="app-card-inner">
+        <div class="app-card-header">
+          <span class="app-card-name">${p.name}</span>
+          <span class="app-card-version">v${p.version}</span>
+        </div>
+        <div class="app-card-desc">${p.desc}</div>
+        <div class="app-card-meta">
+          <div class="app-card-rating">
+            <span class="app-card-stars">${starStr(p.rating)}</span>
+            <span>${p.rating}</span>
+            <span class="app-card-downloads">· ${p.downloads} 安装</span>
+          </div>
+          <button class="app-card-action ${p.installed?'installed':'install'}" onclick="togglePlugin('${p.id}',this)">${p.installed?'已安装':'安装'}</button>
+        </div>
+        <div class="app-card-tags">${p.tags.map(t=>`<span class="app-tag">${t}</span>`).join('')}</div>
       </div>
     </div>
   `).join('');
 }
+function getIconColor(bg){ return bg.includes('244')?'var(--accent-pink)':bg.includes('52')?'var(--accent-green)':bg.includes('167')?'var(--accent-purple)':bg.includes('34')?'var(--accent-cyan)':bg.includes('251')?'var(--accent-amber)':'var(--accent-indigo)'; }
+function starStr(r){ const full=Math.floor(r), half=r%1>=.5; return '★'.repeat(full)+(half?'½':''); }
+function togglePlugin(id,btn){
+  const p = plugins.find(x=>x.id===id);
+  p.installed = !p.installed;
+  btn.textContent = p.installed?'已安装':'安装';
+  btn.className = 'app-card-action '+(p.installed?'installed':'install');
+}
 
-document.querySelectorAll('.store-tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.store-tab').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-    renderPlugins(this.dataset.category);
-  });
+// ===== RENDER MODELS =====
+function renderModels(filter='all') {
+  const grid = document.getElementById('model-grid');
+  const list = filter==='all' ? models : models.filter(m=>m.cat===filter);
+  grid.innerHTML = list.map(m=>`
+    <div class="app-card model-card-app">
+      <div class="app-card-hero model-hero">
+        <div class="app-card-icon">${m.icon}</div>
+      </div>
+      <div class="app-card-inner">
+        <div class="model-provider"><span class="model-provider-dot"></span>${m.provider}</div>
+        <div class="app-card-header">
+          <span class="app-card-name">${m.name}</span>
+          <span class="app-card-version">v${m.version}</span>
+        </div>
+        <div class="app-card-desc">${m.desc}</div>
+        <div class="app-card-meta">
+          <div class="app-card-rating">
+            <span class="app-card-stars">${starStr(m.rating)}</span>
+            <span>${m.rating}</span>
+            <span class="app-card-downloads">· ${m.users} 用户</span>
+          </div>
+          <button class="app-card-action ${m.active?'active-model':'use'}" onclick="activateModel('${m.id}',this)">${m.active?'使用中':'使用'}</button>
+        </div>
+        <div class="app-card-tags">${m.tags.map(t=>`<span class="app-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function activateModel(id,btn){
+  models.forEach(m=>m.active=false);
+  const m = models.find(x=>x.id===id);
+  m.active = true;
+  renderModels(document.querySelector('#model-categories .category-pill.active').dataset.mcat);
+}
+
+// ===== CATEGORY FILTERS =====
+document.getElementById('plugin-categories').addEventListener('click',e=>{
+  if(!e.target.classList.contains('category-pill')) return;
+  document.querySelectorAll('#plugin-categories .category-pill').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  renderPlugins(e.target.dataset.cat);
+});
+document.getElementById('model-categories').addEventListener('click',e=>{
+  if(!e.target.classList.contains('category-pill')) return;
+  document.querySelectorAll('#model-categories .category-pill').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  renderModels(e.target.dataset.mcat);
 });
 
+// ===== INIT =====
 renderPlugins();
+renderModels();
 
-// Smooth scroll for nav links
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-  link.addEventListener('click', e => {
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+  link.addEventListener('click',e=>{
     e.preventDefault();
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    const t=document.querySelector(link.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth'});
   });
 });
 
-// Active nav link update on scroll
-const sections = document.querySelectorAll('section[id]');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
-  document.querySelectorAll('.nav-link').forEach(l => {
-    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
-  });
+// Active nav
+const secs=document.querySelectorAll('section[id], .marketplace[id]');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur));
 });
 </script>
 </body>
