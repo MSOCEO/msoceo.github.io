@@ -30,7 +30,7 @@ jobs:
       - name: Copy DJ Portal
         run: |
           cp -r public/dj dist/
-          cp public/dj/index.html dist/dj.html
+          cp dj.html dist/
           cp -r public/marvis-dj dist/
 
       - name: Copy startrails
