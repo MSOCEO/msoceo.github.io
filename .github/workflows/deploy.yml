@@ -37,12 +37,6 @@ jobs:
       - name: Copy startrails
         run: cp -r startrails dist/
 
-      - name: Build agent-hub
-        working-directory: ./agent-hub
-        run: |
-          npm ci
-          npm run build
-
       - name: Copy agent-hub to dist
         run: mkdir -p dist/agent-hub && cp -r agent-hub/dist/* dist/agent-hub/
 
