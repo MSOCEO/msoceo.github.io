@@ -39,6 +39,11 @@ if [ -f /tmp/portal-index.html ]; then
   rm -f /tmp/portal-index.html
 fi
 
+# Ensure archive is accessible at root level
+if [ -d dist/blog/archive ]; then
+  cp -r dist/blog/archive dist/
+fi
+
 # Replace blog homepage with custom theme (if present)
 if [ -f dist/blog/hanying-blog-theme.html ]; then
   cp dist/blog/hanying-blog-theme.html dist/blog/index.html
