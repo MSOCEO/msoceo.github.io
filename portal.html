@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSOCEO — Build with Purpose</title>
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{
+  font-family:'SF Pro Display',-apple-system,'PingFang SC','Noto Serif SC','Microsoft YaHei',serif;
+  background:#08080c;
+  color:#c8c8d4;
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+::selection{background:rgba(180,130,80,.25);color:#f0e6d8}
+::-webkit-scrollbar{width:0}
+
+/* ===== Ambient Background ===== */
+.bg-ambient{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+}
+.bg-ambient::before{
+  content:'';position:absolute;top:-20%;left:-10%;width:50%;height:60%;
+  background:radial-gradient(ellipse at center,rgba(120,100,180,.04) 0%,transparent 70%);
+}
+.bg-ambient::after{
+  content:'';position:absolute;bottom:-10%;right:-10%;width:45%;height:50%;
+  background:radial-gradient(ellipse at center,rgba(180,130,80,.035) 0%,transparent 70%);
+}
+
+/* ===== Outer Frame ===== */
+.outer-frame{
+  position:relative;z-index:1;
+  max-width:100%;margin:0;padding:0;
+}
+@media(min-width:900px){
+  .outer-frame{margin:12px;border-radius:20px;overflow:hidden}
+  .outer-frame::before{
+    content:'';position:absolute;inset:0;border-radius:20px;
+    border:1px solid rgba(255,255,255,.04);pointer-events:none;z-index:10;
+  }
+}
+
+/* ===== Container ===== */
+.container{max-width:1200px;margin:0 auto;padding:0 40px}
+@media(max-width:768px){.container{padding:0 24px}}
+
+/* ===== Nav ===== */
+.nav{
+  position:sticky;top:0;z-index:100;
+  padding:0 40px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,8,12,.8);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+@media(max-width:768px){.nav{padding:0 24px}}
+.nav-brand{
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:.875rem;font-weight:600;letter-spacing:.06em;
+  color:rgba(255,255,255,.7);
+  text-decoration:none;
+}
+.nav-brand:hover{color:rgba(255,255,255,.9)}
+.nav-links{
+  display:flex;gap:28px;align-items:center;
+}
+.nav-links a{
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:.8rem;color:rgba(255,255,255,.35);text-decoration:none;
+  transition:color .2s;letter-spacing:.02em;
+}
+.nav-links a:hover{color:rgba(255,255,255,.7)}
+
+/* ===== Hero ===== */
+.hero{
+  padding:120px 0 80px;text-align:left;
+}
+.hero-eyebrow{
+  font-size:.75rem;font-weight:500;letter-spacing:.12em;
+  color:rgba(255,255,255,.25);text-transform:uppercase;
+  margin-bottom:24px;
+}
+.hero h1{
+  font-family:'SF Pro Display',-apple-system,'PingFang SC',sans-serif;
+  font-size:clamp(2.4rem,5vw,4rem);
+  font-weight:700;letter-spacing:-.03em;
+  color:#e8e8f0;line-height:1.1;margin-bottom:20px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,#b4a0d4 0%,#c89860 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-subtitle{
+  font-size:1.05rem;color:rgba(255,255,255,.35);
+  max-width:560px;line-height:1.8;
+  font-weight:400;
+}
+.hero-divider{
+  width:40px;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.15),transparent);
+  margin:48px 0;
+}
+
+/* ===== Products Section ===== */
+.products{
+  padding:0 0 120px;
+}
+.section-header{
+  margin-bottom:48px;
+}
+.section-header h2{
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:.75rem;font-weight:600;letter-spacing:.1em;
+  color:rgba(255,255,255,.2);text-transform:uppercase;
+  margin-bottom:8px;
+}
+.section-header .count{
+  font-size:.8rem;color:rgba(255,255,255,.15);
+}
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:16px;
+}
+@media(max-width:768px){
+  .product-grid{grid-template-columns:1fr}
+}
+
+/* ===== Product Card ===== */
+.product-card{
+  position:relative;
+  background:rgba(255,255,255,.015);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:16px;
+  padding:28px 28px 24px;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.product-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 80% at 50% -30%,rgba(180,160,210,.04),transparent 70%);
+  opacity:0;transition:opacity .4s;
+}
+.product-card:hover{
+  background:rgba(255,255,255,.025);
+  border-color:rgba(255,255,255,.1);
+  transform:translateY(-2px);
+  box-shadow:0 12px 40px -16px rgba(0,0,0,.4);
+}
+.product-card:hover::before{opacity:1}
+.product-card:active{transform:translateY(0);transition:transform .1s}
+
+.card-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.15rem;margin-bottom:20px;
+  background:rgba(255,255,255,.04);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.product-card:hover .card-icon{transform:scale(1.06)}
+
+.card-body{flex:1}
+.card-body h3{
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:1.05rem;font-weight:650;color:#e0e0ea;
+  margin-bottom:6px;letter-spacing:-.01em;
+}
+.card-body .subtitle{
+  font-size:.8rem;color:rgba(255,255,255,.25);
+  margin-bottom:14px;font-weight:450;
+}
+.card-body p{
+  font-size:.88rem;color:rgba(255,255,255,.4);
+  line-height:1.7;margin-bottom:20px;
+}
+.card-tags{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;
+}
+.card-tags span{
+  font-size:.68rem;padding:3px 9px;border-radius:5px;
+  background:rgba(255,255,255,.03);
+  color:rgba(255,255,255,.28);
+  border:1px solid rgba(255,255,255,.05);
+  letter-spacing:.02em;
+}
+.card-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:.8rem;font-weight:550;color:rgba(200,180,160,.6);
+  text-decoration:none;transition:color .2s,gap .2s;
+  letter-spacing:.01em;
+}
+.card-link:hover{color:rgba(200,180,160,.9);gap:10px}
+.card-link::after{content:'→';transition:transform .2s}
+.card-link:hover::after{transform:translateX(2px)}
+
+/* ===== About ===== */
+.about{
+  padding:0 0 120px;
+}
+.about-inner{
+  border-top:1px solid rgba(255,255,255,.04);
+  padding-top:64px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+}
+@media(max-width:768px){.about-inner{grid-template-columns:1fr;gap:40px}}
+.about-col h3{
+  font-family:'SF Pro Display',-apple-system,sans-serif;
+  font-size:.75rem;font-weight:600;letter-spacing:.1em;
+  color:rgba(255,255,255,.2);text-transform:uppercase;
+  margin-bottom:20px;
+}
+.about-col p{
+  font-size:.92rem;color:rgba(255,255,255,.35);line-height:1.8;
+}
+
+/* ===== Footer ===== */
+.footer{
+  padding:0 0 48px;
+}
+.footer-inner{
+  border-top:1px solid rgba(255,255,255,.04);
+  padding-top:32px;
+  display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:16px;
+  font-size:.75rem;color:rgba(255,255,255,.15);
+}
+.footer-inner a{color:rgba(255,255,255,.25);text-decoration:none;transition:color .2s}
+.footer-inner a:hover{color:rgba(255,255,255,.5)}
+
+/* ===== Animations ===== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.hero{animation:fadeUp .8s cubic-bezier(.22,1,.36,1) both}
+.product-card:nth-child(1){animation:fadeUp .7s .1s cubic-bezier(.22,1,.36,1) both}
+.product-card:nth-child(2){animation:fadeUp .7s .2s cubic-bezier(.22,1,.36,1) both}
+.product-card:nth-child(3){animation:fadeUp .7s .3s cubic-bezier(.22,1,.36,1) both}
+.product-card:nth-child(4){animation:fadeUp .7s .4s cubic-bezier(.22,1,.36,1) both}
+.product-card:nth-child(5){animation:fadeUp .7s .5s cubic-bezier(.22,1,.36,1) both}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-ambient"></div>
+
+<div class="outer-frame">
+
+<nav class="nav">
+  <a class="nav-brand" href="/">MSOCEO</a>
+  <div class="nav-links">
+    <a href="https://github.com/msoceo" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">独立构建 · 自托管生态</div>
+    <h1>Build with <em>Purpose</em></h1>
+    <p class="hero-subtitle">
+      从博客引擎到 AI 工作台，从独立博客网络到在线工具集——五个自研项目，围绕书写、工具与连接展开。每个项目都在自己的垂直领域做到克制且完整。
+    </p>
+    <div class="hero-divider"></div>
+  </section>
+
+  <!-- Products -->
+  <section class="products">
+    <div class="section-header">
+      <h2>Projects</h2>
+      <span class="count">5 个项目，全部开源或免费可用</span>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about">
+    <div class="about-inner">
+      <div class="about-col">
+        <h3>理念</h3>
+        <p>
+          不追逐框架热度，不堆砌功能。每个项目面向一个清晰的问题：如何更好地写作、如何调度 AI 能力、如何让独立博客彼此发现、如何一站式处理办公文件。构建过程本身就是答案。
+        </p>
+      </div>
+      <div class="about-col">
+        <h3>技术</h3>
+        <p>
+          全栈自托管，GitHub Pages 部署。栈覆盖 Next.js、TypeScript、Astro、Tailwind CSS，全部开源。不依赖第三方 SaaS，数据自主可控。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 MSOCEO. Built with intention.</span>
+      <span><a href="https://github.com/msoceo" target="_blank" rel="noopener">@msoceo on GitHub</a></span>
+    </div>
+  </footer>
+
+</div>
+
+</div><!-- /outer-frame -->
+
+<script>
+const products = [
+  {
+    name:'叙溯 Xusu',
+    subtitle:'开源博客引擎',
+    desc:'为书写而生的极简博客引擎。Markdown 写作，双主题引擎（朱墨 &times; 溯光），零运行时依赖，一键部署至任意静态服务器。',
+    tags:['开源','Next.js','双主题'],
+    url:'https://msoceo.github.io/xusu/',
+    icon:'&#9998;'
+  },
+  {
+    name:'溯文 Blog',
+    subtitle:'技术思考与创作',
+    desc:'基于叙溯构建的个人博客。记录关于工具哲学、设计审美与不妥协的工程实践。文章不多，但每一篇都经过打磨。',
+    tags:['博客','技术','设计'],
+    url:'https://msoceo.github.io/blog/',
+    icon:'&#9733;'
+  },
+  {
+    name:'能力工坊 Agent Hub',
+    subtitle:'AI 智能体工作台',
+    desc:'专业 AI 智能体矩阵。File / Search / Browser / Computer 四大 Agent，覆盖文件处理、深度搜索、网页交互与系统管理。应用商店式界面，一键调度。',
+    tags:['AI Agent','自动化','工具'],
+    url:'https://msoceo.github.io/agent-hub/',
+    icon:'&#9883;'
+  },
+  {
+    name:'星迹互联 StarTrails',
+    subtitle:'独立博客星际网络',
+    desc:'连接中文独立博客的去中心化网络。随机穿梭、社区收录、RSS 聚合三大引擎——让每颗独立博客的星彼此照亮。',
+    tags:['独立博客','社区','RSS'],
+    url:'https://msoceo.github.io/startrails/',
+    icon:'&#10022;'
+  },
+  {
+    name:'即刻办公 Workbox',
+    subtitle:'在线办公工具箱',
+    desc:'86 款在线工具，覆盖 PDF 处理、格式转换、视频音频编辑、图片处理、文档翻译与在线 Office。文件即用即焚，全浏览器端运行。',
+    tags:['工具集','PDF','在线办公'],
+    url:'https://msoceo.github.io/workbox/',
+    icon:'&#9874;'
+  }
+];
+
+const grid = document.getElementById('productGrid');
+products.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'product-card';
+  card.innerHTML = `
+    <div class="card-icon">${p.icon}</div>
+    <div class="card-body">
+      <h3>${p.name}</h3>
+      <div class="subtitle">${p.subtitle}</div>
+      <p>${p.desc}</p>
+      <div class="card-tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>
+    </div>
+    <a class="card-link" href="${p.url}" target="_blank" rel="noopener">访问站点</a>
+  `;
+  grid.appendChild(card);
+});
+</script>
+
+</body>
+</html>

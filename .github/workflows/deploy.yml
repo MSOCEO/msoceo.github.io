@@ -44,6 +44,9 @@ jobs:
       - name: Copy workbox to dist
         run: cp -r workbox dist/
 
+      - name: Copy portal to dist root
+        run: cp portal.html dist/index.html
+
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
