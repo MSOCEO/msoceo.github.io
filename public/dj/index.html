@@ -960,59 +960,68 @@ async function searchQQ(kw) {
   } catch (e) { console.warn('QQ search failed:', e.message); return []; }
 }
 
-const METING_API = 'https://meting-ms.vercel.app';
+async function searchKugou(kw) {
+  try {
+    var res = await fetch('https://songsearch.kugou.com/song_search_v2?keyword=' + encodeURIComponent(kw) + '&page=1&pagesize=20');
+    var d = await res.json();
+    var list = (d.data && d.data.lists) || [];
+    return list.map(function(s) {
+      return {
+        id: 'kg_' + s.FileHash,
+        title: s.SongName || '',
+        artist: s.SingerName || '',
+        album: s.AlbumName || '',
+        cover: s.AlbumID ? 'https://imge.kugou.com/stdmusic/240/' + s.AlbumID + '.jpg' : '',
+        source: 'kugou',
+        duration: (s.Duration || 0) * 1000,
+        _hash: s.FileHash
+      };
+    });
+  } catch (e) { console.warn('Kugou search failed:', e.message); return []; }
+}
+
+// ==================== 聚合搜索 ====================
 
 async function searchAll(kw) {
   if (!kw.trim()) return [];
-
-  // 优先走 meting-ms 聚合 API（5平台一起搜）
-  try {
-    var servers = ['netease', 'tencent', 'kugou', 'kuwo', 'migu'];
-    var all = await Promise.all(servers.map(async function(s) {
-      try {
-        var res = await fetch(METING_API + '?server=' + s + '&type=search&id=' + encodeURIComponent(kw));
-        var data = await res.json();
-        return data;
-      } catch (e) { return []; }
-    }));
-    var results = all.flat();
-    if (results.length > 0) return results;
-  } catch (e) { /* Vercel 不可达 */ }
-
-  // 降级：网易云 + QQ 直连
+  // 三平台并行搜索：网易云(Worker) + QQ + 酷狗
   var ne = searchNetease(kw);
   var qq = searchQQ(kw);
-  return (await Promise.all([ne, qq])).flat();
+  var kg = searchKugou(kw);
+  var arrs = await Promise.allSettled ? await Promise.allSettled([ne, qq, kg]) : [];
+  var results = [];
+  arrs.forEach(function(r) {
+    if (r.status === 'fulfilled' && Array.isArray(r.value)) results = results.concat(r.value);
+  });
+  return results;
 }
 
 async function getPlayUrl(song) {
-  var serverMap = { qq: 'tencent' };
-  var server = serverMap[song.source] || song.source;
-
-  // 优先走 CF Worker 代理
+  // 网易云：走 CF Worker 代理
   if (song.source === 'netease') {
     try {
-      var r0 = await fetch(WORKER_API + '/song/url?id=' + song.id);
-      var d0 = await r0.json();
-      if (d0.data && d0.data[0] && d0.data[0].url) return d0.data[0].url;
+      var r = await fetch(WORKER_API + '/song/url?id=' + song.id);
+      var d = await r.json();
+      if (d.data && d.data[0] && d.data[0].url) return d.data[0].url;
     } catch (e) {}
-  }
-
-  // 降级 meting-ms 聚合
-  try {
-    var r1 = await fetch(METING_API + '?server=' + server + '&type=url&id=' + song.id);
-    var d1 = await r1.json();
-    if (d1.url) return d1.url;
-  } catch (e) {}
-
-  // 网易云最终降级
-  if (song.source === 'netease') {
     try {
-      var r2 = await fetch(NETEAST_API + '/song/url?id=' + song.id);
-      var d2 = await r2.json();
-      if (d2.data && d2.data[0] && d2.data[0].url) return d2.data[0].url;
+      r = await fetch(NETEAST_API + '/song/url?id=' + song.id);
+      d = await r.json();
+      if (d.data && d.data[0] && d.data[0].url) return d.data[0].url;
     } catch (e) {}
     return NETEAST_RAW + '/song/media/outer/url?id=' + song.id + '.mp3';
+  }
+
+  // 酷狗：直连移动端 API
+  if (song.source === 'kugou') {
+    try {
+      var hash = song._hash || song.id.replace('kg_', '');
+      var r2 = await fetch('https://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=' + hash);
+      var d2 = await r2.json();
+      if (d2.url) return d2.url;
+      if (d2.backup_url && d2.backup_url[0]) return d2.backup_url[0];
+    } catch (e) { console.warn('Kugou play failed:', e.message); }
+    return null;
   }
 
   return null;
