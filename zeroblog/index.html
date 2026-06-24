@@ -75,6 +75,21 @@ footer{text-align:center;padding:60px 20px 40px;color:var(--muted);font-size:.8r
 .skeleton .line.meta{width:30%}
 .skeleton .line.body{width:100%}
 
+/* Key generation */
+.gen-link{background:none;border:none;color:var(--amber);font-size:.85rem;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.gen-link:hover{color:var(--cyan)}
+.keygen-card{background:var(--card);border:1px solid var(--amber);border-radius:12px;padding:28px 32px;margin-bottom:30px;text-align:left}
+.keygen-card h3{color:var(--amber);font-size:1.1rem;margin-bottom:8px}
+.keygen-card .key-row{display:flex;align-items:center;gap:10px;margin:10px 0;flex-wrap:wrap}
+.keygen-card .key-label{color:var(--muted);font-size:.8rem;min-width:50px}
+.keygen-card .key-value{font-family:monospace;font-size:.8rem;color:var(--text);word-break:break-all;flex:1;background:rgba(0,0,0,.2);padding:8px 12px;border-radius:6px;user-select:all}
+.keygen-card .key-value.nsec{color:#ff6060}
+.keygen-card .copy-btn{background:var(--border);color:var(--text);border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;white-space:nowrap}
+.keygen-card .copy-btn:hover{background:var(--amber);color:#000}
+.keygen-card .warning{color:#ff6060;font-size:.75rem;margin-top:16px;padding:12px;background:rgba(255,96,96,.08);border-radius:8px;line-height:1.6}
+.keygen-card .use-btn{background:var(--cyan);color:#000;border:none;padding:10px 24px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem;margin-top:16px}
+.keygen-card .use-btn:hover{opacity:.85}
+
 @media(max-width:600px){
   .input-group{flex-direction:column}
   .input-group button{width:100%}
@@ -94,6 +109,10 @@ footer{text-align:center;padding:60px 20px 40px;color:var(--muted);font-size:.8r
     <input type="text" id="npubInput" placeholder="输入 Nostr 公钥 npub1... 查看博客">
     <button id="loadBtn" onclick="loadBlog()">加载博客</button>
   </div>
+  <div style="text-align:center;margin-bottom:20px">
+    <button class="gen-link" onclick="generateKeys()">没有公钥？点此生成一个</button>
+  </div>
+  <div id="keygenCard" class="keygen-card" style="display:none"></div>
 
   <div class="relay-bar" id="relayBar"></div>
   <div class="status" id="status"></div>
@@ -378,6 +397,117 @@ function simpleMarkdown(text){
   // Fix nested p
   html = html.replace(/<p>(<(?:h[23]|ul|ol|pre|blockquote|hr)[\s\S]*?)<\/p>/g, '$1');
   return html;
+}
+
+// ---- Key Generation ----
+function bytesToHex(bytes){
+  return [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToBytes(hex){
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16);
+  return bytes;
+}
+
+function bech32encode(prefix, data){
+  const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+  const GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+  function polymod(values){
+    let chk = 1;
+    for(let v of values){
+      const top = chk >>> 25;
+      chk = ((chk & 0x1ffffff) << 5) ^ v;
+      for(let j = 0; j < 5; j++) chk ^= (top >>> j) & 1 ? GENERATOR[j] : 0;
+    }
+    return chk;
+  }
+  function expand(prefix){
+    let ret = [];
+    for(let c of prefix) ret.push(c.charCodeAt(0) >>> 5);
+    ret.push(0);
+    for(let c of prefix) ret.push(c.charCodeAt(0) & 31);
+    return ret;
+  }
+  const CHK = 1;
+  const combined = expand(prefix).concat(data);
+  const polymodVal = polymod(combined.concat([0,0,0,0,0,0])) ^ CHK;
+  const checksum = [];
+  for(let i = 0; i < 6; i++) checksum.push((polymodVal >>> (5 * (5 - i))) & 31);
+  const words = data.concat(checksum);
+  return prefix + '1' + words.map(w => CHARSET[w]).join('');
+}
+
+function words5to8(words){
+  let bits = 0, bitCount = 0;
+  for(let w of words) { bits = (bits << 5) | w; bitCount += 5; }
+  const result = [];
+  while(bitCount >= 8){ result.push((bits >>> (bitCount - 8)) & 0xff); bitCount -= 8; }
+  return result;
+}
+
+function bytes8to5(bytes){
+  let result = [];
+  let bits = 0, bitCount = 0;
+  for(let b of bytes){ bits = (bits << 8) | b; bitCount += 8; }
+  while(bitCount >= 5){ result.push((bits >>> (bitCount - 5)) & 0x1f); bitCount -= 5; }
+  return result;
+}
+
+async function generateKeys(){
+  const card = document.getElementById('keygenCard');
+  card.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted)">正在生成密钥对...</div>';
+  card.style.display = 'block';
+
+  try{
+    const { generateSecretKey, getPublicKey } = await import('https://esm.sh/nostr-tools@2.10.1/pure');
+    const sk = generateSecretKey();
+    const pk = getPublicKey(sk);
+
+    const skHex = bytesToHex(sk);
+    const pkHex = pk;
+    const skWords = bytes8to5(sk);
+    const pkWords = bytes8to5(hexToBytes(pkHex));
+
+    const nsec = bech32encode('nsec', skWords);
+    const npub = bech32encode('npub', pkWords);
+
+    card.innerHTML = `
+      <h3>你的新密钥对</h3>
+      <div class="key-row">
+        <span class="key-label">公钥</span>
+        <span class="key-value" id="genNpub">${npub}</span>
+        <button class="copy-btn" onclick="copyKey('genNpub')">复制</button>
+      </div>
+      <div class="key-row">
+        <span class="key-label">私钥</span>
+        <span class="key-value nsec" id="genNsec">${nsec}</span>
+        <button class="copy-btn" onclick="copyKey('genNsec')">复制</button>
+      </div>
+      <div class="warning">
+        私钥是控制你博客的唯一凭证，仅保存在浏览器内存中。<br>
+        刷新页面即丢失。请务必<strong>立即保存私钥到安全的地方</strong>（如密码管理器）。
+      </div>
+      <button class="use-btn" onclick="useGeneratedNpub('${npub}')">用此公钥加载博客</button>
+    `;
+  }catch(e){
+    card.innerHTML = `<div style="color:#ff6060;text-align:center">生成失败：${e.message}</div>`;
+  }
+}
+
+function copyKey(elId){
+  const el = document.getElementById(elId);
+  const text = el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.nextElementSibling;
+    btn.textContent = '已复制!';
+    setTimeout(() => { btn.textContent = '复制'; }, 1500);
+  });
+}
+
+function useGeneratedNpub(npub){
+  document.getElementById('npubInput').value = npub;
+  loadBlog();
 }
 
 // Auto-load from URL hash
