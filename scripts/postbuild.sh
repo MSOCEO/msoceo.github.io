@@ -11,6 +11,12 @@ if [ -d blog ]; then
   echo "✓ Blog (Xusu 2.0) copied to dist/blog/"
 fi
 
+# Copy zeroblog into dist/
+if [ -d zeroblog ]; then
+  cp -r zeroblog dist/
+  echo "✓ ZeroBlog copied to dist/zeroblog/"
+fi
+
 # Copy portal page as potential root index
 if [ -f portal.html ]; then
   cp portal.html dist/portal-index.html
