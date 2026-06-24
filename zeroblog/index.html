@@ -126,12 +126,14 @@ footer{text-align:center;padding:60px 20px 40px;color:var(--muted);font-size:.8r
 
 <script>
 const RELAYS = [
+  'wss://relay.nostrzh.org',     // 国内中继
   'wss://relay.damus.io',
+  'wss://relay.nostr.net',       // 全球通用
   'wss://nos.lol',
-  'wss://relay.nostr.band',
   'wss://nostr.mom',
+  'wss://yabu.me',               // 日本，亚洲用户友好
+  'wss://relay.nostr.band',
   'wss://relay.nostr.bg',
-  'wss://relay.nostrzh.org',
   'wss://eden.nostr.land'
 ];
 
@@ -187,11 +189,13 @@ function connectRelays(npub){
 
   // Fallback: render after timeout
   setTimeout(() => {
-    if(articles.length === 0){
+    if(connectedCount === 0){
+      setStatus('未能连接任何中继 — 可能被网络屏蔽，请尝试使用代理');
+    } else if(articles.length === 0){
       setStatus('中继连接较慢，请耐心等待...');
     }
     renderArticles();
-  }, 5000);
+  }, 8000);
 }
 
 function updateRelayDot(url, online){
@@ -219,12 +223,23 @@ function loadBlog(){
 
 function renderArticles(){
   if(articles.length === 0){
+    const noneHint = connectedCount === 0
+      ? `<p style="color:var(--red);margin-top:16px">⚠️ 所有中继均无法连接</p>
+         <p style="font-size:0.85em;color:var(--dim)">你的网络可能屏蔽了 WebSocket 直连<br>请尝试挂代理后刷新，或在本地运行 Nostr 客户端</p>`
+      : `<p style="margin-top:16px">📭 该公钥还没有发布文章</p>
+         <div style="margin-top:12px;padding:12px 16px;background:rgba(0,255,221,0.06);border:1px solid var(--border);border-radius:8px;text-align:left;font-size:0.9em;line-height:1.8">
+           <div>💡 <b>新手引导</b></div>
+           <div>1. 用任意 Nostr 客户端写一篇"长文笔记"（kind:30023）</div>
+           <div>2. 复制你的 npub 粘贴到上方输入框</div>
+           <div>3. 点击加载，你的文章就会出现在这里</div>
+           <div style="margin-top:8px;color:var(--dim)">推荐客户端：<a href="https://yakihonne.com" target="_blank" style="color:var(--cyan)">Yakihonne</a> · <a href="https://highlighter.com" target="_blank" style="color:var(--cyan)">Highlighter</a> · <a href="https://habla.news" target="_blank" style="color:var(--cyan)">Habla</a></div>
+         </div>`;
     document.getElementById('view').innerHTML = `
       <div class="empty">
-        <div class="icon">📡</div>
-        <p>扫描中继网络中...<br>如果长时间无内容，可能该公钥尚未发布长文<br>或中继未同步相关事件</p>
+        <div class="icon">${connectedCount === 0 ? '🔌' : '📡'}</div>
+        ${noneHint}
       </div>`;
-    setStatus('未找到文章 — 尝试刷新或换个公钥');
+    setStatus(connectedCount === 0 ? '所有中继连接失败' : '未找到文章 — 该密钥尚无内容');
     return;
   }
 
