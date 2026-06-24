@@ -1,6 +1,6 @@
 export const SITE = {
-  TITLE: '寒影拾光',
-  DESCRIPTION: '在深夜书房里，拾取散落的光',
+  TITLE: 'Xusu',
+  DESCRIPTION: '叙溯 —— 一边讲述，一边溯源',
   AUTHOR: 'MSOCEO',
   LANG: 'zh-CN',
   OG_LOCALE: 'zh_CN',
