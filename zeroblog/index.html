@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>零部署博客</title>
+<style>
+:root{--bg:#0a0a14;--card:#111122;--border:#1a1a35;--cyan:#00d4ff;--amber:#ffa040;--text:#d0d5e0;--muted:#606880;--green:#50e890}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:"Noto Serif SC","Source Han Serif SC",Georgia,serif;min-height:100vh;line-height:1.8}
+.container{max-width:720px;margin:0 auto;padding:40px 20px}
+
+/* Header */
+header{padding:60px 0 40px;text-align:center}
+header h1{font-size:2rem;color:var(--cyan);letter-spacing:.05em;margin-bottom:8px}
+header p{color:var(--muted);font-size:.9rem}
+
+/* Pubkey Input */
+.input-group{display:flex;gap:10px;margin:20px 0 40px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:6px}
+.input-group input{flex:1;background:transparent;border:none;color:var(--text);font-size:.9rem;padding:12px 16px;outline:none;font-family:monospace}
+.input-group button{background:var(--cyan);color:#000;border:none;padding:12px 24px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;white-space:nowrap}
+.input-group button:hover{opacity:.85}
+.input-group button:disabled{opacity:.4;cursor:default}
+
+/* Status */
+.status{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:30px;min-height:24px}
+
+/* Article list */
+.article-list{display:flex;flex-direction:column;gap:24px}
+.article-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;cursor:pointer;transition:border-color .2s}
+.article-card:hover{border-color:var(--cyan)}
+.article-card h2{font-size:1.25rem;color:var(--text);margin-bottom:8px}
+.article-card .meta{font-size:.8rem;color:var(--muted);margin-bottom:12px}
+.article-card .summary{font-size:.9rem;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.article-card .tags{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.article-card .tag{font-size:.75rem;padding:2px 10px;border-radius:12px;background:rgba(0,212,255,.1);color:var(--cyan)}
+
+/* Article detail */
+.article-detail{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:40px}
+.article-detail h1{font-size:1.8rem;color:var(--text);margin-bottom:12px}
+.article-detail .meta{font-size:.85rem;color:var(--muted);margin-bottom:8px}
+.article-detail .content{font-size:1rem;line-height:1.9;margin-top:30px}
+.article-detail .content p{margin-bottom:1em}
+.article-detail .content h2{font-size:1.3rem;margin:1.5em 0 .5em;color:var(--amber)}
+.article-detail .content h3{font-size:1.1rem;margin:1.2em 0 .4em}
+.article-detail .content code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.article-detail .content pre{background:rgba(0,0,0,.3);padding:16px;border-radius:8px;overflow-x:auto;margin:1em 0;font-size:.85em}
+.article-detail .content pre code{background:none;padding:0}
+.article-detail .content blockquote{border-left:3px solid var(--amber);padding-left:16px;color:var(--muted);margin:1em 0}
+.article-detail .content ul,.article-detail .content ol{padding-left:24px;margin:.5em 0}
+.article-detail .content img{max-width:100%;border-radius:8px;margin:1em 0}
+.back-link{display:inline-block;margin-top:30px;color:var(--cyan);cursor:pointer;font-size:.9rem}
+.back-link:hover{text-decoration:underline}
+
+/* Footer */
+footer{text-align:center;padding:60px 20px 40px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--border);margin-top:60px}
+
+/* Empty state */
+.empty{text-align:center;padding:80px 20px;color:var(--muted)}
+.empty .icon{font-size:3rem;margin-bottom:16px}
+.empty p{font-size:.9rem;line-height:1.8}
+
+/* Relay indicator */
+.relay-bar{display:flex;gap:16px;justify-content:center;margin:30px 0;flex-wrap:wrap}
+.relay-dot{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted)}
+.relay-dot .dot{width:8px;height:8px;border-radius:50%}
+.relay-dot .dot.online{background:var(--green)}
+.relay-dot .dot.connecting{background:var(--amber)}
+
+/* Loading skeleton */
+.skeleton{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+.skeleton .line{height:14px;background:var(--border);border-radius:4px;margin-bottom:10px}
+.skeleton .line.title{width:60%;height:20px}
+.skeleton .line.meta{width:30%}
+.skeleton .line.body{width:100%}
+
+@media(max-width:600px){
+  .input-group{flex-direction:column}
+  .input-group button{width:100%}
+  .article-detail{padding:24px 20px}
+  .article-card{padding:20px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>零部署博客</h1>
+    <p>没有 Git · 没有构建 · 没有服务器 · 写即发布</p>
+  </header>
+
+  <div class="input-group">
+    <input type="text" id="npubInput" placeholder="输入 Nostr 公钥 npub1... 查看博客">
+    <button id="loadBtn" onclick="loadBlog()">加载博客</button>
+  </div>
+
+  <div class="relay-bar" id="relayBar"></div>
+  <div class="status" id="status"></div>
+  <div id="view"></div>
+</div>
+
+<footer>
+  <p>基于 Nostr 协议 · 文章存储在中继网络 · 全球同步 · 永久在线</p>
+  <p style="margin-top:8px">Powered by ZeroBlog · 你的公钥就是博客地址</p>
+</footer>
+
+<script>
+const RELAYS = [
+  'wss://relay.damus.io',
+  'wss://nos.lol',
+  'wss://relay.nostr.band',
+  'wss://nostr.mom',
+  'wss://relay.nostr.bg',
+  'wss://relay.nostrzh.org',
+  'wss://eden.nostr.land'
+];
+
+let currentNpub = '';
+let articles = [];
+
+// Simple event bus
+const events = {};
+function on(evt, fn){ if(!events[evt]) events[evt]=[]; events[evt].push(fn); }
+function emit(evt, data){ (events[evt]||[]).forEach(fn=>fn(data)); }
+
+// Relay connections
+const sockets = [];
+const subIds = [];
+let connectedCount = 0;
+
+function connectRelays(npub){
+  const hex = npubToHex(npub);
+  if(!hex){ setStatus('无效的公钥格式'); return; }
+
+  setStatus('连接中继网络...');
+  document.getElementById('relayBar').innerHTML = RELAYS.map(r =>
+    `<div class="relay-dot" id="relay-${r.replace(/[^a-z0-9]/g,'-')}"><span class="dot connecting"></span>${new URL(r).host}</div>`
+  ).join('');
+
+  RELAYS.forEach((url, idx) => {
+    try{
+      const ws = new WebSocket(url);
+      sockets.push(ws);
+      ws.onopen = () => {
+        connectedCount++;
+        updateRelayDot(url, true);
+        setStatus(`已连接 ${connectedCount}/${RELAYS.length} 个中继节点`);
+        const subId = `zeroblog-${idx}-${Date.now()}`;
+        subIds.push(subId);
+        ws.send(JSON.stringify(["REQ", subId, {kinds:[30023], authors:[hex], limit:50}]));
+      };
+      ws.onmessage = (e) => {
+        try{
+          const msg = JSON.parse(e.data);
+          if(msg[0] === 'EVENT' && msg[2]?.kind === 30023){
+            articles.push(msg[2]);
+          }
+          if(msg[0] === 'EOSE'){
+            renderArticles();
+          }
+        }catch(_){}
+      };
+      ws.onerror = () => updateRelayDot(url, false);
+      ws.onclose = () => updateRelayDot(url, false);
+    }catch(_){}
+  });
+
+  // Fallback: render after timeout
+  setTimeout(() => {
+    if(articles.length === 0){
+      setStatus('中继连接较慢，请耐心等待...');
+    }
+    renderArticles();
+  }, 5000);
+}
+
+function updateRelayDot(url, online){
+  const id = `relay-${url.replace(/[^a-z0-9]/g,'-')}`;
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = `<span class="dot ${online?'online':'connecting'}"></span>${new URL(url).host}`;
+}
+
+function loadBlog(){
+  const npub = document.getElementById('npubInput').value.trim();
+  if(!npub.startsWith('npub1') || npub.length < 60){
+    alert('请输入有效的 Nostr 公钥（以 npub1 开头）');
+    return;
+  }
+  currentNpub = npub;
+  articles = [];
+  sockets.forEach(s=>{try{s.close()}catch(_){}});
+  sockets.length = 0;
+  subIds.length = 0;
+  connectedCount = 0;
+  document.getElementById('view').innerHTML = '';
+  connectRelays(npub);
+}
+
+function renderArticles(){
+  if(articles.length === 0){
+    document.getElementById('view').innerHTML = `
+      <div class="empty">
+        <div class="icon">📡</div>
+        <p>扫描中继网络中...<br>如果长时间无内容，可能该公钥尚未发布长文<br>或中继未同步相关事件</p>
+      </div>`;
+    setStatus('未找到文章 — 尝试刷新或换个公钥');
+    return;
+  }
+
+  // Dedup and sort by created_at desc
+  const unique = {};
+  articles.forEach(a => { unique[a.id] = a; });
+  const sorted = Object.values(unique).sort((a,b) => b.created_at - a.created_at);
+
+  setStatus(`共 ${sorted.length} 篇文章 · 来自 ${connectedCount} 个中继节点`);
+
+  let html = '<div class="article-list">';
+  sorted.forEach((a, idx) => {
+    const date = new Date(a.created_at * 1000);
+    const dateStr = `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`;
+    const title = getTagValue(a.tags, 'title') || getTagValue(a.tags, 'd') || '无标题';
+    const summary = getTagValue(a.tags, 'summary') || extractExcerpt(a.content, 120);
+    const image = getTagValue(a.tags, 'image') || '';
+    const tagList = (getTagValues(a.tags, 't') || []).slice(0, 5);
+
+    html += `
+      <div class="article-card" onclick="showArticle(${idx})">
+        <h2>${escapeHtml(title)}</h2>
+        <div class="meta">${dateStr} · ${a.content?.length||0} 字</div>
+        <div class="summary">${escapeHtml(summary)}</div>
+        ${tagList.length ? `<div class="tags">${tagList.map(t=>`<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+      </div>`;
+  });
+  html += '</div>';
+  document.getElementById('view').innerHTML = html;
+
+  // Store sorted unique
+  articles = sorted;
+}
+
+function showArticle(idx){
+  const a = articles[idx];
+  if(!a) return;
+  const date = new Date(a.created_at * 1000);
+  const dateStr = `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`;
+  const title = getTagValue(a.tags, 'title') || getTagValue(a.tags, 'd') || '无标题';
+  const content = a.content || '';
+  const rendered = simpleMarkdown(content);
+
+  document.getElementById('view').innerHTML = `
+    <div class="article-detail">
+      <h1>${escapeHtml(title)}</h1>
+      <div class="meta">${dateStr} · ${content.length} 字 · 来自 Nostr 中继</div>
+      <div class="content">${rendered}</div>
+      <span class="back-link" onclick="showList()">← 返回文章列表</span>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+function showList(){
+  renderArticles();
+  window.scrollTo(0,0);
+}
+
+function setStatus(msg){
+  document.getElementById('status').textContent = msg;
+}
+
+// ---- Nostr helpers ----
+function npubToHex(npub){
+  try{
+    const bech32 = npub;
+    const words = bech32decode(bech32, 1000);
+    if(!words || words.length < 32) return null;
+    const bytes = new Uint8Array(32);
+    for(let i=0; i<32; i++) bytes[i] = words[i];
+    return [...bytes].map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){return null}
+}
+
+function bech32decode(bech32, limit){
+  const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+  const GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+  function polymod(values){
+    let chk = 1;
+    for(let i=0; i<values.length; i++){
+      const top = chk >>> 25;
+      chk = ((chk & 0x1ffffff) << 5) ^ values[i];
+      for(let j=0; j<5; j++) chk ^= (top >>> j) & 1 ? GENERATOR[j] : 0;
+    }
+    return chk;
+  }
+  function hrpExpand(hrp){
+    const ret = [];
+    for(let i=0; i<hrp.length; i++) ret.push(hrp.charCodeAt(i) >>> 5);
+    ret.push(0);
+    for(let i=0; i<hrp.length; i++) ret.push(hrp.charCodeAt(i) & 0x1f);
+    return ret;
+  }
+  const pos = bech32.lastIndexOf('1');
+  if(pos < 1 || pos + 7 > bech32.length) return null;
+  const hrp = bech32.substring(0, pos).toLowerCase();
+  const data = bech32.substring(pos + 1);
+  const combined = hrpExpand(hrp);
+  for(let i=0; i<data.length; i++){
+    const idx = CHARSET.indexOf(data[i]);
+    if(idx === -1) return null;
+    combined.push(idx);
+  }
+  if(polymod(combined) !== 1) return null;
+  combined.length -= 6;
+  const values = combined.slice(hrpExpand(hrp).length);
+  const ret = [];
+  let bits = 0, bitVal = 0;
+  for(let i=0; i<values.length; i++){
+    bitVal = (bitVal << 5) | values[i];
+    bits += 5;
+    while(bits >= 8){
+      bits -= 8;
+      ret.push((bitVal >>> bits) & 0xff);
+    }
+  }
+  return ret.slice(0, limit);
+}
+
+function getTagValue(tags, key){
+  const t = (tags||[]).find(t=>t[0]===key);
+  return t ? t[1] : '';
+}
+function getTagValues(tags, key){
+  return (tags||[]).filter(t=>t[0]===key).map(t=>t[1]);
+}
+function extractExcerpt(text, maxLen){
+  if(!text) return '';
+  const cleaned = text.replace(/#{1,6}\s/g,'').replace(/[*_~`]/g,'').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').replace(/\n+/g,' ').trim();
+  return cleaned.length > maxLen ? cleaned.substring(0,maxLen)+'...' : cleaned;
+}
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function simpleMarkdown(text){
+  if(!text) return '';
+  let html = escapeHtml(text);
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_,lang,code) => `<pre><code>${code}</code></pre>`);
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Images
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--cyan)">$1</a>');
+  // Bold
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  // Blockquotes
+  html = html.replace(/^&gt;\s?(.*)$/gm, '<blockquote>$1</blockquote>');
+  // Headings
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+  // Horizontal rules
+  html = html.replace(/^---+$/gm, '<hr>');
+  // Lists
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  // Wrap consecutive <li> in <ul>
+  html = html.replace(/(<li>[\s\S]*?<\/li>)\n(?!<li>)/g, '<ul>$1</ul>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>)/g, (m) => m.includes('<ul>') ? m : `<ul>${m}</ul>`);
+  // Paragraphs
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = '<p>' + html + '</p>';
+  // Clean empty paragraphs
+  html = html.replace(/<p>\s*<\/p>/g, '');
+  // Fix nested p
+  html = html.replace(/<p>(<(?:h[23]|ul|ol|pre|blockquote|hr)[\s\S]*?)<\/p>/g, '$1');
+  return html;
+}
+
+// Auto-load from URL hash
+window.addEventListener('DOMContentLoaded', ()=>{
+  const hash = window.location.hash;
+  if(hash && hash.startsWith('#npub1')){
+    document.getElementById('npubInput').value = hash.substring(1);
+    setTimeout(loadBlog, 300);
+  }
+  setStatus('输入 Nostr 公钥，或直接访问 #npub1... 加载博客');
+});
+</script>
+</body>
+</html>
