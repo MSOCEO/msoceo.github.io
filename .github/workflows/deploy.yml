@@ -27,15 +27,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Copy DJ Portal
-        run: |
-          cp -r public/dj dist/
-          cp dj.html dist/
-          cp music-station.html dist/
-          cp radio.html dist/
-          cp -r public/marvis-dj dist/
-          cp -r dj-portal dist/
-
       - name: Copy startrails
         run: cp -r startrails dist/
 
@@ -55,8 +46,6 @@ jobs:
         run: |
           echo "workbox size: $(wc -c < dist/workbox/index.html)"
           echo "portal size: $(wc -c < dist/index.html)"
-          echo "dj size: $(wc -c < dist/dj/index.html)"
-          echo "dj.html size: $(wc -c < dist/dj.html)"
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
