@@ -1,0 +1,16 @@
+{
+  "featured": {
+    "name": "寒影·栖居",
+    "url": "https://msoceo.github.io",
+    "description": "记录思考，分享工具，在沉寂中沉淀，于代码间生光。",
+    "tags": ["技术", "设计", "生活", "独立博客"],
+    "avatar": "https://www.google.com/s2/favicons?domain=msoceo.github.io&sz=64",
+    "weekStart": "2026-06-16T00:00:00Z",
+    "weekEnd": "2026-06-23T00:00:00Z"
+  },
+  "history": [
+    {"name": "阮一峰的网络日志", "url": "https://www.ruanyifeng.com/blog/", "week": "2026-06-09"},
+    {"name": "酷壳 CoolShell", "url": "https://coolshell.cn/", "week": "2026-06-02"},
+    {"name": "DIYgod", "url": "https://diygod.cc/", "week": "2026-05-26"}
+  ]
+}

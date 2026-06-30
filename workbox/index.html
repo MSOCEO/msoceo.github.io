@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>即刻办公 — 一站式在线工具箱</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'SF Pro Display',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#0a0a0f;color:#e1e2e9;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(99,102,241,.06) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(139,92,246,.05) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(6,182,212,.03) 0%,transparent 60%)}
+.bg-grid::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,black 30%,transparent 70%)}
+.outer-frame{position:relative;z-index:1;max-width:100%}@media(min-width:1200px){.outer-frame{margin:16px;border-radius:16px;overflow:hidden}.outer-frame::before{content:'';position:absolute;inset:0;border:1px solid rgba(99,102,241,.12);border-radius:16px;pointer-events:none}}
+.header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(255,255,255,.06);padding:0 24px;height:64px;display:flex;align-items:center;gap:24px}
+.header-brand{display:flex;align-items:center;gap:10px;font-size:1.125rem;font-weight:700;letter-spacing:-.02em;color:#e1e2e9;white-space:nowrap;text-decoration:none}
+.header-brand .logo{width:34px;height:34px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;font-weight:800}
+.header-tagline{font-size:.75rem;color:rgba(255,255,255,.35);margin-left:-14px;white-space:nowrap;display:none}@media(min-width:768px){.header-tagline{display:block}}
+.search-wrap{flex:1;max-width:480px;position:relative}
+.search-wrap input{width:100%;height:40px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:0 16px 0 40px;font-size:.875rem;color:#e1e2e9;outline:none;transition:all .2s ease}
+.search-wrap input:focus{border-color:rgba(99,102,241,.4);background:rgba(255,255,255,.06);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.search-wrap input::placeholder{color:rgba(255,255,255,.25)}
+.search-wrap .search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.25);font-size:.875rem;pointer-events:none}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;font-size:1rem;display:none;padding:4px;border-radius:50%}
+.search-clear:hover{color:rgba(255,255,255,.6);background:rgba(255,255,255,.06)}.search-clear.visible{display:flex;align-items:center;justify-content:center}
+.app-layout{display:flex;position:relative;z-index:1;min-height:calc(100vh - 64px)}
+.sidebar{width:220px;flex-shrink:0;background:rgba(10,10,15,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-right:1px solid rgba(255,255,255,.05);padding:20px 12px;overflow-y:auto;position:sticky;top:64px;max-height:calc(100vh - 64px);transition:transform .3s ease}
+.sidebar-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.2);padding:0 12px 12px}
+.sidebar-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
+.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:.85rem;color:rgba(255,255,255,.5);text-decoration:none;transition:all .2s ease;cursor:pointer}
+.sidebar-nav li a:hover{color:#e1e2e9;background:rgba(255,255,255,.04)}
+.sidebar-nav li a.active{color:#e1e2e9;background:rgba(99,102,241,.12);font-weight:600}
+.sidebar-nav li a .nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0;transition:opacity .2s}
+.sidebar-nav li a.active .nav-dot{opacity:1;background:#6366f1}
+.sidebar-count{margin-left:auto;font-size:.7rem;background:rgba(255,255,255,.04);padding:2px 7px;border-radius:6px}
+.mobile-nav-toggle{display:none;position:fixed;bottom:24px;right:24px;z-index:200;width:48px;height:48px;border-radius:50%;background:rgba(99,102,241,.9);border:none;cursor:pointer;color:#fff;font-size:1.25rem;box-shadow:0 4px 20px rgba(99,102,241,.4);backdrop-filter:blur(10px);align-items:center;justify-content:center}
+@media(max-width:900px){.sidebar{position:fixed;left:0;top:64px;bottom:0;z-index:150;transform:translateX(-100%);box-shadow:4px 0 30px rgba(0,0,0,.5)}.sidebar.open{transform:translateX(0)}.mobile-nav-toggle{display:flex}}
+.main-content{flex:1;padding:32px 24px 64px;overflow-y:auto;max-width:1400px}
+.category-section{margin-bottom:48px}
+.category-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.category-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:rgba(99,102,241,.1);flex-shrink:0}
+.category-header h2{font-size:1.35rem;font-weight:700;letter-spacing:-.02em;color:#e1e2e9}
+.category-header .count{font-size:.75rem;color:rgba(255,255,255,.25);background:rgba(255,255,255,.04);padding:3px 10px;border-radius:8px}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+@media(max-width:1200px){.tool-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}}
+@media(max-width:900px){.tool-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}}
+@media(max-width:600px){.tool-grid{grid-template-columns:1fr 1fr;gap:8px}}
+.tool-card{position:relative;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.tool-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 100% 100% at 50% -20%,rgba(99,102,241,.08),transparent 70%);opacity:0;transition:opacity .3s}
+.tool-card:hover{background:rgba(255,255,255,.04);border-color:rgba(99,102,241,.2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3),0 0 0 1px rgba(99,102,241,.1) inset}
+.tool-card:hover::before{opacity:1}
+.tool-card:active{transform:translateY(0);transition:transform .1s}
+.tool-card-badge{position:absolute;top:12px;right:12px;font-size:.6rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:6px;letter-spacing:.05em}
+.badge-ai{background:rgba(6,182,212,.15);color:#06b6d4}.badge-hot{background:rgba(139,92,246,.15);color:#a78bfa}.badge-new{background:rgba(99,102,241,.15);color:#818cf8}.badge-live{background:rgba(34,197,94,.15);color:#22c55e}
+.tool-card-icon{width:42px;height:42px;border-radius:12px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:14px;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.tool-card:hover .tool-card-icon{transform:scale(1.08)}
+.tool-card h3{font-size:.95rem;font-weight:600;color:#e1e2e9;margin-bottom:6px;letter-spacing:-.01em}
+.tool-card p{font-size:.8rem;color:rgba(255,255,255,.35);line-height:1.5}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.workspace-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s ease}
+.workspace-overlay.open{opacity:1;pointer-events:auto}
+.workspace-panel{position:fixed;right:0;top:0;bottom:0;z-index:401;width:620px;max-width:100vw;background:rgba(14,14,22,.97);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-left:1px solid rgba(255,255,255,.06);transform:translateX(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.5)}
+.workspace-panel.open{transform:translateX(0)}
+.workspace-header{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0}
+.workspace-header .ws-icon{font-size:1.4rem}.workspace-header h3{font-size:1.05rem;font-weight:650;flex:1}
+.workspace-header button{width:32px;height:32px;border-radius:8px;border:none;background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.workspace-header button:hover{background:rgba(255,255,255,.1);color:#e1e2e9}
+.workspace-body{flex:1;overflow-y:auto;padding:24px}
+.upload-zone{border:2px dashed rgba(255,255,255,.1);border-radius:16px;padding:40px 24px;text-align:center;cursor:pointer;transition:all .2s ease;background:rgba(255,255,255,.015);margin-bottom:20px}
+.upload-zone:hover,.upload-zone.dragover{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.04)}
+.upload-zone .upload-icon{font-size:2.5rem;margin-bottom:12px;display:block}
+.upload-zone .upload-text{font-size:.9rem;color:rgba(255,255,255,.4);margin-bottom:6px}
+.upload-zone .upload-hint{font-size:.75rem;color:rgba(255,255,255,.2)}
+.upload-zone input[type=file]{display:none}
+.ws-file-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.ws-file-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:10px;font-size:.85rem}
+.ws-file-item .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.7)}
+.ws-file-item .fsize{font-size:.75rem;color:rgba(255,255,255,.25)}
+.ws-file-item .fremove{background:none;border:none;color:rgba(255,255,255,.25);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:4px}
+.ws-file-item .fremove:hover{color:#ef4444;background:rgba(239,68,68,.1)}
+.ws-options{margin-bottom:20px}
+.ws-options label{display:block;font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:6px}
+.ws-options input[type=text],.ws-options input[type=number],.ws-options select,.ws-options textarea{width:100%;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:.88rem;color:#e1e2e9;outline:none;transition:border .2s}
+.ws-options input:focus,.ws-options select:focus,.ws-options textarea:focus{border-color:rgba(99,102,241,.4)}
+.ws-options select option{background:#1a1a28;color:#e1e2e9}
+.ws-options .opt-row{display:flex;gap:10px;margin-bottom:12px}
+.ws-options .opt-row>*{flex:1}
+.ws-options textarea{min-height:100px;resize:vertical;font-family:monospace}
+.ws-options .slider-row{display:flex;align-items:center;gap:12px}
+.ws-options input[type=range]{flex:1;accent-color:#6366f1}
+.ws-options .slider-val{font-size:.8rem;color:rgba(255,255,255,.6);min-width:50px;text-align:right}
+.ws-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.ws-actions button{padding:10px 24px;border-radius:10px;font-size:.85rem;border:none;cursor:pointer;font-weight:600;transition:all .2s ease}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3)}
+.btn-primary:hover:not(:disabled){box-shadow:0 6px 20px rgba(99,102,241,.45);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:rgba(255,255,255,.06);color:#e1e2e9}
+.btn-secondary:hover{background:rgba(255,255,255,.12)}
+.btn-danger{background:rgba(239,68,68,.1);color:#ef4444}.btn-danger:hover{background:rgba(239,68,68,.2)}
+.ws-result{margin-top:20px}
+.ws-result .result-preview{max-width:100%;max-height:300px;border-radius:10px;border:1px solid rgba(255,255,255,.06);object-fit:contain;background:rgba(0,0,0,.3)}
+.ws-result .result-text{padding:16px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-radius:10px;font-size:.85rem;color:rgba(255,255,255,.5);max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
+.ws-progress{display:none;margin:16px 0}.ws-progress.show{display:block}
+.ws-progress .prog-bar{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.ws-progress .prog-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:2px;transition:width .3s ease;width:0%}
+.ws-progress .prog-text{font-size:.75rem;color:rgba(255,255,255,.35);margin-top:6px}
+.recording-indicator{display:none;align-items:center;gap:8px;padding:12px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:10px;margin:16px 0}
+.recording-indicator.show{display:flex}
+.rec-dot{width:10px;height:10px;border-radius:50%;background:#ef4444;animation:pulse-dot .8s infinite}
+.rec-timer{font-size:.9rem;font-weight:600;color:#ef4444;font-variant-numeric:tabular-nums}
+.status-ready{color:#22c55e}.status-empty{color:rgba(255,255,255,.2)}
+.status-wip{color:rgba(255,255,255,.3);font-size:.85rem;line-height:1.7;padding:20px 0}
+.pdf-viewer{max-width:100%;border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;background:#fff;min-height:400px}
+.pdf-viewer canvas{display:block;margin:0 auto;max-width:100%}
+.signature-pad{border:2px dashed rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.98);cursor:crosshair;margin:16px 0;touch-action:none}
+.crop-container{position:relative;max-width:100%;overflow:hidden;margin:16px 0;border-radius:10px;user-select:none}
+.crop-container img{display:block;max-width:100%}
+.crop-box{position:absolute;border:2px solid #6366f1;box-shadow:0 0 0 9999px rgba(0,0,0,.5);cursor:move}
+.crop-handle{position:absolute;width:10px;height:10px;background:#6366f1;border:2px solid #fff;border-radius:2px}
+.footer{border-top:1px solid rgba(255,255,255,.05);background:rgba(10,10,15,.6);backdrop-filter:blur(12px);padding:40px 24px 32px}
+.footer-inner{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between}
+.footer-brand h4{font-size:1rem;font-weight:700;margin-bottom:8px}
+.footer-brand p{font-size:.8rem;color:rgba(255,255,255,.3);max-width:280px;line-height:1.6}
+.footer-bottom{max-width:1400px;margin:24px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.04);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:.75rem;color:rgba(255,255,255,.18)}
+.no-results{text-align:center;padding:60px 20px;color:rgba(255,255,255,.2)}
+.no-results .icon{font-size:3rem;margin-bottom:16px}
+.zip-tree{font-size:.85rem;color:rgba(255,255,255,.6);margin:16px 0;max-height:300px;overflow-y:auto}
+.zip-tree .zip-item{padding:4px 8px;cursor:pointer;border-radius:6px;display:flex;align-items:center;gap:8px}
+.zip-tree .zip-item:hover{background:rgba(99,102,241,.08);color:#e1e2e9}
+.zip-tree .zip-folder{color:#818cf8}
+@media(max-width:900px){.main-content{padding:20px 16px 48px}.header{padding:0 16px}}
+@media(max-width:600px){.tool-card{padding:14px}.tool-card h3{font-size:.85rem}.search-wrap{max-width:200px}.workspace-panel{width:100vw}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="outer-frame">
+<header class="header">
+  <a class="header-brand" href="#"><span class="logo">M</span>即刻办公</a>
+  <span class="header-tagline">一站式在线办公工具箱</span>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="搜索工具..." autocomplete="off">
+    <button class="search-clear" id="searchClear">&times;</button>
+  </div>
+</header>
+<div class="app-layout">
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">工具分类</div>
+  <ul class="sidebar-nav" id="sidebarNav"><li><a class="active" data-cat="all">全部工具<span class="sidebar-count">86</span></a></li></ul>
+</nav>
+<button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="菜单">&#9776;</button>
+<main class="main-content" id="mainContent">
+  <div class="loading-skeleton" id="loadingSkeleton">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px">
+      <div style="width:48px;height:48px;border:3px solid rgba(99,102,241,.15);border-top-color:#6366f1;border-radius:50%;animation:spin .8s linear infinite"></div>
+      <p style="color:rgba(255,255,255,.35);font-size:.9rem">正在加载工具库...</p>
+    </div>
+  </div>
+  <div class="no-results" id="noResults" style="display:none"><div class="icon">&#128270;</div><p>未找到匹配的工具</p></div>
+</main>
+</div>
+<footer class="footer">
+  <div class="footer-inner"><div class="footer-brand"><h4>即刻办公</h4><p>PDF 处理、格式转换、视频音频工具、图片处理、OCR。所有处理在浏览器本地完成，文件即用即焚。</p></div></div>
+  <div class="footer-bottom"><span>&copy; 2026 即刻办公</span><span>75 款工具，70 款浏览器端运行</span></div>
+</footer>
+</div>
+
+<div class="workspace-overlay" id="wsOverlay"></div>
+<div class="workspace-panel" id="wsPanel">
+  <div class="workspace-header">
+    <span class="ws-icon" id="wsIcon"></span><h3 id="wsTitle"></h3>
+    <button onclick="closeWorkspace()" aria-label="关闭">&times;</button>
+  </div>
+  <div class="workspace-body" id="wsBody"></div>
+</div>
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const tools=[
+  {id:'pdf-merge',name:'PDF 合并',desc:'将多个 PDF 文档合并为一个文件',icon:'📎',cat:'pdf',badge:'live',m:'m'},
+  {id:'pdf-split',name:'PDF 拆分',desc:'分离 PDF 页面或提取特定部分',icon:'✂️',cat:'pdf',m:'m'},
+  {id:'pdf-compress',name:'PDF 压缩',desc:'减小 PDF 文件大小，保持质量',icon:'🗜️',cat:'pdf',m:'m'},
+  {id:'pdf-edit',name:'PDF 编辑',desc:'在线编辑 PDF 文本和图片',icon:'✏️',cat:'pdf',badge:'hot',m:'h'},
+  {id:'pdf-rotate',name:'PDF 旋转',desc:'旋转 PDF 页面方向',icon:'🔄',cat:'pdf',m:'l'},
+  {id:'pdf-crop',name:'PDF 裁剪',desc:'裁剪 PDF 页面边距和区域',icon:'✂️',cat:'pdf',m:'m'},
+  {id:'pdf-unlock',name:'PDF 解锁',desc:'移除 PDF 密码保护',icon:'🔓',cat:'pdf',m:'l'},
+  {id:'pdf-protect',name:'PDF 加密保护',desc:'为 PDF 添加密码保护',icon:'🔒',cat:'pdf',m:'l'},
+  {id:'pdf-sign',name:'PDF 签名',desc:'在 PDF 文档中添加电子签名',icon:'🖊️',cat:'pdf',m:'m'},
+  {id:'pdf-watermark',name:'PDF 水印',desc:'为 PDF 添加文字或图片水印',icon:'💧',cat:'pdf',m:'m'},
+  {id:'pdf-pagenum',name:'PDF 页码',desc:'为 PDF 添加页码',icon:'🔢',cat:'pdf',m:'m'},
+  {id:'pdf-header-footer',name:'页眉页脚',desc:'添加自定义页眉和页脚',icon:'📋',cat:'pdf',m:'m'},
+  {id:'pdf-rearrange',name:'重排页面',desc:'重新排列 PDF 页面顺序',icon:'📑',cat:'pdf',m:'m'},
+  {id:'pdf-extract-text',name:'提取文本',desc:'从 PDF 中提取纯文本内容',icon:'📝',cat:'pdf',badge:'live',m:'m'},
+  {id:'pdf-extract-img',name:'提取图片',desc:'从 PDF 中提取嵌入的图片',icon:'🖼️',cat:'pdf',m:'h'},
+  {id:'pdf-ocr',name:'PDF OCR 识别',desc:'扫描件/图片 PDF 文字识别',icon:'👁️',cat:'pdf',badge:'ai',m:'h'},
+  {id:'pdf-to-word',name:'PDF 转 Word',desc:'将 PDF 转换为可编辑的 Word',icon:'📄→📝',cat:'pdf',badge:'hot',m:'h'},
+  {id:'pdf-to-excel',name:'PDF 转 Excel',desc:'提取 PDF 表格到 Excel',icon:'📊',cat:'pdf',badge:'new',m:'h'},
+  {id:'pdf-to-jpg',name:'PDF 转 JPG',desc:'将 PDF 页面导出为 JPG 图片',icon:'🖼️',cat:'pdf',m:'h'},
+  {id:'pdf-to-png',name:'PDF 转 PNG',desc:'将 PDF 页面导出为 PNG 图片',icon:'🖼️',cat:'pdf',m:'h'},
+  {id:'pdf-to-html',name:'PDF 转 HTML',desc:'将 PDF 转换为 HTML',icon:'🌐',cat:'pdf',badge:'new',m:'h'},
+  {id:'word-to-pdf',name:'Word 转 PDF',desc:'将 Word 文档转换为 PDF',icon:'📝→📄',cat:'pdf',badge:'hot',m:'m'},
+  {id:'excel-to-pdf',name:'Excel 转 PDF',desc:'将 Excel 表格转为 PDF',icon:'📊→📄',cat:'pdf',m:'m'},
+  {id:'ppt-to-pdf',name:'PPT 转 PDF',desc:'将演示文稿转为 PDF',icon:'📽️→📄',cat:'pdf',m:'m'},
+  {id:'jpg-to-pdf',name:'JPG 转 PDF',desc:'将 JPG 图片合并为 PDF',icon:'🖼️→📄',cat:'pdf',badge:'live',m:'m'},
+  {id:'png-to-pdf',name:'PNG 转 PDF',desc:'将 PNG 图片合并为 PDF',icon:'🖼️→📄',cat:'pdf',badge:'live',m:'m'},
+  {id:'pdf-chat',name:'AI PDF 对话',desc:'与 PDF 内容智能对话问答',icon:'🤖',cat:'pdf',badge:'ai',m:'h'},
+  {id:'pdf-summarize',name:'AI PDF 摘要',desc:'智能生成 PDF 内容摘要',icon:'📋',cat:'pdf',badge:'ai',m:'h'},
+  {id:'pdf-translate-ai',name:'AI PDF 翻译',desc:'智能翻译 PDF 文档保留排版',icon:'🌍',cat:'pdf',badge:'ai',m:'h'},
+  {id:'pdf-flatten',name:'扁平化 PDF',desc:'将注释和表单字段合并到文档',icon:'📄',cat:'pdf',m:'l'},
+  {id:'pdf-resize',name:'调整页面尺寸',desc:'修改 PDF 页面大小',icon:'📐',cat:'pdf',m:'m'},
+  {id:'pdf-metadata',name:'编辑元数据',desc:'修改 PDF 的标题、作者等信息',icon:'🏷️',cat:'pdf',m:'l'},
+
+  {id:'conv-img',name:'图片格式转换',desc:'JPG/PNG/WebP/GIF/BMP/SVG 互转',icon:'🖼️',cat:'convert',badge:'live',m:'m'},
+  {id:'conv-video',name:'视频格式转换',desc:'视频转 WebM/GIF（浏览器端）',icon:'🎬',cat:'convert',badge:'live',m:'h',note:'浏览器端处理，输出 WebM'},
+  {id:'conv-audio',name:'音频格式转换',desc:'任意音频转 WAV（浏览器端）',icon:'🎵',cat:'convert',badge:'live',m:'m',note:'浏览器解码后输出 WAV'},
+  {id:'conv-archive',name:'压缩包解压',desc:'ZIP 压缩包在线解压提取文件',icon:'📦',cat:'convert',badge:'live',m:'m'},
+  {id:'conv-font',name:'字体转换',desc:'TTF/OTF/WOFF/WOFF2 字体格式互转',icon:'🔤',cat:'convert',badge:'new',m:'m'},
+  {id:'conv-heic',name:'HEIC 转换',desc:'HEIC/HEIF 图片转 JPG/PNG',icon:'📸',cat:'convert',badge:'live',m:'m'},
+  {id:'conv-html-pdf',name:'HTML 转 PDF',desc:'将网页或 HTML 文件转为 PDF',icon:'🌐→📄',cat:'convert',badge:'live',m:'m'},
+  {id:'ebook-reader',name:'电子书阅读器',desc:'浏览器内阅读 EPUB/MOBI 电子书',icon:'📖',cat:'convert',badge:'new',m:'m'},
+
+  {id:'vid-edit',name:'视频编辑器',desc:'修剪/合并/变速/调音量（浏览器端）',icon:'🎞️',cat:'video',badge:'hot',m:'h',note:'Canvas+MediaRecorder 实时处理'},
+  {id:'vid-trim',name:'修剪视频',desc:'剪切视频片段（浏览器端）',icon:'✂️',cat:'video',badge:'live',m:'h',note:'实时1倍速处理'},
+  {id:'vid-merge',name:'合并视频',desc:'将多个视频片段合并',icon:'🎬',cat:'video',badge:'live',m:'h',note:'依次拼接录制'},
+  {id:'vid-crop',name:'裁剪视频',desc:'裁剪视频画面区域',icon:'📐',cat:'video',m:'h'},
+  {id:'vid-rotate',name:'旋转视频',desc:'旋转视频方向',icon:'🔄',cat:'video',m:'h'},
+  {id:'vid-flip',name:'翻转视频',desc:'水平或垂直翻转视频',icon:'🪞',cat:'video',m:'h'},
+  {id:'vid-resize',name:'调整尺寸',desc:'修改视频分辨率大小',icon:'📏',cat:'video',m:'h'},
+  {id:'vid-speed',name:'调整速度',desc:'加速或减速视频播放',icon:'⏩',cat:'video',badge:'live',m:'h',note:'实时变速处理'},
+  {id:'vid-volume',name:'调整音量',desc:'增大或减小视频音量',icon:'🔊',cat:'video',badge:'live',m:'h',note:'实时调音处理'},
+  {id:'vid-add-audio',name:'添加音频',desc:'为视频添加背景音乐',icon:'🎵',cat:'video',wip:true},
+  {id:'vid-add-text',name:'添加文字',desc:'在视频上添加字幕',icon:'📝',cat:'video',wip:true},
+  {id:'vid-add-img',name:'添加图片',desc:'在视频中叠加图片/水印',icon:'🖼️',cat:'video',wip:true},
+  {id:'vid-remove-logo',name:'去水印',desc:'移除视频中的 LOGO',icon:'🧹',cat:'video',wip:true},
+  {id:'vid-loop',name:'循环视频',desc:'将视频设置为循环播放',icon:'🔁',cat:'video',wip:true},
+  {id:'vid-screen-record',name:'屏幕录制',desc:'录制电脑屏幕操作',icon:'🖥️',cat:'video',badge:'live',m:'m'},
+  {id:'vid-tts',name:'语音合成',desc:'文字转语音（TTS）',icon:'🗣️',cat:'video',badge:'ai',m:'l'},
+  {id:'vid-webcam',name:'视频录制器',desc:'通过摄像头录制视频',icon:'📷',cat:'video',badge:'live',m:'l'},
+
+  {id:'aud-trim',name:'修剪音频',desc:'剪切音频片段',icon:'✂️',cat:'audio',badge:'live',m:'m'},
+  {id:'aud-merge',name:'合并音频',desc:'将多个音频文件合并',icon:'🎵+🎵',cat:'audio',badge:'live',m:'m'},
+  {id:'aud-speed',name:'音频变速',desc:'调整音频播放速度',icon:'⏩',cat:'audio',badge:'live',m:'m'},
+  {id:'aud-pitch',name:'音频变调',desc:'调整音高而不改变速度',icon:'🎹',cat:'audio',badge:'live',m:'m'},
+  {id:'aud-eq',name:'均衡器',desc:'调整音频频段均衡',icon:'🎛️',cat:'audio',badge:'live',m:'m'},
+  {id:'aud-reverse',name:'倒放音频',desc:'反转音频播放方向',icon:'◀️',cat:'audio',badge:'live',m:'m'},
+  {id:'aud-record',name:'在线录音',desc:'通过麦克风在线录音',icon:'🎙️',cat:'audio',badge:'live',m:'m'},
+  {id:'aud-volume',name:'调整音量',desc:'增大或减小音频音量',icon:'🔊',cat:'audio',badge:'live',m:'m'},
+
+  {id:'img-compress',name:'图片压缩',desc:'压缩图片大小，保持画质',icon:'🗜️',cat:'image',badge:'live',m:'m'},
+  {id:'img-resize',name:'调整尺寸',desc:'修改图片宽高尺寸',icon:'📏',cat:'image',badge:'live',m:'m'},
+  {id:'img-crop',name:'图片裁剪',desc:'裁剪图片区域',icon:'✂️',cat:'image',badge:'live',m:'m'},
+  {id:'img-rotate',name:'图片旋转',desc:'旋转图片方向',icon:'🔄',cat:'image',badge:'live',m:'m'},
+  {id:'img-flip',name:'图片翻转',desc:'水平或垂直翻转图片',icon:'🪞',cat:'image',badge:'live',m:'m'},
+
+  {id:'trans-pdf',name:'PDF 翻译',desc:'翻译 PDF 文档并保留原始排版',icon:'📄🌍',cat:'translate',badge:'new',m:'h'},
+];
+
+const categories=[
+  {id:'all',name:'全部工具',icon:'🏠'},{id:'pdf',name:'PDF 工具',icon:'📄'},{id:'convert',name:'格式转换',icon:'🔄'},
+  {id:'video',name:'视频工具',icon:'🎬'},{id:'audio',name:'音频工具',icon:'🎵'},
+  {id:'image',name:'图片处理',icon:'🖼️'},{id:'translate',name:'文档翻译',icon:'🌍'}
+];
+
+const sidebarNav=document.getElementById('sidebarNav');
+categories.forEach(cat=>{if(cat.id==='all')return;const cnt=tools.filter(t=>t.cat===cat.id).length;const li=document.createElement('li');li.innerHTML=`<a data-cat="${cat.id}">${cat.icon} ${cat.name}<span class="sidebar-count">${cnt}</span></a>`;sidebarNav.appendChild(li)});
+
+let currentCategory='all',searchQuery='';
+let wsTool=null,wsFiles=[],wsMediaRecorder=null,wsChunks=[],wsTimer=null,wsSeconds=0;
+let wsCropData=null,wsAudioBuffer=null,wsAudioCtx=null,wsSignCanvas=null,wsSignCtx=null;
+
+function fmtSize(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB'}
+
+function renderTools(){
+  const sk=document.getElementById('loadingSkeleton');if(sk)sk.style.display='none';
+  const main=document.getElementById('mainContent'),nr=document.getElementById('noResults');
+  let filtered=tools.filter(t=>(currentCategory==='all'||t.cat===currentCategory)&&(!searchQuery||t.name.includes(searchQuery)||t.desc.includes(searchQuery)));
+  main.querySelectorAll('.category-section').forEach(s=>s.remove());
+  if(!filtered.length){nr.style.display='block';return}
+  nr.style.display='none';
+  if(currentCategory==='all'){
+    categories.filter(c=>c.id!=='all').forEach(cat=>{const ct=filtered.filter(t=>t.cat===cat.id);if(!ct.length)return;const s=document.createElement('div');s.className='category-section';s.id='cat-'+cat.id;s.innerHTML=`<div class="category-header"><div class="category-icon">${cat.icon}</div><h2>${cat.name}</h2><span class="count">${ct.length} 个工具</span></div><div class="tool-grid">${ct.map(card).join('')}</div>`;main.appendChild(s)});
+  }else{const cat=categories.find(c=>c.id===currentCategory);const s=document.createElement('div');s.className='category-section';s.innerHTML=`<div class="category-header"><div class="category-icon">${cat?.icon||''}</div><h2>${cat?.name||''}</h2><span class="count">${filtered.length} 个工具</span></div><div class="tool-grid">${filtered.map(card).join('')}</div>`;main.appendChild(s)}
+}
+function card(t){let b='';if(t.wip){}else if(t.badge)b=`<span class="tool-card-badge badge-${t.badge}">${t.badge==='ai'?'AI':t.badge==='hot'?'热门':t.badge==='new'?'新品':'可用'}</span>`;return`<div class="tool-card" onclick="openWorkspace('${t.id}')">${b}<div class="tool-card-icon">${t.icon}</div><h3>${t.name}</h3><p>${t.desc}</p>${t.note?`<p style="font-size:.7rem;color:rgba(99,102,241,.5);margin-top:4px">${t.note}</p>`:''}</div>`}
+
+function openWorkspace(id){wsTool=tools.find(t=>t.id===id);if(!wsTool)return;wsFiles=[];wsChunks=[];wsSeconds=0;wsCropData=null;wsAudioBuffer=null;wsSignCanvas=null;if(wsMediaRecorder&&wsMediaRecorder.state!=='inactive'){wsMediaRecorder.stop();wsMediaRecorder=null}if(wsTimer)clearInterval(wsTimer);if(wsAudioCtx)wsAudioCtx.close();wsAudioCtx=null;document.getElementById('wsIcon').textContent=wsTool.icon;document.getElementById('wsTitle').textContent=wsTool.name;renderWorkspace();document.getElementById('wsOverlay').classList.add('open');document.getElementById('wsPanel').classList.add('open')}
+function closeWorkspace(){if(wsMediaRecorder&&wsMediaRecorder.state!=='inactive')wsMediaRecorder.stop();if(wsTimer)clearInterval(wsTimer);if(wsAudioCtx)wsAudioCtx.close();wsAudioCtx=null;document.getElementById('wsOverlay').classList.remove('open');document.getElementById('wsPanel').classList.remove('open');wsTool=null}
+document.getElementById('wsOverlay').addEventListener('click',closeWorkspace);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeWorkspace()});
+
+function setProgress(pct,text){const p=document.getElementById('wsProgress');if(!p)return;p.classList.add('show');document.getElementById('progFill').style.width=pct+'%';if(text)document.getElementById('progText').textContent=text}
+function downloadBlob(blob,filename,mime){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url)},200)}
+function parsePageRanges(str,total){const result=new Set();const parts=str.split(',');for(const p of parts){const t=p.trim();if(t.includes('-')){const[s,e]=t.split('-').map(n=>parseInt(n.trim()));for(let i=s;i<=e;i++){if(i>=1&&i<=total)result.add(i)}}else{const n=parseInt(t);if(n>=1&&n<=total)result.add(n)}}return[...result].sort((a,b)=>a-b)}
+function audioBufferToWav(buffer){const ch=buffer.numberOfChannels,sr=buffer.sampleRate,len=buffer.length,ba=ch*2,ds=len*ba,buf=new ArrayBuffer(44+ds),v=new DataView(buf);const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};ws(0,'RIFF');v.setUint32(4,36+ds,true);ws(8,'WAVE');ws(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,ch,true);v.setUint32(24,sr,true);v.setUint32(28,sr*ba,true);v.setUint16(32,ba,true);v.setUint16(34,16,true);ws(36,'data');v.setUint32(40,ds,true);let o=44;for(let i=0;i<len;i++){for(let c=0;c<ch;c++){const s=Math.max(-1,Math.min(1,buffer.getChannelData(c)[i]));v.setInt16(o,s<0?s*0x8000:s*0x7FFF,true);o+=2}}return new Blob([buf],{type:'audio/wav'})}
+
+// ===== RENDER WORKSPACE =====
+function renderWorkspace(){const b=document.getElementById('wsBody');const t=wsTool;if(t.wip){b.innerHTML=`<div class="status-wip"><p style="font-size:1rem;color:rgba(255,255,255,.5);margin-bottom:12px">此功能需要服务端支持，正在开发中</p><p>${t.desc}</p></div>`;return}
+  const id=t.id;let html='';
+  const needsUpload=[
+    'pdf-merge','pdf-split','pdf-compress','pdf-edit','pdf-rotate','pdf-crop','pdf-unlock','pdf-protect',
+    'pdf-sign','pdf-watermark','pdf-pagenum','pdf-header-footer','pdf-rearrange','pdf-extract-text','pdf-extract-img',
+    'pdf-ocr','pdf-flatten','pdf-resize','pdf-metadata',
+    'pdf-to-jpg','pdf-to-png','pdf-to-word','pdf-to-excel','pdf-to-html','word-to-pdf','excel-to-pdf','ppt-to-pdf','jpg-to-pdf','png-to-pdf',
+    'conv-img','conv-video','conv-audio','conv-archive','conv-font','conv-heic','ebook-reader',
+    'vid-trim','vid-merge','vid-crop','vid-rotate','vid-flip','vid-resize','vid-speed','vid-volume','vid-edit',
+    'aud-trim','aud-merge','aud-speed','aud-pitch','aud-eq','aud-reverse','aud-volume',
+    'img-compress','img-resize','img-crop','img-rotate','img-flip',
+    'pdf-chat','pdf-summarize','pdf-translate-ai','trans-pdf',
+  ].includes(id);
+  const multi=['pdf-merge','jpg-to-pdf','png-to-pdf','aud-merge','vid-merge'].includes(id);
+  const amap={'pdf-merge':'application/pdf','pdf-split':'application/pdf','pdf-compress':'application/pdf','pdf-edit':'application/pdf','pdf-rotate':'application/pdf','pdf-crop':'application/pdf','pdf-unlock':'application/pdf','pdf-protect':'application/pdf','pdf-sign':'application/pdf','pdf-watermark':'application/pdf','pdf-pagenum':'application/pdf','pdf-header-footer':'application/pdf','pdf-rearrange':'application/pdf','pdf-extract-text':'application/pdf','pdf-extract-img':'application/pdf','pdf-ocr':'application/pdf','pdf-flatten':'application/pdf','pdf-resize':'application/pdf','pdf-metadata':'application/pdf','pdf-to-jpg':'application/pdf','pdf-to-png':'application/pdf','pdf-to-word':'application/pdf','pdf-to-excel':'application/pdf','pdf-to-html':'application/pdf','word-to-pdf':'.doc,.docx','excel-to-pdf':'.xls,.xlsx','ppt-to-pdf':'.ppt,.pptx','jpg-to-pdf':'image/*','png-to-pdf':'image/*','conv-img':'image/*','conv-video':'video/*','conv-audio':'audio/*','conv-archive':'.zip','conv-font':'.ttf,.otf,.woff,.woff2','conv-heic':'.heic,.heif','ebook-reader':'.epub,.mobi','vid-trim':'video/*','vid-merge':'video/*','vid-crop':'video/*','vid-rotate':'video/*','vid-flip':'video/*','vid-resize':'video/*','vid-speed':'video/*','vid-volume':'video/*','vid-edit':'video/*','aud-trim':'audio/*','aud-merge':'audio/*','aud-speed':'audio/*','aud-pitch':'audio/*','aud-eq':'audio/*','aud-reverse':'audio/*','aud-volume':'audio/*','img-compress':'image/*','img-resize':'image/*','img-crop':'image/*','img-rotate':'image/*','img-flip':'image/*','pdf-chat':'application/pdf','pdf-summarize':'application/pdf','pdf-translate-ai':'application/pdf','trans-pdf':'application/pdf'};
+  const accept=amap[id]||'*/*';
+  if(needsUpload){html+=`<div class="upload-zone" id="uploadZone" onclick="document.getElementById('wsFileInput').click()"><span class="upload-icon">${multi?'📂':'📤'}</span><div class="upload-text">${multi?'拖拽或点击上传多个文件':'拖拽或点击上传文件'}</div><div class="upload-hint">${accept}</div></div><input type="file" id="wsFileInput" ${multi?'multiple':''} accept="${accept}" style="display:none" onchange="wsAddFiles(this.files)"><div class="ws-file-list" id="wsFileList"></div>`}
+  if(id==='pdf-sign'||id==='office-pdf-reader')html+='<div id="wsExtra"></div>';
+  if(id==='ebook-reader')html+='<div id="wsExtra" style="min-height:500px"></div>';
+  html+='<div class="ws-options" id="wsOptions"></div><div class="ws-result" id="wsResult"></div>';
+  html+='<div class="ws-progress" id="wsProgress"><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><div class="prog-text" id="progText">处理中...</div></div>';
+  html+='<div class="ws-actions" id="wsActions"></div>';
+  html+='<div class="recording-indicator" id="recIndicator"><span class="rec-dot"></span><span class="rec-timer" id="recTimer">00:00</span></div>';
+  b.innerHTML=html;
+  const uz=b.querySelector('#uploadZone');if(uz){uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('dragover')});uz.addEventListener('dragleave',()=>uz.classList.remove('dragover'));uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('dragover');wsAddFiles(e.dataTransfer.files)})}
+  setupToolConfig(id);
+}
+
+function wsAddFiles(files){for(const f of files){if(!wsFiles.find(x=>x.name===f.name&&x.size===f.size))wsFiles.push(f)}renderFileList();if(wsTool.id==='conv-archive'&&wsFiles.length)handleZipExtract();if(['aud-trim','aud-merge','aud-speed','aud-pitch','aud-reverse','aud-volume','aud-eq'].includes(wsTool.id)&&wsFiles.length)loadAudioForProcessing();if(['vid-trim','vid-merge','vid-speed','vid-volume','vid-crop','vid-rotate','vid-flip','vid-resize','vid-edit'].includes(wsTool.id)&&wsFiles.length)previewVideo()}
+
+function renderFileList(){const el=document.getElementById('wsFileList');if(!el)return;el.innerHTML=wsFiles.map((f,i)=>`<div class="ws-file-item"><span style="font-size:1.1rem">📄</span><span class="fname">${f.name}</span><span class="fsize">${fmtSize(f.size)}</span><button class="fremove" onclick="wsRemoveFile(${i})">&times;</button></div>`).join('');updateActions()}
+function wsRemoveFile(i){wsFiles.splice(i,1);renderFileList();if(wsTool.id==='conv-archive'&&wsFiles.length)handleZipExtract()}
+function updateActions(){const el=document.getElementById('wsActions');if(!el)return;const id=wsTool.id;let h='';
+  if(['aud-record'].includes(id))h=`<button class="btn-primary" id="btnStartRec" onclick="startRecording()">🎙️ 开始录音</button><button class="btn-danger" id="btnStopRec" onclick="stopRecording()" style="display:none">⏹ 停止录音</button>`;
+  else if(['vid-screen-record'].includes(id))h=`<button class="btn-primary" id="btnStartRec" onclick="startScreenRecord()">🖥️ 开始录制</button><button class="btn-danger" id="btnStopRec" onclick="stopRecording()" style="display:none">⏹ 停止录制</button>`;
+  else if(['vid-webcam'].includes(id))h=`<button class="btn-primary" id="btnStartRec" onclick="startWebcamRecord()">📷 开始录制</button><button class="btn-danger" id="btnStopRec" onclick="stopRecording()" style="display:none">⏹ 停止录制</button>`;
+  else if(['conv-archive'].includes(id))h='<span style="font-size:.8rem;color:rgba(255,255,255,.3)">上传 ZIP 文件自动解压</span>';
+  else if(['img-crop'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="doCropImage()">✂️ 裁剪并下载</button>`:'';
+  else if(['pdf-sign'].includes(id))h=`<button class="btn-primary" onclick="doSignPdf()">🖊️ 签名并保存</button><button class="btn-secondary" onclick="clearSignature()">清除签名</button>`;
+  else if(['pdf-ocr'].includes(id))h=wsFiles.length?`<button class="btn-primary" id="btnOcr" onclick="doOcr()">👁️ 开始识别</button>`:'';
+  else if(['pdf-to-jpg','pdf-to-png'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="doPdfToImage()">🖼️ 导出图片</button>`:'';
+  else if(id==='pdf-to-word')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfToWord()">📄 转为 Word</button>`:'';
+  else if(id==='pdf-to-excel')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfToExcel()">📊 转为 Excel</button>`:'';
+  else if(id==='pdf-to-html')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfToHtml()">🌐 转为 HTML</button>`:'';
+  else if(id==='pdf-chat')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfChat()">🤖 开始对话</button>`:'';
+  else if(id==='pdf-summarize')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfSummarize()">📋 生成摘要</button>`:'';
+  else if(id==='pdf-translate-ai')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfTranslateAI()">🌍 AI 翻译</button>`:'';
+  else if(id==='trans-pdf')h=wsFiles.length?`<button class="btn-primary" onclick="handlePdfTranslate()">🌍 翻译并生成 PDF</button>`:'';
+  else if(id==='conv-font')h=wsFiles.length?`<button class="btn-primary" onclick="handleFontConvert()">🔤 转换字体</button>`:'';
+  else if(id==='ebook-reader')h=wsFiles.length?`<span style="font-size:.8rem;color:rgba(255,255,255,.35)">EPUB 已加载</span>`:'';
+  else if(['pdf-extract-img'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="doPdfExtractImages()">🖼️ 提取图片</button>`:'';
+  else if(['vid-trim','vid-merge','vid-speed','vid-volume','vid-crop','vid-rotate','vid-flip','vid-resize','vid-edit'].includes(id))h=wsFiles.length?`<button class="btn-primary" id="btnVidProc" onclick="processVideo()">🎬 处理视频</button>`:'';
+  else if(['conv-video'].includes(id))h=wsFiles.length?`<button class="btn-primary" id="btnVidConv" onclick="convertVideo()">🔄 转换为 WebM</button>`:'';
+  else if(['office-pdf-reader'].includes(id))h=wsFiles.length?`<span style="font-size:.8rem;color:rgba(255,255,255,.35)">PDF 已加载，下方可翻页阅读</span>`:'';
+  else if(['conv-audio'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="convertAudio()">🔄 转换为 WAV</button>`:'';
+  else if(['pdf-unlock'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="unlockPdf()">🔓 移除密码</button>`:'';
+  else if(['comp-img','img-rotate','img-flip','img-resize','img-compress','aud-trim','aud-speed','aud-pitch','aud-reverse','aud-volume','aud-merge','aud-eq','vid-edit','conv-img','conv-heic'].includes(id))h=wsFiles.length?`<button class="btn-primary" onclick="handleGenericTool()">⚡ 开始处理</button>`:'';
+  else h=wsFiles.length?`<button class="btn-primary" onclick="processTool()">⚡ 开始处理</button>`:'';
+  el.innerHTML=h;
+}
+
+function setupToolConfig(id){const o=document.getElementById('wsOptions');if(!o)return;let h='';
+  switch(id){
+    case'pdf-split':h='<label>页码范围（如 1-3,5）</label><input type="text" id="optPages" placeholder="例：1-3 或 1,3,5">';break;
+    case'pdf-rearrange':h='<label>新页面顺序（如 3,1,2）</label><input type="text" id="optOrder" placeholder="例：3,1,2">';break;
+    case'pdf-rotate':h='<label>旋转角度</label><select id="optRot"><option value="90">90° 顺时针</option><option value="180">180°</option><option value="270">270°</option></select>';break;
+    case'pdf-crop':h='<label>裁剪边距（上 右 下 左，pt）</label><div class="opt-row"><input type="number" id="optCT" value="20" placeholder="上"><input type="number" id="optCR" value="20" placeholder="右"><input type="number" id="optCB" value="20" placeholder="下"><input type="number" id="optCL" value="20" placeholder="左"></div>';break;
+    case'pdf-protect':h='<label>密码</label><input type="text" id="optPass" placeholder="设置打开密码">';break;
+    case'pdf-unlock':h='<label>密码（如设置了解锁密码）</label><input type="text" id="optPass" placeholder="输入 PDF 密码">';break;
+    case'pdf-metadata':h='<label>标题</label><input type="text" id="optTitle" placeholder="文档标题"><label style="margin-top:10px">作者</label><input type="text" id="optAuthor" placeholder="作者"><label style="margin-top:10px">主题</label><input type="text" id="optSubject" placeholder="主题"><label style="margin-top:10px">关键词</label><input type="text" id="optKeywords" placeholder="关键词，逗号分隔">';break;
+    case'pdf-resize':h='<div class="opt-row"><div><label>宽度（pt）</label><input type="number" id="optRW" value="595"></div><div><label>高度（pt）</label><input type="number" id="optRH" value="842"></div></div>';break;
+    case'pdf-watermark':h='<label>水印文字</label><input type="text" id="optWMText" placeholder="如：机密文档"><label style="margin-top:10px">透明度（0-1）</label><div class="slider-row"><input type="range" id="optWMOp" min="5" max="100" value="30" oninput="document.getElementById(\'wv\').textContent=(this.value/100).toFixed(2)"><span class="slider-val" id="wv">0.30</span></div><label style="margin-top:10px">字体大小</label><input type="number" id="optWMSize" value="72">';break;
+    case'pdf-pagenum':h='<label>位置</label><select id="optPNPos"><option value="bottom-center">底部居中</option><option value="bottom-right">底部右</option><option value="top-center">顶部居中</option></select><label style="margin-top:10px">起始页码</label><input type="number" id="optPNStart" value="1">';break;
+    case'pdf-header-footer':h='<label>页眉文字</label><input type="text" id="optHdr" placeholder="页眉内容"><label style="margin-top:10px">页脚文字</label><input type="text" id="optFtr" placeholder="页脚内容">';break;
+    case'word-to-pdf':case'excel-to-pdf':case'ppt-to-pdf':h='<p style="font-size:.82rem;color:rgba(255,255,255,.4)">上传 Office 文件后使用浏览器打印功能转换为 PDF。</p>';break;
+    case'jpg-to-pdf':case'png-to-pdf':h='<p style="font-size:.82rem;color:rgba(255,255,255,.4)">上传多张图片后合并为一个 PDF，每图一页。</p>';break;
+    case'conv-img':h='<label>目标格式</label><select id="optFormat"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select><label style="margin-top:12px">质量</label><div class="slider-row"><input type="range" id="optQuality" min="10" max="100" value="85" oninput="document.getElementById(\'qval\').textContent=this.value+\'%\'"><span class="slider-val" id="qval">85%</span></div>';break;
+    case'img-compress':h='<label>压缩质量</label><div class="slider-row"><input type="range" id="optQuality" min="10" max="100" value="75" oninput="document.getElementById(\'qval\').textContent=this.value+\'%\'"><span class="slider-val" id="qval">75%</span></div><label style="margin-top:12px">最大宽度（px，0=不限）</label><input type="number" id="optMaxW" value="1920" min="0">';break;
+    case'img-resize':h='<div class="opt-row"><div><label>宽度（px）</label><input type="number" id="optW" value="800"></div><div><label>高度（px）</label><input type="number" id="optH" value="600"></div></div><label><input type="checkbox" id="optKeepRatio" checked> 保持比例</label>';break;
+    case'img-rotate':h='<label>旋转角度</label><select id="optRot"><option value="90">90° 顺时针</option><option value="180">180°</option><option value="270">270°</option></select>';break;
+    case'img-flip':h='<label>翻转方向</label><select id="optFlip"><option value="horizontal">水平翻转</option><option value="vertical">垂直翻转</option><option value="both">水平+垂直</option></select>';break;
+    case'aud-trim':h='<label>开始时间（秒）</label><input type="number" id="optStart" value="0" min="0" step="0.1"><label style="margin-top:12px">结束时间（秒，留空=末尾）</label><input type="number" id="optEnd" placeholder="留空则到末尾" min="0" step="0.1">';break;
+    case'aud-speed':h='<label>播放速率</label><div class="slider-row"><input type="range" id="optSpeed" min="25" max="200" value="100" oninput="document.getElementById(\'sv\').textContent=(this.value/100).toFixed(2)+\'x\'"><span class="slider-val" id="sv">1.00x</span></div>';break;
+    case'aud-pitch':h='<label>半音偏移（-12 到 +12）</label><input type="number" id="optPitch" value="0" min="-12" max="12">';break;
+    case'aud-volume':h='<label>音量倍数</label><div class="slider-row"><input type="range" id="optVol" min="10" max="300" value="100" oninput="document.getElementById(\'vv\').textContent=(this.value/100).toFixed(2)+\'x\'"><span class="slider-val" id="vv">1.00x</span></div>';break;
+    case'aud-eq':h='<label>低音增益（dB）</label><div class="slider-row"><input type="range" id="eqLow" min="-24" max="24" value="0" oninput="document.getElementById(\'el\').textContent=this.value+\'dB\'"><span class="slider-val" id="el">0dB</span></div><label style="margin-top:12px">中音增益（dB）</label><div class="slider-row"><input type="range" id="eqMid" min="-24" max="24" value="0" oninput="document.getElementById(\'em\').textContent=this.value+\'dB\'"><span class="slider-val" id="em">0dB</span></div><label style="margin-top:12px">高音增益（dB）</label><div class="slider-row"><input type="range" id="eqHigh" min="-24" max="24" value="0" oninput="document.getElementById(\'eh\').textContent=this.value+\'dB\'"><span class="slider-val" id="eh">0dB</span></div>';break;
+    case'conv-html-pdf':h='<label>HTML 代码</label><textarea id="optHtml" placeholder="粘贴 HTML 代码..."></textarea>';break;
+    case'conv-font':h='<label>目标格式</label><select id="optFontFmt"><option value="woff">WOFF</option><option value="woff2">WOFF2</option><option value="otf">OTF</option><option value="ttf">TTF</option></select>';break;
+    case'trans-pdf':h='<label>目标语言</label><select id="optTransLang"><option value="zh">中文</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option></select>';break;
+    case'pdf-chat':h='<div id="chatBox" style="max-height:300px;overflow-y:auto;margin-bottom:12px"></div><div style="display:flex;gap:8px"><input type="text" id="chatInput" placeholder="输入问题..." style="flex:1"><button class="btn-primary" onclick="sendChatMsg()" style="padding:8px 16px">发送</button></div>';break;
+    case'vid-speed':h='<label>播放速率</label><div class="slider-row"><input type="range" id="optVSpeed" min="25" max="400" value="100" oninput="document.getElementById(\'vsv\').textContent=(this.value/100).toFixed(2)+\'x\'"><span class="slider-val" id="vsv">1.00x</span></div>';break;
+    case'vid-volume':h='<label>音量倍数</label><div class="slider-row"><input type="range" id="optVVol" min="10" max="300" value="100" oninput="document.getElementById(\'vvv\').textContent=(this.value/100).toFixed(2)+\'x\'"><span class="slider-val" id="vvv">1.00x</span></div>';break;
+    case'vid-trim':h='<label>开始时间（秒）</label><input type="number" id="optVStart" value="0" min="0" step="0.1"><label style="margin-top:12px">结束时间（秒，留空=末尾）</label><input type="number" id="optVEnd" placeholder="留空则到末尾" min="0" step="0.1">';break;
+    case'vid-rotate':h='<label>旋转角度</label><select id="optVRot"><option value="90">90° 顺时针</option><option value="180">180°</option><option value="270">270°</option></select>';break;
+    case'vid-flip':h='<label>翻转方向</label><select id="optVFlip"><option value="horizontal">水平翻转</option><option value="vertical">垂直翻转</option></select>';break;
+    case'vid-resize':h='<div class="opt-row"><div><label>宽度（px）</label><input type="number" id="optVW" value="640"></div><div><label>高度（px）</label><input type="number" id="optVH" value="480"></div></div>';break;
+    case'vid-crop':h='<label>裁剪（左 上 宽 高，px）</label><div class="opt-row"><input type="number" id="optVCX" value="0" placeholder="X"><input type="number" id="optVCY" value="0" placeholder="Y"><input type="number" id="optVCW" value="320" placeholder="宽"><input type="number" id="optVCH" value="240" placeholder="高"></div>';break;
+    case'pdf-compress':h='<label>压缩质量（0-1，越小文件越小）</label><div class="slider-row"><input type="range" id="optCompQ" min="5" max="100" value="50" oninput="document.getElementById(\'cqv\').textContent=(this.value/100).toFixed(2)"><span class="slider-val" id="cqv">0.50</span></div>';break;
+  }
+  o.innerHTML=h;
+}
+
+// ===== PDF OPERATIONS (using PDF-lib) =====
+async function processTool(){const id=wsTool.id;setProgress(10,'处理中...');try{
+  const m={};for(const el of document.querySelectorAll('#wsOptions input, #wsOptions select'))m[el.id]=el.value;
+  const ab=wsFiles.length?await wsFiles[0].arrayBuffer():null;
+  switch(id){
+    case'pdf-merge':await pdfMerge();break;
+    case'pdf-split':case'pdf-rearrange':await pdfSplitOrRearrange(id);break;
+    case'pdf-compress':await pdfCompress(m.optCompQ?parseFloat(m.optCompQ):0.5);break;
+    case'pdf-rotate':await pdfRotate(parseInt(m.optRot)||90);break;
+    case'pdf-crop':await pdfCrop(m);break;
+    case'pdf-protect':await pdfProtect(m.optPass||'');break;
+    case'pdf-flatten':await doPdfFlatten();break;
+    case'pdf-resize':await pdfResize(parseInt(m.optRW)||595,parseInt(m.optRH)||842);break;
+    case'pdf-metadata':await pdfMetadata(m);break;
+    case'pdf-watermark':await pdfWatermark(m);break;
+    case'pdf-pagenum':await pdfPageNum(m);break;
+    case'pdf-header-footer':await pdfHeaderFooter(m);break;
+    case'pdf-extract-text':await pdfExtractText();break;
+    case'word-to-pdf':case'excel-to-pdf':case'ppt-to-pdf':await officeToPdf();break;
+    case'jpg-to-pdf':case'png-to-pdf':await imagesToPdf();break;
+    case'conv-img':await convertImage();break;
+    case'img-compress':await compressImage();break;
+    case'img-resize':await resizeImage();break;
+    case'img-rotate':case'img-flip':await transformImage(id,m);break;
+    case'conv-html-pdf':htmlToPdf();break;
+    case'conv-heic':await convertHeic();break;
+    case'conv-video':await convertVideo();break;
+    case'conv-audio':await convertAudio();break;
+    default:if(['aud-trim','aud-speed','aud-pitch','aud-reverse','aud-volume','aud-merge'].includes(id))await processAudio();else if(['vid-edit','vid-trim','vid-merge','vid-speed','vid-volume','vid-crop','vid-rotate','vid-flip','vid-resize'].includes(id))await processVideo();
+  }
+}catch(e){setProgress(0,'失败：'+e.message);document.getElementById('wsResult').innerHTML=`<div style="padding:12px;background:rgba(239,68,68,.08);border-radius:10px;color:#ef4444;font-size:.85rem">${e.message}</div>`}}
+
+async function pdfMerge(){const pdf=await PDFLib.PDFDocument.create();for(let i=0;i<wsFiles.length;i++){setProgress(10+Math.floor(80*i/wsFiles.length),`合并 ${i+1}/${wsFiles.length}...`);const s=await PDFLib.PDFDocument.load(await wsFiles[i].arrayBuffer(),{ignoreEncryption:true});const p=await pdf.copyPages(s,s.getPageIndices());p.forEach(x=>pdf.addPage(x))}const b=await pdf.save();downloadBlob(b,'merged.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfSplitOrRearrange(id){const ab=await wsFiles[0].arrayBuffer();const s=await PDFLib.PDFDocument.load(ab,{ignoreEncryption:true});const total=s.getPageCount();let pages;if(id==='pdf-split'){const str=document.getElementById('optPages')?.value||'';pages=parsePageRanges(str,total);if(!pages.length)throw new Error('请指定页码范围')}else{const str=document.getElementById('optOrder')?.value||'';pages=str.split(',').map(x=>parseInt(x.trim())).filter(n=>n>=1&&n<=total);if(!pages.length)throw new Error('请指定页面顺序')}const nd=await PDFLib.PDFDocument.create();const cp=await nd.copyPages(s,pages.map(p=>p-1));cp.forEach(x=>nd.addPage(x));const b=await nd.save();downloadBlob(b,id==='pdf-split'?'split.pdf':'rearranged.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfCompress(quality){const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});const pages=s.getPages();for(const page of pages){const{width,height}=page.getSize();page.setSize(width,height)}const b=await s.save({useObjectStreams:quality<0.7});downloadBlob(b,'compressed.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfRotate(deg){const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});s.getPages().forEach(p=>p.setRotation(PDFLib.degrees(deg)));const b=await s.save();downloadBlob(b,'rotated.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfCrop(m){const t=parseInt(m.optCT)||0,r=parseInt(m.optCR)||0,bm=parseInt(m.optCB)||0,l=parseInt(m.optCL)||0;const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});s.getPages().forEach(p=>{const{width,height}=p.getSize();p.setCropBox(l,bm,width-r,height-t)});const bb=await s.save();downloadBlob(bb,'cropped.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfProtect(pw){if(!pw)throw new Error('请输入密码');const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});s.encrypt({userPassword:pw,ownerPassword:pw+'_owner',permissions:{printing:'highResolution',modifying:false,copying:false,annotating:false,fillingForms:true,contentAccessibility:true,documentAssembly:false}});const b=await s.save();downloadBlob(b,'protected.pdf','application/pdf');setProgress(100,'完成！')}
+async function unlockPdf(){const pw=document.getElementById('optPass')?.value||'';const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true,password:pw||undefined});const b=await s.save();downloadBlob(b,'unlocked.pdf','application/pdf');setProgress(100,'完成！')}
+async function doPdfFlatten(){const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});s.flatten();const b=await s.save();downloadBlob(b,'flattened.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfResize(w,h){const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});s.getPages().forEach(p=>{const ow=p.getSize().width,oh=p.getSize().height;p.setSize(w,h);const sx=w/ow,sy=h/oh;p.scaleContent(sx,sy)});const b=await s.save();downloadBlob(b,'resized.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfMetadata(m){const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});if(m.optTitle)s.setTitle(m.optTitle);if(m.optAuthor)s.setAuthor(m.optAuthor);if(m.optSubject)s.setSubject(m.optSubject);if(m.optKeywords)s.setKeywords(m.optKeywords.split(',').map(k=>k.trim()));const b=await s.save();downloadBlob(b,'meta_'+wsFiles[0].name,'application/pdf');setProgress(100,'完成！')}
+async function pdfWatermark(m){const text=m.optWMText||'CONFIDENTIAL';const op=parseFloat(m.optWMOp)||0.3,size=parseInt(m.optWMSize)||72;const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});const pages=s.getPages();const font=await s.embedFont(PDFLib.StandardFonts.Helvetica);for(let i=0;i<pages.length;i++){const p=pages[i];const{width,height}=p.getSize();p.drawText(text,{x:width/2-size*2,y:height/2,size,font,color:PDFLib.rgb(0,0,0),opacity:op,rotate:PDFLib.degrees(-30)})}const b=await s.save();downloadBlob(b,'watermarked.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfPageNum(m){const pos=m.optPNPos||'bottom-center',start=parseInt(m.optPNStart)||1;const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});const pages=s.getPages();const font=await s.embedFont(PDFLib.StandardFonts.Helvetica);for(let i=0;i<pages.length;i++){const p=pages[i];const{width,height}=p.getSize();const n=(start+i).toString();let x;if(pos.includes('center'))x=width/2-10;else if(pos.includes('right'))x=width-40;else x=20;const y=pos.includes('top')?height-20:20;p.drawText(n,{x,y,size:10,font,color:PDFLib.rgb(0,0,0)})}const b=await s.save();downloadBlob(b,'numbered.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfHeaderFooter(m){const hdr=m.optHdr||'',ftr=m.optFtr||'';const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});const pages=s.getPages();const font=await s.embedFont(PDFLib.StandardFonts.Helvetica);for(const p of pages){const{width,height}=p.getSize();if(hdr)p.drawText(hdr,{x:20,y:height-18,size:9,font,color:PDFLib.rgb(0.3,0.3,0.3)});if(ftr)p.drawText(ftr,{x:20,y:8,size:9,font,color:PDFLib.rgb(0.3,0.3,0.3)})}const b=await s.save();downloadBlob(b,'headfoot.pdf','application/pdf');setProgress(100,'完成！')}
+async function pdfExtractText(){const ab=await wsFiles[0].arrayBuffer();const s=await PDFLib.PDFDocument.load(ab,{ignoreEncryption:true});document.getElementById('wsProgress').classList.remove('show');document.getElementById('wsResult').innerHTML=`<div class="result-text">PDF 页数：${s.getPages().length} · 文件大小：${fmtSize(wsFiles[0].size)}\n\n提示：纯前端文本提取需要 PDF.js 渲染引擎。我们将在下一版中集成此功能。您可使用「PDF OCR」工具对扫描件进行文字识别。</div>`}
+
+// PDF 签名
+function initSignPad(){const ext=document.getElementById('wsExtra');if(!ext)return;ext.innerHTML='<p style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:8px">在下方画板中手写签名：</p><canvas class="signature-pad" id="signCanvas" width="400" height="150"></canvas>';const c=document.getElementById('signCanvas');wsSignCanvas=c;wsSignCtx=c.getContext('2d');wsSignCtx.strokeStyle='#000';wsSignCtx.lineWidth=3;wsSignCtx.lineCap='round';let d=false;c.addEventListener('mousedown',e=>{d=true;wsSignCtx.beginPath();wsSignCtx.moveTo(e.offsetX,e.offsetY)});c.addEventListener('mousemove',e=>{if(!d)return;wsSignCtx.lineTo(e.offsetX,e.offsetY);wsSignCtx.stroke()});c.addEventListener('mouseup',()=>{d=false});c.addEventListener('mouseleave',()=>{d=false});c.addEventListener('touchstart',e=>{e.preventDefault();d=true;const r=c.getBoundingClientRect();wsSignCtx.beginPath();wsSignCtx.moveTo(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top)});c.addEventListener('touchmove',e=>{e.preventDefault();if(!d)return;const r=c.getBoundingClientRect();wsSignCtx.lineTo(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);wsSignCtx.stroke()});c.addEventListener('touchend',()=>{d=false})}
+function clearSignature(){if(wsSignCtx)wsSignCtx.clearRect(0,0,wsSignCanvas.width,wsSignCanvas.height)}
+async function doSignPdf(){if(!wsSignCanvas)throw new Error('请先绘制签名');const blob=await new Promise(r=>wsSignCanvas.toBlob(r,'image/png'));const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});const imgBytes=await blob.arrayBuffer();const img=await s.embedPng(imgBytes);const pages=s.getPages();for(const p of pages){const{width,height}=p.getSize();p.drawImage(img,{x:width-180,y:40,width:140,height:50})}const b=await s.save();downloadBlob(b,'signed.pdf','application/pdf');setProgress(100,'完成！')}
+
+// Image ops
+async function convertImage(){const fmt=document.getElementById('optFormat')?.value||'image/jpeg';const q=(parseInt(document.getElementById('optQuality')?.value||'85'))/100;for(let i=0;i<wsFiles.length;i++){setProgress(Math.floor(80*(i+1)/wsFiles.length),`转换 ${i+1}...`);const bmp=await createImageBitmap(wsFiles[i]);const c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;c.getContext('2d').drawImage(bmp,0,0);const bl=await new Promise(r=>c.toBlob(r,fmt,q));const ext=fmt==='image/jpeg'?'jpg':fmt==='image/png'?'png':'webp';downloadBlob(bl,wsFiles[i].name.replace(/\.[^.]+$/,'.'+ext),fmt)}setProgress(100,'完成！')}
+async function compressImage(){const q=(parseInt(document.getElementById('optQuality')?.value||'75'))/100;const mw=parseInt(document.getElementById('optMaxW')?.value||'0');for(let i=0;i<wsFiles.length;i++){setProgress(Math.floor(80*(i+1)/wsFiles.length),`压缩 ${i+1}...`);const bmp=await createImageBitmap(wsFiles[i]);let w=bmp.width,h=bmp.height;if(mw>0&&w>mw){h=Math.round(h*mw/w);w=mw}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);const bl=await new Promise(r=>c.toBlob(r,'image/jpeg',q));downloadBlob(bl,'compressed_'+wsFiles[i].name.replace(/\.[^.]+$/,'.jpg'),'image/jpeg')}setProgress(100,'完成！')}
+async function resizeImage(){const nw=parseInt(document.getElementById('optW')?.value||'800'),nh=parseInt(document.getElementById('optH')?.value||'600');const kr=document.getElementById('optKeepRatio')?.checked??true;const bmp=await createImageBitmap(wsFiles[0]);let tw=nw,th=nh;if(kr){const r=Math.min(nw/bmp.width,nh/bmp.height);tw=Math.round(bmp.width*r);th=Math.round(bmp.height*r)}const c=document.createElement('canvas');c.width=tw;c.height=th;c.getContext('2d').drawImage(bmp,0,0,tw,th);const bl=await new Promise(r=>c.toBlob(r,'image/png'));downloadBlob(bl,'resized.png','image/png');setProgress(100,'完成！')}
+async function transformImage(id,m){const bmp=await createImageBitmap(wsFiles[0]);const c=document.createElement('canvas');const ctx=c.getContext('2d');if(id==='img-rotate'){const deg=parseInt(m.optRot)||90;const sw=deg===90||deg===270;c.width=sw?bmp.height:bmp.width;c.height=sw?bmp.width:bmp.height;ctx.translate(c.width/2,c.height/2);ctx.rotate(deg*Math.PI/180);ctx.drawImage(bmp,-bmp.width/2,-bmp.height/2)}else{const fm=(document.getElementById('optFlip')?.value)||'horizontal';c.width=bmp.width;c.height=bmp.height;if(fm==='horizontal'){ctx.translate(c.width,0);ctx.scale(-1,1)}else if(fm==='vertical'){ctx.translate(0,c.height);ctx.scale(1,-1)}else{ctx.translate(c.width,c.height);ctx.scale(-1,-1)}ctx.drawImage(bmp,0,0)}const bl=await new Promise(r=>c.toBlob(r,'image/png'));downloadBlob(bl,'transformed.png','image/png');setProgress(100,'完成！')}
+async function doCropImage(){if(!wsCropData)throw new Error('请先选择裁剪区域');const bmp=await createImageBitmap(wsFiles[0]);const c=document.createElement('canvas');c.width=wsCropData.w;c.height=wsCropData.h;c.getContext('2d').drawImage(bmp,wsCropData.x,wsCropData.y,wsCropData.w,wsCropData.h,0,0,wsCropData.w,wsCropData.h);const bl=await new Promise(r=>c.toBlob(r,'image/png'));downloadBlob(bl,'cropped.png','image/png');setProgress(100,'完成！')}
+
+// HEIC
+async function convertHeic(){for(let i=0;i<wsFiles.length;i++){setProgress(Math.floor(80*(i+1)/wsFiles.length),`转换 ${i+1}...`);const bl=await heic2any({blob:wsFiles[i],toType:'image/jpeg',quality:0.85});const b=Array.isArray(bl)?bl[0]:bl;downloadBlob(b,wsFiles[i].name.replace(/\.\w+$/,'.jpg'),'image/jpeg')}setProgress(100,'完成！')}
+
+// Office to PDF
+async function officeToPdf(){const f=wsFiles[0];const url=URL.createObjectURL(f);const iframe=document.createElement('iframe');iframe.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:9999';iframe.src=url;document.body.appendChild(iframe);setProgress(50,'加载中，请在弹出的打印对话框中选"另存为 PDF"...');iframe.onload=()=>{setTimeout(()=>{iframe.contentWindow.print();setProgress(100,'已打开打印对话框');setTimeout(()=>document.body.removeChild(iframe),3000)},1000)}}
+async function imagesToPdf(){const pdf=await PDFLib.PDFDocument.create();for(let i=0;i<wsFiles.length;i++){setProgress(10+Math.floor(80*i/wsFiles.length),`图片 ${i+1}/${wsFiles.length}...`);const ib=await wsFiles[i].arrayBuffer();let img;if(wsFiles[i].type==='image/png')img=await pdf.embedPng(ib);else img=await pdf.embedJpg(ib);const p=pdf.addPage([img.width,img.height]);p.drawImage(img,{x:0,y:0,width:img.width,height:img.height})}const b=await pdf.save();downloadBlob(b,'images.pdf','application/pdf');setProgress(100,'完成！')}
+function htmlToPdf(){const h=document.getElementById('optHtml')?.value||'';if(!h.trim())throw new Error('请输入HTML代码');const w=window.open('','_blank');w.document.write(h);w.document.close();setProgress(50,'已在新窗口打开，使用 Cmd+P 打印为 PDF')}
+
+// ZIP
+async function handleZipExtract(){if(!wsFiles.length)return;const zip=await JSZip.loadAsync(wsFiles[0]);const es=[];zip.forEach((path,f)=>es.push({path,file:f,dir:f.dir}));let h='<div class="zip-tree">';for(const e of es){if(e.dir)h+=`<div class="zip-item zip-folder">📁 ${e.path}</div>`;else h+=`<div class="zip-item" onclick="extractZipFile('${e.path.replace(/'/g,"\\'")}')">📄 ${e.path}<span style="font-size:.7rem;color:rgba(255,255,255,.25);margin-left:auto">点击下载</span></div>`}h+='</div>';document.getElementById('wsResult').innerHTML=h;window._zipRef=zip}
+async function extractZipFile(p){const f=window._zipRef.file(p);if(!f)return;const b=await f.async('blob');downloadBlob(b,p.split('/').pop(),'application/octet-stream')}
+
+// AUDIO
+async function loadAudioForProcessing(){if(!wsFiles.length)return;wsAudioCtx=new(window.AudioContext||window.webkitAudioContext)();wsAudioBuffer=await wsAudioCtx.decodeAudioData(await wsFiles[0].arrayBuffer());document.getElementById('wsResult').innerHTML=`<div style="font-size:.85rem;color:rgba(255,255,255,.5)">时长：${wsAudioBuffer.duration.toFixed(1)}s · ${wsAudioBuffer.sampleRate}Hz · ${wsAudioBuffer.numberOfChannels}声道</div>`}
+async function processAudio(){if(!wsAudioBuffer)return;setProgress(10,'处理中...');const id=wsTool.id;let buf=wsAudioBuffer;const ch=buf.numberOfChannels,sr=buf.sampleRate;
+  if(id==='aud-trim'){const s=parseFloat(document.getElementById('optStart')?.value||'0'),eStr=document.getElementById('optEnd')?.value,e=eStr?parseFloat(eStr):buf.duration;const ss=Math.floor(s*sr),es=Math.floor(e*sr),len=es-ss;const nb=wsAudioCtx.createBuffer(ch,len,sr);for(let c=0;c<ch;c++){const sd=buf.getChannelData(c),dd=nb.getChannelData(c);for(let i=0;i<len;i++)dd[i]=sd[ss+i]||0}buf=nb}
+  else if(id==='aud-speed'){const rate=(parseInt(document.getElementById('optSpeed')?.value||'100'))/100;const nl=Math.floor(buf.length/rate);const nb=wsAudioCtx.createBuffer(ch,nl,sr);for(let c=0;c<ch;c++){const sd=buf.getChannelData(c),dd=nb.getChannelData(c);for(let i=0;i<nl;i++)dd[i]=sd[Math.floor(i*rate)]||0}buf=nb}
+  else if(id==='aud-pitch'){const st=parseInt(document.getElementById('optPitch')?.value||'0');const pr=Math.pow(2,st/12);const nl=Math.floor(buf.length/pr);const nb=wsAudioCtx.createBuffer(ch,nl,sr);for(let c=0;c<ch;c++){const sd=buf.getChannelData(c),dd=nb.getChannelData(c);for(let i=0;i<nl;i++)dd[i]=sd[Math.floor(i*pr)]||0}buf=nb}
+  else if(id==='aud-reverse'){const nb=wsAudioCtx.createBuffer(ch,buf.length,sr);for(let c=0;c<ch;c++){const sd=buf.getChannelData(c),dd=nb.getChannelData(c);for(let i=0;i<buf.length;i++)dd[i]=sd[buf.length-1-i]}buf=nb}
+  else if(id==='aud-volume'){const vol=(parseInt(document.getElementById('optVol')?.value||'100'))/100;const nb=wsAudioCtx.createBuffer(ch,buf.length,sr);for(let c=0;c<ch;c++){const sd=buf.getChannelData(c),dd=nb.getChannelData(c);for(let i=0;i<buf.length;i++)dd[i]=Math.max(-1,Math.min(1,sd[i]*vol))}buf=nb}
+  else if(id==='aud-merge'){let tl=0;const bfs=[];for(const f of wsFiles){const b=await wsAudioCtx.decodeAudioData(await f.arrayBuffer());bfs.push(b);tl+=b.length}const nb=wsAudioCtx.createBuffer(ch,tl,sr);let off=0;for(const b of bfs){for(let c=0;c<ch;c++){const src=c<b.numberOfChannels?b.getChannelData(c):new Float32Array(b.length);nb.getChannelData(Math.min(c,ch-1)).set(src,off)}off+=b.length}buf=nb}
+  setProgress(70,'编码WAV...');const wav=audioBufferToWav(buf);downloadBlob(wav,'output.wav','audio/wav');setProgress(100,'完成！')}
+
+// Audio EQ
+async function processEqAudio(){if(!wsAudioBuffer)return;const low=parseInt(document.getElementById('eqLow')?.value||'0'),mid=parseInt(document.getElementById('eqMid')?.value||'0'),high=parseInt(document.getElementById('eqHigh')?.value||'0');const off=wsAudioCtx.createOfflineAudioContext(wsAudioBuffer.numberOfChannels,wsAudioBuffer.length,wsAudioBuffer.sampleRate);const src=off.createBufferSource();src.buffer=wsAudioBuffer;const lf=off.createBiquadFilter();lf.type='lowshelf';lf.frequency.value=320;lf.gain.value=low;const mf=off.createBiquadFilter();mf.type='peaking';mf.frequency.value=1000;mf.Q.value=0.5;mf.gain.value=mid;const hf=off.createBiquadFilter();hf.type='highshelf';hf.frequency.value=3200;hf.gain.value=high;src.connect(lf);lf.connect(mf);mf.connect(hf);hf.connect(off.destination);src.start(0);setProgress(30,'处理中...');const rb=await off.startRendering();setProgress(70,'编码...');const wav=audioBufferToWav(rb);downloadBlob(wav,'eq_output.wav','audio/wav');setProgress(100,'完成！')}
+
+// AUDIO CONVERT (any format → WAV)
+async function convertAudio(){const ctx=new(window.AudioContext||window.webkitAudioContext)();const ab=await wsFiles[0].arrayBuffer();setProgress(20,'解码中...');const buf=await ctx.decodeAudioData(ab);setProgress(70,'编码WAV...');const wav=audioBufferToWav(buf);downloadBlob(wav,wsFiles[0].name.replace(/\.[^.]+$/,'.wav'),'audio/wav');ctx.close();setProgress(100,'完成！')}
+
+// ===== PDF.js BASED TOOLS =====
+async function doPdfToImage(){const fmt=wsTool.id==='pdf-to-jpg'?'image/jpeg':'image/png';const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;for(let i=1;i<=doc.numPages;i++){setProgress(Math.floor(80*i/doc.numPages),`渲染 ${i}/${doc.numPages}...`);const page=await doc.getPage(i);const vp=page.getViewport({scale:2});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;const ctx=c.getContext('2d');await page.render({canvasContext:ctx,viewport:vp}).promise;const bl=await new Promise(r=>c.toBlob(r,fmt,0.9));const ext=fmt==='image/jpeg'?'jpg':'png';downloadBlob(bl,`page_${i}.${ext}`,fmt)}setProgress(100,'完成！')}
+
+async function doPdfExtractImages(){const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;let found=false;for(let i=1;i<=doc.numPages;i++){setProgress(Math.floor(80*i/doc.numPages),`扫描 ${i}/${doc.numPages}...`);const page=await doc.getPage(i);const ops=await page.getOperatorList();for(let j=0;j<ops.fnArray.length;j++){if(ops.fnArray[j]===pdfjsLib.OPS.paintImageXObject||ops.fnArray[j]===pdfjsLib.OPS.paintInlineImageXObject){found=true;const vp=page.getViewport({scale:2});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;const ctx=c.getContext('2d');await page.render({canvasContext:ctx,viewport:vp}).promise;const bl=await new Promise(r=>c.toBlob(r,'image/png'));downloadBlob(bl,`extract_p${i}.png`,'image/png');break}}}if(!found){document.getElementById('wsResult').innerHTML='<div class="result-text">未检测到嵌入图片。PDF 中的图片可能以矢量形式存储。</div>'}setProgress(100,'完成！')}
+
+async function doOcr(){setProgress(5,'加载 OCR 引擎...');const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;let allText='';for(let i=1;i<=doc.numPages;i++){setProgress(5+Math.floor(85*i/doc.numPages),`OCR 识别 ${i}/${doc.numPages}...`);const page=await doc.getPage(i);const vp=page.getViewport({scale:1.5});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;const ctx=c.getContext('2d');await page.render({canvasContext:ctx,viewport:vp}).promise;const{data:{text}}=await Tesseract.recognize(c,'eng+chi_sim',{logger:m=>{if(m.status==='recognizing text')setProgress(5+Math.floor(85*i/doc.numPages),`OCR ${i}/${doc.numPages}: ${Math.round(m.progress*100)}%`)}});allText+=`--- 第 ${i} 页 ---\n${text}\n\n`}setProgress(95,'完成');document.getElementById('wsProgress').classList.remove('show');document.getElementById('wsResult').innerHTML=`<div class="result-text">${allText||'未识别到文字'}</div>`}
+
+// PDF Viewer
+function initPdfViewer(){const ext=document.getElementById('wsExtra');if(!ext||!wsFiles.length)return;ext.innerHTML='<div class="pdf-viewer" id="pdfViewer"><canvas id="pdfCanvas"></canvas></div><div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button class="btn-secondary" onclick="pdfPrevPage()">◀ 上一页</button><span id="pdfPageInfo" style="font-size:.85rem;color:rgba(255,255,255,.5)">1/1</span><button class="btn-secondary" onclick="pdfNextPage()">下一页 ▶</button></div>';window._pdfDoc=null;window._pdfPage=1;pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise.then(doc=>{window._pdfDoc=doc;document.getElementById('pdfPageInfo').textContent=`1/${doc.numPages}`;renderPdfPage(1)})}
+async function renderPdfPage(n){if(!window._pdfDoc)return;const page=await window._pdfDoc.getPage(n);const vp=page.getViewport({scale:1.2});const c=document.getElementById('pdfCanvas');c.width=vp.width;c.height=vp.height;await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;document.getElementById('pdfPageInfo').textContent=`${n}/${window._pdfDoc.numPages}`;window._pdfPage=n}
+function pdfPrevPage(){if(window._pdfPage>1)renderPdfPage(window._pdfPage-1)}
+function pdfNextPage(){if(window._pdfPage<window._pdfDoc.numPages)renderPdfPage(window._pdfPage+1)}
+
+// ===== VIDEO PROCESSING (Canvas + MediaRecorder) =====
+let wsVideoEl=null,wsVideoMR=null,wsVideoChunks=[],wsVideoOutputBlob=null;
+function previewVideo(){const r=document.getElementById('wsResult');if(!r||!wsFiles.length)return;r.innerHTML=`<div style="text-align:center"><video id="wsVideoPreview" src="${URL.createObjectURL(wsFiles[0])}" controls style="max-width:100%;max-height:200px;border-radius:10px" onloadedmetadata="updateVideoDuration()"></video><div id="vidDurInfo" style="font-size:.75rem;color:rgba(255,255,255,.3);margin-top:8px"></div></div>`}
+function updateVideoDuration(){const v=document.getElementById('wsVideoPreview');if(!v)return;document.getElementById('vidDurInfo').textContent=`时长：${v.duration.toFixed(1)}s · ${v.videoWidth}x${v.videoHeight}`}
+
+async function processVideo(){const id=wsTool.id;if(!wsFiles.length)return;wsVideoEl=document.getElementById('wsVideoPreview');if(!wsVideoEl){const v=document.createElement('video');v.src=URL.createObjectURL(wsFiles[0]);v.controls=true;v.style.cssText='max-width:100%;max-height:200px;border-radius:10px';document.getElementById('wsResult').appendChild(v);wsVideoEl=v;await new Promise(r=>{wsVideoEl.onloadedmetadata=r;if(wsVideoEl.readyState>=2)r()})}
+  const v=wsVideoEl;let cw=v.videoWidth,ch=v.videoHeight;const doTrim=['vid-trim','vid-edit'].includes(id);const doMerge=id==='vid-merge';const doSpeed=['vid-speed','vid-edit'].includes(id);const doVol=['vid-volume','vid-edit'].includes(id);const doCrop=id==='vid-crop';const doRot=id==='vid-rotate';const doFlip=id==='vid-flip';const doResize=id==='vid-resize';
+  if(doCrop){cw=parseInt(document.getElementById('optVCW')?.value)||320;ch=parseInt(document.getElementById('optVCH')?.value)||240}
+  if(doResize){cw=parseInt(document.getElementById('optVW')?.value)||640;ch=parseInt(document.getElementById('optVH')?.value)||480}
+  setProgress(10,'准备录制...');const c=document.createElement('canvas');c.width=cw;c.height=ch;document.getElementById('wsResult').appendChild(c);c.style.maxWidth='100%';c.style.borderRadius='10px';const ctx=c.getContext('2d');
+  const stream=c.captureStream(30);let audioStream=null;try{const origStream=await v.captureStream?v.captureStream():null;if(origStream){const at=origStream.getAudioTracks();if(at.length){const ad=new AudioContext();const ms=ad.createMediaStreamDestination();const src=ad.createMediaStreamSource(new MediaStream(at));if(doVol){const gn=ad.createGain();gn.gain.value=(parseInt(document.getElementById('optVVol')?.value||'100'))/100;src.connect(gn);gn.connect(ms.destination)}else{src.connect(ms.destination)}stream.addTrack(ms.stream.getAudioTracks()[0]);audioStream=ms.stream}}}catch(e){}
+  wsVideoMR=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9'});wsVideoChunks=[];wsVideoMR.ondataavailable=e=>wsVideoChunks.push(e.data);wsVideoMR.onstop=()=>{wsVideoOutputBlob=new Blob(wsVideoChunks,{type:'video/webm'});const btn=document.createElement('button');btn.className='btn-primary';btn.textContent='⬇ 下载视频';btn.onclick=()=>downloadBlob(wsVideoOutputBlob,'output.webm','video/webm');btn.style.marginTop='12px';document.getElementById('wsResult').appendChild(btn);setProgress(100,'完成！')};wsVideoMR.start();
+  setProgress(20,'实时处理中（1倍速）...');
+  const files=doMerge?wsFiles:[wsFiles[0]];
+  for(let fi=0;fi<files.length;fi++){if(fi>0){v.src=URL.createObjectURL(files[fi]);await new Promise(r=>{v.onloadedmetadata=r;if(v.readyState>=2)r()})}
+    const start=doTrim?parseFloat(document.getElementById('optVStart')?.value||'0'):0;const endStr=doTrim?document.getElementById('optVEnd')?.value:'';const end=doTrim&&endStr?parseFloat(endStr):v.duration;v.currentTime=start;if(doSpeed)v.playbackRate=(parseInt(document.getElementById('optVSpeed')?.value||'100'))/100;v.muted=!!audioStream;
+    await v.play();
+    const renderFrame=()=>{if(v.currentTime>=end||v.paused||v.ended){if(wsVideoMR&&wsVideoMR.state==='recording')wsVideoMR.stop();return}
+      const pct=10+Math.floor(80*(v.currentTime-start)/(end-start));setProgress(pct,`处理中... ${v.currentTime.toFixed(1)}s / ${end.toFixed(1)}s`);
+      ctx.clearRect(0,0,cw,ch);ctx.save();
+      if(doCrop){const cx=parseInt(document.getElementById('optVCX')?.value)||0,cy=parseInt(document.getElementById('optVCY')?.value)||0;ctx.drawImage(v,cx,cy,cw,ch,0,0,cw,ch)}
+      else if(doRot){const deg=parseInt(document.getElementById('optVRot')?.value)||90;const sw=deg===90||deg===270;if(sw){c.width=v.videoHeight;c.height=v.videoWidth}ctx.translate(cw/2,ch/2);ctx.rotate(deg*Math.PI/180);ctx.drawImage(v,-v.videoWidth/2,-v.videoHeight/2)}
+      else if(doFlip){const fl=document.getElementById('optVFlip')?.value||'horizontal';if(fl==='horizontal'){ctx.translate(cw,0);ctx.scale(-1,1)}else{ctx.translate(0,ch);ctx.scale(1,-1)}ctx.drawImage(v,0,0,cw,ch)}
+      else ctx.drawImage(v,0,0,cw,ch);
+      ctx.restore();if(v.currentTime<end&&!v.paused&&!v.ended)requestAnimationFrame(renderFrame);else if(wsVideoMR&&wsVideoMR.state==='recording')wsVideoMR.stop()};
+    await new Promise(resolve=>{const check=()=>{if(v.currentTime>=end||v.paused||v.ended){v.pause();resolve();return}requestAnimationFrame(check)};renderFrame();check()})}
+}
+
+async function convertVideo(){if(!wsFiles.length)return;wsVideoEl=document.getElementById('wsVideoPreview');if(!wsVideoEl){const v=document.createElement('video');v.src=URL.createObjectURL(wsFiles[0]);v.controls=true;v.style.cssText='max-width:100%;max-height:200px;border-radius:10px';document.getElementById('wsResult').appendChild(v);wsVideoEl=v;await new Promise(r=>{wsVideoEl.onloadedmetadata=r;if(wsVideoEl.readyState>=2)r()})}
+  const v=wsVideoEl;const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;const ctx=c.getContext('2d');const stream=c.captureStream(30);document.getElementById('wsResult').appendChild(c);c.style.maxWidth='100%';c.style.borderRadius='10px';
+  wsVideoMR=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9'});wsVideoChunks=[];wsVideoMR.ondataavailable=e=>wsVideoChunks.push(e.data);wsVideoMR.onstop=()=>{wsVideoOutputBlob=new Blob(wsVideoChunks,{type:'video/webm'});setProgress(100,'完成！');const btn=document.createElement('button');btn.className='btn-primary';btn.textContent='⬇ 下载 WebM';btn.onclick=()=>downloadBlob(wsVideoOutputBlob,'output.webm','video/webm');btn.style.marginTop='12px';document.getElementById('wsResult').appendChild(btn)};wsVideoMR.start();
+  setProgress(10,'实时转换中（1倍速）...');v.play();
+  const renderF=()=>{if(v.paused||v.ended){if(wsVideoMR&&wsVideoMR.state==='recording')wsVideoMR.stop();return}const pct=10+Math.floor(80*v.currentTime/v.duration);setProgress(pct,`${v.currentTime.toFixed(1)}s / ${v.duration.toFixed(1)}s`);ctx.drawImage(v,0,0);if(v.currentTime<v.duration&&!v.paused&&!v.ended)requestAnimationFrame(renderF);else if(wsVideoMR&&wsVideoMR.state==='recording')wsVideoMR.stop()};renderF()
+}
+
+// Generic tool dispatcher - resolves function from wsTool.id
+function handleGenericTool(){
+  const id=wsTool.id;
+  if(id==='conv-heic')convertHeic();
+  else if(id==='vid-edit'||id==='conv-video')processVideo();
+  else if(id==='conv-audio')convertAudio();
+  else if(id==='aud-eq')processEqAudio();
+  else processTool();
+}
+
+// ===== RECORDING =====
+async function startRecording(){const id=wsTool.id;
+  if(id==='aud-record'){const s=await navigator.mediaDevices.getUserMedia({audio:true});wsMediaRecorder=new MediaRecorder(s);wsMediaRecorder.ondataavailable=e=>wsChunks.push(e.data);wsMediaRecorder.onstop=()=>{const b=new Blob(wsChunks,{type:'audio/webm'});wsChunks=[];document.getElementById('wsResult').innerHTML=`<p style="color:#22c55e;margin-bottom:12px">✅ 录音完成</p><button class="btn-primary" onclick="downloadBlob(window._lastRec,'recording.webm','audio/webm')">⬇ 下载</button>`;window._lastRec=b};wsMediaRecorder.start()}
+  else if(id==='vid-webcam'){const s=await navigator.mediaDevices.getUserMedia({video:true,audio:true});wsMediaRecorder=new MediaRecorder(s);wsMediaRecorder.ondataavailable=e=>wsChunks.push(e.data);wsMediaRecorder.onstop=()=>{const b=new Blob(wsChunks,{type:'video/webm'});wsChunks=[];document.getElementById('wsResult').innerHTML=`<p style="color:#22c55e;margin-bottom:12px">✅ 录制完成</p><button class="btn-primary" onclick="downloadBlob(window._lastRec,'webcam.webm','video/webm')">⬇ 下载</button>`;window._lastRec=b};wsMediaRecorder.start()}
+  startTimer()
+}
+async function startScreenRecord(){const s=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});wsMediaRecorder=new MediaRecorder(s);wsMediaRecorder.ondataavailable=e=>wsChunks.push(e.data);wsMediaRecorder.onstop=()=>{const b=new Blob(wsChunks,{type:'video/webm'});wsChunks=[];document.getElementById('wsResult').innerHTML=`<p style="color:#22c55e;margin-bottom:12px">✅ 录制完成</p><button class="btn-primary" onclick="downloadBlob(window._lastRec,'screencast.webm','video/webm')">⬇ 下载</button>`;window._lastRec=b};wsMediaRecorder.start();startTimer()}
+function startTimer(){document.getElementById('recIndicator').classList.add('show');document.getElementById('btnStopRec').style.display='inline-flex';document.getElementById('btnStartRec')&&(document.getElementById('btnStartRec').style.display='none');wsSeconds=0;wsTimer=setInterval(()=>{wsSeconds++;const m=Math.floor(wsSeconds/60),s=wsSeconds%60;document.getElementById('recTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`},1000)}
+function stopRecording(){if(wsMediaRecorder&&wsMediaRecorder.state!=='inactive')wsMediaRecorder.stop();if(wsTimer)clearInterval(wsTimer);document.getElementById('recIndicator').classList.remove('show');const bs=document.getElementById('btnStopRec');if(bs)bs.style.display='none';const sr=document.getElementById('btnStartRec');if(sr)sr.style.display='inline-flex'}
+
+// TTS
+function startTts(){const text=prompt('输入要朗读的文字：');if(text){const u=new SpeechSynthesisUtterance(text);u.rate=1;speechSynthesis.speak(u)}}
+
+// ===== IMAGE CROP UI =====
+const origFR=renderFileList;renderFileList=function(){origFR();const b=document.getElementById('wsBody');if(wsTool&&wsTool.id==='img-crop'&&wsFiles.length&&b){const r=document.getElementById('wsResult');const f=wsFiles[0];r.innerHTML=`<div class="crop-container" id="cropCtr"><img src="${URL.createObjectURL(f)}" id="cropImg" onload="initCrop()"></div>`}}
+function initCrop(){const img=document.getElementById('cropImg'),ctr=document.getElementById('cropCtr');const w=img.naturalWidth,h=img.naturalHeight,dW=img.clientWidth,dH=img.clientHeight,sc=dW/w;const bW=Math.min(w*.5*sc,dW*.6),bH=Math.min(h*.5*sc,dH*.6),bX=(dW-bW)/2,bY=(dH-bH)/2;const box=document.createElement('div');box.className='crop-box';box.style.cssText=`width:${bW}px;height:${bH}px;left:${bX}px;top:${bY}px`;['nw','ne','sw','se'].forEach(p=>{const hd=document.createElement('div');hd.className=`crop-handle ${p}`;box.appendChild(hd)});ctr.appendChild(box);
+  let d=false,dh=null,sX,sY,sL,sT,sW,sH;box.addEventListener('mousedown',e=>{dh=e.target.classList.contains('crop-handle')?e.target.className.split(' ')[1]:null;d=true;sX=e.clientX;sY=e.clientY;sL=parseFloat(box.style.left);sT=parseFloat(box.style.top);sW=parseFloat(box.style.width);sH=parseFloat(box.style.height);e.preventDefault()});
+  document.addEventListener('mousemove',e=>{if(!d)return;const dx=e.clientX-sX,dy=e.clientY-sY;if(dh==='se'){box.style.width=Math.max(40,sW+dx)+'px';box.style.height=Math.max(40,sH+dy)+'px'}else if(dh==='sw'){box.style.width=Math.max(40,sW-dx)+'px';box.style.left=Math.min(sL+dx,sL+sW-40)+'px';box.style.height=Math.max(40,sH+dy)+'px'}else if(dh==='ne'){box.style.width=Math.max(40,sW+dx)+'px';box.style.height=Math.max(40,sH-dy)+'px';box.style.top=Math.min(sT+dy,sT+sH-40)+'px'}else if(dh==='nw'){box.style.width=Math.max(40,sW-dx)+'px';box.style.left=Math.min(sL+dx,sL+sW-40)+'px';box.style.height=Math.max(40,sH-dy)+'px';box.style.top=Math.min(sT+dy,sT+sH-40)+'px'}else{let nl=sL+dx,nt=sT+dy;nl=Math.max(0,Math.min(nl,dW-sW));nt=Math.max(0,Math.min(nt,dH-sH));box.style.left=nl+'px';box.style.top=nt+'px'}});
+  document.addEventListener('mouseup',()=>{if(d){d=false;const sc2=w/dW;wsCropData={x:Math.round(parseFloat(box.style.left)*sc2),y:Math.round(parseFloat(box.style.top)*sc2),w:Math.round(parseFloat(box.style.width)*sc2),h:Math.round(parseFloat(box.style.height)*sc2)}}})}
+
+// ===== PDF EDIT (simplified) =====
+async function doPdfEdit(){const r=document.getElementById('wsResult');const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;const page=await doc.getPage(1);const vp=page.getViewport({scale:1.5});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;c.style.maxWidth='100%';c.style.borderRadius='10px';await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;r.innerHTML='<p style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:12px">PDF 编辑（简化版）：可使用上方 PDF 工具拆分/合并/旋转/裁剪/重排页面，或添加水印、页码、签名等。</p>';r.appendChild(c)}
+
+// ===== COMPRESS PDF =====
+async function pdfCompressClick(){const q=parseFloat(document.getElementById('optCompQ')?.value)||0.5;const s=await PDFLib.PDFDocument.load(await wsFiles[0].arrayBuffer(),{ignoreEncryption:true});const b=await s.save({useObjectStreams:q<0.7,objectsPerTick:50});downloadBlob(b,'compressed.pdf','application/pdf');setProgress(100,'完成！')}
+
+// ===== NAV & SEARCH =====
+const searchInput=document.getElementById('searchInput'),searchClear=document.getElementById('searchClear');
+searchInput.addEventListener('input',function(){searchQuery=this.value.trim();searchClear.classList.toggle('visible',searchQuery.length>0);renderTools()});
+searchClear.addEventListener('click',function(){searchInput.value='';searchQuery='';searchClear.classList.remove('visible');renderTools();searchInput.focus()});
+// ===== NEW TOOLS: PDF Conversion & AI & Font =====
+async function extractPdfText(file){
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+  let text='';
+  for(let i=1;i<=doc.numPages;i++){
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const lines={};
+    content.items.forEach(item=>{
+      const y=Math.round(item.transform[5]);
+      if(!lines[y])lines[y]=[];
+      lines[y].push(item);
+    });
+    const sortedYs=Object.keys(lines).sort((a,b)=>b-a);
+    for(const y of sortedYs){
+      const lineItems=lines[y].sort((a,b)=>a.transform[4]-b.transform[4]);
+      text+=lineItems.map(it=>it.str).join(' ')+'\n';
+    }
+    text+='\n';
+  }
+  return text;
+}
+
+function checkAI(msg){
+  if(typeof window.ai==='undefined'||!window.ai.languageModel){
+    document.getElementById('wsResult').innerHTML='<div class="result-text" style="color:#fbbf24">⚠️ '+msg+'</div>';
+    return false;
+  }
+  return true;
+}
+
+async function handlePdfToWord(){
+  if(!wsFiles.length)return;
+  setProgress(10,'提取 PDF 文本...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  const {Document,Packer,Paragraph,TextRun}=docx;
+  const children=[];
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`处理 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const lines={};
+    content.items.forEach(item=>{
+      const y=Math.round(item.transform[5]);
+      if(!lines[y])lines[y]=[];
+      lines[y].push(item);
+    });
+    const sortedYs=Object.keys(lines).sort((a,b)=>b-a);
+    for(const y of sortedYs){
+      const lineItems=lines[y].sort((a,b)=>a.transform[4]-b.transform[4]);
+      const text=lineItems.map(it=>it.str).join(' ').trim();
+      if(text)children.push(new Paragraph({children:[new TextRun({text,size:22})]}));
+    }
+  }
+  setProgress(90,'生成 Word 文档...');
+  const d=new Document({sections:[{children}]});
+  const blob=await Packer.toBlob(d);
+  downloadBlob(blob,wsFiles[0].name.replace(/\.pdf$/i,'.docx'),'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+  setProgress(100,'完成！');
+}
+
+async function handlePdfToExcel(){
+  if(!wsFiles.length)return;
+  setProgress(10,'提取 PDF 文本...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  const rows=[];
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`处理 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const lines={};
+    content.items.forEach(item=>{
+      const y=Math.round(item.transform[5]);
+      if(!lines[y])lines[y]=[];
+      lines[y].push(item);
+    });
+    const sortedYs=Object.keys(lines).sort((a,b)=>b-a);
+    for(const y of sortedYs){
+      const lineItems=lines[y].sort((a,b)=>a.transform[4]-b.transform[4]);
+      rows.push(lineItems.map(it=>it.str));
+    }
+  }
+  setProgress(90,'生成 Excel...');
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'PDF内容');
+  XLSX.writeFile(wb,wsFiles[0].name.replace(/\.pdf$/i,'.xlsx'));
+  setProgress(100,'完成！');
+}
+
+async function handlePdfToHtml(){
+  if(!wsFiles.length)return;
+  setProgress(10,'提取 PDF 内容...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  let html='<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;margin:40px}.page{position:relative;margin-bottom:20px;border:1px solid #ddd;overflow:hidden}.text-block{position:absolute;white-space:pre-wrap}</style></head><body>';
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`渲染 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const vp=page.getViewport({scale:1});
+    const content=await page.getTextContent();
+    html+=`<div class="page" style="width:${vp.width}px;height:${vp.height}px">`;
+    content.items.forEach(item=>{
+      const x=item.transform[4];
+      const y=vp.height-item.transform[5];
+      html+=`<div class="text-block" style="left:${x}px;top:${y}px;font-size:${Math.max(10,Math.abs(item.transform[0])*0.8)}px">${item.str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+    });
+    html+='</div>';
+  }
+  html+='</body></html>';
+  setProgress(95,'下载中...');
+  const blob=new Blob([html],{type:'text/html'});
+  downloadBlob(blob,wsFiles[0].name.replace(/\.pdf$/i,'.html'),'text/html');
+  setProgress(100,'完成！');
+}
+
+// AI PDF tools
+let pdfChatText='',pdfChatSession=null;
+async function initPdfChat(){
+  const r=document.getElementById('wsResult');
+  if(!wsFiles.length){r.innerHTML='<div class="status-wip">请先上传 PDF 文件</div>';return}
+  try{
+    setProgress(10,'提取 PDF 文本...');
+    pdfChatText=await extractPdfText(wsFiles[0]);
+    setProgress(100,'');document.getElementById('wsProgress').classList.remove('show');
+    r.innerHTML=`<div class="result-text" style="max-height:150px">PDF 已加载，共 ${pdfChatText.length} 字符。请在下方输入问题。</div>`;
+  }catch(e){r.innerHTML=`<div style="color:#ef4444;font-size:.85rem">提取失败：${e.message}</div>`}
+}
+async function sendChatMsg(){
+  const input=document.getElementById('chatInput');
+  if(!input||!input.value.trim())return;
+  const msg=input.value.trim();input.value='';
+  const box=document.getElementById('chatBox');
+  box.innerHTML+=`<div style="margin-bottom:8px;color:#818cf8;font-size:.85rem"><b>你：</b>${msg}</div>`;
+  box.scrollTop=box.scrollHeight;
+  if(!checkAI('此功能需要 Chrome 127+ 并开启内置 AI 功能（chrome://flags/#prompt-api-for-gemini-nano），或使用支持 WebLLM 的浏览器。'))return;
+  try{
+    if(!pdfChatSession)pdfChatSession=await window.ai.languageModel.create({systemPrompt:'你是一个PDF文档助手，根据用户上传的PDF内容回答问题。回答要简洁准确。PDF内容：'+pdfChatText.substring(0,5000)});
+    const res=await pdfChatSession.prompt(msg);
+    box.innerHTML+=`<div style="margin-bottom:8px;color:#e1e2e9;font-size:.85rem"><b>AI：</b>${res}</div>`;
+  }catch(e){box.innerHTML+=`<div style="margin-bottom:8px;color:#ef4444;font-size:.85rem">错误：${e.message}</div>`}
+  box.scrollTop=box.scrollHeight;
+}
+
+async function handlePdfChat(){
+  if(!wsFiles.length)return;
+  initPdfChat();
+}
+
+async function handlePdfSummarize(){
+  if(!wsFiles.length)return;
+  if(!checkAI('此功能需要 Chrome 127+ 并开启内置 AI 功能（chrome://flags/#summarization-api-for-gemini-nano），或使用支持 WebLLM 的浏览器。'))return;
+  setProgress(10,'提取 PDF 文本...');
+  const text=await extractPdfText(wsFiles[0]);
+  setProgress(40,'AI 分析中...');
+  try{
+    const summarizer=await window.ai.summarizer.create({type:'key-points',format:'markdown',length:'medium'});
+    const summary=await summarizer.summarize(text.substring(0,10000));
+    document.getElementById('wsProgress').classList.remove('show');
+    document.getElementById('wsResult').innerHTML=`<div class="result-text">${summary||'未能生成摘要'}</div>`;
+  }catch(e){setProgress(0,'失败');document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">AI 摘要失败：${e.message}</div>`}
+}
+
+async function handlePdfTranslateAI(){
+  if(!wsFiles.length)return;
+  if(!checkAI('此功能需要 Chrome 127+ 并开启内置 AI 功能（chrome://flags/#translator-api），或使用支持 WebLLM 的浏览器。'))return;
+  setProgress(10,'提取 PDF 文本...');
+  const text=await extractPdfText(wsFiles[0]);
+  setProgress(40,'AI 翻译中...');
+  try{
+    const translator=await window.ai.translator.create({sourceLanguage:'en',targetLanguage:'zh'});
+    const translated=await translator.translate(text.substring(0,8000));
+    document.getElementById('wsProgress').classList.remove('show');
+    document.getElementById('wsResult').innerHTML=`<div class="result-text">${translated||'未能翻译'}</div>`;
+  }catch(e){setProgress(0,'失败');document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">AI 翻译失败：${e.message}</div>`}
+}
+
+async function handlePdfTranslate(){
+  if(!wsFiles.length)return;
+  const lang=document.getElementById('optTransLang')?.value||'zh';
+  setProgress(10,'提取 PDF 文本...');
+  const doc=await pdfjsLib.getDocument(URL.createObjectURL(wsFiles[0])).promise;
+  const pdfDoc=await PDFLib.PDFDocument.create();
+  const font=await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+  for(let i=1;i<=doc.numPages;i++){
+    setProgress(10+Math.floor(80*i/doc.numPages),`翻译 ${i}/${doc.numPages}...`);
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    const {width,height}=page.getViewport({scale:1});
+    const p=pdfDoc.addPage([width,height]);
+    for(const item of content.items){
+      const txt=item.str.trim();
+      if(!txt)continue;
+      let translated=txt;
+      try{
+        const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${lang}&dt=t&q=${encodeURIComponent(txt)}`;
+        const res=await fetch(url);
+        const json=await res.json();
+        const trText=json[0]?.map(s=>s[0]).join('')||txt;
+        translated=trText;
+      }catch(e){}
+      const x=item.transform[4],y=height-item.transform[5],fs=Math.abs(item.transform[0])*0.8;
+      p.drawText(translated,{x,y,size:Math.max(6,Math.min(fs,16)),font,color:PDFLib.rgb(0,0,0)});
+    }
+  }
+  setProgress(90,'生成 PDF...');
+  const b=await pdfDoc.save();
+  downloadBlob(b,wsFiles[0].name.replace(/\.pdf$/i,'_translated.pdf'),'application/pdf');
+  setProgress(100,'完成！');
+}
+
+async function handleFontConvert(){
+  if(!wsFiles.length)return;
+  const fmt=document.getElementById('optFontFmt')?.value||'woff';
+  setProgress(10,'加载字体...');
+  const ab=await wsFiles[0].arrayBuffer();
+  let font;
+  try{font=opentype.parse(ab);}catch(e){document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">字体解析失败：${e.message}<br>请确认上传的是有效的 TTF/OTF/WOFF 字体文件。</div>`;return}
+  setProgress(50,'转换中...');
+  try{
+    let out;
+    if(fmt==='woff')out=font.toArrayBuffer({type:'woff'});
+    else if(fmt==='woff2')out=font.toArrayBuffer({type:'woff2'});
+    else if(fmt==='otf')out=font.toArrayBuffer({type:'opentype'});
+    else out=font.toArrayBuffer({type:'truetype'});
+    const blob=new Blob([out],{type:'application/octet-stream'});
+    downloadBlob(blob,wsFiles[0].name.replace(/\.[^.]+$/,'.'+fmt),'application/octet-stream');
+    setProgress(100,'完成！');
+  }catch(e){setProgress(0,'失败');document.getElementById('wsResult').innerHTML=`<div style="color:#ef4444;font-size:.85rem">转换失败：${e.message}</div>`}
+}
+
+// EPUB Reader
+async function initEbookReader(){
+  const ext=document.getElementById('wsExtra');
+  if(!ext||!wsFiles.length)return;
+  if(typeof ePub==='undefined'){
+    ext.innerHTML='<p style="color:#fbbf24;font-size:.85rem">⚠️ EPUB.js 库加载失败，请刷新页面重试。</p>';
+    return;
+  }
+  ext.innerHTML='<div id="ebookViewer" style="width:100%;min-height:500px;background:#fff;border-radius:10px;overflow:hidden"></div><div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button class="btn-secondary" onclick="ebookPrev()">◀ 上一页</button><button class="btn-secondary" onclick="ebookNext()">下一页 ▶</button></div>';
+  try{
+    const book=ePub(URL.createObjectURL(wsFiles[0]));
+    window._ebookRendition=book.renderTo('ebookViewer',{width:'100%',height:500});
+    window._ebookRendition.display();
+  }catch(e){
+    ext.innerHTML=`<p style="color:#ef4444;font-size:.85rem">EPUB 加载失败：${e.message}<br>请确认文件是有效的 EPUB 格式。</p>`;
+  }
+}
+function ebookPrev(){if(window._ebookRendition)window._ebookRendition.prev()}
+function ebookNext(){if(window._ebookRendition)window._ebookRendition.next()}
+
+sidebarNav.addEventListener('click',function(e){const a=e.target.closest('a[data-cat]');if(!a)return;currentCategory=a.dataset.cat;document.querySelectorAll('.sidebar-nav a').forEach(l=>l.classList.remove('active'));a.classList.add('active');renderTools();document.getElementById('sidebar').classList.remove('open')});
+document.getElementById('mobileNavToggle').addEventListener('click',function(){document.getElementById('sidebar').classList.toggle('open')});
+document.addEventListener('click',function(e){const sb=document.getElementById('sidebar'),tg=document.getElementById('mobileNavToggle');if(!sb.contains(e.target)&&e.target!==tg&&!tg.contains(e.target))sb.classList.remove('open')});
+
+// Wire special tools that need init after render
+const origRO=openWorkspace;openWorkspace=function(id){origRO(id);setTimeout(()=>{if(wsTool){if(wsTool.id==='pdf-sign')initSignPad();if(wsTool.id==='office-pdf-reader'&&wsFiles.length)initPdfViewer();if(wsTool.id==='vid-tts'){document.getElementById('wsResult').innerHTML=`<p style="font-size:.85rem;color:rgba(255,255,255,.4);margin-bottom:12px">浏览器内置语音合成（Web Speech API）</p><button class="btn-primary" onclick="startTts()">🗣️ 输入文字并朗读</button><p style="font-size:.75rem;color:rgba(255,255,255,.25);margin-top:12px">提示：浏览器朗读不支持直接导出音频文件</p>`}if(wsTool.id==='pdf-edit'&&wsFiles.length)doPdfEdit();if(wsTool.id==='ebook-reader'&&wsFiles.length)initEbookReader();if(wsTool.id==='pdf-chat')initPdfChat();}},100)}
+
+renderTools();
+</script>
+</body>
+</html>
