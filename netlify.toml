@@ -1,9 +1,0 @@
-[build]
-  command = "echo 'redirect site'"
-  publish = "."
-
-[[redirects]]
-  from = "/*"
-  to = "https://msoceo.pages.dev/:splat"
-  status = 301
-  force = true
