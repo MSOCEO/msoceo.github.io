@@ -1,8 +1,0 @@
-{
-  "functions": {
-    "api/meting.js": {
-      "memory": 512,
-      "maxDuration": 10
-    }
-  }
-}
